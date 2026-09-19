@@ -1,0 +1,112 @@
+[
+  {
+    "id": "usr_001",
+    "name": "Ayesha Rahman",
+    "email": "ayesha@example.com",
+    "role": "customer",
+    "phone": "+91 98765 43210",
+    "addresses": [
+      {
+        "id": "addr_1",
+        "name": "Ayesha Rahman",
+        "phone": "+91 98765 43210",
+        "line1": "12 MG Road, Alwarpet",
+        "city": "Chennai",
+        "state": "Tamil Nadu",
+        "pincode": "600001",
+        "isDefault": true
+      },
+      {
+        "id": "addr_1_alt",
+        "name": "Ayesha Rahman (Atelier)",
+        "phone": "+91 98765 43210",
+        "line1": "44 Boat Club Road",
+        "city": "Chennai",
+        "state": "Tamil Nadu",
+        "pincode": "600028",
+        "isDefault": false
+      }
+    ],
+    "notificationPreferences": {
+      "emailPromotions": true,
+      "emailOrderUpdates": true,
+      "emailNewsletter": true,
+      "emailSecurityAlerts": true
+    }
+  },
+  {
+    "id": "usr_002",
+    "name": "Devika Mehra",
+    "email": "devika@example.com",
+    "role": "customer",
+    "phone": "+91 98111 22334",
+    "addresses": [
+      {
+        "id": "addr_2",
+        "name": "Devika Mehra",
+        "phone": "+91 98111 22334",
+        "line1": "Flat 4B, Regency Heights, Bandra West",
+        "city": "Mumbai",
+        "state": "Maharashtra",
+        "pincode": "400050",
+        "isDefault": true
+      }
+    ],
+    "notificationPreferences": {
+      "emailPromotions": false,
+      "emailOrderUpdates": true,
+      "emailNewsletter": true,
+      "emailSecurityAlerts": true
+    }
+  },
+  {
+    "id": "usr_003",
+    "name": "Kabir Singhania",
+    "email": "kabir@example.com",
+    "role": "customer",
+    "phone": "+91 98222 55443",
+    "addresses": [
+      {
+        "id": "addr_3",
+        "name": "Kabir Singhania",
+        "phone": "+91 98222 55443",
+        "line1": "Villa 18, Golf Links",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "pincode": "110003",
+        "isDefault": true
+      }
+    ],
+    "notificationPreferences": {
+      "emailPromotions": true,
+      "emailOrderUpdates": true,
+      "emailNewsletter": false,
+      "emailSecurityAlerts": true
+    }
+  },
+  {
+    "id": "usr_admin",
+    "name": "Marcus Vance",
+    "email": "admin@aurelia-atelier.com",
+    "role": "admin",
+    "phone": "+91 98000 11223",
+    "addresses": [
+      {
+        "id": "addr_adm",
+        "name": "Aurelia HQ Operations",
+        "phone": "+91 98000 11223",
+        "line1": "Penthouse 9, UB City",
+        "city": "Bengaluru",
+        "state": "Karnataka",
+        "pincode": "560001",
+        "isDefault": true
+      }
+    ],
+    "notificationPreferences": {
+      "emailPromotions": false,
+      "emailOrderUpdates": true,
+      "emailNewsletter": false,
+      "emailSecurityAlerts": true
+    }
+  }
+]

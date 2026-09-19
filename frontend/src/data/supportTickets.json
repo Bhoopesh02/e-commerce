@@ -1,0 +1,40 @@
+[
+  {
+    "id": "tkt_001",
+    "userId": "usr_001",
+    "userName": "Ayesha Rahman",
+    "userEmail": "ayesha@example.com",
+    "subject": "Size consultation for evening gown",
+    "message": "I am 5'8\" and usually wear EU 36. Should I order size S or XS in the Silk Charmeuse Gown?",
+    "status": "In Progress",
+    "createdAt": "2026-09-15T10:30:00Z",
+    "responses": [
+      {
+        "id": "resp_001",
+        "authorName": "Aurelia Client Concierge",
+        "isAdmin": true,
+        "message": "Dear Ayesha, the Silk Charmeuse Gown is cut on the bias and offers a fluid, forgiving drape. For 5'8\" and EU 36, size S will ensure the exact puddle train length shown in our campaign imagery without pulling across the hip.",
+        "createdAt": "2026-09-15T12:00:00Z"
+      }
+    ]
+  },
+  {
+    "id": "tkt_002",
+    "userId": "usr_002",
+    "userName": "Devika Mehra",
+    "userEmail": "devika@example.com",
+    "subject": "White glove delivery window",
+    "message": "Can I arrange for evening delivery between 6 PM - 8 PM in Mumbai for my order?",
+    "status": "Resolved",
+    "createdAt": "2026-09-16T08:15:00Z",
+    "responses": [
+      {
+        "id": "resp_002",
+        "authorName": "Aurelia Logistics Desk",
+        "isAdmin": true,
+        "message": "Good morning Devika. Your courier dispatch has been coordinated with our luxury courier partner for an evening appointment between 6:00 PM and 8:00 PM at your Bandra residence.",
+        "createdAt": "2026-09-16T09:40:00Z"
+      }
+    ]
+  }
+]

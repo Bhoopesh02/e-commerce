@@ -1,0 +1,118 @@
+/* Luxury Editorial Animations & Motion Tokens */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroScale {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes floatBadge {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--duration-medium) var(--ease-editorial) forwards;
+}
+
+.animate-hero-scale {
+  animation: heroScale 1.4s var(--ease-editorial) forwards;
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(232, 188, 185, 0.15) 0%,
+    rgba(243, 159, 90, 0.25) 50%,
+    rgba(232, 188, 185, 0.15) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+}
+
+/* Reduced Motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Custom Hover Fill Animation */
+.hover-fill-btn {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  background-color: transparent !important;
+  transition: all 0.3s;
+}
+
+.hover-fill-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--fill-bg, transparent);
+  border-radius: inherit;
+  z-index: -2;
+}
+
+.hover-fill-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  background-color: var(--fill-hover, transparent);
+  transition: all 0.3s;
+  border-radius: inherit;
+  z-index: -1;
+}
+
+.hover-fill-btn:hover {
+  color: var(--text-hover, inherit) !important;
+}
+
+.hover-fill-btn:hover::before {
+  width: 100%;
+}

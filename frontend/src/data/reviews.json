@@ -1,0 +1,122 @@
+[
+  {
+    "id": "rev_001",
+    "productId": "prod_001",
+    "userId": "usr_001",
+    "userName": "Ayesha Rahman",
+    "rating": 5,
+    "title": "Exceptional craftsmanship and drape",
+    "body": "Fits impeccably. The nappa leather feels buttery soft, and the palladium hardware has a solid, satisfying weight. Worth every rupee.",
+    "date": "2026-08-14T10:00:00Z",
+    "status": "published",
+    "verifiedPurchase": true
+  },
+  {
+    "id": "rev_002",
+    "productId": "prod_001",
+    "userId": "usr_002",
+    "userName": "Devika Mehra",
+    "rating": 4,
+    "title": "Stunning silhouette, true to size",
+    "body": "The cut is sharp and editorial. Sleeve length is spot on for size M. Delivery arrived in a museum-grade garment bag.",
+    "date": "2026-08-20T14:30:00Z",
+    "status": "published",
+    "verifiedPurchase": true
+  },
+  {
+    "id": "rev_003",
+    "productId": "prod_002",
+    "userId": "usr_003",
+    "userName": "Kabir Singhania",
+    "rating": 5,
+    "title": "Savile Row precision in ready-to-wear",
+    "body": "The waist suppression and peak lapel proportion are sublime. Pairs effortlessly with raw denim or pleated trousers.",
+    "date": "2026-08-28T09:15:00Z",
+    "status": "published",
+    "verifiedPurchase": true
+  },
+  {
+    "id": "rev_004",
+    "productId": "prod_003",
+    "userId": "usr_001",
+    "userName": "Ayesha Rahman",
+    "rating": 5,
+    "title": "Breathtaking evening silk",
+    "body": "Wore this to a private gala in Mumbai and received endless compliments. The fluid drape catches candlelight like liquid velvet.",
+    "date": "2026-09-02T16:45:00Z",
+    "status": "published",
+    "verifiedPurchase": true
+  },
+  {
+    "id": "rev_005",
+    "productId": "prod_005",
+    "userId": "usr_002",
+    "userName": "Devika Mehra",
+    "rating": 5,
+    "title": "The pinnacle of minimalist leatherwork",
+    "body": "The structured box calf holds its architecture even when fully packed. The brass bridge closure is brilliant.",
+    "date": "2026-09-05T11:20:00Z",
+    "status": "published",
+    "verifiedPurchase": true
+  },
+  {
+    "id": "rev_006",
+    "productId": "prod_008",
+    "userId": "usr_003",
+    "userName": "Kabir Singhania",
+    "rating": 5,
+    "title": "A winter heirloom",
+    "body": "Double-faced cashmere that feels weightless yet remarkably warm. Seam construction is virtually invisible.",
+    "date": "2026-09-08T18:00:00Z",
+    "status": "published",
+    "verifiedPurchase": true
+  },
+  {
+    "id": "rev_007",
+    "productId": "prod_004",
+    "userId": "usr_002",
+    "userName": "Devika Mehra",
+    "rating": 4,
+    "title": "Cloud-like softness, runs slightly small",
+    "body": "The cashmere quality is genuinely exceptional — feather-light yet properly insulating. Only caveat: size up one if you prefer a relaxed drape. Otherwise, perfection.",
+    "date": "2026-09-10T09:00:00Z",
+    "status": "published",
+    "verifiedPurchase": true
+  },
+  {
+    "id": "rev_008",
+    "productId": "prod_004",
+    "userId": "usr_003",
+    "userName": "Nila Krishnamurthy",
+    "rating": 3,
+    "title": "Beautiful but pilling after 3 wears",
+    "body": "The material is undeniably luxurious and the fit is lovely, but I noticed some light pilling under the arms after just three wears. Expected more durability at this price point. Customer care was responsive, though.",
+    "date": "2026-09-12T14:20:00Z",
+    "status": "published",
+    "verifiedPurchase": true
+  },
+  {
+    "id": "rev_009",
+    "productId": "prod_006",
+    "userId": "usr_001",
+    "userName": "Rohan Verma",
+    "rating": 4,
+    "title": "Superbly crafted, tight break-in period",
+    "body": "The Goodyear welt is impeccable — you can see the quality in every stitch. They do require a solid week of breaking in before they mold comfortably, but once done, the fit is glove-like.",
+    "date": "2026-09-13T11:00:00Z",
+    "status": "published",
+    "verifiedPurchase": true
+  },
+  {
+    "id": "rev_010",
+    "productId": "prod_006",
+    "userId": "usr_002",
+    "userName": "Devika Mehra",
+    "rating": 3,
+    "title": "Excellent boot, but sizing runs narrow",
+    "body": "The craftsmanship is clearly artisanal and the waxed suede has aged beautifully. However, the last runs quite narrow — those with wider feet should size up or look at alternatives. Worth noting before purchase.",
+    "date": "2026-09-15T16:45:00Z",
+    "status": "published",
+    "verifiedPurchase": true
+  }
+]

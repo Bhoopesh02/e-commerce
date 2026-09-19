@@ -1,0 +1,65 @@
+[
+  {
+    "id": "cat_outerwear",
+    "name": "Outerwear",
+    "slug": "outerwear",
+    "description": "Architectural trench coats, double-faced wool overcoats, and Milanese leather jackets.",
+    "visible": true,
+    "image": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1200&auto=format&fit=crop",
+    "featuredOrder": 1
+  },
+  {
+    "id": "cat_tailoring",
+    "name": "Tailoring",
+    "slug": "tailoring",
+    "description": "Deconstructed suiting, structured Italian wool blazers, and sculptural pleated trousers.",
+    "visible": true,
+    "image": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1200&auto=format&fit=crop",
+    "featuredOrder": 2
+  },
+  {
+    "id": "cat_eveningwear",
+    "name": "Eveningwear",
+    "slug": "eveningwear",
+    "description": "Floor-sweeping silk gowns, draped satin ensembles, and nocturnal silhouette dresses.",
+    "visible": true,
+    "image": "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1200&auto=format&fit=crop",
+    "featuredOrder": 3
+  },
+  {
+    "id": "cat_knitwear",
+    "name": "Knitwear",
+    "slug": "knitwear",
+    "description": "Grade-A Mongolian cashmere, ribbed merino jumpers, and lightweight mohair layers.",
+    "visible": true,
+    "image": "https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1200&auto=format&fit=crop",
+    "featuredOrder": 4
+  },
+  {
+    "id": "cat_leather_goods",
+    "name": "Leather Goods",
+    "slug": "leather-goods",
+    "description": "Full-grain calfskin tote bags, sculptural saddle clutches, and hand-stitched travel luggage.",
+    "visible": true,
+    "image": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1200&auto=format&fit=crop",
+    "featuredOrder": 5
+  },
+  {
+    "id": "cat_footwear",
+    "name": "Footwear",
+    "slug": "footwear",
+    "description": "Goodyear-welted Chelsea boots, minimalist architectural loafers, and Tuscan leather mules.",
+    "visible": true,
+    "image": "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=1200&auto=format&fit=crop",
+    "featuredOrder": 6
+  },
+  {
+    "id": "cat_jewelry",
+    "name": "Fine Jewelry",
+    "slug": "fine-jewelry",
+    "description": "18k vermeil sculptural cuffs, baroque pearl pendants, and signet bands.",
+    "visible": true,
+    "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1200&auto=format&fit=crop",
+    "featuredOrder": 7
+  }
+]

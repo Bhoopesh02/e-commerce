@@ -1,0 +1,48 @@
+[
+  {
+    "code": "WELCOME10",
+    "type": "percentage",
+    "value": 10,
+    "expiryDate": "2026-12-31",
+    "usageLimit": 500,
+    "usedCount": 128,
+    "minOrderValue": 5000,
+    "maxDiscount": 3000,
+    "active": true,
+    "description": "10% privilege discount on orders above ₹5,000"
+  },
+  {
+    "code": "AURELIAVIP",
+    "type": "percentage",
+    "value": 15,
+    "expiryDate": "2026-12-31",
+    "usageLimit": 200,
+    "usedCount": 42,
+    "minOrderValue": 15000,
+    "maxDiscount": 6000,
+    "active": true,
+    "description": "15% private client privilege on orders above ₹15,000"
+  },
+  {
+    "code": "ATELIER2500",
+    "type": "fixed",
+    "value": 2500,
+    "expiryDate": "2026-12-31",
+    "usageLimit": 300,
+    "usedCount": 85,
+    "minOrderValue": 12000,
+    "active": true,
+    "description": "Flat ₹2,500 complimentary reduction on orders above ₹12,000"
+  },
+  {
+    "code": "EXPIRED20",
+    "type": "percentage",
+    "value": 20,
+    "expiryDate": "2024-01-01",
+    "usageLimit": 100,
+    "usedCount": 100,
+    "minOrderValue": 5000,
+    "active": false,
+    "description": "Seasonal archive coupon (inactive)"
+  }
+]

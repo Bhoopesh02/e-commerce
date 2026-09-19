@@ -1,0 +1,12 @@
+[
+  {
+    "id": "ret_001",
+    "orderId": "ord_1001",
+    "userId": "usr_001",
+    "reason": "Exchanging for different color/fit preference",
+    "comments": "The leather jacket is pristine, would like to evaluate standard sizing in store or exchange.",
+    "status": "Requested",
+    "refundStatus": "pending",
+    "createdAt": "2026-09-17T14:00:00Z"
+  }
+]

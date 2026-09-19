@@ -1,0 +1,332 @@
+[
+  {
+    "id": "ord_1001",
+    "userId": "usr_001",
+    "customerName": "Ayesha Rahman",
+    "customerEmail": "ayesha@example.com",
+    "items": [
+      {
+        "productId": "prod_001",
+        "productName": "Italian Leather Jacket",
+        "productImage": "https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=1200&auto=format&fit=crop",
+        "sku": "LJ-BLK-M",
+        "size": "M",
+        "color": "Nocturne Black",
+        "quantity": 1,
+        "price": 24999
+      }
+    ],
+    "status": "Delivered",
+    "statusHistory": [
+      { "status": "Placed", "timestamp": "2026-09-12T09:00:00Z", "note": "Order confirmed and registered at Aurelia Central Atelier." },
+      { "status": "Confirmed", "timestamp": "2026-09-12T12:00:00Z", "note": "Payment verified. Being prepared by the atelier." },
+      { "status": "Packed", "timestamp": "2026-09-13T10:00:00Z", "note": "Garment inspected and wrapped in archival tissue." },
+      { "status": "Shipped", "timestamp": "2026-09-14T08:30:00Z", "note": "Dispatched via BlueDart white-glove courier." },
+      { "status": "Delivered", "timestamp": "2026-09-16T14:15:00Z", "note": "Delivered and signed for at client address." }
+    ],
+    "address": {
+      "id": "addr_1",
+      "name": "Ayesha Rahman",
+      "phone": "+91 98765 43210",
+      "line1": "12 MG Road, Alwarpet",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "pincode": "600001",
+      "isDefault": true
+    },
+    "payment": {
+      "method": "UPI",
+      "status": "successful",
+      "transactionId": "TXN_UPI_982736192",
+      "upiVpa": "ayesha@oksbi"
+    },
+    "totals": {
+      "subtotal": 24999,
+      "discount": 2500,
+      "tax": 2250,
+      "delivery": 0,
+      "total": 24749
+    },
+    "trackingInfo": {
+      "carrier": "BlueDart Express",
+      "trackingId": "BD987654321IN",
+      "estimatedDelivery": "2026-09-16",
+      "trackingUrl": "https://bluedart.com/tracking/BD987654321IN"
+    },
+    "createdAt": "2026-09-12T09:00:00Z"
+  },
+  {
+    "id": "ord_1002",
+    "userId": "usr_001",
+    "customerName": "Ayesha Rahman",
+    "customerEmail": "ayesha@example.com",
+    "items": [
+      {
+        "productId": "prod_003",
+        "productName": "Silk Charmeuse Draped Evening Gown",
+        "productImage": "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1200&auto=format&fit=crop",
+        "sku": "GWN-EMR-S",
+        "size": "S",
+        "color": "Deep Aubergine",
+        "quantity": 1,
+        "price": 38999
+      }
+    ],
+    "status": "Placed",
+    "statusHistory": [
+      { "status": "Placed", "timestamp": "2026-09-18T08:30:00Z", "note": "Order confirmed and registered at Aurelia Central Atelier." }
+    ],
+    "address": {
+      "id": "addr_1",
+      "name": "Ayesha Rahman",
+      "phone": "+91 98765 43210",
+      "line1": "12 MG Road, Alwarpet",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "pincode": "600001",
+      "isDefault": true
+    },
+    "payment": {
+      "method": "Card",
+      "status": "successful",
+      "transactionId": "TXN_CRD_384729103",
+      "cardLast4": "4242"
+    },
+    "totals": {
+      "subtotal": 38999,
+      "discount": 3000,
+      "tax": 3510,
+      "delivery": 0,
+      "total": 39509
+    },
+    "trackingInfo": {
+      "carrier": "BlueDart Express",
+      "trackingId": "Pending Dispatch",
+      "estimatedDelivery": "2026-09-22"
+    },
+    "createdAt": "2026-09-18T08:30:00Z"
+  },
+  {
+    "id": "ord_1003",
+    "userId": "usr_002",
+    "customerName": "Devika Mehra",
+    "customerEmail": "devika@example.com",
+    "items": [
+      {
+        "productId": "prod_005",
+        "productName": "Atelier Sculptural Leather Tote",
+        "productImage": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1200&auto=format&fit=crop",
+        "sku": "TOT-COG-ONE",
+        "size": "One Size",
+        "color": "Cognac Ochre",
+        "quantity": 1,
+        "price": 28999
+      }
+    ],
+    "status": "Packed",
+    "statusHistory": [
+      { "status": "Placed", "timestamp": "2026-09-17T11:00:00Z", "note": "Order confirmed and registered at Aurelia Central Atelier." },
+      { "status": "Confirmed", "timestamp": "2026-09-17T14:30:00Z", "note": "Payment verified. Being prepared by the atelier." },
+      { "status": "Packed", "timestamp": "2026-09-18T06:00:00Z", "note": "Garment inspected and wrapped in archival tissue." }
+    ],
+    "address": {
+      "id": "addr_2",
+      "name": "Devika Mehra",
+      "phone": "+91 98111 22334",
+      "line1": "Flat 4B, Regency Heights, Bandra West",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "pincode": "400050",
+      "isDefault": true
+    },
+    "payment": {
+      "method": "NetBanking",
+      "status": "successful",
+      "transactionId": "TXN_NB_771928341"
+    },
+    "totals": {
+      "subtotal": 28999,
+      "discount": 0,
+      "tax": 2610,
+      "delivery": 0,
+      "total": 31609
+    },
+    "trackingInfo": {
+      "carrier": "Delhivery Luxury Service",
+      "trackingId": "DEL99281726",
+      "estimatedDelivery": "2026-09-20"
+    },
+    "createdAt": "2026-09-17T11:00:00Z"
+  },
+  {
+    "id": "ord_1004",
+    "userId": "usr_003",
+    "customerName": "Kabir Singhania",
+    "customerEmail": "kabir@example.com",
+    "items": [
+      {
+        "productId": "prod_002",
+        "productName": "Sculpted Double-Breasted Blazer",
+        "productImage": "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=1200&auto=format&fit=crop",
+        "sku": "BLZ-NAV-40",
+        "size": "40R",
+        "color": "Midnight Navy",
+        "quantity": 1,
+        "price": 18499
+      }
+    ],
+    "status": "Delivered",
+    "statusHistory": [
+      { "status": "Placed", "timestamp": "2026-08-01T10:00:00Z", "note": "Order confirmed and registered at Aurelia Central Atelier." },
+      { "status": "Confirmed", "timestamp": "2026-08-01T13:00:00Z", "note": "Payment verified. Being prepared by the atelier." },
+      { "status": "Packed", "timestamp": "2026-08-02T09:00:00Z", "note": "Garment inspected and wrapped in archival tissue." },
+      { "status": "Shipped", "timestamp": "2026-08-03T11:00:00Z", "note": "Dispatched via BlueDart white-glove courier." },
+      { "status": "Delivered", "timestamp": "2026-08-05T15:30:00Z", "note": "Delivered and signed for at client address." }
+    ],
+    "address": {
+      "id": "addr_3",
+      "name": "Kabir Singhania",
+      "phone": "+91 98222 55443",
+      "line1": "Villa 18, Golf Links",
+      "city": "New Delhi",
+      "state": "Delhi",
+      "pincode": "110003",
+      "isDefault": true
+    },
+    "payment": {
+      "method": "COD",
+      "status": "successful",
+      "transactionId": "TXN_COD_11092834"
+    },
+    "totals": {
+      "subtotal": 18499,
+      "discount": 1000,
+      "tax": 1665,
+      "delivery": 0,
+      "total": 19164
+    },
+    "trackingInfo": {
+      "carrier": "BlueDart Express",
+      "trackingId": "BD554433221IN",
+      "estimatedDelivery": "2026-08-05"
+    },
+    "createdAt": "2026-08-01T10:00:00Z"
+  },
+  {
+    "id": "ord_1005",
+    "userId": "usr_001",
+    "customerName": "Ayesha Rahman",
+    "customerEmail": "ayesha@example.com",
+    "items": [
+      {
+        "productId": "prod_004",
+        "productName": "Mongolian Cashmere Ribbed Turtleneck",
+        "productImage": "https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1200&auto=format&fit=crop",
+        "sku": "CSH-CRM-M",
+        "size": "M",
+        "color": "Warm Sand",
+        "quantity": 1,
+        "price": 14999
+      }
+    ],
+    "status": "Shipped",
+    "statusHistory": [
+      { "status": "Placed", "timestamp": "2026-09-15T10:30:00Z", "note": "Order confirmed and registered at Aurelia Central Atelier." },
+      { "status": "Confirmed", "timestamp": "2026-09-15T13:00:00Z", "note": "Payment verified. Being prepared by the atelier." },
+      { "status": "Packed", "timestamp": "2026-09-16T08:00:00Z", "note": "Garment inspected and wrapped in archival tissue." },
+      { "status": "Shipped", "timestamp": "2026-09-17T09:15:00Z", "note": "Dispatched via Delhivery white-glove courier." }
+    ],
+    "address": {
+      "id": "addr_1",
+      "name": "Ayesha Rahman",
+      "phone": "+91 98765 43210",
+      "line1": "12 MG Road, Alwarpet",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "pincode": "600001",
+      "isDefault": true
+    },
+    "payment": {
+      "method": "UPI",
+      "status": "successful",
+      "transactionId": "TXN_UPI_774821093",
+      "upiVpa": "ayesha@oksbi"
+    },
+    "totals": {
+      "subtotal": 14999,
+      "discount": 0,
+      "tax": 1350,
+      "delivery": 0,
+      "total": 16349
+    },
+    "trackingInfo": {
+      "carrier": "Delhivery Luxury Service",
+      "trackingId": "DEL77293847",
+      "estimatedDelivery": "2026-09-19",
+      "trackingUrl": "https://www.delhivery.com/track/package/DEL77293847"
+    },
+    "createdAt": "2026-09-15T10:30:00Z"
+  },
+  {
+    "id": "ord_1006",
+    "userId": "usr_001",
+    "customerName": "Ayesha Rahman",
+    "customerEmail": "ayesha@example.com",
+    "items": [
+      {
+        "productId": "prod_007",
+        "productName": "Auric Twisted Vermeil Cuff",
+        "productImage": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1200&auto=format&fit=crop",
+        "sku": "JWL-CUF-GLD",
+        "size": "Standard",
+        "color": "18k Gold",
+        "quantity": 1,
+        "price": 11999
+      },
+      {
+        "productId": "prod_006",
+        "productName": "Florentine Chelsea Boot",
+        "productImage": "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=1200&auto=format&fit=crop",
+        "sku": "BOT-ESP-42",
+        "size": "EU 42",
+        "color": "Espresso Suede",
+        "quantity": 1,
+        "price": 21999
+      }
+    ],
+    "status": "Cancelled",
+    "statusHistory": [
+      { "status": "Placed", "timestamp": "2026-09-10T16:00:00Z", "note": "Order confirmed and registered at Aurelia Central Atelier." },
+      { "status": "Cancelled", "timestamp": "2026-09-10T18:30:00Z", "note": "Cancelled by customer — size exchange requested." }
+    ],
+    "address": {
+      "id": "addr_1",
+      "name": "Ayesha Rahman",
+      "phone": "+91 98765 43210",
+      "line1": "12 MG Road, Alwarpet",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "pincode": "600001",
+      "isDefault": true
+    },
+    "payment": {
+      "method": "Card",
+      "status": "refunded",
+      "transactionId": "TXN_CRD_991827364",
+      "cardLast4": "4242"
+    },
+    "totals": {
+      "subtotal": 33998,
+      "discount": 0,
+      "tax": 3060,
+      "delivery": 0,
+      "total": 37058
+    },
+    "trackingInfo": {
+      "carrier": "N/A",
+      "trackingId": "Cancelled — not dispatched",
+      "estimatedDelivery": "N/A"
+    },
+    "createdAt": "2026-09-10T16:00:00Z"
+  }
+]

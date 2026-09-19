@@ -1,0 +1,273 @@
+[
+  {
+    "id": "prod_001",
+    "slug": "italian-leather-jacket",
+    "name": "Italian Leather Jacket",
+    "subtitle": "Milanese Full-Grain Nappa",
+    "description": "Hand-finished leather jacket crafted in Milan from supple nappa leather. Features polished palladium hardware, asymmetric front closure, and breathable cupro lining.",
+    "details": [
+      "100% full-grain calfskin leather",
+      "Hand-burnished edges and bespoke palladium zips",
+      "Internal chest welt pocket and tailored cuff gussets",
+      "Made in Italy by master leather artisans"
+    ],
+    "materials": ["Full-grain Italian calfskin", "100% Japanese Bemberg cupro lining"],
+    "careGuide": ["Specialist leather clean only", "Store on wide wooden hanger away from direct sunlight"],
+    "categoryId": "cat_outerwear",
+    "price": 24999,
+    "compareAtPrice": 32999,
+    "images": [
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1548883354-7622d03aca27?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "variants": [
+      { "sku": "LJ-BLK-S", "size": "S", "color": "Nocturne Black", "stock": 2 },
+      { "sku": "LJ-BLK-M", "size": "M", "color": "Nocturne Black", "stock": 4 },
+      { "sku": "LJ-BLK-L", "size": "L", "color": "Nocturne Black", "stock": 0 }
+    ],
+    "availability": "low_stock",
+    "rating": { "average": 4.8, "count": 32 },
+    "featured": true,
+    "isNewArrival": true,
+    "isTrending": true,
+    "tags": ["new-arrival", "outerwear", "iconic"],
+    "storefronts": ["a", "b"]
+  },
+  {
+    "id": "prod_002",
+    "slug": "sculpted-double-breasted-blazer",
+    "name": "Sculpted Double-Breasted Blazer",
+    "subtitle": "Super 140s Virgin Wool",
+    "description": "An architectural double-breasted silhouette tailored from superfine virgin wool. Sharp peak lapels, horn buttons, and a cinched waistline create commanding presence.",
+    "details": [
+      "Super 140s pure virgin wool canvas",
+      "Hand-stitched pick detailing along lapels",
+      "Double back vents with full floating chest canvas",
+      "Bespoke horn button fastenings"
+    ],
+    "materials": ["100% Super 140s Wool", "Cupro lining"],
+    "careGuide": ["Dry clean only with eco-solvent", "Press with steam cloth"],
+    "categoryId": "cat_tailoring",
+    "price": 18499,
+    "compareAtPrice": 22999,
+    "images": [
+      "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "variants": [
+      { "sku": "BLZ-NAV-38", "size": "38R", "color": "Midnight Navy", "stock": 6 },
+      { "sku": "BLZ-NAV-40", "size": "40R", "color": "Midnight Navy", "stock": 5 },
+      { "sku": "BLZ-NAV-42", "size": "42R", "color": "Midnight Navy", "stock": 3 }
+    ],
+    "availability": "in_stock",
+    "rating": { "average": 4.9, "count": 19 },
+    "featured": true,
+    "isNewArrival": false,
+    "isTrending": true,
+    "tags": ["tailoring", "signature", "bestseller"],
+    "storefronts": ["a", "b"]
+  },
+  {
+    "id": "prod_003",
+    "slug": "silk-charmeuse-draped-evening-gown",
+    "name": "Silk Charmeuse Draped Evening Gown",
+    "subtitle": "Heavyweight Mulberry Silk",
+    "description": "Liquid drapery rendered in 30-momme mulberry silk charmeuse. Features an asymmetric bias-cut cowl neckline, delicate low back, and a subtle floor puddle train.",
+    "details": [
+      "Grade 6A mulberry silk with luminous sheen",
+      "Bias cut engineered for effortless drape and movement",
+      "Invisible side zip fastening with silk covered loop buttons",
+      "Concealed interior bust support band"
+    ],
+    "materials": ["100% Mulberry Silk Charmeuse"],
+    "careGuide": ["Specialist dry clean only", "Steam on lowest delicate setting"],
+    "categoryId": "cat_eveningwear",
+    "price": 38999,
+    "compareAtPrice": 45000,
+    "images": [
+      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "variants": [
+      { "sku": "GWN-EMR-XS", "size": "XS", "color": "Deep Aubergine", "stock": 2 },
+      { "sku": "GWN-EMR-S", "size": "S", "color": "Deep Aubergine", "stock": 3 },
+      { "sku": "GWN-EMR-M", "size": "M", "color": "Deep Aubergine", "stock": 1 }
+    ],
+    "availability": "low_stock",
+    "rating": { "average": 5.0, "count": 14 },
+    "featured": true,
+    "isNewArrival": true,
+    "isTrending": false,
+    "tags": ["new-arrival", "eveningwear", "editorial", "luxury"],
+    "storefronts": ["a", "b"]
+  },
+  {
+    "id": "prod_004",
+    "slug": "mongolian-cashmere-ribbed-turtleneck",
+    "name": "Mongolian Cashmere Ribbed Turtleneck",
+    "subtitle": "Grade-A 2-Ply Cashmere",
+    "description": "Luxuriously soft high-gauge knitwear spun from sustainably gathered Inner Mongolian underfleece. Designed with dropped shoulders and seamless ribbed borders.",
+    "details": [
+      "Ultra-soft 15.2 micron cashmere fibers",
+      "Seamless round-knit body for zero friction",
+      "Extended ribbed cuffs and folded collar",
+      "Naturally thermo-regulating and anti-pilling"
+    ],
+    "materials": ["100% Grade-A Mongolian Cashmere"],
+    "careGuide": ["Hand wash in cold water with cashmere shampoo", "Dry flat on mesh"],
+    "categoryId": "cat_knitwear",
+    "price": 14999,
+    "compareAtPrice": 18500,
+    "images": [
+      "https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "variants": [
+      { "sku": "CSH-CRM-S", "size": "S", "color": "Warm Sand", "stock": 5 },
+      { "sku": "CSH-CRM-M", "size": "M", "color": "Warm Sand", "stock": 8 },
+      { "sku": "CSH-CRM-L", "size": "L", "color": "Warm Sand", "stock": 4 }
+    ],
+    "availability": "in_stock",
+    "rating": { "average": 4.6, "count": 34 },
+    "featured": false,
+    "isNewArrival": true,
+    "isTrending": true,
+    "tags": ["new-arrival", "knitwear", "cashmere", "winter-essential"],
+    "storefronts": ["a", "b"]
+  },
+  {
+    "id": "prod_005",
+    "slug": "atelier-sculptural-leather-tote",
+    "name": "Atelier Sculptural Leather Tote",
+    "subtitle": "Hand-Polished Box Calfskin",
+    "description": "A geometric leather tote with folded origami gussets and solid brass bridge hardware. Spacious microfiber interior includes a removable zip pouch.",
+    "details": [
+      "Structured box calf leather that patinas gracefully",
+      "Custom magnetic bridge closure with gold vermeil finish",
+      "Includes detachable zip clutch with card slots",
+      "Reinforced protective metal feet"
+    ],
+    "materials": ["100% Full-grain French box calf", "Ultrasuede lining"],
+    "careGuide": ["Wipe clean with soft microfiber cloth", "Condition every 6 months"],
+    "categoryId": "cat_leather_goods",
+    "price": 28999,
+    "compareAtPrice": 34000,
+    "images": [
+      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "variants": [
+      { "sku": "TOT-COG-ONE", "size": "One Size", "color": "Cognac Ochre", "stock": 7 },
+      { "sku": "TOT-BLK-ONE", "size": "One Size", "color": "Onyx Black", "stock": 3 }
+    ],
+    "availability": "in_stock",
+    "rating": { "average": 4.9, "count": 41 },
+    "featured": true,
+    "isNewArrival": false,
+    "isTrending": true,
+    "tags": ["accessories", "bags", "leather-goods"],
+    "storefronts": ["a", "b"]
+  },
+  {
+    "id": "prod_006",
+    "slug": "florentine-chelsea-boot",
+    "name": "Florentine Chelsea Boot",
+    "subtitle": "Goodyear-Welted Waxed Suede",
+    "description": "Handmade in Tuscany using time-tested Goodyear welt construction. Waxed Italian calf suede repels moisture while Vibram rubber half-soles provide refined grip.",
+    "details": [
+      "Reverse waxed calf suede from Santa Croce sull'Arno",
+      "Goodyear welted leather midsole with Vibram rubber tread",
+      "Double reinforced elastic side gussets with woven pull tabs",
+      "Fully leather lined with arch support footbed"
+    ],
+    "materials": ["Waxed calfskin suede", "Vegetable-tanned leather sole"],
+    "careGuide": ["Suede brush after wear", "Apply suede protector spray season-to-season"],
+    "categoryId": "cat_footwear",
+    "price": 21999,
+    "compareAtPrice": 26500,
+    "images": [
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "variants": [
+      { "sku": "BOT-ESP-41", "size": "EU 41", "color": "Espresso Suede", "stock": 3 },
+      { "sku": "BOT-ESP-42", "size": "EU 42", "color": "Espresso Suede", "stock": 4 },
+      { "sku": "BOT-ESP-43", "size": "EU 43", "color": "Espresso Suede", "stock": 2 },
+      { "sku": "BOT-ESP-44", "size": "EU 44", "color": "Espresso Suede", "stock": 0 }
+    ],
+    "availability": "in_stock",
+    "rating": { "average": 4.4, "count": 28 },
+    "featured": false,
+    "isNewArrival": true,
+    "isTrending": false,
+    "tags": ["new-arrival", "footwear", "boots", "artisan"],
+    "storefronts": ["a", "b"]
+  },
+  {
+    "id": "prod_007",
+    "slug": "auric-twisted-vermeil-cuff",
+    "name": "Auric Twisted Vermeil Cuff",
+    "subtitle": "18k Heavy Gold Vermeil",
+    "description": "Sculptural molten ribbon cuff cast from recycled sterling silver and bathed in a 3-micron thick coat of 18k yellow gold. Subtle hammered interior texture.",
+    "details": [
+      "Base of recycled 925 sterling silver",
+      "3-micron 18k gold vermeil finish (5x thicker than standard plating)",
+      "Ergonomic curved form contours cleanly to wrist anatomy",
+      "Hallmarked and authenticated in London"
+    ],
+    "materials": ["18k Gold Vermeil over 925 Sterling Silver"],
+    "careGuide": ["Keep away from perfumes and chlorine", "Store in anti-tarnish pouch provided"],
+    "categoryId": "cat_jewelry",
+    "price": 11999,
+    "compareAtPrice": 14500,
+    "images": [
+      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "variants": [
+      { "sku": "JWL-CUF-GLD", "size": "Standard", "color": "18k Gold", "stock": 5 }
+    ],
+    "availability": "in_stock",
+    "rating": { "average": 4.9, "count": 15 },
+    "featured": true,
+    "isNewArrival": false,
+    "isTrending": true,
+    "tags": ["jewelry", "fine-jewelry", "gold"],
+    "storefronts": ["a", "b"]
+  },
+  {
+    "id": "prod_008",
+    "slug": "belted-cashmere-wrap-overcoat",
+    "name": "Belted Cashmere Wrap Overcoat",
+    "subtitle": "Double-Faced Wool-Cashmere Blend",
+    "description": "A magnificent winter statement piece with fluid dropped shoulders, oversized storm lapels, and a tie-cinch belt. Completely unlined to highlight double-faced seam craftsmanship.",
+    "details": [
+      "70% virgin wool, 30% Mongolian cashmere",
+      "Hand-split and invisibly stitched perimeter hems",
+      "Deep dual patch pockets and detachable wrap belt",
+      "Floor-grazing silhouette with high walking vent"
+    ],
+    "materials": ["Virgin Wool & Cashmere Double-Faced Fabric"],
+    "careGuide": ["Dry clean only", "Steam gently to revive loft"],
+    "categoryId": "cat_outerwear",
+    "price": 42999,
+    "compareAtPrice": 52000,
+    "images": [
+      "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "variants": [
+      { "sku": "OVC-CAM-S", "size": "S", "color": "Camel Melange", "stock": 2 },
+      { "sku": "OVC-CAM-M", "size": "M", "color": "Camel Melange", "stock": 1 },
+      { "sku": "OVC-CAM-L", "size": "L", "color": "Camel Melange", "stock": 0 }
+    ],
+    "availability": "low_stock",
+    "rating": { "average": 5.0, "count": 37 },
+    "featured": true,
+    "isNewArrival": true,
+    "isTrending": true,
+    "tags": ["new-arrival", "outerwear", "cashmere", "campaign"],
+    "storefronts": ["a", "b"]
+  }
+]
