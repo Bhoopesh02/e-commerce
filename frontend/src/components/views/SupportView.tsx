@@ -94,9 +94,9 @@ export const SupportView: React.FC = () => {
               boxShadow: 'var(--shadow-sm)',
             }}
           >
-            <h3 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-display)', marginBottom: '16px' }}>
+            <h2 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-display)', marginBottom: '16px' }}>
               Dispatch New Inquiry
-            </h3>
+            </h2>
 
             <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <Input
@@ -137,7 +137,8 @@ export const SupportView: React.FC = () => {
 
           {/* Right: Existing Threads */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <h3 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-display)' }}>Previous Threads</h3>
+            <h2 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-display)' }}>Previous Threads</h2>
+
             {tickets.map((t) => (
               <div
                 key={t.id}
@@ -156,7 +157,7 @@ export const SupportView: React.FC = () => {
                   <Badge variant={t.status === 'Resolved' ? 'success' : 'warning'}>{t.status}</Badge>
                 </div>
 
-                <h4 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '6px' }}>{t.subject}</h4>
+                <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '6px' }}>{t.subject}</h3>
                 <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '12px', lineHeight: 1.5 }}>
                   {t.message}
                 </p>

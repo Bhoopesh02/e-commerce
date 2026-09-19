@@ -324,6 +324,7 @@ export const ShopView: React.FC = () => {
         )}
 
         {/* Product Catalog Grid */}
+        <h2 className="sr-only">Silhouettes Collection</h2>
         {loading ? (
           <div
             style={{

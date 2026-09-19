@@ -11,6 +11,17 @@
   }
 }
 
+@keyframes toastSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes heroScale {
   from {
     transform: scale(1.06);
@@ -27,6 +38,33 @@
   100% {
     background-position: 200% 0;
   }
+}
+
+@keyframes typographyShimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+.typography-shimmer {
+  background: linear-gradient(
+    105deg,
+    var(--color-sunset-400) 0%,
+    var(--color-sunset-400) 35%,
+    #FFF9F6 50%,
+    var(--color-sunset-400) 65%,
+    var(--color-sunset-400) 100%
+  );
+  background-size: 200% auto;
+  color: transparent !important;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: typographyShimmer 4s ease-in-out infinite;
+  display: inline-block;
 }
 
 @keyframes pulseSubtle {
@@ -74,7 +112,16 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    animation-delay: 0ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .typography-shimmer {
+    animation: none !important;
+    background: none !important;
+    color: var(--color-sunset-400) !important;
+    -webkit-text-fill-color: var(--color-sunset-400) !important;
   }
 }
 
@@ -116,3 +163,252 @@
 .hover-fill-btn:hover::before {
   width: 100%;
 }
+
+/* ==========================================================================
+   Luxury Editorial Nav Link Hover & Hairline Underline
+   ========================================================================== */
+
+.nav-link-expand {
+  --nav-transition-duration: 800ms;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-primary);
+  opacity: 0.7;
+  text-decoration: none;
+  padding-bottom: 4px;
+  cursor: pointer;
+  transition: opacity var(--nav-transition-duration) var(--ease-luxury), color var(--nav-transition-duration) var(--ease-luxury);
+}
+
+.nav-link-expand::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--text-primary);
+  transform: scaleX(0);
+  transform-origin: var(--underline-origin, center);
+  transition: transform var(--nav-transition-duration) var(--ease-luxury);
+  pointer-events: none;
+}
+
+.nav-link-expand:hover,
+.nav-link-expand:focus-visible {
+  opacity: 1;
+}
+
+.nav-link-expand:hover::after,
+.nav-link-expand:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* ==========================================================================
+   Product Card & Carousel Switching Transitions
+   ========================================================================== */
+
+:root {
+  --product-switch-duration: 1200ms;
+  --carousel-expand-duration: 1200ms;
+}
+
+.product-image-primary {
+  transition: transform var(--product-switch-duration, 1200ms) var(--ease-luxury);
+  will-change: transform;
+}
+
+.product-image-secondary {
+  transition: opacity var(--product-switch-duration, 1200ms) var(--ease-luxury),
+              transform var(--product-switch-duration, 1200ms) var(--ease-luxury);
+  will-change: opacity, transform;
+}
+
+/* ==========================================================================
+   Editorial Sweep-Through Underline & Micro-Drift Arrow Links
+   ========================================================================== */
+
+:root {
+  --editorial-link-duration: 600ms;
+  --editorial-link-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --editorial-link-color: var(--color-sunset-700, #662549);
+}
+
+.editorial-arrow-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--editorial-link-color);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Hairline underline (1px, color-matched to deep plum text) */
+.editorial-arrow-link-text {
+  position: relative;
+  display: inline-block;
+}
+
+.editorial-arrow-link-text::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform var(--editorial-link-duration, 600ms) var(--editorial-link-ease, cubic-bezier(0.22, 1, 0.36, 1));
+  pointer-events: none;
+}
+
+/* Hover: sweeps smoothly from left to right directly beneath wording */
+.editorial-arrow-link:hover .editorial-arrow-link-text::after,
+.editorial-arrow-link:focus-visible .editorial-arrow-link-text::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* Arrow base styling & transition: subtle ease-out deceleration curve, returning gracefully to rest */
+.editorial-arrow-link .editorial-arrow-icon,
+.editorial-arrow-link svg {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  transition: transform var(--editorial-link-duration, 600ms) var(--editorial-link-ease, cubic-bezier(0.22, 1, 0.36, 1));
+  will-change: transform;
+}
+
+/* Forward arrow (->): nudges 2-3px directly forward */
+.editorial-arrow-link:hover .editorial-arrow-icon,
+.editorial-arrow-link:hover svg,
+.editorial-arrow-link:hover .editorial-arrow-forward,
+.editorial-arrow-link:hover svg.lucide-arrow-right,
+.editorial-arrow-link:focus-visible .editorial-arrow-icon,
+.editorial-arrow-link:focus-visible svg {
+  transform: translateX(3px);
+}
+
+/* Diagonal arrow (↗): nudges 2-3px outward diagonally up-right */
+.editorial-arrow-link:hover .editorial-arrow-diagonal,
+.editorial-arrow-link:hover svg.lucide-arrow-up-right,
+.editorial-arrow-link:focus-visible .editorial-arrow-diagonal,
+.editorial-arrow-link:focus-visible svg.lucide-arrow-up-right {
+  transform: translate(2px, -2px);
+}
+
+/* ==========================================================================
+   Editorial Liquid Sheen / Sweep Pill Button Hover Animation
+   ========================================================================== */
+
+:root {
+  --editorial-sheen-duration: 1500ms;
+  --editorial-sheen-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --editorial-arrow-duration: 250ms;
+  --editorial-arrow-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Diagonal liquid sheen pseudo-element */
+.luxury-btn::after {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 300%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 100%
+  );
+  transform: translateX(-150%) rotate(25deg);
+  pointer-events: none;
+  z-index: 1;
+  transition: transform var(--editorial-sheen-duration, 1500ms) var(--editorial-sheen-ease, cubic-bezier(0.16, 1, 0.3, 1));
+  will-change: transform;
+}
+
+/* Sheen color for white / outline buttons (subtle warm amber sheen for contrast) */
+.luxury-btn-outline::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(243, 159, 90, 0.4) 50%,
+    transparent 100%
+  );
+}
+
+/* Diagonal sweep across pill on hover / focus-visible (supports both direct button hover and Link parent hover) */
+.luxury-btn:hover:not(:disabled)::after,
+.luxury-btn:focus-visible:not(:disabled)::after,
+a:hover .luxury-btn:not(:disabled)::after,
+a:focus-visible .luxury-btn:not(:disabled)::after {
+  transform: translateX(250%) rotate(25deg);
+}
+
+/* Typography label: crisp, isolated, and completely stationary */
+.luxury-btn-label,
+.luxury-btn > span:not(.luxury-btn-icon-right):not(.luxury-btn-icon-left) {
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+}
+
+.luxury-btn-icon,
+.luxury-btn-icon-left {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Trailing arrow icon (→): subtle ease-out translation on hover, smooth return on leave */
+.luxury-btn-icon-right,
+.luxury-btn svg.lucide-arrow-right:not(.luxury-btn-icon-right *),
+.luxury-btn > span:last-child svg {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  transition: transform var(--editorial-arrow-duration, 250ms) var(--editorial-arrow-ease, cubic-bezier(0.16, 1, 0.3, 1));
+  will-change: transform;
+}
+
+.luxury-btn:hover:not(:disabled) .luxury-btn-icon-right,
+.luxury-btn:hover:not(:disabled) svg.lucide-arrow-right:not(.luxury-btn-icon-right *),
+.luxury-btn:hover:not(:disabled) > span:last-child svg,
+.luxury-btn:focus-visible:not(:disabled) .luxury-btn-icon-right,
+.luxury-btn:focus-visible:not(:disabled) svg.lucide-arrow-right:not(.luxury-btn-icon-right *),
+.luxury-btn:focus-visible:not(:disabled) > span:last-child svg,
+a:hover .luxury-btn:not(:disabled) .luxury-btn-icon-right,
+a:hover .luxury-btn:not(:disabled) svg.lucide-arrow-right:not(.luxury-btn-icon-right *),
+a:hover .luxury-btn:not(:disabled) > span:last-child svg,
+a:focus-visible .luxury-btn:not(:disabled) .luxury-btn-icon-right,
+a:focus-visible .luxury-btn:not(:disabled) svg.lucide-arrow-right:not(.luxury-btn-icon-right *),
+a:focus-visible .luxury-btn:not(:disabled) > span:last-child svg {
+  transform: translateX(3px);
+}
+
+/* Disabled and loading state suppression */
+.luxury-btn:disabled::after,
+.luxury-btn[disabled]::after {
+  display: none !important;
+}
+
+.luxury-btn:disabled .luxury-btn-icon-right,
+.luxury-btn[disabled] .luxury-btn-icon-right {
+  transform: none !important;
+}
+
+

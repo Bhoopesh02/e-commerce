@@ -20,27 +20,39 @@ import Link from 'next/link';
 import { ArrowRight, Sparkles, Feather, ShieldCheck, Compass } from 'lucide-react';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 
+import productsData from '@/data/products.json';
+import categoriesData from '@/data/categories.json';
+import storefrontConfigData from '@/data/storefrontConfig.json';
+
 export const HomeView: React.FC = () => {
   const { storefront } = useStorefrontStore();
+  const currentStorefront = storefront || 'a';
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [newArrivals, setNewArrivals] = useState<Product[]>([]);
-  const [trending, setTrending] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [config, setConfig] = useState<StorefrontConfig | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(() =>
+    (productsData as Product[]).filter((p) => p.storefronts.includes(currentStorefront))
+  );
+  const [newArrivals, setNewArrivals] = useState<Product[]>(() =>
+    (productsData as Product[]).filter((p) => p.storefronts.includes(currentStorefront) && p.isNewArrival)
+  );
+  const [trending, setTrending] = useState<Product[]>(() =>
+    (productsData as Product[]).filter((p) => p.storefronts.includes(currentStorefront) && p.isTrending)
+  );
+  const [categories, setCategories] = useState<Category[]>(() => categoriesData as Category[]);
+  const [config, setConfig] = useState<StorefrontConfig>(() =>
+    (storefrontConfigData as Record<string, StorefrontConfig>)[currentStorefront] ||
+    (storefrontConfigData as Record<string, StorefrontConfig>)['a']
+  );
 
   useEffect(() => {
     let isMounted = true;
     async function loadData() {
-      setLoading(true);
       try {
         const [allProds, newArr, trend, cats, cfg] = await Promise.all([
-          getProducts({ storefront }),
-          getNewArrivals(storefront),
-          getTrendingProducts(storefront),
+          getProducts({ storefront: currentStorefront }),
+          getNewArrivals(currentStorefront),
+          getTrendingProducts(currentStorefront),
           getCategories(),
-          getStorefrontConfig(storefront),
+          getStorefrontConfig(currentStorefront),
         ]);
 
         if (isMounted) {
@@ -50,8 +62,8 @@ export const HomeView: React.FC = () => {
           setCategories(cats);
           setConfig(cfg);
         }
-      } finally {
-        if (isMounted) setLoading(false);
+      } catch (err) {
+        // Fallback gracefully to statically initialized data
       }
     }
 
@@ -59,23 +71,7 @@ export const HomeView: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [storefront]);
-
-  if (loading) {
-    return (
-      <div style={{ paddingTop: '90px' }}>
-        <Skeleton height="85vh" borderRadius="0" />
-        <div className="container" style={{ padding: '60px 24px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
-            <Skeleton height="380px" />
-            <Skeleton height="380px" />
-            <Skeleton height="380px" />
-            <Skeleton height="380px" />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  }, [currentStorefront]);
 
   // Render individual sections based on config order
   const renderSection = (type: string, id: string) => {
@@ -127,7 +123,7 @@ export const HomeView: React.FC = () => {
 
       case 'new_arrivals':
         return (
-          <section key={id} style={{ padding: '80px 0', backgroundColor: 'var(--bg-surface)' }}>
+          <section key={id} style={{ padding: '80px 0', backgroundColor: 'var(--bg-primary)' }}>
             <div className="container">
               <ScrollReveal duration={0.5}>
                 <div
@@ -158,16 +154,14 @@ export const HomeView: React.FC = () => {
                   </div>
                   <Link
                     href="/shop?tag=new-arrival"
+                    className="editorial-arrow-link"
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
                       fontSize: '0.85rem',
                       fontWeight: 600,
-                      color: 'var(--color-sunset-700)',
                     }}
                   >
-                    View All New Editions <ArrowRight size={15} />
+                    <span className="editorial-arrow-link-text">View All New Editions</span>
+                    <ArrowRight size={15} className="editorial-arrow-icon editorial-arrow-forward" />
                   </Link>
                 </div>
               </ScrollReveal>
@@ -225,16 +219,14 @@ export const HomeView: React.FC = () => {
                   </div>
                   <Link
                     href="/shop"
+                    className="editorial-arrow-link"
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
                       fontSize: '0.85rem',
                       fontWeight: 600,
-                      color: 'var(--color-sunset-700)',
                     }}
                   >
-                    Explore Complete Wardrobe <ArrowRight size={15} />
+                    <span className="editorial-arrow-link-text">Explore Complete Wardrobe</span>
+                    <ArrowRight size={15} className="editorial-arrow-icon editorial-arrow-forward" />
                   </Link>
                 </div>
               </ScrollReveal>
@@ -293,7 +285,7 @@ export const HomeView: React.FC = () => {
                       <Feather size={20} />
                     </div>
                     <div>
-                      <h4 style={{ fontSize: '1.15rem', marginBottom: '8px' }}>Purity of Material</h4>
+                      <h3 style={{ fontSize: '1.15rem', marginBottom: '8px' }}>Purity of Material</h3>
                       <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
                         Only certified virgin wool, Grade-6A mulberry silk, and Mongolian cashmere. Zero synthetic filler fibers.
                       </p>
@@ -319,7 +311,7 @@ export const HomeView: React.FC = () => {
                       <ShieldCheck size={20} />
                     </div>
                     <div>
-                      <h4 style={{ fontSize: '1.15rem', marginBottom: '8px' }}>Atelier Guarantee</h4>
+                      <h3 style={{ fontSize: '1.15rem', marginBottom: '8px' }}>Atelier Guarantee</h3>
                       <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
                         Complimentary white-glove courier delivery across India and a 7-day bespoke return/exchange privilege window.
                       </p>
@@ -345,7 +337,7 @@ export const HomeView: React.FC = () => {
                       <Compass size={20} />
                     </div>
                     <div>
-                      <h4 style={{ fontSize: '1.15rem', marginBottom: '8px' }}>Traceable Craft</h4>
+                      <h3 style={{ fontSize: '1.15rem', marginBottom: '8px' }}>Traceable Craft</h3>
                       <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
                         Every piece carries an internal atelier stamp detailing the master weaver, lot number, and year of completion.
                       </p>

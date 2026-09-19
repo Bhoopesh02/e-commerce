@@ -101,7 +101,7 @@ export default function AdminProductsPage() {
                 <tr key={p.id} style={{ borderBottom: '1px solid rgba(232, 188, 185, 0.08)' }}>
                   <td style={{ padding: '14px', display: 'flex', alignItems: 'center', gap: '14px' }}>
                     <div style={{ position: 'relative', width: '48px', height: '60px', borderRadius: 'var(--radius-sm)', overflow: 'hidden', flexShrink: 0 }}>
-                      <Image src={p.images[0]} alt={p.name} fill style={{ objectFit: 'cover' }} />
+                      <Image src={p.images[0]} alt={p.name} fill sizes="48px" style={{ objectFit: 'cover' }} />
                     </div>
                     <div>
                       <span style={{ fontWeight: 600, color: '#FFF', display: 'block' }}>{p.name}</span>

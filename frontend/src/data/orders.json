@@ -8,7 +8,7 @@
       {
         "productId": "prod_001",
         "productName": "Italian Leather Jacket",
-        "productImage": "https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=1200&auto=format&fit=crop",
+        "productImage": "/images/products/italian-leather-jacket-1.webp",
         "sku": "LJ-BLK-M",
         "size": "M",
         "color": "Nocturne Black",
@@ -18,11 +18,31 @@
     ],
     "status": "Delivered",
     "statusHistory": [
-      { "status": "Placed", "timestamp": "2026-09-12T09:00:00Z", "note": "Order confirmed and registered at Aurelia Central Atelier." },
-      { "status": "Confirmed", "timestamp": "2026-09-12T12:00:00Z", "note": "Payment verified. Being prepared by the atelier." },
-      { "status": "Packed", "timestamp": "2026-09-13T10:00:00Z", "note": "Garment inspected and wrapped in archival tissue." },
-      { "status": "Shipped", "timestamp": "2026-09-14T08:30:00Z", "note": "Dispatched via BlueDart white-glove courier." },
-      { "status": "Delivered", "timestamp": "2026-09-16T14:15:00Z", "note": "Delivered and signed for at client address." }
+      {
+        "status": "Placed",
+        "timestamp": "2026-09-12T09:00:00Z",
+        "note": "Order confirmed and registered at Aurelia Central Atelier."
+      },
+      {
+        "status": "Confirmed",
+        "timestamp": "2026-09-12T12:00:00Z",
+        "note": "Payment verified. Being prepared by the atelier."
+      },
+      {
+        "status": "Packed",
+        "timestamp": "2026-09-13T10:00:00Z",
+        "note": "Garment inspected and wrapped in archival tissue."
+      },
+      {
+        "status": "Shipped",
+        "timestamp": "2026-09-14T08:30:00Z",
+        "note": "Dispatched via BlueDart white-glove courier."
+      },
+      {
+        "status": "Delivered",
+        "timestamp": "2026-09-16T14:15:00Z",
+        "note": "Delivered and signed for at client address."
+      }
     ],
     "address": {
       "id": "addr_1",
@@ -64,7 +84,7 @@
       {
         "productId": "prod_003",
         "productName": "Silk Charmeuse Draped Evening Gown",
-        "productImage": "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1200&auto=format&fit=crop",
+        "productImage": "/images/products/silk-charmeuse-draped-evening-gown-1.webp",
         "sku": "GWN-EMR-S",
         "size": "S",
         "color": "Deep Aubergine",
@@ -74,7 +94,11 @@
     ],
     "status": "Placed",
     "statusHistory": [
-      { "status": "Placed", "timestamp": "2026-09-18T08:30:00Z", "note": "Order confirmed and registered at Aurelia Central Atelier." }
+      {
+        "status": "Placed",
+        "timestamp": "2026-09-18T08:30:00Z",
+        "note": "Order confirmed and registered at Aurelia Central Atelier."
+      }
     ],
     "address": {
       "id": "addr_1",
@@ -115,7 +139,7 @@
       {
         "productId": "prod_005",
         "productName": "Atelier Sculptural Leather Tote",
-        "productImage": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1200&auto=format&fit=crop",
+        "productImage": "/images/products/atelier-sculptural-leather-tote-1.webp",
         "sku": "TOT-COG-ONE",
         "size": "One Size",
         "color": "Cognac Ochre",
@@ -125,9 +149,21 @@
     ],
     "status": "Packed",
     "statusHistory": [
-      { "status": "Placed", "timestamp": "2026-09-17T11:00:00Z", "note": "Order confirmed and registered at Aurelia Central Atelier." },
-      { "status": "Confirmed", "timestamp": "2026-09-17T14:30:00Z", "note": "Payment verified. Being prepared by the atelier." },
-      { "status": "Packed", "timestamp": "2026-09-18T06:00:00Z", "note": "Garment inspected and wrapped in archival tissue." }
+      {
+        "status": "Placed",
+        "timestamp": "2026-09-17T11:00:00Z",
+        "note": "Order confirmed and registered at Aurelia Central Atelier."
+      },
+      {
+        "status": "Confirmed",
+        "timestamp": "2026-09-17T14:30:00Z",
+        "note": "Payment verified. Being prepared by the atelier."
+      },
+      {
+        "status": "Packed",
+        "timestamp": "2026-09-18T06:00:00Z",
+        "note": "Garment inspected and wrapped in archival tissue."
+      }
     ],
     "address": {
       "id": "addr_2",
@@ -167,7 +203,7 @@
       {
         "productId": "prod_002",
         "productName": "Sculpted Double-Breasted Blazer",
-        "productImage": "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=1200&auto=format&fit=crop",
+        "productImage": "/images/products/sculpted-double-breasted-blazer-1.webp",
         "sku": "BLZ-NAV-40",
         "size": "40R",
         "color": "Midnight Navy",
@@ -177,11 +213,31 @@
     ],
     "status": "Delivered",
     "statusHistory": [
-      { "status": "Placed", "timestamp": "2026-08-01T10:00:00Z", "note": "Order confirmed and registered at Aurelia Central Atelier." },
-      { "status": "Confirmed", "timestamp": "2026-08-01T13:00:00Z", "note": "Payment verified. Being prepared by the atelier." },
-      { "status": "Packed", "timestamp": "2026-08-02T09:00:00Z", "note": "Garment inspected and wrapped in archival tissue." },
-      { "status": "Shipped", "timestamp": "2026-08-03T11:00:00Z", "note": "Dispatched via BlueDart white-glove courier." },
-      { "status": "Delivered", "timestamp": "2026-08-05T15:30:00Z", "note": "Delivered and signed for at client address." }
+      {
+        "status": "Placed",
+        "timestamp": "2026-08-01T10:00:00Z",
+        "note": "Order confirmed and registered at Aurelia Central Atelier."
+      },
+      {
+        "status": "Confirmed",
+        "timestamp": "2026-08-01T13:00:00Z",
+        "note": "Payment verified. Being prepared by the atelier."
+      },
+      {
+        "status": "Packed",
+        "timestamp": "2026-08-02T09:00:00Z",
+        "note": "Garment inspected and wrapped in archival tissue."
+      },
+      {
+        "status": "Shipped",
+        "timestamp": "2026-08-03T11:00:00Z",
+        "note": "Dispatched via BlueDart white-glove courier."
+      },
+      {
+        "status": "Delivered",
+        "timestamp": "2026-08-05T15:30:00Z",
+        "note": "Delivered and signed for at client address."
+      }
     ],
     "address": {
       "id": "addr_3",
@@ -221,7 +277,7 @@
       {
         "productId": "prod_004",
         "productName": "Mongolian Cashmere Ribbed Turtleneck",
-        "productImage": "https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1200&auto=format&fit=crop",
+        "productImage": "/images/products/mongolian-cashmere-ribbed-turtleneck-1.webp",
         "sku": "CSH-CRM-M",
         "size": "M",
         "color": "Warm Sand",
@@ -231,10 +287,26 @@
     ],
     "status": "Shipped",
     "statusHistory": [
-      { "status": "Placed", "timestamp": "2026-09-15T10:30:00Z", "note": "Order confirmed and registered at Aurelia Central Atelier." },
-      { "status": "Confirmed", "timestamp": "2026-09-15T13:00:00Z", "note": "Payment verified. Being prepared by the atelier." },
-      { "status": "Packed", "timestamp": "2026-09-16T08:00:00Z", "note": "Garment inspected and wrapped in archival tissue." },
-      { "status": "Shipped", "timestamp": "2026-09-17T09:15:00Z", "note": "Dispatched via Delhivery white-glove courier." }
+      {
+        "status": "Placed",
+        "timestamp": "2026-09-15T10:30:00Z",
+        "note": "Order confirmed and registered at Aurelia Central Atelier."
+      },
+      {
+        "status": "Confirmed",
+        "timestamp": "2026-09-15T13:00:00Z",
+        "note": "Payment verified. Being prepared by the atelier."
+      },
+      {
+        "status": "Packed",
+        "timestamp": "2026-09-16T08:00:00Z",
+        "note": "Garment inspected and wrapped in archival tissue."
+      },
+      {
+        "status": "Shipped",
+        "timestamp": "2026-09-17T09:15:00Z",
+        "note": "Dispatched via Delhivery white-glove courier."
+      }
     ],
     "address": {
       "id": "addr_1",
@@ -276,7 +348,7 @@
       {
         "productId": "prod_007",
         "productName": "Auric Twisted Vermeil Cuff",
-        "productImage": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1200&auto=format&fit=crop",
+        "productImage": "/images/products/auric-twisted-vermeil-cuff-1.webp",
         "sku": "JWL-CUF-GLD",
         "size": "Standard",
         "color": "18k Gold",
@@ -286,7 +358,7 @@
       {
         "productId": "prod_006",
         "productName": "Florentine Chelsea Boot",
-        "productImage": "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=1200&auto=format&fit=crop",
+        "productImage": "/images/products/florentine-chelsea-boot-1.webp",
         "sku": "BOT-ESP-42",
         "size": "EU 42",
         "color": "Espresso Suede",
@@ -296,8 +368,16 @@
     ],
     "status": "Cancelled",
     "statusHistory": [
-      { "status": "Placed", "timestamp": "2026-09-10T16:00:00Z", "note": "Order confirmed and registered at Aurelia Central Atelier." },
-      { "status": "Cancelled", "timestamp": "2026-09-10T18:30:00Z", "note": "Cancelled by customer — size exchange requested." }
+      {
+        "status": "Placed",
+        "timestamp": "2026-09-10T16:00:00Z",
+        "note": "Order confirmed and registered at Aurelia Central Atelier."
+      },
+      {
+        "status": "Cancelled",
+        "timestamp": "2026-09-10T18:30:00Z",
+        "note": "Cancelled by customer — size exchange requested."
+      }
     ],
     "address": {
       "id": "addr_1",

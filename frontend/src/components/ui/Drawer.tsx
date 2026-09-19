@@ -10,6 +10,7 @@ export interface DrawerProps {
   children: React.ReactNode;
   position?: 'right' | 'left';
   width?: string;
+  ariaLabel?: string;
 }
 
 export const Drawer: React.FC<DrawerProps> = ({
@@ -19,7 +20,11 @@ export const Drawer: React.FC<DrawerProps> = ({
   children,
   position = 'right',
   width = '440px',
+  ariaLabel,
 }) => {
+  const generatedId = React.useId();
+  const titleId = `drawer-title-${generatedId.replace(/:/g, '')}`;
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -42,6 +47,9 @@ export const Drawer: React.FC<DrawerProps> = ({
     <div
       role="dialog"
       aria-modal={isOpen}
+      aria-hidden={!isOpen}
+      aria-labelledby={title ? titleId : undefined}
+      aria-label={ariaLabel || (!title ? 'Drawer' : undefined)}
       style={{
         position: 'fixed',
         top: 0,
@@ -55,7 +63,9 @@ export const Drawer: React.FC<DrawerProps> = ({
         justifyContent: position === 'right' ? 'flex-end' : 'flex-start',
         opacity: isOpen ? 1 : 0,
         pointerEvents: isOpen ? 'auto' : 'none',
-        transition: 'opacity 300ms ease-out',
+        transition: isOpen
+          ? 'opacity 500ms var(--ease-luxury) 50ms'
+          : 'opacity 500ms var(--ease-luxury)',
       }}
       onClick={onClose}
     >
@@ -72,7 +82,7 @@ export const Drawer: React.FC<DrawerProps> = ({
           flexDirection: 'column',
           position: 'relative',
           transform: isOpen ? 'translateX(0)' : `translateX(${position === 'right' ? '100%' : '-100%'})`,
-          transition: 'transform 300ms ease-out',
+          transition: 'transform 500ms var(--ease-luxury)',
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -86,7 +96,7 @@ export const Drawer: React.FC<DrawerProps> = ({
           }}
         >
           {title && (
-            <h3 style={{ fontSize: '1.25rem', color: 'var(--text-primary)' }}>
+            <h3 id={titleId} style={{ fontSize: '1.25rem', color: 'var(--text-primary)' }}>
               {title}
             </h3>
           )}

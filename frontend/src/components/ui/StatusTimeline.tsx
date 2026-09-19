@@ -62,9 +62,9 @@ export const StatusTimeline: React.FC<StatusTimelineProps> = ({
       >
         <XCircle size={24} />
         <div>
-          <h4 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--color-error)' }}>
+          <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--color-error)' }}>
             Order Cancelled
-          </h4>
+          </div>
           <p style={{ fontSize: '0.85rem', color: 'var(--color-error)', opacity: 0.85 }}>
             {cancelEntry?.note || 'This order has been cancelled.'}{' '}
             {cancelEntry && `on ${getStepTimestamp('Cancelled')}`}

@@ -104,9 +104,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           <Loader2 className="animate-spin" size={16} />
         ) : (
           <>
-            {leftIcon && <span>{leftIcon}</span>}
-            <span>{children}</span>
-            {rightIcon && <span>{rightIcon}</span>}
+            {leftIcon && <span className="luxury-btn-icon luxury-btn-icon-left">{leftIcon}</span>}
+            <span className="luxury-btn-label">{children}</span>
+            {rightIcon && <span className="luxury-btn-icon luxury-btn-icon-right">{rightIcon}</span>}
           </>
         )}
       </button>

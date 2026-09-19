@@ -1,6 +1,21 @@
 import type { Metadata } from 'next';
+import { Playfair_Display, Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import { BRAND_NAME, BRAND_TAGLINE } from '@/lib/constants';
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-display-next',
+  display: 'swap',
+  weight: ['400', '500', '600', '700'],
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-body-next',
+  display: 'swap',
+  weight: ['300', '400', '500', '600', '700'],
+});
 
 export const metadata: Metadata = {
   title: `${BRAND_NAME} Atelier | Luxury Haute Couture & Ready-to-Wear`,
@@ -34,7 +49,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-storefront="a" data-theme="light">
+    <html
+      lang="en"
+      className={`${playfair.variable} ${inter.variable}`}
+      data-storefront="a"
+      data-theme="light"
+      data-scroll-behavior="smooth"
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: antiFlashScript }} />
       </head>

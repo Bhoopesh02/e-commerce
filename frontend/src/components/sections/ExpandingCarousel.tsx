@@ -62,7 +62,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                   borderRadius: 'var(--radius-md)',
                   overflow: 'hidden',
                   cursor: 'pointer',
-                  transition: 'flex 600ms cubic-bezier(0.22, 1, 0.36, 1)',
+                  transition: 'flex var(--carousel-expand-duration, 1200ms) var(--ease-luxury), box-shadow var(--carousel-expand-duration, 1200ms) var(--ease-luxury)',
                   boxShadow: isActive ? 'var(--shadow-editorial)' : 'var(--shadow-sm)',
                 }}
               >
@@ -74,7 +74,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   style={{
                     objectFit: 'cover',
-                    transition: 'transform 700ms cubic-bezier(0.22, 1, 0.36, 1)',
+                    transition: 'transform var(--carousel-expand-duration, 1200ms) var(--ease-luxury), filter var(--carousel-expand-duration, 1200ms) var(--ease-luxury)',
                     transform: isActive ? 'scale(1.05)' : 'scale(1)',
                     filter: isActive ? 'brightness(0.9)' : 'brightness(0.75)',
                   }}
@@ -91,7 +91,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                     background: isActive
                       ? 'linear-gradient(180deg, rgba(29, 26, 57, 0.1) 0%, rgba(29, 26, 57, 0.85) 100%)'
                       : 'linear-gradient(180deg, rgba(29, 26, 57, 0.2) 0%, rgba(29, 26, 57, 0.75) 100%)',
-                    transition: 'background 500ms var(--ease-editorial)',
+                    transition: 'background var(--carousel-expand-duration, 1200ms) var(--ease-luxury)',
                   }}
                 />
 
@@ -132,7 +132,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                       whiteSpace: isActive ? 'normal' : 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      transition: 'font-size 400ms var(--ease-editorial)',
+                      transition: 'font-size 800ms var(--ease-luxury)',
                     }}
                   >
                     {product.name}
@@ -143,8 +143,11 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                     style={{
                       maxHeight: isActive ? '180px' : '0',
                       opacity: isActive ? 1 : 0,
+                      transform: isActive ? 'translateY(0)' : 'translateY(14px)',
                       overflow: 'hidden',
-                      transition: 'all 500ms cubic-bezier(0.22, 1, 0.36, 1)',
+                      transition: isActive
+                        ? 'opacity 800ms var(--ease-luxury) 250ms, transform 800ms var(--ease-luxury) 250ms, max-height 800ms var(--ease-luxury) 250ms'
+                        : 'opacity 400ms var(--ease-luxury), transform 400ms var(--ease-luxury), max-height 450ms var(--ease-luxury)',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '12px',

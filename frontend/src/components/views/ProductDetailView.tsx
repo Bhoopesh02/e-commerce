@@ -244,7 +244,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ slug }) =>
                       transition: 'border-color var(--duration-fast)',
                     }}
                   >
-                    <Image src={img} alt={`${product.name} view ${idx + 1}`} fill style={{ objectFit: 'cover' }} />
+                    <Image src={img} alt={`${product.name} view ${idx + 1}`} fill sizes="76px" style={{ objectFit: 'cover' }} />
                   </button>
                 ))}
               </div>

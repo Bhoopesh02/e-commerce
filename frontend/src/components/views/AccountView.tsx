@@ -307,9 +307,9 @@ export const AccountView: React.FC = () => {
                     <Badge variant="gold">Primary Residence</Badge>
                   </div>
                 )}
-                <h4 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '8px' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '8px' }}>
                   {addr.name || user.name}
-                </h4>
+                </h3>
                 <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                   {addr.line1}
                   <br />
@@ -348,7 +348,7 @@ export const AccountView: React.FC = () => {
                 >
                   <div>
                     <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Reference: #{ret.id}</span>
-                    <h4 style={{ fontSize: '1rem', fontWeight: 600 }}>Commission #{ret.orderId}</h4>
+                    <h3 style={{ fontSize: '1rem', fontWeight: 600 }}>Commission #{ret.orderId}</h3>
                     <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
                       Reason: {ret.reason}
                     </p>

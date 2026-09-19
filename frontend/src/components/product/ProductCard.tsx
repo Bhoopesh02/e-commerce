@@ -27,7 +27,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const isFavorited = isInWishlist(product.id);
   const hasSecondaryImage = product.images.length > 1;
-  const currentImage = isHovered && hasSecondaryImage ? product.images[1] : product.images[0];
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -68,17 +67,35 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           display: 'block',
         }}
       >
+        {/* Primary Product Image */}
         <Image
-          src={currentImage}
+          src={product.images[0]}
           alt={product.name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="product-image-primary"
           style={{
             objectFit: 'cover',
-            transition: 'transform var(--duration-medium) var(--ease-editorial)',
             transform: isHovered ? 'scale(1.05)' : 'scale(1)',
           }}
         />
+
+        {/* Secondary Product Image with smooth crossfade switching */}
+        {hasSecondaryImage && (
+          <Image
+            src={product.images[1]}
+            alt={`${product.name} alternate view`}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="product-image-secondary"
+            style={{
+              objectFit: 'cover',
+              opacity: isHovered ? 1 : 0,
+              transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+              pointerEvents: 'none',
+            }}
+          />
+        )}
 
         {/* Top Badges */}
         <div
@@ -143,7 +160,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             zIndex: 3,
             opacity: isHovered ? 1 : 0,
             transform: isHovered ? 'translateY(0)' : 'translateY(10px)',
-            transition: 'all var(--duration-normal) var(--ease-editorial)',
+            transition: isHovered
+              ? 'opacity 320ms var(--ease-luxury) 100ms, transform 320ms var(--ease-luxury) 100ms'
+              : 'opacity 200ms var(--ease-luxury), transform 200ms var(--ease-luxury)',
           }}
         >
           <button

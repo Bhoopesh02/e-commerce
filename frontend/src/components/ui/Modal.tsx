@@ -9,6 +9,7 @@ export interface ModalProps {
   title?: string;
   children: React.ReactNode;
   maxWidth?: string;
+  ariaLabel?: string;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -17,7 +18,11 @@ export const Modal: React.FC<ModalProps> = ({
   title,
   children,
   maxWidth = '560px',
+  ariaLabel,
 }) => {
+  const generatedId = React.useId();
+  const titleId = `modal-title-${generatedId.replace(/:/g, '')}`;
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -42,6 +47,8 @@ export const Modal: React.FC<ModalProps> = ({
     <div
       role="dialog"
       aria-modal="true"
+      aria-labelledby={title ? titleId : undefined}
+      aria-label={ariaLabel || (!title ? 'Dialog' : undefined)}
       style={{
         position: 'fixed',
         top: 0,
@@ -82,7 +89,7 @@ export const Modal: React.FC<ModalProps> = ({
           }}
         >
           {title && (
-            <h3 style={{ fontSize: '1.35rem', color: 'var(--text-primary)' }}>
+            <h3 id={titleId} style={{ fontSize: '1.35rem', color: 'var(--text-primary)' }}>
               {title}
             </h3>
           )}

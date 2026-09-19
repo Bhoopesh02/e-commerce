@@ -88,7 +88,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({ reviews }) => {
             <RatingStars rating={review.rating} size={15} showScore />
           </div>
 
-          <h4
+          <h3
             style={{
               fontSize: '1rem',
               fontWeight: 600,
@@ -97,7 +97,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({ reviews }) => {
             }}
           >
             {review.title}
-          </h4>
+          </h3>
 
           <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
             {review.body}

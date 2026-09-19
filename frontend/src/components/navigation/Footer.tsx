@@ -98,7 +98,7 @@ export const Footer: React.FC = () => {
 
           {/* Nav Col 1 */}
           <div>
-            <h4
+            <h3
               style={{
                 fontSize: '0.82rem',
                 letterSpacing: '0.14em',
@@ -108,7 +108,7 @@ export const Footer: React.FC = () => {
               }}
             >
               Collections
-            </h4>
+            </h3>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <li>
                 <Link href="/shop?categorySlug=outerwear" style={{ fontSize: '0.9rem', color: '#E8BCB9' }}>
@@ -140,7 +140,7 @@ export const Footer: React.FC = () => {
 
           {/* Nav Col 2 */}
           <div>
-            <h4
+            <h3
               style={{
                 fontSize: '0.82rem',
                 letterSpacing: '0.14em',
@@ -150,7 +150,7 @@ export const Footer: React.FC = () => {
               }}
             >
               Client Concierge
-            </h4>
+            </h3>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <li>
                 <Link href="/account" style={{ fontSize: '0.9rem', color: '#E8BCB9' }}>
@@ -182,7 +182,7 @@ export const Footer: React.FC = () => {
 
           {/* Admin & Role Matrix Demo Switcher */}
           <div>
-            <h4
+            <h3
               style={{
                 fontSize: '0.82rem',
                 letterSpacing: '0.14em',
@@ -192,7 +192,7 @@ export const Footer: React.FC = () => {
               }}
             >
               Role & Portal Access
-            </h4>
+            </h3>
             <p style={{ fontSize: '0.85rem', color: '#E8BCB9', marginBottom: '16px', lineHeight: 1.6 }}>
               Current actor is <strong>{role.toUpperCase()}</strong>. Switch roles below to test client vs admin controls:
             </p>

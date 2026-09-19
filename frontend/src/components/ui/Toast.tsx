@@ -36,7 +36,7 @@ export const ToastContainer: React.FC = () => {
             borderRadius: 'var(--radius-sm)',
             padding: '12px 18px',
             boxShadow: 'var(--shadow-lg)',
-            animation: 'fadeIn var(--duration-normal) var(--ease-editorial)',
+            animation: 'toastSlideUp 400ms var(--ease-luxury)',
           }}
         >
           {toast.type === 'success' && (

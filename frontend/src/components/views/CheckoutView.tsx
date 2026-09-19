@@ -499,7 +499,7 @@ export const CheckoutView: React.FC = () => {
                       flexShrink: 0,
                     }}
                   >
-                    <Image src={item.product.images[0]} alt={item.product.name} fill style={{ objectFit: 'cover' }} />
+                    <Image src={item.product.images[0]} alt={item.product.name} fill sizes="60px" style={{ objectFit: 'cover' }} />
                   </div>
                   <div style={{ flex: 1 }}>
                     <h4 style={{ fontSize: '0.88rem', fontWeight: 600 }}>{item.product.name}</h4>

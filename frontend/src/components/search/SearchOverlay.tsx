@@ -74,7 +74,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
       const t = setTimeout(() => {
         setQuery('');
         setResults([]);
-      }, 300); // wait for close animation
+      }, 600); // wait for close animation (backdrop completes at 550ms)
       return () => clearTimeout(t);
     }
   }, [isOpen]);
@@ -122,7 +122,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
         right: 0,
         bottom: 0,
         zIndex: 9999,
-        transition: 'opacity 300ms',
+        transition: 'opacity 550ms var(--ease-luxury)',
         opacity: isOpen ? 1 : 0,
         pointerEvents: isOpen ? 'auto' : 'none',
       }}
@@ -158,7 +158,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
           flexDirection: 'column',
           justifyContent: 'space-between',
           transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 300ms ease-out',
+          transition: 'transform 450ms var(--ease-luxury)',
         }}
       >
         {/* Drawer Search Header */}
@@ -357,9 +357,9 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                     <span style={{ fontSize: '10px', color: 'rgba(253, 230, 138, 0.6)', textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '0.05em', display: 'block' }}>
                       {item.categoryId.replace('cat_', '')}
                     </span>
-                    <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '12px', color: '#e5e5e5', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginTop: '2px', lineHeight: '1.2' }}>
+                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '12px', color: '#e5e5e5', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginTop: '2px', lineHeight: '1.2' }}>
                       {item.name}
-                    </h4>
+                    </h3>
                   </Link>
 
                   <div style={{ marginTop: '12px' }}>

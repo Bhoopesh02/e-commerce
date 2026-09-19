@@ -178,9 +178,9 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
 
           {/* Fulfillment Status Progress Timeline */}
           <div style={{ marginBottom: '28px' }}>
-            <h4 style={{ fontSize: '0.88rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '16px' }}>
+            <h2 style={{ fontSize: '0.88rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '16px' }}>
               Fulfillment Status
-            </h4>
+            </h2>
             <StatusTimeline currentStatus={order.status} statusHistory={order.statusHistory} />
           </div>
 
@@ -242,9 +242,9 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
             marginBottom: '32px',
           }}
         >
-          <h3 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', marginBottom: '20px' }}>
+          <h2 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', marginBottom: '20px' }}>
             Commissioned Silhouettes
-          </h3>
+          </h2>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '24px' }}>
             {order.items.map((item, idx) => (
@@ -259,10 +259,10 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
                     flexShrink: 0,
                   }}
                 >
-                  <Image src={item.productImage || ''} alt={item.productName || 'Garment'} fill style={{ objectFit: 'cover' }} />
+                  <Image src={item.productImage || ''} alt={item.productName || 'Garment'} fill sizes="75px" style={{ objectFit: 'cover' }} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <h4 style={{ fontSize: '0.98rem', fontWeight: 600 }}>{item.productName}</h4>
+                  <h3 style={{ fontSize: '0.98rem', fontWeight: 600 }}>{item.productName}</h3>
                   <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '2px' }}>
                     SKU: {item.sku} · Size: {item.size} · Color: {item.color}
                   </p>
@@ -316,7 +316,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
               <MapPin size={18} style={{ color: 'var(--color-sunset-600)' }} />
-              <h4 style={{ fontSize: '0.95rem', fontWeight: 600 }}>Delivery Residence</h4>
+              <h3 style={{ fontSize: '0.95rem', fontWeight: 600 }}>Delivery Residence</h3>
             </div>
             <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
               {order.address.name}
@@ -337,7 +337,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
               <CreditCard size={18} style={{ color: 'var(--color-sunset-600)' }} />
-              <h4 style={{ fontSize: '0.95rem', fontWeight: 600 }}>Payment Method</h4>
+              <h3 style={{ fontSize: '0.95rem', fontWeight: 600 }}>Payment Method</h3>
             </div>
             <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
               Method: <strong>{order.payment.method}</strong>

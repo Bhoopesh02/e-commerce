@@ -117,7 +117,7 @@ export const CartView: React.FC = () => {
                     flexShrink: 0,
                   }}
                 >
-                  <Image src={item.product.images[0]} alt={item.product.name} fill style={{ objectFit: 'cover' }} />
+                  <Image src={item.product.images[0]} alt={item.product.name} fill sizes="110px" style={{ objectFit: 'cover' }} />
                 </div>
 
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>

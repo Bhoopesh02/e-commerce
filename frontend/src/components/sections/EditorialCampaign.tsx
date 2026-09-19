@@ -39,7 +39,7 @@ export const EditorialCampaign: React.FC = () => {
               }}
             >
               <Image
-                src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1200&auto=format&fit=crop"
+                src="/images/campaign/editorial-florence.webp"
                 alt="Editorial Campaign Aurelia"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -100,7 +100,7 @@ export const EditorialCampaign: React.FC = () => {
                 }}
               >
                 Precision In Drapery,{' '}
-                <span className="text-editorial" style={{ color: 'var(--color-sunset-400)' }}>
+                <span className="text-editorial typography-shimmer">
                   Unwavering
                 </span>{' '}
                 In Silhouette.

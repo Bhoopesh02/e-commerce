@@ -16,7 +16,7 @@ export const HeroSection: React.FC = () => {
     <section
       style={{
         position: 'relative',
-        minHeight: isEditorial ? '92vh' : '78vh',
+        minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -40,8 +40,8 @@ export const HeroSection: React.FC = () => {
         <Image
           src={
             isEditorial
-              ? 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2000&auto=format&fit=crop'
-              : 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2000&auto=format&fit=crop'
+              ? '/images/hero/hero-editorial.webp'
+              : '/images/hero/hero-refined.webp'
           }
           alt="Aurelia Luxury Campaign"
           fill
@@ -82,7 +82,7 @@ export const HeroSection: React.FC = () => {
       >
         {isEditorial ? (
           /* Editorial Experience Layout */
-          <div style={{ maxWidth: '720px' }} className="animate-fade-in">
+          <div style={{ maxWidth: '720px' }}>
 
 
             <h1
@@ -96,7 +96,7 @@ export const HeroSection: React.FC = () => {
                 color: '#FFF8F5',
               }}
             >
-              Nocturnal <span className="text-editorial" style={{ color: 'var(--color-sunset-400)' }}>Silhouettes</span> & Sculptural Wool.
+              Nocturnal <span className="text-editorial typography-shimmer">Silhouettes</span> & Sculptural Wool.
             </h1>
 
             <p
@@ -133,7 +133,6 @@ export const HeroSection: React.FC = () => {
               alignItems: 'center',
               margin: '0 auto',
             }}
-            className="animate-fade-in"
           >
             <span
               style={{

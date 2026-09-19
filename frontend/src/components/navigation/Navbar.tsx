@@ -63,84 +63,94 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           right: 0,
           zIndex: 100,
           transition:
-            'background-color var(--duration-normal) var(--ease-editorial), border-color var(--duration-normal) var(--ease-editorial), box-shadow var(--duration-normal) var(--ease-editorial)',
+            'background-color 350ms var(--ease-luxury), border-color 350ms var(--ease-luxury), box-shadow 350ms var(--ease-luxury), backdrop-filter 350ms var(--ease-luxury), -webkit-backdrop-filter 350ms var(--ease-luxury)',
           backgroundColor: isScrolled ? 'var(--nav-backdrop)' : 'transparent',
-          backdropFilter: isScrolled ? 'blur(16px)' : 'none',
-          WebkitBackdropFilter: isScrolled ? 'blur(16px)' : 'none',
+          backdropFilter: isScrolled ? 'blur(16px)' : 'blur(0px)',
+          WebkitBackdropFilter: isScrolled ? 'blur(16px)' : 'blur(0px)',
           borderBottom: isScrolled ? '1px solid var(--border-light)' : '1px solid transparent',
           boxShadow: isScrolled ? 'var(--shadow-sm)' : 'none',
           color: 'var(--text-primary)',
-          willChange: 'background-color, border-color, box-shadow',
+          willChange: 'background-color, border-color, box-shadow, backdrop-filter',
           transform: 'translateZ(0)',
         }}
       >
         <div
           className="container"
           style={{
-            display: 'flex',
+            display: 'grid',
+            gridTemplateColumns: '1fr auto 1fr',
             alignItems: 'center',
-            justifyContent: 'space-between',
             height: '76px',
           }}
         >
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            style={{ display: 'flex', alignItems: 'center', color: 'inherit' }}
-            aria-label="Toggle Navigation Menu"
-            className="mobile-nav-toggle"
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-
-          {/* Left: Category-Neutral Luxury Nav Links (Desktop) */}
-          <nav
+          {/* Left: Nav items (Hamburger on mobile, Nav Links on desktop) */}
+          <div
             style={{
-              display: 'none',
+              justifySelf: 'start',
+              display: 'flex',
               alignItems: 'center',
-              gap: '32px',
             }}
-            className="desktop-nav-links"
           >
-            <Link
-              href="/"
-              style={{
-                fontSize: '0.82rem',
-                fontWeight: 500,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                position: 'relative',
-              }}
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              style={{ display: 'flex', alignItems: 'center', color: 'inherit' }}
+              aria-label="Toggle Navigation Menu"
+              className="mobile-nav-toggle"
             >
-              Home
-            </Link>
-            <Link
-              href={shopHref}
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+
+            {/* Left: Category-Neutral Luxury Nav Links (Desktop) */}
+            <nav
               style={{
-                fontSize: '0.82rem',
-                fontWeight: 500,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                position: 'relative',
+                display: 'none',
+                alignItems: 'center',
+                gap: '32px',
               }}
+              className="desktop-nav-links"
             >
-              Collections
-            </Link>
-            <Link
-              href={newArrivalsHref}
-              style={{
-                fontSize: '0.82rem',
-                fontWeight: 500,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-              }}
-            >
-              New Arrivals
-            </Link>
-          </nav>
+              <Link
+                href="/"
+                className="nav-link-expand"
+                style={{
+                  fontSize: '0.82rem',
+                  fontWeight: 500,
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Home
+              </Link>
+              <Link
+                href={shopHref}
+                className="nav-link-expand"
+                style={{
+                  fontSize: '0.82rem',
+                  fontWeight: 500,
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Collections
+              </Link>
+              <Link
+                href={newArrivalsHref}
+                className="nav-link-expand"
+                style={{
+                  fontSize: '0.82rem',
+                  fontWeight: 500,
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                New Arrivals
+              </Link>
+            </nav>
+          </div>
 
           {/* Center: Brand Identity Logo */}
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ justifySelf: 'center', textAlign: 'center' }}>
             <Link href="/" style={{ display: 'inline-block' }}>
               <span
                 style={{
@@ -151,7 +161,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   color: 'var(--text-primary)',
                   display: 'inline-block',
                   transform: isScrolled ? 'scale(0.92)' : 'scale(1)',
-                  transition: 'transform var(--duration-normal) var(--ease-editorial)',
+                  transition: 'transform 350ms var(--ease-luxury)',
                   willChange: 'transform',
                   textTransform: 'uppercase',
                 }}
@@ -162,7 +172,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           </div>
 
           {/* Right: Actions (Search, Wishlist, Account, Bag, Storefront Experience Switcher) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div
+            style={{
+              justifySelf: 'end',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '20px',
+            }}
+          >
 
 
 
