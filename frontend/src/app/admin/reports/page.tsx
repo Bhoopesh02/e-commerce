@@ -27,15 +27,12 @@ export default function AdminReportsPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', maxWidth: '800px' }}>
       <div>
-        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sunset-400)' }}>
+        <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#C0703B' }}>
           Analytics & Data Export
         </span>
-        <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: '#FFF8F5', marginTop: '4px' }}>
+        <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: '#0F2042', marginTop: '4px' }}>
           Atelier Reports & CSV Export
         </h1>
-        <p style={{ color: 'rgba(232, 188, 185, 0.7)', fontSize: '0.92rem', marginTop: '6px' }}>
-          Functional client-side data serialization against mock JSON records. Triggers a real browser CSV download.
-        </p>
       </div>
 
       <div

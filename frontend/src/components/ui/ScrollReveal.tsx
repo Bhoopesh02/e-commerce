@@ -1,7 +1,6 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface ScrollRevealProps {
   children: React.ReactNode;
@@ -13,9 +12,9 @@ interface ScrollRevealProps {
 }
 
 /**
- * ScrollReveal: High-performance entrance animation using Framer Motion.
- * Configured strictly with `viewport={{ once: true }}` to guarantee animations
- * play only once upon initial scroll-down and NEVER re-trigger or thrash on reverse scroll.
+ * ScrollReveal: Lightweight, zero-dependency entrance animation using native IntersectionObserver.
+ * Replaces framer-motion to eliminate ~100KB of client JS and heavy script evaluation time.
+ * Uses GPU-accelerated CSS transitions with editorial luxury easing.
  */
 export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   children,
@@ -25,23 +24,45 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   className = '',
   style = {},
 }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setIsVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: yOffset }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{
-        duration,
-        delay,
-        ease: [0.22, 1, 0.36, 1], // Editorial luxury ease curve
-      }}
+    <div
+      ref={ref}
       className={className}
       style={{
-        willChange: 'transform, opacity',
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateY(0)' : `translateY(${yOffset}px)`,
+        transition: `opacity ${duration}s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s, transform ${duration}s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s`,
+        willChange: 'opacity, transform',
         ...style,
       }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };

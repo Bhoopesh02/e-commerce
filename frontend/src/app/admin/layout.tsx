@@ -9,7 +9,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#1A1733', color: '#FFF8F5' }}>
+    <div data-admin="true" style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--admin-canvas)', color: 'var(--admin-text-primary)' }}>
       <AdminSidebar />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
         <AdminTopbar />

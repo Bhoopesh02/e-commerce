@@ -349,6 +349,28 @@
   );
 }
 
+.luxury-btn-outline {
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.luxury-btn-outline:hover:not(:disabled) {
+  border-color: var(--color-sunset-500) !important;
+  color: var(--color-sunset-600) !important;
+  background-color: rgba(243, 159, 90, 0.08) !important;
+}
+
+[data-theme="dark"] .luxury-btn-outline {
+  border-color: rgba(232, 188, 185, 0.35);
+  color: #FFF8F5;
+}
+
+[data-theme="dark"] .luxury-btn-outline:hover:not(:disabled) {
+  border-color: var(--color-sunset-400) !important;
+  color: var(--color-sunset-400) !important;
+  background-color: rgba(243, 159, 90, 0.15) !important;
+}
+
 /* Diagonal sweep across pill on hover / focus-visible (supports both direct button hover and Link parent hover) */
 .luxury-btn:hover:not(:disabled)::after,
 .luxury-btn:focus-visible:not(:disabled)::after,

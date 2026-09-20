@@ -2,19 +2,17 @@
 
 import React from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
-import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { Shield, Sparkles, Bell } from 'lucide-react';
 
 export const AdminTopbar: React.FC = () => {
   const { user } = useAuthStore();
-  const { storefront, toggleStorefront } = useStorefrontStore();
 
   return (
     <header
       style={{
         height: '68px',
-        backgroundColor: '#1E1B38',
-        borderBottom: '1px solid rgba(232, 188, 185, 0.15)',
+        backgroundColor: 'var(--color-sunset-900)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -29,24 +27,11 @@ export const AdminTopbar: React.FC = () => {
         <h2 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#FFF8F5', margin: 0 }}>
           Aurelia Central Control Console
         </h2>
-        <span
-          style={{
-            fontSize: '0.72rem',
-            padding: '3px 8px',
-            borderRadius: 'var(--radius-pill)',
-            backgroundColor: 'rgba(243, 159, 90, 0.2)',
-            color: 'var(--color-sunset-400)',
-            fontWeight: 600,
-          }}
-        >
-          Mock API Synchronized
-        </span>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        {/* Storefront switch indicator in Admin */}
-        <button
-          onClick={toggleStorefront}
+        {/* Storefront indicator in Admin */}
+        <div
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -58,12 +43,11 @@ export const AdminTopbar: React.FC = () => {
             color: '#FFF',
             fontSize: '0.75rem',
             fontWeight: 500,
-            cursor: 'pointer',
           }}
         >
           <Sparkles size={12} style={{ color: 'var(--color-sunset-400)' }} />
-          <span>Active: Storefront {storefront.toUpperCase()}</span>
-        </button>
+          <span>Storefront A</span>
+        </div>
 
         {/* User Pill */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

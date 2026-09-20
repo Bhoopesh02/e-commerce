@@ -172,9 +172,9 @@ export const useCartStore = create<CartState>((set, get) => ({
   },
 
   getTax: () => {
-    // 5% luxury apparel GST
-    const subtotal = get().getSubtotal() - get().discountAmount;
-    return Math.round(Math.max(0, subtotal * 0.05));
+    // 5% luxury apparel GST included in price (standard Indian retail / luxury fashion)
+    const net = Math.max(0, get().getSubtotal() - get().discountAmount);
+    return Math.round((net * 5) / 105);
   },
 
   getDeliveryFee: () => {
@@ -185,9 +185,9 @@ export const useCartStore = create<CartState>((set, get) => ({
   getTotal: () => {
     const subtotal = get().getSubtotal();
     const discount = get().discountAmount;
-    const tax = get().getTax();
     const delivery = get().getDeliveryFee();
-    return Math.max(0, subtotal - discount + tax + delivery);
+    // Prices are inclusive of GST, so tax is already part of the price
+    return Math.max(0, subtotal - discount + delivery);
   },
 
   getItemCount: () => {

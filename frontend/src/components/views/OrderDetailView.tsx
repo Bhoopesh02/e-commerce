@@ -291,14 +291,19 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
             )}
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Luxury GST (5%)</span>
-              <span>{formatPrice(order.totals.tax)}</span>
+              <span style={{ color: 'var(--text-secondary)' }}>Included ({formatPrice(order.totals.tax)})</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>White-Glove Delivery</span>
               <span style={{ color: 'var(--color-success)' }}>Complimentary</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 600, borderTop: '1px solid var(--border-light)', paddingTop: '12px', marginTop: '4px' }}>
-              <span>Total Settlement</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: '1.2rem', fontWeight: 600, borderTop: '1px solid var(--border-light)', paddingTop: '12px', marginTop: '4px' }}>
+              <div>
+                <span>Total Settlement</span>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 400 }}>
+                  Inclusive of all taxes
+                </div>
+              </div>
               <span style={{ color: 'var(--color-sunset-700)' }}>{formatPrice(order.totals.total)}</span>
             </div>
           </div>

@@ -29,23 +29,43 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    // Luxury styled button styles using CSS variables
+    // Standardized luxury button dimensions: identical heights, vertical padding, and font scales
+    const sizeConfig = {
+      sm: {
+        height: '36px',
+        padding: '0 18px',
+        fontSize: '0.75rem',
+      },
+      md: {
+        height: '44px',
+        padding: '0 24px',
+        fontSize: '0.85rem',
+      },
+      lg: {
+        height: '52px',
+        padding: '0 32px',
+        fontSize: '0.95rem',
+      },
+    };
+
+    const currentSize = sizeConfig[size] || sizeConfig.md;
+
     const baseStyle: React.CSSProperties = {
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
       gap: '8px',
       borderRadius: 'var(--radius-pill)',
-      fontWeight: 500,
+      fontWeight: 600,
       letterSpacing: '0.04em',
       textTransform: 'uppercase',
-      fontSize: size === 'sm' ? '0.75rem' : size === 'lg' ? '0.95rem' : '0.85rem',
-      padding:
-        size === 'sm'
-          ? '8px 16px'
-          : size === 'lg'
-          ? '16px 36px'
-          : '12px 26px',
+      fontSize: currentSize.fontSize,
+      height: currentSize.height,
+      minHeight: currentSize.height,
+      padding: currentSize.padding,
+      lineHeight: 1,
+      boxSizing: 'border-box',
+      whiteSpace: 'nowrap',
       transition: 'all var(--duration-normal) var(--ease-editorial)',
       cursor: disabled || isLoading ? 'not-allowed' : 'pointer',
       opacity: disabled || isLoading ? 0.6 : 1,
@@ -62,6 +82,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         variantStyle = {
           backgroundColor: 'var(--cta-primary)',
           color: 'var(--cta-text)',
+          borderColor: 'transparent',
           boxShadow: 'var(--shadow-sm)',
         };
         break;
@@ -69,6 +90,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         variantStyle = {
           backgroundColor: 'var(--color-sunset-900)',
           color: 'var(--color-white)',
+          borderColor: 'transparent',
         };
         break;
       case 'outline':
@@ -82,12 +104,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         variantStyle = {
           backgroundColor: 'transparent',
           color: 'var(--text-primary)',
+          borderColor: 'transparent',
         };
         break;
       case 'danger':
         variantStyle = {
           backgroundColor: 'var(--color-error)',
           color: 'var(--color-white)',
+          borderColor: 'transparent',
         };
         break;
     }

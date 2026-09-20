@@ -56,86 +56,189 @@ export default function AdminDashboardPage() {
   };
 
   if (loading) {
-    return <div style={{ padding: '40px', color: '#FFF' }}>Loading Atelier Executive Overview...</div>;
+    return <div style={{ padding: '40px', color: 'var(--admin-text-primary)' }}>Loading Atelier Executive Overview...</div>;
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
       {/* Header */}
       <div>
-        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sunset-400)' }}>
+        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sunset-700)' }}>
           Executive Dashboard
         </span>
-        <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: '#FFF8F5', marginTop: '4px' }}>
+        <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: 'var(--admin-text-primary)', marginTop: '4px' }}>
           Atelier Performance & Operations
         </h1>
       </div>
 
-      {/* KPI Cards Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
-        <div style={{ backgroundColor: '#231F42', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(232, 188, 185, 0.15)', padding: '24px' }}>
-          <span style={{ fontSize: '0.78rem', color: 'rgba(232, 188, 185, 0.7)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            Gross Commission Revenue
-          </span>
-          <h3 style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--color-sunset-400)', marginTop: '8px' }}>
-            {formatPrice(stats?.grossRevenue)}
-          </h3>
-          <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', marginTop: '4px', display: 'block' }}>
-            +18.4% vs last seasonal quarter
-          </span>
-        </div>
+      {/* KPI Cards Grid with Ambient Frosted Glass Glow */}
+      <div style={{ position: 'relative' }}>
+        {/* Soft atmospheric ambient blooms behind the frosted cards so the blur effect refracts visible light */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            top: '-20px',
+            left: '3%',
+            width: '380px',
+            height: '180px',
+            background: 'radial-gradient(ellipse at center, rgba(232, 188, 185, 0.6) 0%, rgba(243, 159, 90, 0.35) 45%, transparent 70%)',
+            filter: 'blur(36px)',
+            pointerEvents: 'none',
+            zIndex: 0,
+          }}
+        />
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            bottom: '-15px',
+            right: '4%',
+            width: '420px',
+            height: '180px',
+            background: 'radial-gradient(ellipse at center, rgba(174, 68, 90, 0.25) 0%, rgba(232, 188, 185, 0.45) 50%, transparent 70%)',
+            filter: 'blur(40px)',
+            pointerEvents: 'none',
+            zIndex: 0,
+          }}
+        />
 
-        <div style={{ backgroundColor: '#231F42', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(232, 188, 185, 0.15)', padding: '24px' }}>
-          <span style={{ fontSize: '0.78rem', color: 'rgba(232, 188, 185, 0.7)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            Total Commissions
-          </span>
-          <h3 style={{ fontSize: '1.8rem', fontWeight: 700, color: '#FFF8F5', marginTop: '8px' }}>
-            {stats?.totalOrders}
-          </h3>
-          <span style={{ fontSize: '0.75rem', color: 'rgba(232, 188, 185, 0.6)', marginTop: '4px', display: 'block' }}>
-            Dispatched across India
-          </span>
-        </div>
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: '20px',
+          }}
+        >
+          <div
+            className="admin-glass-card"
+            style={{
+              padding: '24px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <span style={{ fontSize: '0.78rem', color: '#595F69', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+                Gross Commission Revenue
+              </span>
+              <div className="admin-glass-pill">
+                <TrendingUp size={18} />
+              </div>
+            </div>
+            <div>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: '#1D1A39', marginTop: '12px' }}>
+                {formatPrice(stats?.grossRevenue)}
+              </h3>
+              <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', marginTop: '4px', display: 'block', fontWeight: 600 }}>
+                +18.4% vs last seasonal quarter
+              </span>
+            </div>
+          </div>
 
-        <div style={{ backgroundColor: '#231F42', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(232, 188, 185, 0.15)', padding: '24px' }}>
-          <span style={{ fontSize: '0.78rem', color: 'rgba(232, 188, 185, 0.7)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            Average Commission Value
-          </span>
-          <h3 style={{ fontSize: '1.8rem', fontWeight: 700, color: '#FFF8F5', marginTop: '8px' }}>
-            {formatPrice(stats?.averageOrderValue)}
-          </h3>
-          <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', marginTop: '4px', display: 'block' }}>
-            High-luxury basket density
-          </span>
-        </div>
+          <div
+            className="admin-glass-card"
+            style={{
+              padding: '24px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <span style={{ fontSize: '0.78rem', color: '#595F69', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+                Total Commissions
+              </span>
+              <div className="admin-glass-pill">
+                <ShoppingBag size={18} />
+              </div>
+            </div>
+            <div>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: '#1D1A39', marginTop: '12px' }}>
+                {stats?.totalOrders}
+              </h3>
+              <span style={{ fontSize: '0.75rem', color: '#595F69', marginTop: '4px', display: 'block' }}>
+                Dispatched across India
+              </span>
+            </div>
+          </div>
 
-        <div style={{ backgroundColor: '#231F42', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(232, 188, 185, 0.15)', padding: '24px' }}>
-          <span style={{ fontSize: '0.78rem', color: 'rgba(232, 188, 185, 0.7)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            Low Reserve Alerts
-          </span>
-          <h3 style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--color-warning)', marginTop: '8px' }}>
-            {stats?.lowStockItemsCount} Silhouettes
-          </h3>
-          <span style={{ fontSize: '0.75rem', color: 'var(--color-warning)', marginTop: '4px', display: 'block' }}>
-            Immediate replenishment advised
-          </span>
+          <div
+            className="admin-glass-card"
+            style={{
+              padding: '24px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <span style={{ fontSize: '0.78rem', color: '#595F69', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+                Average Commission Value
+              </span>
+              <div className="admin-glass-pill">
+                <Users size={18} />
+              </div>
+            </div>
+            <div>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: '#1D1A39', marginTop: '12px' }}>
+                {formatPrice(stats?.averageOrderValue)}
+              </h3>
+              <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', marginTop: '4px', display: 'block', fontWeight: 600 }}>
+                High-luxury basket density
+              </span>
+            </div>
+          </div>
+
+          <div
+            className="admin-glass-card"
+            style={{
+              padding: '24px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <span style={{ fontSize: '0.78rem', color: '#595F69', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+                Low Reserve Alerts
+              </span>
+              <div className="admin-glass-pill">
+                <AlertTriangle size={18} />
+              </div>
+            </div>
+            <div>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: '#1D1A39', marginTop: '12px' }}>
+                {stats?.lowStockItemsCount} Silhouettes
+              </h3>
+              <span style={{ fontSize: '0.75rem', color: 'var(--color-warning)', marginTop: '4px', display: 'block', fontWeight: 600 }}>
+                Immediate replenishment advised
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Recent Commissions Table */}
-      <div
-        style={{
-          backgroundColor: '#231F42',
-          borderRadius: 'var(--radius-sm)',
-          border: '1px solid rgba(232, 188, 185, 0.15)',
-          padding: '28px',
-        }}
-      >
+      <div className="admin-table-wrapper" style={{ padding: '24px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h3 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', color: '#FFF8F5' }}>
+          <h3 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', color: 'var(--admin-text-primary)' }}>
             Active Commissions & Fulfillment Operations
           </h3>
-          <Link href="/admin/orders" style={{ fontSize: '0.82rem', color: 'var(--color-sunset-400)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+          <Link
+            href="/admin/orders"
+            style={{
+              fontSize: '0.82rem',
+              color: 'var(--color-sunset-800)',
+              fontWeight: 600,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
             View All Commissions <ArrowUpRight size={14} />
           </Link>
         </div>
@@ -143,7 +246,7 @@ export default function AdminDashboardPage() {
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid rgba(232, 188, 185, 0.2)', color: 'rgba(232, 188, 185, 0.7)' }}>
+              <tr className="admin-table-header">
                 <th style={{ padding: '12px 14px' }}>Commission</th>
                 <th style={{ padding: '12px 14px' }}>Client</th>
                 <th style={{ padding: '12px 14px' }}>Total</th>
@@ -154,11 +257,20 @@ export default function AdminDashboardPage() {
             </thead>
             <tbody>
               {recentOrders.map((order) => (
-                <tr key={order.id} style={{ borderBottom: '1px solid rgba(232, 188, 185, 0.08)' }}>
-                  <td style={{ padding: '14px', fontWeight: 600, color: '#FFF' }}>#{order.id}</td>
-                  <td style={{ padding: '14px' }}>{order.customerName || 'Private Client'}</td>
-                  <td style={{ padding: '14px', fontWeight: 600 }}>{formatPrice(order.totals.total)}</td>
-                  <td style={{ padding: '14px' }}>{order.payment.method}</td>
+                <tr key={order.id} className="admin-table-row">
+                  <td style={{ padding: '14px', fontWeight: 600, color: 'var(--admin-text-primary)' }}>#{order.id}</td>
+                  <td style={{ padding: '14px' }}>
+                    <span style={{ fontWeight: 600, color: 'var(--admin-text-primary)', display: 'block' }}>
+                      {order.customerName || 'Private Client'}
+                    </span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-secondary)' }}>
+                      {order.address.city}, {order.address.state}
+                    </span>
+                  </td>
+                  <td style={{ padding: '14px', fontWeight: 600, color: 'var(--admin-text-primary)' }}>
+                    {formatPrice(order.totals.total)}
+                  </td>
+                  <td style={{ padding: '14px', color: 'var(--admin-text-secondary)' }}>{order.payment.method}</td>
                   <td style={{ padding: '14px' }}>
                     <Badge variant={order.status === 'Delivered' ? 'success' : order.status === 'Shipped' ? 'gold' : 'warning'}>
                       {order.status}
@@ -166,28 +278,67 @@ export default function AdminDashboardPage() {
                   </td>
                   <td style={{ padding: '14px' }}>
                     {order.status === 'Placed' && (
-                      <Button variant="outline" size="sm" onClick={() => handleAdvanceStatus(order.id, 'Confirmed')}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        style={{ minWidth: '136px' }}
+                        onClick={() => handleAdvanceStatus(order.id, 'Confirmed')}
+                      >
                         Confirm
                       </Button>
                     )}
                     {order.status === 'Confirmed' && (
-                      <Button variant="outline" size="sm" onClick={() => handleAdvanceStatus(order.id, 'Packed')}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        style={{ minWidth: '136px' }}
+                        onClick={() => handleAdvanceStatus(order.id, 'Packed')}
+                      >
                         Pack
                       </Button>
                     )}
                     {order.status === 'Packed' && (
-                      <Button variant="primary" size="sm" onClick={() => handleAdvanceStatus(order.id, 'Shipped')}>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        style={{ minWidth: '136px' }}
+                        onClick={() => handleAdvanceStatus(order.id, 'Shipped')}
+                      >
                         Dispatch / Ship
                       </Button>
                     )}
                     {order.status === 'Shipped' && (
-                      <Button variant="primary" size="sm" onClick={() => handleAdvanceStatus(order.id, 'Delivered')}>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        style={{ minWidth: '136px' }}
+                        onClick={() => handleAdvanceStatus(order.id, 'Delivered')}
+                      >
                         Mark Delivered
                       </Button>
                     )}
                     {order.status === 'Delivered' && (
-                      <span style={{ fontSize: '0.78rem', color: 'var(--color-success)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                        <CheckCircle2 size={13} /> Completed
+                      <span
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                          height: '36px',
+                          minWidth: '136px',
+                          padding: '0 18px',
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          letterSpacing: '0.04em',
+                          textTransform: 'uppercase',
+                          color: 'var(--color-success)',
+                          borderRadius: 'var(--radius-pill)',
+                          backgroundColor: 'var(--color-success-bg)',
+                          border: '1px solid rgba(30, 111, 92, 0.25)',
+                          boxSizing: 'border-box',
+                        }}
+                      >
+                        <CheckCircle2 size={14} /> Completed
                       </span>
                     )}
                   </td>

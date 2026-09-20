@@ -527,14 +527,19 @@ export const CheckoutView: React.FC = () => {
               )}
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--text-muted)' }}>GST (5%)</span>
-                <span>{formatPrice(tax)}</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Included ({formatPrice(tax)})</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Delivery</span>
                 <span style={{ color: 'var(--color-success)' }}>Complimentary</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 600, borderTop: '1px solid var(--border-light)', paddingTop: '12px', marginTop: '4px' }}>
-                <span>Total</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: '1.2rem', fontWeight: 600, borderTop: '1px solid var(--border-light)', paddingTop: '12px', marginTop: '4px' }}>
+                <div>
+                  <span>Total</span>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 400 }}>
+                    Inclusive of all taxes
+                  </div>
+                </div>
                 <span style={{ color: 'var(--color-sunset-700)' }}>{formatPrice(total)}</span>
               </div>
             </div>

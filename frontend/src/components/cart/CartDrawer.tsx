@@ -308,7 +308,7 @@ export const CartDrawer: React.FC = () => {
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Estimated GST (5%)</span>
-                <span>{formatPrice(tax)}</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Included ({formatPrice(tax)})</span>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
@@ -320,15 +320,19 @@ export const CartDrawer: React.FC = () => {
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  fontSize: '1.1rem',
-                  fontWeight: 600,
+                  alignItems: 'baseline',
                   borderTop: '1px solid var(--border-light)',
                   paddingTop: '12px',
                   marginTop: '4px',
                 }}
               >
-                <span>Total</span>
-                <span style={{ color: 'var(--color-sunset-700)' }}>{formatPrice(total)}</span>
+                <div>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 600 }}>Total</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 400 }}>
+                    Inclusive of all taxes
+                  </div>
+                </div>
+                <span style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--color-sunset-700)' }}>{formatPrice(total)}</span>
               </div>
             </div>
 

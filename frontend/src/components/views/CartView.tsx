@@ -258,7 +258,7 @@ export const CartView: React.FC = () => {
               )}
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Luxury GST (5%)</span>
-                <span>{formatPrice(tax)}</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Included ({formatPrice(tax)})</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--text-muted)' }}>White-Glove Luxury Delivery</span>
@@ -268,15 +268,19 @@ export const CartView: React.FC = () => {
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  fontSize: '1.25rem',
-                  fontWeight: 600,
+                  alignItems: 'baseline',
                   borderTop: '1px solid var(--border-light)',
                   paddingTop: '16px',
                   marginTop: '4px',
                 }}
               >
-                <span>Estimated Total</span>
-                <span style={{ color: 'var(--color-sunset-700)' }}>{formatPrice(total)}</span>
+                <div>
+                  <span style={{ fontSize: '1.25rem', fontWeight: 600 }}>Estimated Total</span>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 400, marginTop: '2px' }}>
+                    Inclusive of all taxes
+                  </div>
+                </div>
+                <span style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-sunset-700)' }}>{formatPrice(total)}</span>
               </div>
             </div>
 

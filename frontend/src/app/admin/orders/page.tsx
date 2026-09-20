@@ -38,15 +38,19 @@ export default function AdminOrdersPage() {
     }
   };
 
+  if (loading) {
+    return <div style={{ padding: '40px', color: 'var(--admin-text-primary)' }}>Loading Atelier Orders...</div>;
+  }
+
   const filtered = filterStatus === 'all' ? orders : orders.filter((o) => o.status === filterStatus);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
       <div>
-        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sunset-400)' }}>
+        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sunset-700)' }}>
           Fulfillment Desk
         </span>
-        <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: '#FFF8F5', marginTop: '4px' }}>
+        <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: 'var(--admin-text-primary)', marginTop: '4px' }}>
           Client Commissions & Dispatch
         </h1>
       </div>
@@ -57,16 +61,7 @@ export default function AdminOrdersPage() {
           <button
             key={st}
             onClick={() => setFilterStatus(st)}
-            style={{
-              padding: '6px 14px',
-              borderRadius: 'var(--radius-pill)',
-              fontSize: '0.8rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              backgroundColor: filterStatus === st ? 'var(--color-sunset-400)' : 'rgba(255, 255, 255, 0.08)',
-              color: filterStatus === st ? 'var(--color-sunset-900)' : '#FFF',
-              border: 'none',
-            }}
+            className={`admin-filter-pill ${filterStatus === st ? 'admin-filter-pill-active' : 'admin-filter-pill-inactive'}`}
           >
             {st === 'all' ? 'All Commissions' : st}
           </button>
@@ -74,45 +69,45 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Orders Table */}
-      <div
-        style={{
-          backgroundColor: '#231F42',
-          borderRadius: 'var(--radius-sm)',
-          border: '1px solid rgba(232, 188, 185, 0.15)',
-          padding: '24px',
-          overflowX: 'auto',
-        }}
-      >
+      <div className="admin-table-wrapper" style={{ padding: '24px' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
           <thead>
-            <tr style={{ borderBottom: '1px solid rgba(232, 188, 185, 0.2)', color: 'rgba(232, 188, 185, 0.7)' }}>
-              <th style={{ padding: '12px' }}>Commission</th>
-              <th style={{ padding: '12px' }}>Client</th>
-              <th style={{ padding: '12px' }}>Total Amount</th>
-              <th style={{ padding: '12px' }}>Carrier & Tracking</th>
-              <th style={{ padding: '12px' }}>Status</th>
-              <th style={{ padding: '12px' }}>Operations Action</th>
+            <tr className="admin-table-header">
+              <th style={{ padding: '12px 14px' }}>Commission</th>
+              <th style={{ padding: '12px 14px' }}>Client</th>
+              <th style={{ padding: '12px 14px' }}>Total Amount</th>
+              <th style={{ padding: '12px 14px' }}>Carrier & Tracking</th>
+              <th style={{ padding: '12px 14px' }}>Status</th>
+              <th style={{ padding: '12px 14px' }}>Operations Action</th>
             </tr>
           </thead>
           <tbody>
             {filtered.map((o) => (
-              <tr key={o.id} style={{ borderBottom: '1px solid rgba(232, 188, 185, 0.08)' }}>
-                <td style={{ padding: '14px', fontWeight: 600, color: '#FFF' }}>#{o.id}</td>
+              <tr key={o.id} className="admin-table-row">
+                <td style={{ padding: '14px', fontWeight: 600, color: 'var(--admin-text-primary)' }}>#{o.id}</td>
                 <td style={{ padding: '14px' }}>
-                  <span style={{ fontWeight: 600, display: 'block' }}>{o.customerName || 'Client'}</span>
-                  <span style={{ fontSize: '0.75rem', color: 'rgba(232, 188, 185, 0.6)' }}>{o.address.city}, {o.address.state}</span>
+                  <span style={{ fontWeight: 600, color: 'var(--admin-text-primary)', display: 'block' }}>
+                    {o.customerName || 'Client'}
+                  </span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-secondary)' }}>
+                    {o.address.city}, {o.address.state}
+                  </span>
                 </td>
-                <td style={{ padding: '14px', fontWeight: 600 }}>{formatPrice(o.totals.total)}</td>
+                <td style={{ padding: '14px', fontWeight: 600, color: 'var(--admin-text-primary)' }}>
+                  {formatPrice(o.totals.total)}
+                </td>
                 <td style={{ padding: '14px' }}>
                   {o.trackingInfo ? (
                     <div>
-                      <span style={{ fontSize: '0.82rem', display: 'block' }}>{o.trackingInfo.carrier}</span>
-                      <span style={{ fontSize: '0.72rem', color: 'var(--color-sunset-400)', fontFamily: 'var(--font-mono)' }}>
+                      <span style={{ fontSize: '0.82rem', color: 'var(--admin-text-primary)', display: 'block' }}>
+                        {o.trackingInfo.carrier}
+                      </span>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--color-sunset-800)', fontFamily: 'var(--font-mono)' }}>
                         {o.trackingInfo.trackingId}
                       </span>
                     </div>
                   ) : (
-                    <span style={{ color: 'rgba(232, 188, 185, 0.5)' }}>Pending</span>
+                    <span style={{ color: 'var(--admin-text-secondary)' }}>Pending</span>
                   )}
                 </td>
                 <td style={{ padding: '14px' }}>
@@ -122,28 +117,67 @@ export default function AdminOrdersPage() {
                 </td>
                 <td style={{ padding: '14px' }}>
                   {o.status === 'Placed' && (
-                    <Button variant="outline" size="sm" onClick={() => handleAdvanceStatus(o.id, 'Confirmed')}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      style={{ minWidth: '136px' }}
+                      onClick={() => handleAdvanceStatus(o.id, 'Confirmed')}
+                    >
                       Confirm
                     </Button>
                   )}
                   {o.status === 'Confirmed' && (
-                    <Button variant="outline" size="sm" onClick={() => handleAdvanceStatus(o.id, 'Packed')}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      style={{ minWidth: '136px' }}
+                      onClick={() => handleAdvanceStatus(o.id, 'Packed')}
+                    >
                       Pack
                     </Button>
                   )}
                   {o.status === 'Packed' && (
-                    <Button variant="primary" size="sm" onClick={() => handleAdvanceStatus(o.id, 'Shipped')}>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      style={{ minWidth: '136px' }}
+                      onClick={() => handleAdvanceStatus(o.id, 'Shipped')}
+                    >
                       Dispatch / Ship
                     </Button>
                   )}
                   {o.status === 'Shipped' && (
-                    <Button variant="primary" size="sm" onClick={() => handleAdvanceStatus(o.id, 'Delivered')}>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      style={{ minWidth: '136px' }}
+                      onClick={() => handleAdvanceStatus(o.id, 'Delivered')}
+                    >
                       Mark Delivered
                     </Button>
                   )}
                   {o.status === 'Delivered' && (
-                    <span style={{ fontSize: '0.78rem', color: 'var(--color-success)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                      <CheckCircle2 size={13} /> Completed
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                        height: '36px',
+                        minWidth: '136px',
+                        padding: '0 18px',
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        letterSpacing: '0.04em',
+                        textTransform: 'uppercase',
+                        color: 'var(--color-success)',
+                        borderRadius: 'var(--radius-pill)',
+                        backgroundColor: 'var(--color-success-bg)',
+                        border: '1px solid rgba(30, 111, 92, 0.25)',
+                        boxSizing: 'border-box',
+                      }}
+                    >
+                      <CheckCircle2 size={14} /> Completed
                     </span>
                   )}
                 </td>

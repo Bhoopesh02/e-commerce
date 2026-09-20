@@ -75,7 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         }}
       >
         <div
-          className="container"
+          className="container navbar-container"
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr auto 1fr',
@@ -91,10 +91,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               alignItems: 'center',
             }}
           >
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button (48x48px touch target) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              style={{ display: 'flex', alignItems: 'center', color: 'inherit' }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '48px',
+                height: '48px',
+                minWidth: '48px',
+                minHeight: '48px',
+                padding: 0,
+                color: 'inherit',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                borderRadius: 'var(--radius-pill)',
+              }}
               aria-label="Toggle Navigation Menu"
               className="mobile-nav-toggle"
             >
@@ -118,6 +132,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   fontWeight: 500,
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase',
+                  minHeight: '44px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
                 }}
               >
                 Home
@@ -130,6 +147,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   fontWeight: 500,
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase',
+                  minHeight: '44px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
                 }}
               >
                 Collections
@@ -142,6 +162,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   fontWeight: 500,
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase',
+                  minHeight: '44px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
                 }}
               >
                 New Arrivals
@@ -149,10 +172,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             </nav>
           </div>
 
-          {/* Center: Brand Identity Logo */}
-          <div style={{ justifySelf: 'center', textAlign: 'center' }}>
-            <Link href="/" style={{ display: 'inline-block' }}>
+          {/* Center: Brand Identity Logo (>= 48px touch target & responsive scaling) */}
+          <div style={{ justifySelf: 'center', textAlign: 'center', minWidth: 0 }}>
+            <Link
+              href="/"
+              className="navbar-brand-link"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '48px',
+                minWidth: '48px',
+                padding: '0 8px',
+                textDecoration: 'none',
+              }}
+            >
               <span
+                className="navbar-brand-text"
                 style={{
                   fontFamily: 'var(--font-display)',
                   fontSize: '1.75rem',
@@ -164,6 +200,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   transition: 'transform 350ms var(--ease-luxury)',
                   willChange: 'transform',
                   textTransform: 'uppercase',
+                  whiteSpace: 'nowrap',
                 }}
               >
                 {BRAND_NAME}
@@ -171,52 +208,68 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             </Link>
           </div>
 
-          {/* Right: Actions (Search, Wishlist, Account, Bag, Storefront Experience Switcher) */}
+          {/* Right: Actions (Search, Wishlist, Account, Bag) - all >= 48px touch targets */}
           <div
+            className="navbar-actions"
             style={{
               justifySelf: 'end',
               display: 'flex',
               alignItems: 'center',
-              gap: '20px',
+              gap: '12px',
             }}
           >
-
-
-
-
             {/* Search Trigger */}
             <button
               onClick={onOpenSearch}
               aria-label="Search Collection"
+              className="navbar-action-btn"
               style={{
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                width: '48px',
+                height: '48px',
+                minWidth: '48px',
+                minHeight: '48px',
+                padding: 0,
                 color: 'inherit',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                borderRadius: 'var(--radius-pill)',
+                touchAction: 'manipulation',
               }}
             >
-              <Search size={19} />
+              <Search size={20} />
             </button>
 
             {/* Wishlist Link */}
             <Link
               href="/wishlist"
               aria-label="Wishlist"
+              className="navbar-action-btn"
               style={{
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'relative',
+                width: '48px',
+                height: '48px',
+                minWidth: '48px',
+                minHeight: '48px',
+                padding: 0,
                 color: 'inherit',
+                borderRadius: 'var(--radius-pill)',
+                touchAction: 'manipulation',
               }}
             >
-              <Heart size={19} />
+              <Heart size={20} />
               {wishlistCount > 0 && (
                 <span
                   style={{
                     position: 'absolute',
-                    top: '-6px',
-                    right: '-8px',
+                    top: '6px',
+                    right: '6px',
                     backgroundColor: 'var(--color-sunset-600)',
                     color: '#FFF',
                     fontSize: '0.65rem',
@@ -234,39 +287,58 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               )}
             </Link>
 
-            {/* Account / Admin Portal Link */}
+            {/* Account / Admin Portal Link (Visible on desktop/tablet, in drawer on mobile) */}
             <Link
               href={accountHref}
               aria-label={user?.role === 'admin' ? 'Admin Control' : 'Account'}
+              className="navbar-action-btn navbar-account-link"
               style={{
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                width: '48px',
+                height: '48px',
+                minWidth: '48px',
+                minHeight: '48px',
+                padding: 0,
                 color: 'inherit',
+                borderRadius: 'var(--radius-pill)',
+                touchAction: 'manipulation',
               }}
             >
-              <User size={19} />
+              <User size={20} />
             </Link>
 
             {/* Shopping Bag Trigger */}
             <button
               onClick={openDrawer}
               aria-label="Shopping Bag"
+              className="navbar-action-btn"
               style={{
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'relative',
+                width: '48px',
+                height: '48px',
+                minWidth: '48px',
+                minHeight: '48px',
+                padding: 0,
                 color: 'inherit',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                borderRadius: 'var(--radius-pill)',
+                touchAction: 'manipulation',
               }}
             >
-              <ShoppingBag size={19} />
+              <ShoppingBag size={20} />
               {cartCount > 0 && (
                 <span
                   style={{
                     position: 'absolute',
-                    top: '-6px',
-                    right: '-8px',
+                    top: '6px',
+                    right: '6px',
                     backgroundColor: 'var(--cta-primary)',
                     color: 'var(--cta-text)',
                     fontSize: '0.65rem',
@@ -295,41 +367,90 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               borderBottom: '1px solid var(--border-color)',
               display: 'flex',
               flexDirection: 'column',
-              gap: '16px',
+              gap: '8px',
             }}
           >
             <Link
               href="/"
               onClick={() => setMobileMenuOpen(false)}
-              style={{ fontSize: '1rem', fontWeight: 600, letterSpacing: '0.08em' }}
+              style={{
+                fontSize: '1rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                minHeight: '44px',
+                display: 'flex',
+                alignItems: 'center',
+              }}
             >
               Home
             </Link>
             <Link
               href={shopHref}
               onClick={() => setMobileMenuOpen(false)}
-              style={{ fontSize: '1rem', fontWeight: 600, letterSpacing: '0.08em' }}
+              style={{
+                fontSize: '1rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                minHeight: '44px',
+                display: 'flex',
+                alignItems: 'center',
+              }}
             >
               Collections
             </Link>
             <Link
               href={newArrivalsHref}
               onClick={() => setMobileMenuOpen(false)}
-              style={{ fontSize: '1rem', fontWeight: 600, letterSpacing: '0.08em' }}
+              style={{
+                fontSize: '1rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                minHeight: '44px',
+                display: 'flex',
+                alignItems: 'center',
+              }}
             >
               New Arrivals
             </Link>
             <Link
               href="/offers"
               onClick={() => setMobileMenuOpen(false)}
-              style={{ fontSize: '1rem', fontWeight: 600, letterSpacing: '0.08em' }}
+              style={{
+                fontSize: '1rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                minHeight: '44px',
+                display: 'flex',
+                alignItems: 'center',
+              }}
             >
               Private Client Offers
             </Link>
             <Link
+              href="/wishlist"
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                fontSize: '1rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                minHeight: '44px',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
+            </Link>
+            <Link
               href={accountHref}
               onClick={() => setMobileMenuOpen(false)}
-              style={{ fontSize: '1rem', fontWeight: 600, letterSpacing: '0.08em' }}
+              style={{
+                fontSize: '1rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                minHeight: '44px',
+                display: 'flex',
+                alignItems: 'center',
+              }}
             >
               {user?.role === 'admin' ? 'Admin Portal' : 'My Account'}
             </Link>
@@ -337,14 +458,34 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         )}
       </header>
 
-      {/* Style block for responsive desktop navigation layout */}
+      {/* Style block for responsive navigation layout & touch target sizing */}
       <style jsx global>{`
+        .navbar-action-btn:hover {
+          background-color: var(--bg-surface-hover, rgba(255, 255, 255, 0.06));
+        }
         @media (min-width: 768px) {
           .mobile-nav-toggle {
             display: none !important;
           }
           .desktop-nav-links {
             display: flex !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .navbar-container {
+            grid-template-columns: 48px 1fr auto !important;
+            gap: 4px !important;
+            height: 64px !important;
+          }
+          .navbar-brand-text {
+            font-size: clamp(1.15rem, 4.5vw, 1.55rem) !important;
+            letter-spacing: clamp(0.1em, 1.5vw, 0.18em) !important;
+          }
+          .navbar-actions {
+            gap: 2px !important;
+          }
+          .navbar-account-link {
+            display: none !important;
           }
         }
       `}</style>

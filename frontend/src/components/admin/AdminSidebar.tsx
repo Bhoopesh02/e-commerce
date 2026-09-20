@@ -33,9 +33,9 @@ export const AdminSidebar: React.FC = () => {
     <aside
       style={{
         width: '260px',
-        backgroundColor: '#16132C',
+        backgroundColor: 'var(--color-sunset-900)',
         color: '#FFF8F5',
-        borderRight: '1px solid rgba(232, 188, 185, 0.15)',
+        borderRight: '1px solid rgba(255, 255, 255, 0.08)',
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
@@ -49,7 +49,7 @@ export const AdminSidebar: React.FC = () => {
       <div
         style={{
           padding: '24px',
-          borderBottom: '1px solid rgba(232, 188, 185, 0.12)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
@@ -73,7 +73,7 @@ export const AdminSidebar: React.FC = () => {
           <span style={{ fontSize: '1.05rem', fontWeight: 600, letterSpacing: '0.12em', fontFamily: 'var(--font-display)', display: 'block' }}>
             {BRAND_NAME}
           </span>
-          <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-sunset-400)' }}>
+          <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-sunset-200)' }}>
             Atelier Operations
           </span>
         </div>
@@ -87,21 +87,11 @@ export const AdminSidebar: React.FC = () => {
             <Link
               key={item.href}
               href={item.href}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '10px 14px',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: '0.85rem',
-                fontWeight: isActive ? 600 : 500,
-                color: isActive ? '#FFF' : 'rgba(232, 188, 185, 0.75)',
-                backgroundColor: isActive ? 'rgba(243, 159, 90, 0.18)' : 'transparent',
-                border: isActive ? '1px solid rgba(243, 159, 90, 0.35)' : '1px solid transparent',
-                transition: 'all var(--duration-fast)',
-              }}
+              className={`admin-nav-link ${isActive ? 'admin-nav-link-active' : ''}`}
             >
-              <span style={{ color: isActive ? 'var(--color-sunset-400)' : 'inherit' }}>{item.icon}</span>
+              <span style={{ color: isActive ? 'var(--color-sunset-200)' : 'inherit', display: 'flex', alignItems: 'center' }}>
+                {item.icon}
+              </span>
               <span>{item.label}</span>
             </Link>
           );
@@ -109,23 +99,17 @@ export const AdminSidebar: React.FC = () => {
       </nav>
 
       {/* Return to Customer Storefront Shortcut */}
-      <div style={{ padding: '16px', borderTop: '1px solid rgba(232, 188, 185, 0.12)' }}>
+      <div style={{ padding: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
         <Link
           href="/"
           onClick={loginAsCustomer}
+          className="admin-nav-link"
           style={{
-            display: 'flex',
-            alignItems: 'center',
             justifyContent: 'center',
-            gap: '8px',
-            padding: '10px 14px',
-            borderRadius: 'var(--radius-sm)',
             backgroundColor: 'rgba(255, 255, 255, 0.06)',
-            border: '1px solid rgba(232, 188, 185, 0.2)',
-            color: '#FFF8F5',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            color: '#CBD5E1',
             fontSize: '0.82rem',
-            fontWeight: 500,
-            textDecoration: 'none',
           }}
         >
           <ArrowLeft size={14} /> Return to Storefront

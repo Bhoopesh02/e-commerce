@@ -75,6 +75,19 @@
   --cta-primary-hover: #E08E49;
   --cta-text: #1D1A39;
   --nav-backdrop: rgba(255, 249, 246, 0.88);
+
+  /* Admin Panel Tokens */
+  --admin-canvas: #F8F9FA;
+  --admin-surface: #FFFFFF;
+  --admin-border: #E5E7EB;
+  --admin-border-light: #F3F4F6;
+  --admin-text-primary: #1E2024;
+  --admin-text-secondary: #5B6270;
+  --admin-accent: var(--color-sunset-200);
+  --admin-accent-hover: #DFADA9;
+  --admin-accent-text: var(--color-sunset-900);
+  --admin-surface-glass: rgba(255, 255, 255, 0.78);
+  --admin-border-glass: rgba(255, 255, 255, 0.85);
 }
 
 /* Dark Theme Overrides */

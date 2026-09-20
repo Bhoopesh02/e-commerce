@@ -27,6 +27,10 @@ export default function AdminProductsPage() {
     load();
   }, []);
 
+  if (loading) {
+    return <div style={{ padding: '40px', color: 'var(--admin-text-primary)' }}>Loading Atelier Silhouettes...</div>;
+  }
+
   const filtered = products.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
     p.categoryId.toLowerCase().includes(search.toLowerCase())
@@ -36,10 +40,10 @@ export default function AdminProductsPage() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sunset-400)' }}>
+          <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sunset-700)' }}>
             Inventory & Catalog
           </span>
-          <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: '#FFF8F5', marginTop: '4px' }}>
+          <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: 'var(--admin-text-primary)', marginTop: '4px' }}>
             Atelier Silhouettes & Reserve
           </h1>
         </div>
@@ -55,42 +59,42 @@ export default function AdminProductsPage() {
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
-          backgroundColor: '#231F42',
+          backgroundColor: 'var(--admin-surface)',
           padding: '10px 18px',
           borderRadius: 'var(--radius-sm)',
-          border: '1px solid rgba(232, 188, 185, 0.15)',
+          border: '1px solid var(--admin-border)',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
           maxWidth: '420px',
         }}
       >
-        <Search size={16} style={{ color: 'rgba(232, 188, 185, 0.6)' }} />
+        <Search size={16} style={{ color: 'var(--admin-text-secondary)', flexShrink: 0 }} />
         <input
           type="text"
           placeholder="Filter silhouettes by name or division..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          style={{ width: '100%', color: '#FFF', fontSize: '0.88rem' }}
+          style={{
+            width: '100%',
+            color: 'var(--admin-text-primary)',
+            fontSize: '0.88rem',
+            backgroundColor: 'transparent',
+            border: 'none',
+            outline: 'none',
+          }}
         />
       </div>
 
       {/* Products Table */}
-      <div
-        style={{
-          backgroundColor: '#231F42',
-          borderRadius: 'var(--radius-sm)',
-          border: '1px solid rgba(232, 188, 185, 0.15)',
-          padding: '24px',
-          overflowX: 'auto',
-        }}
-      >
+      <div className="admin-table-wrapper" style={{ padding: '24px' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
           <thead>
-            <tr style={{ borderBottom: '1px solid rgba(232, 188, 185, 0.2)', color: 'rgba(232, 188, 185, 0.7)' }}>
-              <th style={{ padding: '12px' }}>Garment</th>
-              <th style={{ padding: '12px' }}>Division</th>
-              <th style={{ padding: '12px' }}>Atelier Price</th>
-              <th style={{ padding: '12px' }}>Variants & Stock</th>
-              <th style={{ padding: '12px' }}>Reserve Status</th>
-              <th style={{ padding: '12px' }}>Storefronts</th>
+            <tr className="admin-table-header">
+              <th style={{ padding: '12px 14px' }}>Garment</th>
+              <th style={{ padding: '12px 14px' }}>Division</th>
+              <th style={{ padding: '12px 14px' }}>Atelier Price</th>
+              <th style={{ padding: '12px 14px' }}>Variants & Stock</th>
+              <th style={{ padding: '12px 14px' }}>Reserve Status</th>
+              <th style={{ padding: '12px 14px' }}>Storefronts</th>
             </tr>
           </thead>
           <tbody>
@@ -98,23 +102,35 @@ export default function AdminProductsPage() {
               const totalStock = p.variants.reduce((acc, v) => acc + v.stock, 0);
 
               return (
-                <tr key={p.id} style={{ borderBottom: '1px solid rgba(232, 188, 185, 0.08)' }}>
+                <tr key={p.id} className="admin-table-row">
                   <td style={{ padding: '14px', display: 'flex', alignItems: 'center', gap: '14px' }}>
-                    <div style={{ position: 'relative', width: '48px', height: '60px', borderRadius: 'var(--radius-sm)', overflow: 'hidden', flexShrink: 0 }}>
+                    <div
+                      style={{
+                        position: 'relative',
+                        width: '48px',
+                        height: '60px',
+                        borderRadius: 'var(--radius-sm)',
+                        overflow: 'hidden',
+                        flexShrink: 0,
+                        border: '1px solid var(--admin-border)',
+                      }}
+                    >
                       <Image src={p.images[0]} alt={p.name} fill sizes="48px" style={{ objectFit: 'cover' }} />
                     </div>
                     <div>
-                      <span style={{ fontWeight: 600, color: '#FFF', display: 'block' }}>{p.name}</span>
-                      <span style={{ fontSize: '0.75rem', color: 'rgba(232, 188, 185, 0.6)' }}>ID: {p.id}</span>
+                      <span style={{ fontWeight: 600, color: 'var(--admin-text-primary)', display: 'block' }}>{p.name}</span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-secondary)' }}>ID: {p.id}</span>
                     </div>
                   </td>
-                  <td style={{ padding: '14px', textTransform: 'capitalize' }}>
+                  <td style={{ padding: '14px', textTransform: 'capitalize', color: 'var(--admin-text-primary)' }}>
                     {p.categoryId.replace('cat_', '')}
                   </td>
-                  <td style={{ padding: '14px', fontWeight: 600 }}>{formatPrice(p.price)}</td>
+                  <td style={{ padding: '14px', fontWeight: 600, color: 'var(--admin-text-primary)' }}>
+                    {formatPrice(p.price)}
+                  </td>
                   <td style={{ padding: '14px' }}>
-                    <span style={{ fontWeight: 600 }}>{totalStock} units</span>
-                    <span style={{ fontSize: '0.75rem', color: 'rgba(232, 188, 185, 0.6)', display: 'block' }}>
+                    <span style={{ fontWeight: 600, color: 'var(--admin-text-primary)' }}>{totalStock} units</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-secondary)', display: 'block' }}>
                       Across {p.variants.length} sizes
                     </span>
                   </td>
@@ -124,7 +140,7 @@ export default function AdminProductsPage() {
                     {p.availability === 'out_of_stock' && <Badge variant="danger">Depleted</Badge>}
                   </td>
                   <td style={{ padding: '14px' }}>
-                    <span style={{ fontSize: '0.78rem', color: 'var(--color-sunset-400)', fontWeight: 600 }}>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--color-sunset-800)', fontWeight: 600 }}>
                       {p.storefronts.join(', ').toUpperCase()}
                     </span>
                   </td>

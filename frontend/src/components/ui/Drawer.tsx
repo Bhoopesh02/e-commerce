@@ -109,10 +109,14 @@ export const Drawer: React.FC<DrawerProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: 32,
-              height: 32,
+              width: 44,
+              height: 44,
+              minWidth: 44,
+              minHeight: 44,
               borderRadius: 'var(--radius-pill)',
               border: '1px solid var(--border-light)',
+              cursor: 'pointer',
+              background: 'transparent',
             }}
           >
             <X size={18} />
