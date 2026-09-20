@@ -89,12 +89,11 @@ export default function AdminProductsPage() {
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
           <thead>
             <tr className="admin-table-header">
-              <th style={{ padding: '12px 14px' }}>Garment</th>
-              <th style={{ padding: '12px 14px' }}>Division</th>
-              <th style={{ padding: '12px 14px' }}>Atelier Price</th>
-              <th style={{ padding: '12px 14px' }}>Variants & Stock</th>
-              <th style={{ padding: '12px 14px' }}>Reserve Status</th>
-              <th style={{ padding: '12px 14px' }}>Storefronts</th>
+              <th style={{ padding: '14px 16px', width: '36%' }}>Garment</th>
+              <th style={{ padding: '14px 16px', width: '16%' }}>Division</th>
+              <th style={{ padding: '14px 16px', width: '16%' }}>Atelier Price</th>
+              <th style={{ padding: '14px 16px', width: '18%' }}>Variants & Stock</th>
+              <th style={{ padding: '14px 16px', width: '14%' }}>Reserve Status</th>
             </tr>
           </thead>
           <tbody>
@@ -103,7 +102,7 @@ export default function AdminProductsPage() {
 
               return (
                 <tr key={p.id} className="admin-table-row">
-                  <td style={{ padding: '14px', display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <td style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '14px' }}>
                     <div
                       style={{
                         position: 'relative',
@@ -122,27 +121,22 @@ export default function AdminProductsPage() {
                       <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-secondary)' }}>ID: {p.id}</span>
                     </div>
                   </td>
-                  <td style={{ padding: '14px', textTransform: 'capitalize', color: 'var(--admin-text-primary)' }}>
+                  <td style={{ padding: '16px', textTransform: 'capitalize', color: 'var(--admin-text-primary)' }}>
                     {p.categoryId.replace('cat_', '')}
                   </td>
-                  <td style={{ padding: '14px', fontWeight: 600, color: 'var(--admin-text-primary)' }}>
+                  <td style={{ padding: '16px', fontWeight: 600, color: 'var(--admin-text-primary)' }}>
                     {formatPrice(p.price)}
                   </td>
-                  <td style={{ padding: '14px' }}>
+                  <td style={{ padding: '16px' }}>
                     <span style={{ fontWeight: 600, color: 'var(--admin-text-primary)' }}>{totalStock} units</span>
                     <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-secondary)', display: 'block' }}>
                       Across {p.variants.length} sizes
                     </span>
                   </td>
-                  <td style={{ padding: '14px' }}>
+                  <td style={{ padding: '16px' }}>
                     {p.availability === 'in_stock' && <Badge variant="success">In Stock</Badge>}
                     {p.availability === 'low_stock' && <Badge variant="warning">Low Stock</Badge>}
                     {p.availability === 'out_of_stock' && <Badge variant="danger">Depleted</Badge>}
-                  </td>
-                  <td style={{ padding: '14px' }}>
-                    <span style={{ fontSize: '0.78rem', color: 'var(--color-sunset-800)', fontWeight: 600 }}>
-                      {p.storefronts.join(', ').toUpperCase()}
-                    </span>
                   </td>
                 </tr>
               );

@@ -3,12 +3,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { BRAND_NAME, BRAND_TAGLINE } from '@/lib/constants';
-import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Shield, ArrowUpRight } from 'lucide-react';
 
 export const Footer: React.FC = () => {
-  const { storefront, toggleStorefront } = useStorefrontStore();
   const { role, loginAsCustomer, loginAsAdmin } = useAuthStore();
 
   return (
@@ -55,45 +53,6 @@ export const Footer: React.FC = () => {
             >
               {BRAND_TAGLINE}. Crafted between Milan, Tuscany, and Paris with traceable European materials and enduring silhouette integrity.
             </p>
-
-            {/* Storefront Experience Switcher Card */}
-            <div
-              style={{
-                padding: '14px 18px',
-                borderRadius: 'var(--radius-sm)',
-                backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                border: '1px solid rgba(232, 188, 185, 0.25)',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: '8px',
-                }}
-              >
-                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-sunset-400)' }}>
-                  Active Storefront Mode
-                </span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '0.92rem', fontWeight: 600 }}>
-                  {storefront === 'a' ? 'Storefront A (Editorial)' : 'Storefront B (Refined)'}
-                </span>
-                <button
-                  onClick={toggleStorefront}
-                  style={{
-                    fontSize: '0.75rem',
-                    color: 'var(--color-sunset-400)',
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Switch to {storefront === 'a' ? 'Refined' : 'Editorial'}
-                </button>
-              </div>
-            </div>
           </div>
 
           {/* Nav Col 1 */}
@@ -267,8 +226,6 @@ export const Footer: React.FC = () => {
           </div>
           <div style={{ display: 'flex', gap: '24px' }}>
             <span>Complimentary Insured Courier</span>
-            <span>Adyen Drop-In Payment Architecture</span>
-            <span>AWS Cognito Authentication</span>
           </div>
         </div>
       </div>

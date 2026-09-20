@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
-import { Shield, Sparkles, Bell } from 'lucide-react';
 
 export const AdminTopbar: React.FC = () => {
   const { user } = useAuthStore();
@@ -30,25 +29,6 @@ export const AdminTopbar: React.FC = () => {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        {/* Storefront indicator in Admin */}
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '5px 12px',
-            borderRadius: 'var(--radius-pill)',
-            backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            border: '1px solid rgba(232, 188, 185, 0.25)',
-            color: '#FFF',
-            fontSize: '0.75rem',
-            fontWeight: 500,
-          }}
-        >
-          <Sparkles size={12} style={{ color: 'var(--color-sunset-400)' }} />
-          <span>Storefront A</span>
-        </div>
-
         {/* User Pill */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div

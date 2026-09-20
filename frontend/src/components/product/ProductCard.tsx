@@ -160,6 +160,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             zIndex: 3,
             opacity: isHovered ? 1 : 0,
             transform: isHovered ? 'translateY(0)' : 'translateY(10px)',
+            pointerEvents: isHovered ? 'auto' : 'none',
             transition: isHovered
               ? 'opacity 320ms var(--ease-luxury) 100ms, transform 320ms var(--ease-luxury) 100ms'
               : 'opacity 200ms var(--ease-luxury), transform 200ms var(--ease-luxury)',
@@ -168,32 +169,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             onClick={handleQuickAdd}
             disabled={isAdding}
-            style={{
-              width: '100%',
-              padding: '10px 16px',
-              backgroundColor: 'var(--color-sunset-900)',
-              color: '#FFF',
-              border: 'none',
-              borderRadius: 'var(--radius-pill)',
-              fontSize: '0.78rem',
-              fontWeight: 600,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              boxShadow: 'var(--shadow-md)',
-              cursor: 'pointer',
-            }}
+            className="quick-add-btn"
           >
             {isAdding ? (
               <>
-                <Check size={14} /> Added to Bag
+                <span className="quick-add-icon">
+                  <Check size={14} />
+                </span>
+                Added to Bag
               </>
             ) : (
               <>
-                <ShoppingBag size={14} /> Quick Add
+                <span className="quick-add-icon">
+                  <ShoppingBag size={14} />
+                </span>
+                Quick Add
               </>
             )}
           </button>

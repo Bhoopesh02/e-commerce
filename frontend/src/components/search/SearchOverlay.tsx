@@ -74,7 +74,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
       const t = setTimeout(() => {
         setQuery('');
         setResults([]);
-      }, 600); // wait for close animation (backdrop completes at 550ms)
+      }, 250); // wait for close animation
       return () => clearTimeout(t);
     }
   }, [isOpen]);
@@ -115,6 +115,10 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
 
   return (
     <div
+      role="dialog"
+      aria-modal={isOpen}
+      aria-label="Search"
+      onClick={onClose}
       style={{
         position: 'fixed',
         top: 0,
@@ -122,31 +126,21 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
         right: 0,
         bottom: 0,
         zIndex: 9999,
-        transition: 'opacity 550ms var(--ease-luxury)',
+        backgroundColor: 'rgba(29, 26, 57, 0.55)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
+        display: 'flex',
+        justifyContent: 'flex-end',
         opacity: isOpen ? 1 : 0,
         pointerEvents: isOpen ? 'auto' : 'none',
+        transition: 'opacity 200ms ease-out',
       }}
     >
-      {/* Backdrop Scrim */}
-      <div
-        onClick={onClose}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.6)',
-          backdropFilter: 'blur(4px)',
-        }}
-      />
-
       {/* Drawer Panel */}
       <aside
+        onClick={(e) => e.stopPropagation()}
         style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
+          position: 'relative',
           height: '100%',
           width: '100%',
           maxWidth: '460px',
@@ -158,7 +152,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
           flexDirection: 'column',
           justifyContent: 'space-between',
           transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 450ms var(--ease-luxury)',
+          transition: 'transform 250ms var(--ease-luxury)',
         }}
       >
         {/* Drawer Search Header */}

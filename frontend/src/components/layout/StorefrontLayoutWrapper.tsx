@@ -15,10 +15,7 @@ const CartDrawer = dynamic(
   { ssr: false }
 );
 
-const SearchOverlay = dynamic(
-  () => import('@/components/search/SearchOverlay').then((mod) => mod.SearchOverlay),
-  { ssr: false }
-);
+import { SearchOverlay } from '@/components/search/SearchOverlay';
 
 interface StorefrontLayoutWrapperProps {
   storefrontId?: StorefrontId;
