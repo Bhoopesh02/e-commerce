@@ -144,10 +144,10 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
           height: '100%',
           width: '100%',
           maxWidth: '460px',
-          backgroundColor: '#141021',
-          color: '#f5f5f5',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-          borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
+          backgroundColor: 'var(--bg-primary)',
+          color: 'var(--text-primary)',
+          boxShadow: 'var(--shadow-editorial)',
+          borderLeft: '1px solid var(--border-color)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
@@ -156,13 +156,13 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
         }}
       >
         {/* Drawer Search Header */}
-        <div style={{ padding: '24px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', backgroundColor: '#19142b' }}>
+        <div style={{ padding: '24px', borderBottom: '1px solid var(--border-light)', backgroundColor: 'var(--bg-primary)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <button
               onClick={onClose}
               style={{
                 padding: '6px',
-                color: '#a3a3a3',
+                color: 'var(--text-muted)',
                 borderRadius: '50%',
                 backgroundColor: 'transparent',
                 border: 'none',
@@ -171,8 +171,8 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              onMouseOver={(e) => (e.currentTarget.style.color = '#fff')}
-              onMouseOut={(e) => (e.currentTarget.style.color = '#a3a3a3')}
+              onMouseOver={(e) => (e.currentTarget.style.color = 'var(--text-primary)')}
+              onMouseOut={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
               aria-label="Back"
             >
               <ArrowLeft size={20} />
@@ -182,7 +182,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
               <Search
                 size={16}
                 style={{
-                  color: 'rgba(252, 211, 77, 0.8)',
+                  color: 'var(--color-sunset-600)',
                   position: 'absolute',
                   left: '12px',
                   top: '50%',
@@ -198,21 +198,21 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                 style={{
                   width: '100%',
                   padding: '8px 32px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                  color: '#f5f5f5',
+                  backgroundColor: '#FFFFFF',
+                  color: 'var(--text-primary)',
                   fontSize: '0.875rem',
                   borderRadius: '8px',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  border: '1px solid var(--border-color)',
                   outline: 'none',
                   transition: 'border-color 200ms, background-color 200ms',
                 }}
                 onFocus={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(251, 191, 36, 0.6)';
-                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                  e.currentTarget.style.borderColor = 'var(--color-sunset-600)';
+                  e.currentTarget.style.backgroundColor = '#FFFFFF';
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                  e.currentTarget.style.borderColor = 'var(--border-color)';
+                  e.currentTarget.style.backgroundColor = '#FFFFFF';
                 }}
               />
               {query && (
@@ -223,13 +223,13 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                     right: '10px',
                     top: '50%',
                     transform: 'translateY(-50%)',
-                    color: '#a3a3a3',
+                    color: 'var(--text-muted)',
                     background: 'transparent',
                     border: 'none',
                     cursor: 'pointer',
                   }}
-                  onMouseOver={(e) => (e.currentTarget.style.color = '#fff')}
-                  onMouseOut={(e) => (e.currentTarget.style.color = '#a3a3a3')}
+                  onMouseOver={(e) => (e.currentTarget.style.color = 'var(--text-primary)')}
+                  onMouseOut={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
                 >
                   <X size={16} />
                 </button>
@@ -246,7 +246,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                 textTransform: 'uppercase',
                 fontWeight: 'bold',
                 letterSpacing: '0.1em',
-                color: 'rgba(253, 230, 138, 0.7)',
+                color: 'var(--color-sunset-700)',
                 marginBottom: '8px',
               }}
             >
@@ -261,19 +261,21 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                     fontSize: '12px',
                     padding: '4px 12px',
                     borderRadius: '9999px',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    backgroundColor: '#201a37',
-                    color: '#d4d4d4',
+                    border: '1px solid var(--border-color)',
+                    backgroundColor: '#FFFFFF',
+                    color: 'var(--text-secondary)',
                     cursor: 'pointer',
                     transition: 'all 200ms',
                   }}
                   onMouseOver={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(251, 191, 36, 0.6)';
-                    e.currentTarget.style.color = '#fde68a';
+                    e.currentTarget.style.borderColor = 'var(--color-sunset-600)';
+                    e.currentTarget.style.color = 'var(--color-sunset-700)';
+                    e.currentTarget.style.backgroundColor = 'var(--bg-primary)';
                   }}
                   onMouseOut={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                    e.currentTarget.style.color = '#d4d4d4';
+                    e.currentTarget.style.borderColor = 'var(--border-color)';
+                    e.currentTarget.style.color = 'var(--text-secondary)';
+                    e.currentTarget.style.backgroundColor = '#FFFFFF';
                   }}
                 >
                   {tag}
@@ -284,12 +286,12 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
         </div>
 
         {/* Drawer Body ("What's New" or Results Grid) */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'var(--bg-primary)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#e5e5e5', display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}>
-              {!query.trim() ? "What's New" : "Search Results"} <span style={{ color: '#fbbf24', fontFamily: 'var(--font-display)' }}>★</span>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px', margin: 0, fontWeight: 600 }}>
+              {!query.trim() ? "What's New" : "Search Results"} <span style={{ color: 'var(--color-sunset-400)', fontFamily: 'var(--font-display)' }}>★</span>
             </h3>
-            <span style={{ fontSize: '11px', fontFamily: 'monospace', color: '#a3a3a3' }}>
+            <span style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-muted)' }}>
               {isLoading ? '...' : `${results.length} Items`}
             </span>
           </div>
@@ -303,8 +305,9 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                   style={{
                     position: 'relative',
                     borderRadius: '12px',
-                    backgroundColor: '#1d1733',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid var(--border-light)',
+                    boxShadow: 'var(--shadow-sm)',
                     padding: '10px',
                     display: 'flex',
                     flexDirection: 'column',
@@ -312,14 +315,16 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                     transition: 'all 200ms',
                   }}
                   onMouseOver={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(251, 191, 36, 0.4)';
+                    e.currentTarget.style.borderColor = 'var(--color-sunset-600)';
+                    e.currentTarget.style.boxShadow = 'var(--shadow-md)';
                   }}
                   onMouseOut={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    e.currentTarget.style.borderColor = 'var(--border-light)';
+                    e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
                   }}
                 >
                   <Link href={`/product/${item.slug}`} onClick={onClose} style={{ textDecoration: 'none' }}>
-                    <div style={{ position: 'relative', aspectRatio: '1/1', width: '100%', borderRadius: '8px', overflow: 'hidden', backgroundColor: 'rgba(0,0,0,0.4)', marginBottom: '8px' }}>
+                    <div style={{ position: 'relative', aspectRatio: '1/1', width: '100%', borderRadius: '8px', overflow: 'hidden', backgroundColor: 'var(--bg-primary)', marginBottom: '8px' }}>
                       {(item.featured || item.isNewArrival) && (
                         <span style={{
                           position: 'absolute',
@@ -330,12 +335,12 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                           fontWeight: 'bold',
                           textTransform: 'uppercase',
                           letterSpacing: '0.05em',
-                          backgroundColor: 'rgba(0,0,0,0.7)',
+                          backgroundColor: 'rgba(29, 26, 57, 0.82)',
                           backdropFilter: 'blur(4px)',
-                          color: '#fde68a',
+                          color: '#FFF8F5',
                           padding: '2px 6px',
                           borderRadius: '4px',
-                          border: '1px solid rgba(255,255,255,0.1)'
+                          border: '1px solid rgba(255,255,255,0.15)'
                         }}>
                           {item.isNewArrival ? 'New Season' : 'Featured'}
                         </span>
@@ -348,16 +353,16 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                         style={{ objectFit: 'cover' }}
                       />
                     </div>
-                    <span style={{ fontSize: '10px', color: 'rgba(253, 230, 138, 0.6)', textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '0.05em', display: 'block' }}>
+                    <span style={{ fontSize: '10px', color: 'var(--color-sunset-600)', textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '0.05em', display: 'block', fontWeight: 600 }}>
                       {item.categoryId.replace('cat_', '')}
                     </span>
-                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '12px', color: '#e5e5e5', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginTop: '2px', lineHeight: '1.2' }}>
+                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '12px', color: 'var(--text-primary)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginTop: '2px', lineHeight: '1.25', fontWeight: 500 }}>
                       {item.name}
                     </h3>
                   </Link>
 
                   <div style={{ marginTop: '12px' }}>
-                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.875rem', fontWeight: 600, color: '#f5f5f5', display: 'block', marginBottom: '8px' }}>
+                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)', display: 'block', marginBottom: '8px' }}>
                       {formatPrice(item.price)}
                     </span>
                     <button
@@ -379,7 +384,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                         justifyContent: 'center',
                         gap: '4px',
                         cursor: 'pointer',
-                        backgroundColor: isAdded ? '#059669' : '#7c1d35',
+                        backgroundColor: isAdded ? 'var(--color-success)' : '#7c1d35',
                         color: '#ffffff',
                         border: 'none',
                         boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
@@ -409,19 +414,19 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
         </div>
 
         {/* Drawer Footer */}
-        <div style={{ padding: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.1)', backgroundColor: '#19142b', textAlign: 'center' }}>
+        <div style={{ padding: '16px', borderTop: '1px solid var(--border-light)', backgroundColor: 'var(--bg-primary)', textAlign: 'center' }}>
           <Link
             href="/shop"
             onClick={onClose}
             style={{
               fontSize: '12px',
-              color: '#fde68a',
+              color: 'var(--color-sunset-700)',
               textDecoration: 'underline',
               letterSpacing: '0.05em',
-              fontWeight: 500
+              fontWeight: 600
             }}
-            onMouseOver={(e) => e.currentTarget.style.color = '#fff'}
-            onMouseOut={(e) => e.currentTarget.style.color = '#fde68a'}
+            onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-sunset-900)'}
+            onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-sunset-700)'}
           >
             Explore Full Aurelia Catalogue →
           </Link>

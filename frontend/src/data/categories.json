@@ -6,7 +6,14 @@
     "description": "Architectural trench coats, double-faced wool overcoats, and Milanese leather jackets.",
     "visible": true,
     "image": "/images/categories/cat-outerwear.webp",
-    "featuredOrder": 1
+    "featuredOrder": 1,
+    "bannerImage": "/images/sections/banners/banner-outerwear.webp",
+    "bannerHeadline": "Outerwear & Overcoats",
+    "bannerSubtitle": "Architectural trench coats, double-faced virgin wool overcoats, and hand-burnished Milanese leather jackets.",
+    "bannerBadges": [
+      "Hand-Finished in Milan",
+      "Thermal Wind-Shielded"
+    ]
   },
   {
     "id": "cat_tailoring",
@@ -15,7 +22,14 @@
     "description": "Deconstructed suiting, structured Italian wool blazers, and sculptural pleated trousers.",
     "visible": true,
     "image": "/images/categories/cat-tailoring.webp",
-    "featuredOrder": 2
+    "featuredOrder": 2,
+    "bannerImage": "/images/sections/banners/banner-tailoring-v2.webp",
+    "bannerHeadline": "Sartorial Tailoring",
+    "bannerSubtitle": "Deconstructed wool suiting, razor-sharp peak lapels, and fluid pleated palazzo trousers engineered with bespoke chest canvases.",
+    "bannerBadges": [
+      "Super 140s Virgin Wool",
+      "Floating Canvas Construction"
+    ]
   },
   {
     "id": "cat_eveningwear",
@@ -24,7 +38,14 @@
     "description": "Floor-sweeping silk gowns, draped satin ensembles, and nocturnal silhouette dresses.",
     "visible": true,
     "image": "/images/categories/cat-eveningwear.webp",
-    "featuredOrder": 3
+    "featuredOrder": 3,
+    "bannerImage": "/images/sections/banners/banner-eveningwear-v2.webp",
+    "bannerHeadline": "Nocturne Eveningwear",
+    "bannerSubtitle": "Liquid mulberry silk charmeuse, floor-grazing puddle trains, and draped backless silhouettes for twilight galas.",
+    "bannerBadges": [
+      "30-Momme Mulberry Silk",
+      "Bias-Cut Drapery"
+    ]
   },
   {
     "id": "cat_knitwear",
@@ -33,7 +54,14 @@
     "description": "Grade-A Mongolian cashmere, ribbed merino jumpers, and lightweight mohair layers.",
     "visible": true,
     "image": "/images/categories/cat-knitwear.webp",
-    "featuredOrder": 4
+    "featuredOrder": 4,
+    "bannerImage": "/images/sections/banners/banner-knitwear-v2.webp",
+    "bannerHeadline": "Artisanal Knitwear",
+    "bannerSubtitle": "Ultra-fine Grade-A Mongolian cashmere, brushed featherweight mohair, and seamless ribbed jumpers.",
+    "bannerBadges": [
+      "Grade-A Mongolian Cashmere",
+      "15.2 Micron Fineness"
+    ]
   },
   {
     "id": "cat_leather_goods",
@@ -42,7 +70,14 @@
     "description": "Full-grain calfskin tote bags, sculptural saddle clutches, and hand-stitched travel luggage.",
     "visible": true,
     "image": "/images/categories/cat-leather-goods.webp",
-    "featuredOrder": 5
+    "featuredOrder": 5,
+    "bannerImage": "/images/sections/banners/banner-leather-goods.webp",
+    "bannerHeadline": "Leather Goods & Atelier Bags",
+    "bannerSubtitle": "Full-grain French box calfskin totes, structured saddle crossbodies, and weekend luggage hand-stitched with waxed cord.",
+    "bannerBadges": [
+      "Full-Grain Calfskin",
+      "Hand-Burnished Edges"
+    ]
   },
   {
     "id": "cat_footwear",
@@ -51,7 +86,14 @@
     "description": "Goodyear-welted Chelsea boots, minimalist architectural loafers, and Tuscan leather mules.",
     "visible": true,
     "image": "/images/categories/cat-footwear.webp",
-    "featuredOrder": 6
+    "featuredOrder": 6,
+    "bannerImage": "/images/sections/banners/banner-footwear.webp",
+    "bannerHeadline": "Florentine Footwear",
+    "bannerSubtitle": "Goodyear-welted Chelsea boots, chiseled architectural loafers, and Tuscan leather mules with Vibram rubber tread.",
+    "bannerBadges": [
+      "Goodyear-Welt Construction",
+      "Handmade in Tuscany"
+    ]
   },
   {
     "id": "cat_jewelry",
@@ -60,6 +102,30 @@
     "description": "18k vermeil sculptural cuffs, baroque pearl pendants, and signet bands.",
     "visible": true,
     "image": "/images/categories/cat-jewelry.webp",
-    "featuredOrder": 7
+    "featuredOrder": 7,
+    "bannerImage": "/images/sections/banners/banner-fine-jewelry.webp",
+    "bannerHeadline": "Sculptural Fine Jewelry",
+    "bannerSubtitle": "3-micron 18k gold vermeil cuffs, organically shaped baroque freshwater pearls, and hand-poured molten statement rings.",
+    "bannerBadges": [
+      "18k Heavy Gold Vermeil",
+      "Baroque Pearls"
+    ]
+  },
+  {
+    "id": "cat_fragrances",
+    "name": "Fragrances",
+    "slug": "fragrances",
+    "description": "Oud-wood parfums, botanical extracts, and artisanal distilled scents.",
+    "visible": true,
+    "image": "/images/categories/cat-fragrances.avif",
+    "featuredOrder": 8,
+    "bannerImage": "/images/sections/banners/banner-fragrances.avif",
+    "bannerHeadline": "Artisanal Fragrances",
+    "bannerSubtitle": "Small-batch distilled parfums, deep botanical extracts, and rare oud-wood signatures.",
+    "bannerBadges": [
+      "3 Signature Scents",
+      "Distilled in Grasse",
+      "Long-Lasting Sillage"
+    ]
   }
 ]

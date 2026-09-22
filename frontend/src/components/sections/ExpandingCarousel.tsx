@@ -27,7 +27,40 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
     <section style={{ padding: '96px 0', backgroundColor: 'var(--bg-primary)' }}>
       <div className="container">
         {/* Section Header */}
-        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+            marginBottom: '48px',
+          }}
+        >
+          {/* Atelier Tailoring & Architecture Insignia */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '14px',
+            }}
+          >
+            <Image
+              src="/images/icons/signature-icons-emblem.webp"
+              alt="Atelier Tailoring & Architecture Insignia"
+              width={72}
+              height={40}
+              priority
+              style={{
+                width: 'auto',
+                height: '38px',
+                objectFit: 'contain',
+                opacity: 0.9,
+              }}
+              className="signature-icons-emblem"
+            />
+          </div>
+
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 2.8rem)', marginBottom: '12px' }}>
             {title}
           </h2>
@@ -188,6 +221,10 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
 
       {/* Responsive mobile touch styling */}
       <style jsx>{`
+        :global([data-theme="dark"]) .signature-icons-emblem {
+          filter: brightness(0) invert(0.96) drop-shadow(0 2px 6px rgba(243, 159, 90, 0.15)) !important;
+        }
+
         @media (max-width: 768px) {
           .expanding-carousel-container {
             display: flex !important;

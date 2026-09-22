@@ -74,14 +74,52 @@ let wishlistsState: Record<string, string[]> = (wishlistsData as { userId: strin
   {}
 );
 
-// Initialize client-side state on first mount
+// Catalog version tag to invalidate stale client localStorage when products.json updates
+const CATALOG_VERSION = '2026.09.22.v7'; // Bump this string to force a cache reset across clients-side state on first mount (runs only once per session)
+let isClientStateInitialized = false;
+
 function ensureClientState() {
-  if (typeof window === 'undefined') return;
-  productsState = getInitialData('products', productsState);
+  if (typeof window === 'undefined' || isClientStateInitialized) return;
+  isClientStateInitialized = true;
+
+  const storedVersion = window.localStorage.getItem('aurelia_catalog_version');
+  const isVersionMismatch = storedVersion !== CATALOG_VERSION;
+
+  if (isVersionMismatch) {
+    // Reset products state to fresh JSON data when catalog version is bumped
+    productsState = [...(productsData as Product[])];
+    saveData('products', productsState);
+    
+    // Also reset banners to ensure new metadata/photos show up
+    bannersState = [...(bannersData as Banner[])];
+    saveData('banners', bannersState);
+    
+    window.localStorage.setItem('aurelia_catalog_version', CATALOG_VERSION);
+  } else {
+    const cachedProducts = getInitialData('products', productsState);
+    // Intelligent reconciliation: prioritize fresh JSON fields while preserving active checkout stock changes per SKU
+    productsState = (productsData as Product[]).map((fresh) => {
+      const cached = cachedProducts.find((c) => c.id === fresh.id);
+      if (!cached) return fresh;
+
+      const mergedVariants = (fresh.variants || []).map((freshVariant) => {
+        const cachedVariant = (cached.variants || []).find((v) => v.sku === freshVariant.sku);
+        return cachedVariant !== undefined ? cachedVariant : freshVariant;
+      });
+
+      return {
+        ...fresh,
+        variants: mergedVariants.length > 0 ? mergedVariants : fresh.variants,
+      };
+    });
+    saveData('products', productsState);
+    
+    bannersState = getInitialData('banners', bannersState);
+  }
+
   reviewsState = getInitialData('reviews', reviewsState);
   ordersState = getInitialData('orders', ordersState);
   couponsState = getInitialData('coupons', couponsState);
-  bannersState = getInitialData('banners', bannersState);
   supportTicketsState = getInitialData('supportTickets', supportTicketsState);
   returnsState = getInitialData('returns', returnsState);
   wishlistsState = getInitialData('wishlists', wishlistsState);

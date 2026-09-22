@@ -1,33 +1,59 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { getProducts, getCategories } from '@/lib/mockApi';
 import { Product, Category } from '@/types';
-import { ProductCard } from '@/components/product/ProductCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
+import { CategorySection, SectionAnimationVariant } from '@/components/shop/CategorySection';
+import { ProductCard } from '@/components/product/ProductCard';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
-import { SlidersHorizontal, X, RotateCcw } from 'lucide-react';
+import { SlidersHorizontal, X, RotateCcw, ArrowUp } from 'lucide-react';
+
+import productsData from '@/data/products.json';
+import categoriesData from '@/data/categories.json';
+
+/**
+ * Section Animation Mapping
+ * Easily customize the card animation variant per category section.
+ * Supported variants: 'fade-up' | 'stagger-slide' | 'scale-reveal' | 'subtle-float' | 'default'
+ */
+const SECTION_ANIMATIONS: Record<string, SectionAnimationVariant> = {
+  outerwear: 'fade-up',
+  tailoring: 'fade-up',
+  eveningwear: 'fade-up',
+  knitwear: 'fade-up',
+  'leather-goods': 'fade-up',
+  footwear: 'fade-up',
+  'fine-jewelry': 'fade-up',
+};
 
 export const ShopView: React.FC = () => {
   const searchParams = useSearchParams();
   const { storefront } = useStorefrontStore();
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Filter States
-  const [selectedCategory, setSelectedCategory] = useState<string>(
-    searchParams.get('categorySlug') || 'all'
+  const [products, setProducts] = useState<Product[]>(productsData as Product[]);
+  const [categories, setCategories] = useState<Category[]>(
+    (categoriesData as Category[]).filter((c) => c.visible)
   );
+  const [loading, setLoading] = useState(false);
+
+  // Filter & Navigation States
+  const [activeCategory, setActiveCategory] = useState<string>('outerwear');
+  const [navigationDirection, setNavigationDirection] = useState<number>(1);
   const [selectedPriceRange, setSelectedPriceRange] = useState<string>('all');
   const [selectedAvailability, setSelectedAvailability] = useState<string>('all');
   const [selectedSort, setSelectedSort] = useState<string>('popularity');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
+  const heroBannerRef = useRef<HTMLDivElement>(null);
+  const stickyBarRef = useRef<HTMLDivElement>(null);
+
+  // Load catalog data
   useEffect(() => {
     let isMounted = true;
     async function loadData() {
@@ -51,22 +77,11 @@ export const ShopView: React.FC = () => {
     };
   }, [storefront]);
 
-  // Client-side filtering and sorting
+  // Client-side filtering and sorting across catalog
   const filteredProducts = useMemo(() => {
     let list = [...products];
 
-    // Category: URL param takes precedence (supports navigation); clicking pills updates selectedCategory state
-    const urlCatSlug = searchParams.get('categorySlug');
-    const effectiveCat = urlCatSlug || selectedCategory;
-
-    if (effectiveCat !== 'all') {
-      const catObj = categories.find((c) => c.slug === effectiveCat);
-      if (catObj) {
-        list = list.filter((p) => p.categoryId === catObj.id);
-      }
-    }
-
-    // Tag filter from URL — derived inside memo so it stays reactive
+    // Tag filter from URL (e.g. new-arrival, trending)
     const urlTag = searchParams.get('tag');
     if (urlTag) {
       list = list.filter((p) => p.tags.includes(urlTag));
@@ -107,253 +122,447 @@ export const ShopView: React.FC = () => {
     }
 
     return list;
-  }, [products, categories, selectedCategory, searchParams, selectedPriceRange, selectedAvailability, selectedSort]);
+  }, [products, searchParams, selectedPriceRange, selectedAvailability, selectedSort]);
+
+  // Handle category selection
+  const handleCategorySelect = useCallback((slug: string) => {
+    setActiveCategory((prev) => {
+      const prevIndex = categories.findIndex((c) => c.slug === prev);
+      const newIndex = categories.findIndex((c) => c.slug === slug);
+      if (prevIndex !== -1 && newIndex !== -1) {
+        setNavigationDirection(newIndex > prevIndex ? 1 : -1);
+      }
+      return slug;
+    });
+
+    // Scroll to the sticky bar to ensure the category content is visible
+    if (stickyBarRef.current) {
+      const offset = stickyBarRef.current.getBoundingClientRect().top + window.pageYOffset - 90;
+      window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [categories]);
+
+  const activeCategoryIndex = useMemo(() => {
+    return categories.findIndex((c) => c.slug === activeCategory);
+  }, [categories, activeCategory]);
+
+  const handleNextCategory = useCallback(() => {
+    if (activeCategoryIndex >= 0 && activeCategoryIndex < categories.length - 1) {
+      handleCategorySelect(categories[activeCategoryIndex + 1].slug);
+    }
+  }, [activeCategoryIndex, categories, handleCategorySelect]);
+
+  const handlePrevCategory = useCallback(() => {
+    if (activeCategoryIndex > 0) {
+      handleCategorySelect(categories[activeCategoryIndex - 1].slug);
+    }
+  }, [activeCategoryIndex, categories, handleCategorySelect]);
+
+  // Handle URL category slug on initial mount
+  useEffect(() => {
+    const urlCatSlug = searchParams.get('categorySlug');
+    if (urlCatSlug && !loading) {
+      const timeout = setTimeout(() => {
+        handleCategorySelect(urlCatSlug);
+      }, 350);
+      return () => clearTimeout(timeout);
+    }
+  }, [searchParams, loading, handleCategorySelect]);
 
   const resetFilters = () => {
-    setSelectedCategory('all');
     setSelectedPriceRange('all');
     setSelectedAvailability('all');
     setSelectedSort('popularity');
+    handleCategorySelect('outerwear');
   };
 
   const hasActiveFilters =
-    selectedCategory !== 'all' ||
     selectedPriceRange !== 'all' ||
     selectedAvailability !== 'all';
 
   return (
-    <div style={{ paddingTop: '100px', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+    <div style={{ paddingTop: '100px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       <div className="container">
-        {/* Header Banner */}
-        <div style={{ padding: '36px 0 44px', borderBottom: '1px solid var(--border-light)', marginBottom: '40px' }}>
-
-          <h1 style={{ fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', marginBottom: '12px' }}>
-            {selectedCategory === 'all'
-              ? 'Complete Collection'
-              : categories.find((c) => c.slug === selectedCategory)?.name || 'Wardrobe Division'}
-          </h1>
-
-          <p style={{ color: 'var(--text-muted)', fontSize: '1rem', maxWidth: '640px', lineHeight: 1.6 }}>
-            {selectedCategory === 'all'
-              ? 'Explore our full editorial portfolio of outerwear, Italian tailoring, cashmere knitwear, and artisanal accessories.'
-              : categories.find((c) => c.slug === selectedCategory)?.description}
-          </p>
-        </div>
-
-        {/* Filter Bar & Sort Controls */}
+        {/* Editorial Campaign Master Hero Banner (Untouched New Collections Banner) */}
         <div
+          ref={heroBannerRef}
           style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '16px',
+            position: 'relative',
+            overflow: 'hidden',
+            borderRadius: '20px',
             marginBottom: '32px',
+            minHeight: '320px',
+            display: 'flex',
+            alignItems: 'center',
+            boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',
+            border: '1px solid rgba(232, 188, 185, 0.22)',
+            backgroundColor: '#0c0a14',
           }}
+          className="group hero-master-banner"
         >
-          {/* Desktop Category Pills */}
+          {/* Background Image Container */}
           <div
             style={{
-              display: 'none',
-              flexWrap: 'wrap',
-              gap: '8px',
+              position: 'absolute',
+              inset: 0,
+              zIndex: 1,
             }}
-            className="desktop-category-pills"
           >
-            <button
-              onClick={() => setSelectedCategory('all')}
+            <Image
+              src="/images/banners/photo-1483985988355-763728e1935b.webp"
+              alt="New Collections Campaign"
+              fill
+              priority
+              sizes="(max-width: 1280px) 100vw, 1280px"
               style={{
-                padding: '6px 16px',
-                borderRadius: 'var(--radius-pill)',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all var(--duration-fast) var(--ease-editorial)',
-                backgroundColor: selectedCategory === 'all' ? 'var(--color-sunset-900)' : 'transparent',
-                color: selectedCategory === 'all' ? '#FFF' : 'var(--text-secondary)',
-                border: `1px solid ${selectedCategory === 'all' ? 'var(--color-sunset-900)' : 'var(--border-color)'}`,
+                objectFit: 'cover',
+                objectPosition: 'center 26%',
+                transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
               }}
-            >
-              All Disciplines
-            </button>
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.slug)}
-                style={{
-                  padding: '6px 16px',
-                  borderRadius: 'var(--radius-pill)',
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all var(--duration-fast) var(--ease-editorial)',
-                  backgroundColor: selectedCategory === cat.slug ? 'var(--color-sunset-900)' : 'transparent',
-                  color: selectedCategory === cat.slug ? '#FFF' : 'var(--text-secondary)',
-                  border: `1px solid ${selectedCategory === cat.slug ? 'var(--color-sunset-900)' : 'var(--border-color)'}`,
-                }}
-              >
-                {cat.name}
-              </button>
-            ))}
+              className="group-hover:scale-105"
+            />
+            {/* Multi-Stop Cinematic Editorial Gradients */}
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background:
+                  'linear-gradient(90deg, rgba(12, 10, 20, 0.94) 0%, rgba(12, 10, 20, 0.82) 42%, rgba(12, 10, 20, 0.42) 75%, rgba(12, 10, 20, 0.6) 100%)',
+              }}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background:
+                  'linear-gradient(0deg, rgba(12, 10, 20, 0.7) 0%, transparent 65%)',
+              }}
+            />
           </div>
 
-          {/* Mobile Filter Trigger Button */}
-          <button
-            onClick={() => setMobileFiltersOpen(true)}
+          {/* Banner Typography & Accents */}
+          <div
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '8px 18px',
-              borderRadius: 'var(--radius-pill)',
-              border: '1px solid var(--border-color)',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              backgroundColor: 'var(--bg-surface)',
+              position: 'relative',
+              zIndex: 2,
+              padding: 'clamp(36px, 5vw, 60px)',
+              maxWidth: '740px',
             }}
-            className="mobile-filter-btn"
           >
-            <SlidersHorizontal size={15} />
-            <span>Filter & Sort {hasActiveFilters && '•'}</span>
-          </button>
+            <h1
+              style={{
+                fontSize: 'clamp(2.4rem, 4.5vw, 3.6rem)',
+                fontFamily: 'var(--font-serif)',
+                fontWeight: 400,
+                color: '#fff8f5',
+                letterSpacing: '-0.02em',
+                lineHeight: 1.15,
+                marginBottom: '14px',
+                textShadow: '0 2px 18px rgba(0,0,0,0.5)',
+              }}
+            >
+              New Collections
+            </h1>
 
-          {/* Right: Sort Dropdown & Product Counter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginLeft: 'auto' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              {filteredProducts.length} Silhouettes
-            </span>
+            <p
+              style={{
+                color: 'rgba(255, 248, 245, 0.9)',
+                fontSize: 'clamp(0.95rem, 1.2vw, 1.1rem)',
+                lineHeight: 1.65,
+                marginBottom: '22px',
+                maxWidth: '620px',
+                textShadow: '0 1px 10px rgba(0,0,0,0.6)',
+              }}
+            >
+              Explore our full editorial portfolio of outerwear, Italian tailoring, cashmere knitwear, and artisanal accessories.
+            </p>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <label htmlFor="sort-select" style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                Sort:
-              </label>
-              <select
-                id="sort-select"
-                value={selectedSort}
-                onChange={(e) => setSelectedSort(e.target.value)}
+            {/* Quick Editorial Tags */}
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '10px',
+              }}
+            >
+              <span
                 style={{
-                  padding: '6px 12px',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '1px solid var(--border-color)',
-                  backgroundColor: 'var(--bg-surface)',
-                  fontSize: '0.85rem',
-                  color: 'var(--text-primary)',
-                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '5px 14px',
+                  borderRadius: '6px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(255, 255, 255, 0.18)',
+                  fontSize: '0.75rem',
+                  color: '#fff8f5',
+                  fontWeight: 500,
+                  letterSpacing: '0.04em',
                 }}
               >
-                <option value="popularity">House Popularity</option>
-                <option value="newest">Newest Editions</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="rating">Client Rating</option>
-              </select>
+                {filteredProducts.length} Editorial Pieces
+              </span>
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '5px 14px',
+                  borderRadius: '6px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(255, 255, 255, 0.18)',
+                  fontSize: '0.75rem',
+                  color: '#fff8f5',
+                  fontWeight: 500,
+                  letterSpacing: '0.04em',
+                }}
+              >
+                Hand-Finished in Italy
+              </span>
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '5px 14px',
+                  borderRadius: '6px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(255, 255, 255, 0.18)',
+                  fontSize: '0.75rem',
+                  color: '#fff8f5',
+                  fontWeight: 500,
+                  letterSpacing: '0.04em',
+                }}
+              >
+                Complimentary Global Shipping
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Active Filter Chips */}
-        {hasActiveFilters && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px', marginBottom: '28px' }}>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Active Filters:</span>
-            {selectedCategory !== 'all' && (
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '4px 10px',
-                  backgroundColor: 'var(--bg-surface)',
-                  borderRadius: 'var(--radius-pill)',
-                  border: '1px solid var(--border-color)',
-                  fontSize: '0.78rem',
-                }}
-              >
-                Category: {categories.find((c) => c.slug === selectedCategory)?.name}
-                <X size={12} style={{ cursor: 'pointer' }} onClick={() => setSelectedCategory('all')} />
-              </span>
-            )}
-            {selectedPriceRange !== 'all' && (
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '4px 10px',
-                  backgroundColor: 'var(--bg-surface)',
-                  borderRadius: 'var(--radius-pill)',
-                  border: '1px solid var(--border-color)',
-                  fontSize: '0.78rem',
-                }}
-              >
-                Price: {selectedPriceRange}
-                <X size={12} style={{ cursor: 'pointer' }} onClick={() => setSelectedPriceRange('all')} />
-              </span>
-            )}
-            {selectedAvailability !== 'all' && (
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '4px 10px',
-                  backgroundColor: 'var(--bg-surface)',
-                  borderRadius: 'var(--radius-pill)',
-                  border: '1px solid var(--border-color)',
-                  fontSize: '0.78rem',
-                }}
-              >
-                In Stock Only
-                <X size={12} style={{ cursor: 'pointer' }} onClick={() => setSelectedAvailability('all')} />
-              </span>
-            )}
-            <button
-              onClick={resetFilters}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-                fontSize: '0.78rem',
-                color: 'var(--color-sunset-600)',
-                cursor: 'pointer',
-                marginLeft: '4px',
-              }}
-            >
-              <RotateCcw size={12} /> Reset all
-            </button>
-          </div>
-        )}
-
-        {/* Product Catalog Grid */}
-        <h2 className="sr-only">Silhouettes Collection</h2>
-        {loading ? (
+        {/* Sticky Category Navigation Bar & Global Controls */}
+        <div
+          ref={stickyBarRef}
+          style={{
+            position: 'sticky',
+            top: '70px',
+            zIndex: 30,
+            backgroundColor: 'var(--bg-primary)',
+            paddingTop: '12px',
+            paddingBottom: '14px',
+            borderBottom: '1px solid var(--border-color)',
+            marginBottom: '40px',
+            transition: 'all 0.3s ease',
+          }}
+          className="sticky-navigation-header"
+        >
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-              gap: '32px',
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '16px',
             }}
           >
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i}>
-                <Skeleton height="380px" borderRadius="var(--radius-sm)" />
-                <div style={{ marginTop: '12px' }}>
-                  <Skeleton height="20px" width="70%" />
-                  <Skeleton height="16px" width="40%" style={{ marginTop: '6px' }} />
+            {/* Category Typography Navigation */}
+            <div
+              className="flex items-center justify-center gap-6 md:gap-10 category-pill-strip"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '32px',
+                overflowX: 'auto',
+                scrollbarWidth: 'none',
+                maxWidth: '100%',
+                padding: '4px 0',
+              }}
+            >
+              {categories.map((cat) => {
+                const isActive = activeCategory === cat.slug;
+
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => handleCategorySelect(cat.slug)}
+                    className="group relative inline-flex flex-col items-center justify-center py-2 px-1 cursor-pointer bg-transparent border-0 outline-none select-none"
+                    style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+                  >
+                    {/* Category Label */}
+                    <span
+                      className={`text-xs md:text-[13px] tracking-[0.2em] uppercase transition-colors duration-200 ${
+                        isActive
+                          ? 'text-[#121624] font-semibold'
+                          : 'text-neutral-500 group-hover:text-black font-normal'
+                      }`}
+                    >
+                      {cat.name}
+                    </span>
+
+                    {/* 1. Inactive Hover Underline (Left-to-Right sweep on hover) */}
+                    {!isActive && (
+                      <span
+                        className="absolute bottom-0 left-0 w-full h-[1.5px] bg-neutral-400 block origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out pointer-events-none"
+                      />
+                    )}
+
+                    {/* 2. Active Fixed Underline (Scoped to active word width) */}
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeCategoryUnderline"
+                        className="absolute bottom-0 left-0 w-full h-[2px] bg-[#121624] pointer-events-none"
+                        initial={false}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 400,
+                          damping: 35,
+                        }}
+                        style={{
+                          originX: navigationDirection > 0 ? 0 : 1,
+                        }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Right: Sort Dropdown & Product Counter */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginLeft: 'auto', flexShrink: 0 }}>
+              {/* Mobile Filter Trigger */}
+              <button
+                onClick={() => setMobileFiltersOpen(true)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '7px 16px',
+                  borderRadius: 'var(--radius-pill)',
+                  border: '1px solid var(--border-color)',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  backgroundColor: 'var(--bg-surface)',
+                  cursor: 'pointer',
+                }}
+                className="mobile-filter-btn"
+              >
+                <SlidersHorizontal size={14} />
+                <span>Filters {hasActiveFilters && '•'}</span>
+              </button>
+
+              <span style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }} className="silhouette-counter">
+                {filteredProducts.length} Silhouettes
+              </span>
+            </div>
+          </div>
+
+          {/* Active Filter Chips */}
+          {hasActiveFilters && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px', marginTop: '12px' }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Active Filters:</span>
+              {selectedPriceRange !== 'all' && (
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '3px 10px',
+                    backgroundColor: 'var(--bg-surface)',
+                    borderRadius: 'var(--radius-pill)',
+                    border: '1px solid var(--border-color)',
+                    fontSize: '0.78rem',
+                  }}
+                >
+                  Price: {selectedPriceRange}
+                  <X size={12} style={{ cursor: 'pointer' }} onClick={() => setSelectedPriceRange('all')} />
+                </span>
+              )}
+              {selectedAvailability !== 'all' && (
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '3px 10px',
+                    backgroundColor: 'var(--bg-surface)',
+                    borderRadius: 'var(--radius-pill)',
+                    border: '1px solid var(--border-color)',
+                    fontSize: '0.78rem',
+                  }}
+                >
+                  In Stock Only
+                  <X size={12} style={{ cursor: 'pointer' }} onClick={() => setSelectedAvailability('all')} />
+                </span>
+              )}
+              <button
+                onClick={resetFilters}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '0.78rem',
+                  color: 'var(--color-sunset-600)',
+                  cursor: 'pointer',
+                  marginLeft: '4px',
+                }}
+              >
+                <RotateCcw size={12} /> Reset all
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Distinct Category Sections */}
+        {loading ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '64px' }}>
+            {Array.from({ length: 3 }).map((_, secIdx) => (
+              <div key={secIdx}>
+                <Skeleton height="280px" borderRadius="20px" style={{ marginBottom: '32px' }} />
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                    gap: '32px',
+                  }}
+                >
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i}>
+                      <Skeleton height="380px" borderRadius="var(--radius-sm)" />
+                      <div style={{ marginTop: '12px' }}>
+                        <Skeleton height="20px" width="70%" />
+                        <Skeleton height="16px" width="40%" style={{ marginTop: '6px' }} />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
           </div>
         ) : filteredProducts.length > 0 ? (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-              gap: '36px',
-            }}
-          >
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+          <div className="category-sections-container">
+            <AnimatePresence mode="wait">
+              {categories.map((category, index) => {
+                if (category.slug !== activeCategory) return null;
+                const categoryProducts = filteredProducts.filter((p) => p.categoryId === category.id);
+                return (
+                  <CategorySection
+                    key={category.id}
+                    category={category}
+                    products={categoryProducts}
+                    animationVariant={SECTION_ANIMATIONS[category.slug] || 'fade-up'}
+                    onNext={handleNextCategory}
+                    onPrev={handlePrevCategory}
+                    hasNext={index < categories.length - 1}
+                    hasPrev={index > 0}
+                  />
+                );
+              })}
+            </AnimatePresence>
           </div>
         ) : (
           <div
@@ -376,6 +585,36 @@ export const ShopView: React.FC = () => {
             </Button>
           </div>
         )}
+
+        {/* Back to Top Quick Scroll Button */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '60px' }}>
+          <button
+            onClick={() => {
+              if (heroBannerRef.current) {
+                const topOffset = heroBannerRef.current.getBoundingClientRect().top + window.pageYOffset - 90;
+                window.scrollTo({ top: Math.max(0, topOffset), behavior: 'smooth' });
+              } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+            className="hover-fill-btn"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 24px',
+              borderRadius: 'var(--radius-pill)',
+              border: '1px solid var(--border-color)',
+              fontSize: '0.85rem',
+              fontWeight: 500,
+              backgroundColor: 'var(--bg-surface)',
+              cursor: 'pointer',
+            }}
+          >
+            <ArrowUp size={16} />
+            <span>Return to Top</span>
+          </button>
+        </div>
       </div>
 
       {/* Mobile Filters Drawer / Bottom Sheet */}
@@ -386,77 +625,67 @@ export const ShopView: React.FC = () => {
         position="right"
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-          {/* Categories */}
+          {/* Jump to Category */}
           <div>
             <h4 style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>
-              Category
+              Jump to Discipline
             </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
-                <input
-                  type="radio"
-                  name="cat"
-                  checked={selectedCategory === 'all'}
-                  onChange={() => setSelectedCategory('all')}
-                />
-                All Categories
-              </label>
-              {categories.map((c) => (
-                <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
-                  <input
-                    type="radio"
-                    name="cat"
-                    checked={selectedCategory === c.slug}
-                    onChange={() => setSelectedCategory(c.slug)}
-                  />
-                  {c.name}
-                </label>
-              ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              {categories.map((c) => {
+                const isActive = activeCategory === c.slug;
+                return (
+                  <button
+                    key={c.id}
+                    onClick={() => {
+                      handleCategorySelect(c.slug);
+                      setMobileFiltersOpen(false);
+                    }}
+                    style={{
+                      textAlign: 'left',
+                      padding: '12px 12px',
+                      color: isActive ? '#121624' : 'var(--text-primary)',
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      fontSize: '1rem',
+                      fontWeight: isActive ? 600 : 400,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    {isActive && <div style={{ width: '4px', height: '4px', backgroundColor: '#121624', borderRadius: '50%' }} />}
+                    {!isActive && <div style={{ width: '4px', height: '4px', backgroundColor: 'transparent' }} />}
+                    {c.name}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           {/* Price Range */}
           <div>
             <h4 style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>
-              Price Range
+              Price Tier
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
-                <input
-                  type="radio"
-                  name="price"
-                  checked={selectedPriceRange === 'all'}
-                  onChange={() => setSelectedPriceRange('all')}
-                />
-                All Values
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
-                <input
-                  type="radio"
-                  name="price"
-                  checked={selectedPriceRange === 'under-20k'}
-                  onChange={() => setSelectedPriceRange('under-20k')}
-                />
-                Under ₹20,000
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
-                <input
-                  type="radio"
-                  name="price"
-                  checked={selectedPriceRange === '20k-35k'}
-                  onChange={() => setSelectedPriceRange('20k-35k')}
-                />
-                ₹20,000 - ₹35,000
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
-                <input
-                  type="radio"
-                  name="price"
-                  checked={selectedPriceRange === 'above-35k'}
-                  onChange={() => setSelectedPriceRange('above-35k')}
-                />
-                Above ₹35,000
-              </label>
+              {[
+                { id: 'all', label: 'All Price Tiers' },
+                { id: 'under-20k', label: 'Under ₹20,000' },
+                { id: '20k-35k', label: '₹20,000 - ₹35,000' },
+                { id: 'above-35k', label: 'Above ₹35,000' },
+              ].map((p) => (
+                <label key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', cursor: 'pointer' }}>
+                  <input
+                    type="radio"
+                    name="price"
+                    checked={selectedPriceRange === p.id}
+                    onChange={() => setSelectedPriceRange(p.id)}
+                  />
+                  {p.label}
+                </label>
+              ))}
             </div>
           </div>
 
@@ -465,7 +694,7 @@ export const ShopView: React.FC = () => {
             <h4 style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>
               Availability
             </h4>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', cursor: 'pointer' }}>
               <input
                 type="checkbox"
                 checked={selectedAvailability === 'in_stock'}
@@ -487,11 +716,11 @@ export const ShopView: React.FC = () => {
       </Drawer>
 
       <style jsx global>{`
-        @media (min-width: 900px) {
-          .desktop-category-pills {
-            display: flex !important;
-          }
-          .mobile-filter-btn {
+        .category-pill-strip::-webkit-scrollbar {
+          display: none;
+        }
+        @media (max-width: 768px) {
+          .silhouette-counter {
             display: none !important;
           }
         }

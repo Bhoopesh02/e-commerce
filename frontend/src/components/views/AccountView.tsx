@@ -52,8 +52,7 @@ export const AccountView: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    showToast('Signed out of Aurelia Atelier.', 'info');
-    router.push('/login');
+    router.push('/signout');
   };
 
   const getStatusBadge = (status: string) => {

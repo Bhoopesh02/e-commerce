@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { RatingStars } from '@/components/ui/RatingStars';
+import { PeekRating } from '@/components/ui/PeekRating';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -18,14 +18,25 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewAdded
   const { user } = useAuthStore();
   const { showToast } = useToastStore();
 
-  const [rating, setRating] = useState<number>(5);
+  const [rating, setRating] = useState<number>(0);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const handleDismiss = () => {
+    setIsExpanded(false);
+    setRating(0);
+    setTitle('');
+    setBody('');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!rating || rating < 1) {
+      showToast('Please select a star rating (1-5) for your reflection.', 'error');
+      return;
+    }
     if (!title.trim() || !body.trim()) {
       showToast('Please provide both a reflection title and detailed notes.', 'error');
       return;
@@ -46,7 +57,7 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewAdded
       onReviewAdded(newRev);
       setTitle('');
       setBody('');
-      setRating(5);
+      setRating(0);
       setIsExpanded(false);
       showToast('Your garment reflection has been inscribed and published.', 'success');
     } catch {
@@ -86,7 +97,7 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewAdded
         </h3>
         <button
           type="button"
-          onClick={() => setIsExpanded(false)}
+          onClick={handleDismiss}
           style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}
         >
           Cancel
@@ -107,7 +118,40 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewAdded
         >
           Rating
         </label>
-        <RatingStars rating={rating} size={22} interactive onChange={setRating} showScore />
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px' }}>
+          <PeekRating
+            value={rating}
+            onChange={setRating}
+            size={22}
+            labels={['Poor', 'Fair', 'Good', 'Great', 'Exceptional']}
+            allowClear={false}
+            activeColor="var(--color-sunset-400)"
+            idleColor="var(--border-color)"
+            tipColor="var(--color-sunset-900)"
+            tipTextColor="#FFF8F5"
+          />
+          {rating > 0 ? (
+            <span
+              style={{
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                color: 'var(--text-primary)',
+              }}
+            >
+              {rating}.0
+            </span>
+          ) : (
+            <span
+              style={{
+                fontSize: '0.8rem',
+                color: 'var(--text-muted)',
+                fontStyle: 'italic',
+              }}
+            >
+              Select your rating
+            </span>
+          )}
+        </div>
       </div>
 
       <Input
@@ -154,7 +198,7 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewAdded
         <Button
           type="button"
           variant="ghost"
-          onClick={() => setIsExpanded(false)}
+          onClick={handleDismiss}
           disabled={isSubmitting}
         >
           Dismiss

@@ -45,6 +45,10 @@ export interface Category {
   visible: boolean;
   image: string;
   featuredOrder?: number;
+  bannerImage?: string;
+  bannerHeadline?: string;
+  bannerSubtitle?: string;
+  bannerBadges?: string[];
 }
 
 export interface Review {

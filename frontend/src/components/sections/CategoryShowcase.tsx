@@ -77,7 +77,8 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: '24px',
+            columnGap: '24px',
+            rowGap: '12px',
           }}
         >
           {categories.map((cat, idx) => (
@@ -86,7 +87,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                 href={`/shop?categorySlug=${cat.slug}`}
                 style={{
                   position: 'relative',
-                  height: idx === 0 || idx === 3 ? '420px' : '360px',
+                  height: '420px',
                   borderRadius: 'var(--radius-md)',
                   overflow: 'hidden',
                   display: 'flex',

@@ -49,9 +49,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     };
   }, []);
 
-  const shopHref = '/shop';
   const newArrivalsHref = '/shop?tag=new-arrival';
-  const accountHref = user?.role === 'admin' ? '/admin/dashboard' : '/account';
+  const accountHref = !user ? '/signin' : user.role === 'admin' ? '/admin/dashboard' : '/account';
+
+  const isHomePage = pathname === '/';
+  const isLightNav = isHomePage && !isScrolled;
 
   return (
     <>
@@ -63,14 +65,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           right: 0,
           zIndex: 100,
           transition:
-            'background-color 350ms var(--ease-luxury), border-color 350ms var(--ease-luxury), box-shadow 350ms var(--ease-luxury), backdrop-filter 350ms var(--ease-luxury), -webkit-backdrop-filter 350ms var(--ease-luxury)',
-          backgroundColor: isScrolled ? 'var(--nav-backdrop)' : 'transparent',
+            'background 350ms var(--ease-luxury), background-color 350ms var(--ease-luxury), backdrop-filter 350ms var(--ease-luxury), -webkit-backdrop-filter 350ms var(--ease-luxury), color 350ms var(--ease-luxury)',
+          background: isScrolled
+            ? 'var(--nav-backdrop)'
+            : isHomePage
+            ? 'linear-gradient(180deg, rgba(15, 12, 26, 0.85) 0%, rgba(15, 12, 26, 0.4) 60%, transparent 100%)'
+            : 'transparent',
           backdropFilter: isScrolled ? 'blur(16px)' : 'blur(0px)',
           WebkitBackdropFilter: isScrolled ? 'blur(16px)' : 'blur(0px)',
-          borderBottom: isScrolled ? '1px solid var(--border-light)' : '1px solid transparent',
-          boxShadow: isScrolled ? 'var(--shadow-sm)' : 'none',
-          color: 'var(--text-primary)',
-          willChange: 'background-color, border-color, box-shadow, backdrop-filter',
+          borderBottom: 'none',
+          boxShadow: 'none',
+          color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
+          willChange: 'background, background-color, backdrop-filter, color',
           transform: 'translateZ(0)',
         }}
       >
@@ -103,11 +109,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 minWidth: '48px',
                 minHeight: '48px',
                 padding: 0,
-                color: 'inherit',
+                color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
                 borderRadius: 'var(--radius-pill)',
+                filter: isLightNav ? 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7))' : 'none',
+                transition: 'filter 350ms var(--ease-luxury), color 350ms var(--ease-luxury)',
               }}
               aria-label="Toggle Navigation Menu"
               className="mobile-nav-toggle"
@@ -135,24 +143,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   minHeight: '44px',
                   display: 'inline-flex',
                   alignItems: 'center',
+                  color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
+                  textShadow: isLightNav ? '0 1px 8px rgba(0, 0, 0, 0.7)' : 'none',
+                  transition: 'color 350ms var(--ease-luxury), text-shadow 350ms var(--ease-luxury)',
                 }}
               >
                 Home
-              </Link>
-              <Link
-                href={shopHref}
-                className="nav-link-expand"
-                style={{
-                  fontSize: '0.82rem',
-                  fontWeight: 500,
-                  letterSpacing: '0.12em',
-                  textTransform: 'uppercase',
-                  minHeight: '44px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                }}
-              >
-                Collections
               </Link>
               <Link
                 href={newArrivalsHref}
@@ -165,9 +161,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   minHeight: '44px',
                   display: 'inline-flex',
                   alignItems: 'center',
+                  color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
+                  textShadow: isLightNav ? '0 1px 8px rgba(0, 0, 0, 0.7)' : 'none',
+                  transition: 'color 350ms var(--ease-luxury), text-shadow 350ms var(--ease-luxury)',
                 }}
               >
-                New Arrivals
+                Collections
               </Link>
             </nav>
           </div>
@@ -194,13 +193,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   fontSize: '1.75rem',
                   fontWeight: 600,
                   letterSpacing: '0.22em',
-                  color: 'var(--text-primary)',
+                  color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
                   display: 'inline-block',
                   transform: isScrolled ? 'scale(0.92)' : 'scale(1)',
-                  transition: 'transform 350ms var(--ease-luxury)',
-                  willChange: 'transform',
+                  transition: 'transform 350ms var(--ease-luxury), color 350ms var(--ease-luxury), text-shadow 350ms var(--ease-luxury)',
+                  willChange: 'transform, color',
                   textTransform: 'uppercase',
                   whiteSpace: 'nowrap',
+                  textShadow: isLightNav ? '0 2px 14px rgba(0, 0, 0, 0.8)' : 'none',
                 }}
               >
                 {BRAND_NAME}
@@ -216,6 +216,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               display: 'flex',
               alignItems: 'center',
               gap: '12px',
+              filter: isLightNav ? 'drop-shadow(0 1px 6px rgba(0, 0, 0, 0.7))' : 'none',
+              transition: 'filter 350ms var(--ease-luxury)',
             }}
           >
             {/* Search Trigger */}
@@ -232,12 +234,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 minWidth: '48px',
                 minHeight: '48px',
                 padding: 0,
-                color: 'inherit',
+                color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
                 borderRadius: 'var(--radius-pill)',
                 touchAction: 'manipulation',
+                transition: 'color 350ms var(--ease-luxury)',
               }}
             >
               <Search size={20} />
@@ -258,9 +261,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 minWidth: '48px',
                 minHeight: '48px',
                 padding: 0,
-                color: 'inherit',
+                color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
                 borderRadius: 'var(--radius-pill)',
                 touchAction: 'manipulation',
+                transition: 'color 350ms var(--ease-luxury)',
               }}
             >
               <Heart size={20} />
@@ -301,9 +305,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 minWidth: '48px',
                 minHeight: '48px',
                 padding: 0,
-                color: 'inherit',
+                color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
                 borderRadius: 'var(--radius-pill)',
                 touchAction: 'manipulation',
+                transition: 'color 350ms var(--ease-luxury)',
               }}
             >
               <User size={20} />
@@ -324,12 +329,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 minWidth: '48px',
                 minHeight: '48px',
                 padding: 0,
-                color: 'inherit',
+                color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
                 borderRadius: 'var(--radius-pill)',
                 touchAction: 'manipulation',
+                transition: 'color 350ms var(--ease-luxury)',
               }}
             >
               <ShoppingBag size={20} />
@@ -368,6 +374,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               display: 'flex',
               flexDirection: 'column',
               gap: '8px',
+              color: 'var(--text-primary)',
             }}
           >
             <Link
@@ -385,20 +392,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               Home
             </Link>
             <Link
-              href={shopHref}
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                fontSize: '1rem',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                minHeight: '44px',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              Collections
-            </Link>
-            <Link
               href={newArrivalsHref}
               onClick={() => setMobileMenuOpen(false)}
               style={{
@@ -410,7 +403,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 alignItems: 'center',
               }}
             >
-              New Arrivals
+              Collections
             </Link>
             <Link
               href="/offers"
@@ -460,6 +453,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
       {/* Style block for responsive navigation layout & touch target sizing */}
       <style jsx global>{`
+        header {
+          border-bottom: none !important;
+          box-shadow: none !important;
+        }
         .navbar-action-btn:hover {
           background-color: var(--bg-surface-hover, rgba(255, 255, 255, 0.06));
         }

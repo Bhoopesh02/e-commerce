@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -8,7 +8,7 @@ import { useToastStore } from '@/store/useToastStore';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { BRAND_NAME } from '@/lib/constants';
-import { ShieldCheck, Mail, Lock, User as UserIcon } from 'lucide-react';
+import { ShieldCheck, Mail, Lock, User as UserIcon, ArrowRight } from 'lucide-react';
 
 interface AuthViewProps {
   initialMode?: 'login' | 'register' | 'forgot-password' | 'reset-password';
@@ -24,6 +24,10 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
   const [password, setPassword] = useState('••••••••');
   const [name, setName] = useState('Ayesha Rahman');
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setMode(initialMode);
+  }, [initialMode]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +55,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
         paddingTop: '120px',
         paddingBottom: '96px',
         minHeight: '100vh',
-        backgroundColor: 'var(--bg-primary)',
+        background: 'radial-gradient(ellipse at 50% 15%, #FFF5F7 0%, #FDEBF0 50%, #F9E2E8 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -60,50 +64,75 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
       <div
         className="container"
         style={{
-          maxWidth: '480px',
+          maxWidth: '500px',
           width: '100%',
+          padding: '0 20px',
         }}
       >
         <div
           style={{
-            backgroundColor: 'var(--bg-surface)',
-            borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--border-color)',
-            padding: '40px',
-            boxShadow: 'var(--shadow-md)',
+            backgroundColor: '#FFFFFF',
+            borderRadius: '24px',
+            border: '1px solid rgba(230, 185, 195, 0.55)',
+            padding: '44px 38px',
+            boxShadow: '0 24px 60px -12px rgba(186, 75, 102, 0.14), 0 4px 16px rgba(0, 0, 0, 0.03)',
           }}
         >
           {/* Brand header */}
-          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '28px' }}>
             <span
               style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: '1.6rem',
                 fontWeight: 600,
                 letterSpacing: '0.2em',
-                color: 'var(--text-primary)',
+                color: '#2A1D20',
                 display: 'block',
-                marginBottom: '8px',
+                marginBottom: '6px',
               }}
             >
               {BRAND_NAME}
             </span>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              AWS Cognito Authentication Gateway
+            <span
+              style={{
+                fontSize: '0.75rem',
+                color: '#8A6D73',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+              }}
+            >
+              Private Client Gateway
             </span>
           </div>
 
-          <h2 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-display)', marginBottom: '8px', textAlign: 'center' }}>
-            {mode === 'login' && 'Client Sign In'}
-            {mode === 'register' && 'Create Client Profile'}
+          <h1
+            style={{
+              fontSize: '1.6rem',
+              fontFamily: 'var(--font-display)',
+              fontWeight: 500,
+              color: '#1E1517',
+              marginBottom: '8px',
+              textAlign: 'center',
+            }}
+          >
+            {mode === 'login' && 'Sign In'}
+            {mode === 'register' && 'Create Account'}
             {mode === 'forgot-password' && 'Password Recovery'}
             {mode === 'reset-password' && 'Establish New Password'}
-          </h2>
+          </h1>
 
-          <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '28px', lineHeight: 1.5 }}>
-            {mode === 'login' && 'Access saved orders, delivery itineraries, and private privileges.'}
-            {mode === 'register' && 'Register your address and email preferences with our Milan atelier.'}
-            {mode === 'forgot-password' && 'Enter your registered email to receive authentication reset instructions.'}
+          <p
+            style={{
+              fontSize: '0.88rem',
+              color: '#6E555C',
+              textAlign: 'center',
+              marginBottom: '28px',
+              lineHeight: 1.5,
+            }}
+          >
+            {mode === 'login' && 'Access your private client profile, orders, and curated privileges.'}
+            {mode === 'register' && 'Register your profile with our atelier for tailored services and early previews.'}
+            {mode === 'forgot-password' && 'Enter your registered email to receive secure recovery instructions.'}
             {mode === 'reset-password' && 'Enter your verification code sent via email.'}
           </p>
 
@@ -143,40 +172,72 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
                 <button
                   type="button"
                   onClick={() => setMode('forgot-password')}
-                  style={{ fontSize: '0.8rem', color: 'var(--color-sunset-600)', textDecoration: 'underline' }}
+                  style={{
+                    fontSize: '0.8rem',
+                    color: '#9B3356',
+                    textDecoration: 'underline',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: 0,
+                  }}
                 >
                   Forgot password?
                 </button>
               </div>
             )}
 
-            <Button type="submit" variant="primary" size="lg" fullWidth isLoading={isLoading}>
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              fullWidth
+              isLoading={isLoading}
+              style={{
+                backgroundColor: '#9B3356',
+                borderColor: '#9B3356',
+                color: '#FFFFFF',
+              }}
+            >
               {mode === 'login' && 'Sign In'}
-              {mode === 'register' && 'Register Profile'}
+              {mode === 'register' && 'Create Account'}
               {mode === 'forgot-password' && 'Send Email Link'}
               {mode === 'reset-password' && 'Confirm New Password'}
             </Button>
           </form>
 
           {/* Mode Switcher */}
-          <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+          <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.86rem', color: '#6E555C' }}>
             {mode === 'login' ? (
               <span>
                 New to the atelier?{' '}
-                <button
-                  onClick={() => setMode('register')}
-                  style={{ color: 'var(--color-sunset-700)', fontWeight: 600, textDecoration: 'underline' }}
+                <Link
+                  href="/signup"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setMode('register');
+                    window.history.pushState({}, '', '/signup');
+                  }}
+                  style={{ color: '#9B3356', fontWeight: 600, textDecoration: 'underline' }}
                 >
-                  Create profile
-                </button>
+                  Sign Up
+                </Link>
               </span>
             ) : (
-              <button
-                onClick={() => setMode('login')}
-                style={{ color: 'var(--color-sunset-700)', fontWeight: 600, textDecoration: 'underline' }}
-              >
-                Return to Sign In
-              </button>
+              <span>
+                Already have an account?{' '}
+                <Link
+                  href="/signin"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setMode('login');
+                    window.history.pushState({}, '', '/signin');
+                  }}
+                  style={{ color: '#9B3356', fontWeight: 600, textDecoration: 'underline' }}
+                >
+                  Sign In
+                </Link>
+              </span>
             )}
           </div>
 
@@ -185,16 +246,24 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
             style={{
               marginTop: '32px',
               paddingTop: '20px',
-              borderTop: '1px solid var(--border-light)',
+              borderTop: '1px solid rgba(240, 210, 218, 0.7)',
               display: 'flex',
               flexDirection: 'column',
-              gap: '8px',
+              gap: '10px',
             }}
           >
-            <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', textAlign: 'center' }}>
-              Quick Demo Authorization
+            <span
+              style={{
+                fontSize: '0.72rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                color: '#8A6D73',
+                textAlign: 'center',
+              }}
+            >
+              Quick Demo Access
             </span>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               <Button
                 variant="outline"
                 size="sm"
@@ -202,6 +271,11 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
                   loginAsCustomer();
                   showToast('Authorized as Customer (Ayesha Rahman).', 'success');
                   router.push('/account');
+                }}
+                style={{
+                  borderColor: 'rgba(230, 185, 195, 0.7)',
+                  color: '#4A3338',
+                  backgroundColor: '#FFF8FA',
                 }}
               >
                 Customer Demo
@@ -213,6 +287,11 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
                   loginAsAdmin();
                   showToast('Authorized as Operations Admin.', 'success');
                   router.push('/admin/dashboard');
+                }}
+                style={{
+                  borderColor: 'rgba(230, 185, 195, 0.7)',
+                  color: '#4A3338',
+                  backgroundColor: '#FFF8FA',
                 }}
               >
                 Admin Demo

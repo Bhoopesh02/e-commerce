@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion, useAnimationControls, useReducedMotion } from 'framer-motion';
 import { Heart, ShoppingBag, Check } from 'lucide-react';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
@@ -20,8 +21,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   aspectRatio = '3 / 4',
 }) => {
+  const shouldReduceMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const heartControls = useAnimationControls();
   const { isInWishlist, toggleItem } = useWishlistStore();
   const { addItem } = useCartStore();
 
@@ -38,19 +41,33 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     setTimeout(() => setIsAdding(false), 1200);
   };
 
-  const handleWishlistToggle = (e: React.MouseEvent) => {
+  const handleWishlistToggle = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     toggleItem(product.id);
+    if (!shouldReduceMotion) {
+      await heartControls.start({
+        scale: [1, 1.2, 1],
+        transition: {
+          type: 'spring',
+          stiffness: 450,
+          damping: 25,
+          duration: 0.28,
+        },
+      });
+    }
   };
 
+
   return (
-    <div
+    <motion.div
       style={{
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
       }}
+      whileHover={shouldReduceMotion ? undefined : { y: -6 }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -76,7 +93,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           className="product-image-primary"
           style={{
             objectFit: 'cover',
-            transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+            transform: isHovered && !shouldReduceMotion ? 'scale(1.15)' : 'scale(1)',
+            transition: 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
           }}
         />
 
@@ -91,7 +109,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             style={{
               objectFit: 'cover',
               opacity: isHovered ? 1 : 0,
-              transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+              transform: isHovered && !shouldReduceMotion ? 'scale(1.15)' : 'scale(1)',
+              transition: 'opacity 450ms ease, transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
               pointerEvents: 'none',
             }}
           />
@@ -115,11 +134,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </div>
 
-        {/* Wishlist Button (♡/♥) */}
-        <button
+        {/* Wishlist Button (♡/♥) with restrained spring pop */}
+        <motion.button
           className="hover-fill-btn"
           onClick={handleWishlistToggle}
           aria-label={isFavorited ? 'Remove from wishlist' : 'Add to wishlist'}
+          animate={heartControls}
+          whileTap={shouldReduceMotion ? undefined : { scale: 0.92 }}
           style={{
             position: 'absolute',
             top: '12px',
@@ -138,8 +159,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             color: isFavorited ? 'var(--color-sunset-600)' : 'var(--color-sunset-900)',
             cursor: 'pointer',
             zIndex: 3,
-            transition: 'all 0.3s',
-            transform: isFavorited ? 'scale(1.1)' : 'scale(1)',
           } as React.CSSProperties}
         >
           <Heart
@@ -148,7 +167,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             stroke="currentColor"
             strokeWidth={1.8}
           />
-        </button>
+        </motion.button>
 
         {/* Quick Add Overlay on Hover */}
         <div
@@ -229,6 +248,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <RatingStars rating={product.rating.average} size={12} totalReviews={product.rating.count} />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

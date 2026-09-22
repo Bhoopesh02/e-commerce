@@ -6,6 +6,7 @@ import { HeroSection } from '@/components/sections/HeroSection';
 import { ExpandingCarousel } from '@/components/sections/ExpandingCarousel';
 import { CategoryShowcase } from '@/components/sections/CategoryShowcase';
 import { EditorialCampaign } from '@/components/sections/EditorialCampaign';
+import { MostCovetedSilhouettes } from '@/components/sections/MostCovetedSilhouettes';
 import { ProductCard } from '@/components/product/ProductCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 import {
@@ -17,7 +18,8 @@ import {
 } from '@/lib/mockApi';
 import { Product, Category, StorefrontConfig } from '@/types';
 import Link from 'next/link';
-import { ArrowRight, Sparkles, Feather, ShieldCheck, Compass } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowRight } from 'lucide-react';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 
 import productsData from '@/data/products.json';
@@ -187,66 +189,7 @@ export const HomeView: React.FC = () => {
         return <EditorialCampaign key={id} />;
 
       case 'trending_products':
-        return (
-          <section key={id} style={{ padding: '80px 0', backgroundColor: 'var(--bg-primary)' }}>
-            <div className="container">
-              <ScrollReveal duration={0.5}>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'baseline',
-                    justifyContent: 'space-between',
-                    marginBottom: '40px',
-                    gap: '16px',
-                  }}
-                >
-                  <div>
-                    <span
-                      style={{
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        letterSpacing: '0.14em',
-                        textTransform: 'uppercase',
-                        color: 'var(--color-sunset-600)',
-                        display: 'block',
-                        marginBottom: '6px',
-                      }}
-                    >
-                      House Signatures
-                    </span>
-                    <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.5rem)' }}>Most Coveted Silhouettes</h2>
-                  </div>
-                  <Link
-                    href="/shop"
-                    className="editorial-arrow-link"
-                    style={{
-                      fontSize: '0.85rem',
-                      fontWeight: 600,
-                    }}
-                  >
-                    <span className="editorial-arrow-link-text">Explore Complete Wardrobe</span>
-                    <ArrowRight size={15} className="editorial-arrow-icon editorial-arrow-forward" />
-                  </Link>
-                </div>
-              </ScrollReveal>
-
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                  gap: '32px',
-                }}
-              >
-                {trending.slice(0, 4).map((product, idx) => (
-                  <ScrollReveal key={product.id} delay={idx * 0.08} duration={0.5}>
-                    <ProductCard product={product} />
-                  </ScrollReveal>
-                ))}
-              </div>
-            </div>
-          </section>
-        );
+        return <MostCovetedSilhouettes key={id} products={trending} />;
 
       case 'brand_story':
         return (
@@ -278,11 +221,16 @@ export const HomeView: React.FC = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: 'var(--color-sunset-600)',
                         flexShrink: 0,
                       }}
                     >
-                      <Feather size={20} />
+                      <Image
+                        src="/images/icons/icon-purity.webp"
+                        alt="Purity of Material"
+                        width={22}
+                        height={22}
+                        style={{ width: 22, height: 22, objectFit: 'contain' }}
+                      />
                     </div>
                     <div>
                       <h3 style={{ fontSize: '1.15rem', marginBottom: '8px' }}>Purity of Material</h3>
@@ -304,11 +252,16 @@ export const HomeView: React.FC = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: 'var(--color-sunset-600)',
                         flexShrink: 0,
                       }}
                     >
-                      <ShieldCheck size={20} />
+                      <Image
+                        src="/images/icons/icon-guarantee.webp"
+                        alt="Atelier Guarantee"
+                        width={22}
+                        height={22}
+                        style={{ width: 22, height: 22, objectFit: 'contain' }}
+                      />
                     </div>
                     <div>
                       <h3 style={{ fontSize: '1.15rem', marginBottom: '8px' }}>Atelier Guarantee</h3>
@@ -330,11 +283,16 @@ export const HomeView: React.FC = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: 'var(--color-sunset-600)',
                         flexShrink: 0,
                       }}
                     >
-                      <Compass size={20} />
+                      <Image
+                        src="/images/icons/icon-traceable.webp"
+                        alt="Traceable Craft"
+                        width={22}
+                        height={22}
+                        style={{ width: 22, height: 22, objectFit: 'contain' }}
+                      />
                     </div>
                     <div>
                       <h3 style={{ fontSize: '1.15rem', marginBottom: '8px' }}>Traceable Craft</h3>

@@ -5,7 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { Button } from '@/components/ui/Button';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { TextLoop } from '@/components/ui/TextLoop';
 
 export const HeroSection: React.FC = () => {
   const { storefront } = useStorefrontStore();
@@ -40,7 +41,7 @@ export const HeroSection: React.FC = () => {
         <Image
           src={
             isEditorial
-              ? '/images/hero/hero-editorial.webp'
+              ? '/images/hero/photo-1635091984256-dc15291bb483-4k.webp'
               : '/images/hero/hero-refined.webp'
           }
           alt="Aurelia Luxury Campaign"
@@ -118,7 +119,7 @@ export const HeroSection: React.FC = () => {
                 </Button>
               </Link>
               <Link href="/shop?tag=new-arrival">
-                <Button variant="outline" size="lg" style={{ backgroundColor: '#FFF', color: 'var(--color-sunset-900)', borderColor: '#FFF' }}>
+                <Button variant="white" size="lg">
                   View Runway Arrivals
                 </Button>
               </Link>
@@ -179,13 +180,43 @@ export const HeroSection: React.FC = () => {
                 </Button>
               </Link>
               <Link href="/shop?categorySlug=tailoring">
-                <Button variant="outline" size="lg" style={{ backgroundColor: '#FFF', color: 'var(--color-sunset-900)', borderColor: '#FFF' }}>
+                <Button variant="white" size="lg">
                   Explore Tailoring
                 </Button>
               </Link>
             </div>
           </div>
         )}
+      </div>
+
+      {/* Bottom Edge Attached Infinite Text Loop Ribbon */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          width: '100%',
+          zIndex: 10,
+          borderTop: '1px solid rgba(243, 159, 90, 0.18)',
+        }}
+      >
+        <TextLoop
+          text="AUTUMN / WINTER 2026 EDITION • PURE VIRGIN CASHMERE • HAND-FINISHED IN BIELLA & COMO • NUMBERED ATELIER RUNS • ARCHIVAL SILHOUETTES"
+          shape="line"
+          speed={42}
+          direction="forward"
+          separator="✦"
+          fontSize={12.5}
+          fontWeight={500}
+          letterSpacing={2.5}
+          uppercase={true}
+          color="var(--color-sunset-400, #F39F5A)"
+          ribbon={true}
+          ribbonColor="var(--color-sunset-900, #1D1A39)"
+          ribbonWidth={40}
+          pauseOnHover={false}
+        />
       </div>
     </section>
   );

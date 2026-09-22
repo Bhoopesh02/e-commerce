@@ -59,7 +59,7 @@ export const useCartStore = create<CartState>((set, get) => ({
         description: 'Hand-finished leather jacket crafted in Milan from supple nappa leather.',
         categoryId: 'cat_outerwear',
         price: 24999,
-        images: ['/images/products/italian-leather-jacket-1.webp'],
+        images: ['/images/products/italian-leather-jacket-4k-1.webp'],
         variants: [
           { sku: 'LJ-BLK-M', size: 'M', color: 'Nocturne Black', stock: 4 }
         ],

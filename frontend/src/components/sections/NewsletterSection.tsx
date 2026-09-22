@@ -137,12 +137,10 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
             </div>
             <Button
               type="submit"
-              variant="secondary"
+              variant="white"
               size="md"
               isLoading={isLoading}
               style={{
-                backgroundColor: '#FFF',
-                color: 'var(--color-sunset-900)',
                 flexShrink: 0,
               }}
             >
