@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/useCartStore';
 import { formatPrice } from '@/lib/formatPrice';
 import { Button } from '@/components/ui/Button';
-import { Trash2, Plus, Minus, Tag, Check, ArrowRight, ShieldCheck, ShoppingBag } from 'lucide-react';
+import { Plus, Minus, Tag, Check, ArrowRight, ShieldCheck, ShoppingBag } from 'lucide-react';
+import { AnimatedTrashIcon } from '@/components/ui/AnimatedTrashIcon';
 
 export const CartView: React.FC = () => {
   const router = useRouter();
@@ -132,7 +133,7 @@ export const CartView: React.FC = () => {
                       style={{ color: 'var(--text-muted)', cursor: 'pointer' }}
                       aria-label="Remove item"
                     >
-                      <Trash2 size={16} />
+                      <AnimatedTrashIcon size={16} />
                     </button>
                   </div>
 

@@ -1,217 +1,465 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { BRAND_NAME, BRAND_TAGLINE } from '@/lib/constants';
-import { useAuthStore } from '@/store/useAuthStore';
-import { Shield, ArrowUpRight } from 'lucide-react';
+import { useToastStore } from '@/store/useToastStore';
+import { CheckCircle2, ShieldCheck, Mail } from 'lucide-react';
 
 export const Footer: React.FC = () => {
-  const { role, loginAsCustomer, loginAsAdmin } = useAuthStore();
+  const { showToast } = useToastStore();
+
+  // Newsletter interactive state
+  const [email, setEmail] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !email.includes('@')) {
+      showToast('Please provide a valid client email address.', 'error');
+      return;
+    }
+
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsSubmitted(true);
+      showToast('Welcome to the Aurelia Private Ledger.', 'success');
+    }, 400);
+  };
 
   return (
     <footer
+      role="contentinfo"
+      aria-label="Atelier Footer"
       style={{
-        backgroundColor: 'var(--color-sunset-900)',
+        backgroundColor: 'var(--color-sunset-900, #1D1A39)',
         color: '#FFF8F5',
         borderTop: '1px solid rgba(232, 188, 185, 0.2)',
-        paddingTop: '80px',
-        paddingBottom: '40px',
         marginTop: 'auto',
+        position: 'relative',
+        zIndex: 10,
       }}
     >
-      <div className="container">
-        {/* Top Grid */}
+      <div className="container" style={{ paddingLeft: '24px', paddingRight: '24px' }}>
+        {/* ================================================================= */}
+        {/* 1. NEWSLETTER / PRIVATE LEDGER SECTION                            */}
+        {/* ================================================================= */}
+        <section
+          aria-labelledby="footer-newsletter-heading"
+          style={{
+            paddingTop: '64px',
+            paddingBottom: '56px',
+            borderBottom: '1px solid rgba(232, 188, 185, 0.15)',
+          }}
+        >
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '40px',
+              alignItems: 'center',
+            }}
+          >
+            {/* Copy side */}
+            <div style={{ maxWidth: '560px' }}>
+              <span
+                style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.18em',
+                  textTransform: 'uppercase',
+                  color: 'var(--color-sunset-400, #F39F5A)',
+                  display: 'block',
+                  marginBottom: '8px',
+                }}
+              >
+                Atelier Correspondence
+              </span>
+              <h2
+                id="footer-newsletter-heading"
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'clamp(1.75rem, 3vw, 2.3rem)',
+                  fontWeight: 500,
+                  letterSpacing: '-0.01em',
+                  color: '#FFF8F5',
+                  marginBottom: '10px',
+                  lineHeight: 1.2,
+                }}
+              >
+                The Private Ledger
+              </h2>
+              <p
+                style={{
+                  fontSize: '0.88rem',
+                  color: 'var(--color-sunset-200, #E8BCB9)',
+                  lineHeight: 1.65,
+                }}
+              >
+                Receive invitations to private salon previews, new editions, and styling consultations. Dispatched exclusively via email.
+              </p>
+            </div>
+
+            {/* Input & Form side */}
+            <div style={{ width: '100%', maxWidth: '480px', justifySelf: 'end' }}>
+              {isSubmitted ? (
+                <div
+                  style={{
+                    padding: '16px 20px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                    backdropFilter: 'blur(8px)',
+                    borderRadius: 'var(--radius-sm, 8px)',
+                    border: '1px solid rgba(243, 159, 90, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                  }}
+                >
+                  <CheckCircle2 size={20} style={{ color: 'var(--color-sunset-400, #F39F5A)', flexShrink: 0 }} />
+                  <span style={{ fontSize: '0.86rem', color: '#FFF8F5', lineHeight: 1.5 }}>
+                    Your email ({email}) is inscribed. We honor your privacy with email-only correspondence.
+                  </span>
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleSubscribe}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                  }}
+                >
+                  <div
+                    className="footer-input-wrapper"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      backgroundColor: 'rgba(255, 255, 255, 0.07)',
+                      borderRadius: 'var(--radius-pill, 999px)',
+                      padding: '5px 6px 5px 18px',
+                      border: '1px solid rgba(232, 188, 185, 0.25)',
+                      transition: 'border-color 200ms ease, box-shadow 200ms ease',
+                    }}
+                  >
+                    <Mail size={17} className="mail-icon" style={{ color: 'var(--color-sunset-200, #E8BCB9)', marginRight: '10px', flexShrink: 0 }} />
+                    <input
+                      type="email"
+                      required
+                      placeholder="Enter your email address..."
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      aria-label="Email address for private ledger"
+                      style={{
+                        flex: 1,
+                        background: 'transparent',
+                        border: 'none',
+                        outline: 'none',
+                        color: '#FFF8F5',
+                        fontSize: '0.88rem',
+                        minWidth: 0,
+                      }}
+                    />
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="footer-inscribe-btn"
+                      style={{
+                        flexShrink: 0,
+                        backgroundColor: 'var(--color-sunset-400, #F39F5A)',
+                        color: '#1D1A39',
+                        fontSize: '0.82rem',
+                        fontWeight: 600,
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                        padding: '10px 22px',
+                        borderRadius: 'var(--radius-pill, 999px)',
+                        border: 'none',
+                        cursor: isLoading ? 'wait' : 'pointer',
+                        transition: 'background-color 200ms ease, transform 150ms ease',
+                      }}
+                    >
+                      {isLoading ? 'Inscribing...' : 'Inscribe'}
+                    </button>
+                  </div>
+                  <span style={{ fontSize: '0.74rem', color: 'rgba(232, 188, 185, 0.65)', paddingLeft: '14px' }}>
+                    Strictly confidential. No SMS or promotional push alerts.
+                  </span>
+                </form>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================= */}
+        {/* 2. MAIN 4-COLUMN CONTENT GRID                                     */}
+        {/* ================================================================= */}
         <div
           style={{
+            paddingTop: '64px',
+            paddingBottom: '56px',
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
             gap: '48px',
-            marginBottom: '64px',
           }}
+          className="footer-columns-grid"
         >
-          {/* Brand Col */}
-          <div style={{ maxWidth: '340px' }}>
-            <h2
+          {/* COLUMN 1 — AURELIA */}
+          <div style={{ maxWidth: '340px' }} className="footer-col-brand">
+            <Link
+              href="/"
               style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '2rem',
-                letterSpacing: '0.18em',
-                marginBottom: '12px',
-                color: '#FFF8F5',
+                display: 'inline-block',
+                textDecoration: 'none',
+                color: 'inherit',
+                marginBottom: '4px',
               }}
             >
-              {BRAND_NAME}
-            </h2>
+              <span
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '1.9rem',
+                  letterSpacing: '0.22em',
+                  fontWeight: 600,
+                  color: '#FFF8F5',
+                  textTransform: 'uppercase',
+                  display: 'block',
+                }}
+              >
+                {BRAND_NAME}
+              </span>
+            </Link>
+
+            <span
+              style={{
+                display: 'block',
+                fontSize: '0.78rem',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: 'var(--color-sunset-400, #F39F5A)',
+                fontWeight: 500,
+                marginBottom: '16px',
+              }}
+            >
+              {BRAND_TAGLINE}
+            </span>
+
             <p
               style={{
-                fontSize: '0.88rem',
-                color: 'var(--color-sunset-200)',
+                fontSize: '0.86rem',
+                color: 'var(--color-sunset-200, #E8BCB9)',
                 lineHeight: 1.7,
-                marginBottom: '24px',
+                marginBottom: '14px',
               }}
             >
               {BRAND_TAGLINE}. Crafted between Milan, Tuscany, and Paris with traceable European materials and enduring silhouette integrity.
             </p>
+
+            <p
+              style={{
+                fontSize: '0.8rem',
+                color: 'rgba(232, 188, 185, 0.72)',
+                lineHeight: 1.6,
+                fontStyle: 'italic',
+                marginBottom: '24px',
+              }}
+            >
+              Designed with enduring silhouette integrity and crafted from traceable European materials.
+            </p>
+
+            {/* Atelier Headquarters & Concierge Inquiries */}
+            <div
+              style={{
+                paddingTop: '16px',
+                borderTop: '1px solid rgba(232, 188, 185, 0.12)',
+                fontSize: '0.78rem',
+                color: 'rgba(232, 188, 185, 0.7)',
+                lineHeight: 1.65,
+              }}
+            >
+              <div style={{ color: 'var(--color-sunset-400, #F39F5A)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '2px' }}>
+                Atelier Operations
+              </div>
+              <div>Penthouse 9, UB City, Bengaluru, Karnataka, 560001, India</div>
+              <div>Direct: +91 98000 11223</div>
+            </div>
           </div>
 
-          {/* Nav Col 1 */}
-          <div>
+          {/* COLUMN 2 — COLLECTIONS (All 8 registered categories) */}
+          <div className="footer-nav-col">
             <h3
               style={{
-                fontSize: '0.82rem',
-                letterSpacing: '0.14em',
+                fontSize: '0.8rem',
+                letterSpacing: '0.16em',
                 textTransform: 'uppercase',
-                color: 'var(--color-sunset-200)',
+                color: 'var(--color-sunset-200, #E8BCB9)',
+                fontWeight: 600,
                 marginBottom: '20px',
               }}
             >
               Collections
             </h3>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+
+            <ul className="footer-links-list">
               <li>
-                <Link href="/shop?categorySlug=outerwear" style={{ fontSize: '0.9rem', color: '#E8BCB9' }}>
+                <Link href="/shop?categorySlug=outerwear" className="footer-link">
                   Outerwear & Coats
                 </Link>
               </li>
               <li>
-                <Link href="/shop?categorySlug=tailoring" style={{ fontSize: '0.9rem', color: '#E8BCB9' }}>
+                <Link href="/shop?categorySlug=tailoring" className="footer-link">
                   Bespoke Tailoring
                 </Link>
               </li>
               <li>
-                <Link href="/shop?categorySlug=eveningwear" style={{ fontSize: '0.9rem', color: '#E8BCB9' }}>
+                <Link href="/shop?categorySlug=eveningwear" className="footer-link">
                   Silk Eveningwear
                 </Link>
               </li>
               <li>
-                <Link href="/shop?categorySlug=knitwear" style={{ fontSize: '0.9rem', color: '#E8BCB9' }}>
+                <Link href="/shop?categorySlug=knitwear" className="footer-link">
                   Cashmere Knitwear
                 </Link>
               </li>
               <li>
-                <Link href="/shop?categorySlug=leather-goods" style={{ fontSize: '0.9rem', color: '#E8BCB9' }}>
-                  Hand-Finished Leather
+                <Link href="/shop?categorySlug=leather-goods" className="footer-link">
+                  Hand-Finished Leather Goods
+                </Link>
+              </li>
+              <li>
+                <Link href="/shop?categorySlug=footwear" className="footer-link">
+                  Florentine Footwear
+                </Link>
+              </li>
+              <li>
+                <Link href="/shop?categorySlug=fine-jewelry" className="footer-link">
+                  Sculptural Fine Jewelry
+                </Link>
+              </li>
+              <li>
+                <Link href="/shop?categorySlug=fragrances" className="footer-link">
+                  Artisanal Fragrances
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Nav Col 2 */}
-          <div>
+          {/* COLUMN 3 — CLIENT CONCIERGE */}
+          <div className="footer-nav-col">
             <h3
               style={{
-                fontSize: '0.82rem',
-                letterSpacing: '0.14em',
+                fontSize: '0.8rem',
+                letterSpacing: '0.16em',
                 textTransform: 'uppercase',
-                color: 'var(--color-sunset-200)',
+                color: 'var(--color-sunset-200, #E8BCB9)',
+                fontWeight: 600,
                 marginBottom: '20px',
               }}
             >
               Client Concierge
             </h3>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+
+            <ul className="footer-links-list">
               <li>
-                <Link href="/account" style={{ fontSize: '0.9rem', color: '#E8BCB9' }}>
+                <Link href="/account" className="footer-link">
                   Private Client Account
                 </Link>
               </li>
               <li>
-                <Link href="/account/support" style={{ fontSize: '0.9rem', color: '#E8BCB9' }}>
+                <Link href="/account/support" className="footer-link">
                   Bespoke Inquiries & Support
                 </Link>
               </li>
               <li>
-                <Link href="/offers" style={{ fontSize: '0.9rem', color: '#E8BCB9' }}>
+                <Link href="/offers" className="footer-link">
                   Seasonal Privileges
                 </Link>
               </li>
               <li>
-                <span style={{ fontSize: '0.85rem', color: 'rgba(232, 188, 185, 0.7)' }}>
-                  Dispatches via Email Only
-                </span>
+                <Link href="/cart" className="footer-link">
+                  Shopping Bag
+                </Link>
               </li>
               <li>
-                <span style={{ fontSize: '0.85rem', color: 'rgba(232, 188, 185, 0.7)' }}>
-                  7-Day Delivery Return Window
-                </span>
+                <Link href="/account/orders" className="footer-link">
+                  Order History
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Admin & Role Matrix Demo Switcher */}
-          <div>
+          {/* COLUMN 4 — THE HOUSE */}
+          <div className="footer-nav-col">
             <h3
               style={{
-                fontSize: '0.82rem',
-                letterSpacing: '0.14em',
+                fontSize: '0.8rem',
+                letterSpacing: '0.16em',
                 textTransform: 'uppercase',
-                color: 'var(--color-sunset-200)',
+                color: 'var(--color-sunset-200, #E8BCB9)',
+                fontWeight: 600,
                 marginBottom: '20px',
               }}
             >
-              Role & Portal Access
+              The House
             </h3>
-            <p style={{ fontSize: '0.85rem', color: '#E8BCB9', marginBottom: '16px', lineHeight: 1.6 }}>
-              Current actor is <strong>{role.toUpperCase()}</strong>. Switch roles below to test client vs admin controls:
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <button
-                onClick={loginAsCustomer}
-                style={{
-                  textAlign: 'left',
-                  padding: '8px 14px',
-                  borderRadius: 'var(--radius-sm)',
-                  backgroundColor: role === 'customer' ? 'var(--color-sunset-600)' : 'rgba(255, 255, 255, 0.08)',
-                  color: '#FFF',
-                  fontSize: '0.82rem',
-                  fontWeight: 500,
-                  cursor: 'pointer',
-                }}
-              >
-                ✓ View as Customer (Ayesha Rahman)
-              </button>
-              <button
-                onClick={loginAsAdmin}
-                style={{
-                  textAlign: 'left',
-                  padding: '8px 14px',
-                  borderRadius: 'var(--radius-sm)',
-                  backgroundColor: role === 'admin' ? 'var(--color-sunset-600)' : 'rgba(255, 255, 255, 0.08)',
-                  color: '#FFF',
-                  fontSize: '0.82rem',
-                  fontWeight: 500,
-                  cursor: 'pointer',
-                }}
-              >
-                ✓ View as Admin (Marcus Vance)
-              </button>
 
-              {role === 'admin' && (
-                <Link
-                  href="/admin/dashboard"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontSize: '0.85rem',
-                    color: 'var(--color-sunset-400)',
-                    fontWeight: 600,
-                    marginTop: '4px',
-                  }}
-                >
-                  <Shield size={14} /> Open Admin Operations Panel <ArrowUpRight size={14} />
-                </Link>
-              )}
+            <div className="footer-links-list">
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <li>
+                  <Link href="/#brand-story" className="footer-link">
+                    The House Philosophy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?tag=new-arrival" className="footer-link">
+                    New Arrivals
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop" className="footer-link">
+                    Signature Icons
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?tag=trending" className="footer-link">
+                    House Favorites
+                  </Link>
+                </li>
+              </ul>
+
+              {/* Non-linked editorial hallmarks */}
+              <div
+                style={{
+                  marginTop: '18px',
+                  paddingTop: '16px',
+                  borderTop: '1px solid rgba(232, 188, 185, 0.12)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '6px',
+                  fontSize: '0.78rem',
+                  color: 'rgba(232, 188, 185, 0.65)',
+                  lineHeight: 1.6,
+                }}
+              >
+                <span>Crafted between Milan, Tuscany, and Paris.</span>
+                <span>Traceable European materials.</span>
+                <span>Timeless heirloom construction.</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Strip */}
+
+
+        {/* ================================================================= */}
+        {/* 4. BOTTOM COPYRIGHT BAR                                           */}
+        {/* ================================================================= */}
         <div
           style={{
-            borderTop: '1px solid rgba(232, 188, 185, 0.15)',
-            paddingTop: '28px',
+            borderTop: '1px solid rgba(232, 188, 185, 0.12)',
+            paddingTop: '24px',
+            paddingBottom: '32px',
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'center',
@@ -222,13 +470,99 @@ export const Footer: React.FC = () => {
           }}
         >
           <div>
-            © {new Date().getFullYear()} {BRAND_NAME} Atelier. All rights reserved. Prices in Indian Rupees (INR ₹).
+            © 2026 {BRAND_NAME} Atelier. All rights reserved.
           </div>
-          <div style={{ display: 'flex', gap: '24px' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              gap: '16px',
+            }}
+          >
+            <span>Prices in Indian Rupees (INR ₹)</span>
+            <span aria-hidden="true" style={{ color: 'rgba(232, 188, 185, 0.3)' }}>·</span>
             <span>Complimentary Insured Courier</span>
           </div>
         </div>
       </div>
+
+      {/* Styled JSX for Responsive Layout, Links & Hover States */}
+      <style jsx>{`
+        @keyframes mailShake {
+          0% { transform: translateY(0) rotate(0deg); }
+          25% { transform: translateY(-3px) rotate(-6deg); }
+          50% { transform: translateY(-3px) rotate(6deg); }
+          75% { transform: translateY(-3px) rotate(-3deg); }
+          100% { transform: translateY(-3px) rotate(0deg); }
+        }
+
+        :global(.mail-icon) {
+          cursor: pointer;
+        }
+
+        :global(.mail-icon:hover) {
+          animation: mailShake 0.4s ease-in-out forwards;
+        }
+
+        .footer-link {
+          font-size: 0.88rem;
+          color: #E8BCB9;
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          min-height: 36px;
+          transition: color 200ms ease, transform 150ms ease;
+        }
+        .footer-link:hover {
+          color: #FFF8F5;
+          transform: translateX(3px);
+        }
+        .footer-link:focus-visible {
+          outline: 2px solid var(--color-sunset-400, #F39F5A);
+          outline-offset: 4px;
+          border-radius: 2px;
+        }
+        .footer-input-wrapper:focus-within {
+          border-color: var(--color-sunset-400, #F39F5A) !important;
+          box-shadow: 0 0 0 1px var(--color-sunset-400, #F39F5A);
+        }
+        .footer-inscribe-btn:hover:not(:disabled) {
+          background-color: #E08E49 !important;
+          transform: translateY(-1px);
+        }
+        .footer-inscribe-btn:focus-visible {
+          outline: 2px solid #FFF;
+          outline-offset: 2px;
+        }
+
+        .footer-links-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        @media (max-width: 767px) {
+          .footer-columns-grid {
+            grid-template-columns: 1fr !important;
+            gap: 36px !important;
+            padding-top: 40px !important;
+            padding-bottom: 40px !important;
+          }
+          .footer-col-brand {
+            max-width: 100% !important;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(232, 188, 185, 0.15);
+          }
+          .footer-link {
+            min-height: 40px;
+            width: 100%;
+          }
+        }
+      `}</style>
     </footer>
   );
 };

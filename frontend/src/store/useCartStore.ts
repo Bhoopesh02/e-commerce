@@ -67,7 +67,7 @@ export const useCartStore = create<CartState>((set, get) => ({
         rating: { average: 4.8, count: 32 },
         featured: true,
         tags: ['new-arrival', 'outerwear'],
-        storefronts: ['a', 'b']
+        storefronts: ['a']
       },
       sku: 'LJ-BLK-M',
       size: 'M',

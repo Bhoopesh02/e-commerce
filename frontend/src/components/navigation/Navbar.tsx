@@ -224,7 +224,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             <button
               onClick={onOpenSearch}
               aria-label="Search Collection"
-              className="navbar-action-btn"
+              className="navbar-action-btn nav-icon search"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -250,7 +250,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             <Link
               href="/wishlist"
               aria-label="Wishlist"
-              className="navbar-action-btn"
+              className="navbar-action-btn nav-icon heart"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -270,6 +270,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <Heart size={20} />
               {wishlistCount > 0 && (
                 <span
+                  className="badge"
                   style={{
                     position: 'absolute',
                     top: '6px',
@@ -295,7 +296,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             <Link
               href={accountHref}
               aria-label={user?.role === 'admin' ? 'Admin Control' : 'Account'}
-              className="navbar-action-btn navbar-account-link"
+              className="navbar-action-btn navbar-account-link nav-icon profile"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -318,7 +319,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             <button
               onClick={openDrawer}
               aria-label="Shopping Bag"
-              className="navbar-action-btn"
+              className="navbar-action-btn nav-icon bag"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -341,6 +342,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <ShoppingBag size={20} />
               {cartCount > 0 && (
                 <span
+                  className="badge"
                   style={{
                     position: 'absolute',
                     top: '6px',

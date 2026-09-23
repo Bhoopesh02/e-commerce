@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Search, X, ArrowLeft, Plus, Check } from 'lucide-react';
-import { getProducts } from '@/lib/mockApi';
+import { getProducts, getNewArrivals } from '@/lib/mockApi';
 import { Product } from '@/types';
 import { useCartStore } from '@/store/useCartStore';
 import { formatPrice } from '@/lib/formatPrice';
@@ -81,11 +81,13 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
 
   // Fetch results based on query or default to new-arrival/featured products
   useEffect(() => {
+    if (!isOpen) return;
+    
     const timer = setTimeout(async () => {
       setIsLoading(true);
       try {
         if (!query.trim()) {
-          const data = await getProducts({ tag: 'new-arrival' }); 
+          const data = await getNewArrivals(); 
           setResults(data.slice(0, 4)); // limit to 4 items for the drawer
         } else {
           const data = await getProducts({ searchQuery: query });
@@ -97,7 +99,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [query]);
+  }, [query, isOpen]);
 
   const handleQuickAdd = (product: Product) => {
     const defaultVariant = product.variants?.[0];
@@ -170,9 +172,17 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                transition: 'all 200ms ease',
+                transform: 'translateX(0)',
               }}
-              onMouseOver={(e) => (e.currentTarget.style.color = 'var(--text-primary)')}
-              onMouseOut={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
+              onMouseOver={(e) => {
+                e.currentTarget.style.color = 'var(--text-primary)';
+                e.currentTarget.style.transform = 'translateX(-3px)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.color = 'var(--text-muted)';
+                e.currentTarget.style.transform = 'translateX(0)';
+              }}
               aria-label="Back"
             >
               <ArrowLeft size={20} />
@@ -288,8 +298,29 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
         {/* Drawer Body ("What's New" or Results Grid) */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'var(--bg-primary)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px', margin: 0, fontWeight: 600 }}>
-              {!query.trim() ? "What's New" : "Search Results"} <span style={{ color: 'var(--color-sunset-400)', fontFamily: 'var(--font-display)' }}>★</span>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px', margin: 0, fontWeight: 600 }}>
+              {!query.trim() ? (
+                <>
+                  New Arrivals
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="26"
+                    height="26"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="var(--color-sunset-600)"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M4.5 8l-1.5 12A1.5 1.5 0 0 0 4.5 21.5h15a1.5 1.5 0 0 0 1.5-1.5L19.5 8H4.5z" />
+                    <path d="M8 8V5.5a4 4 0 0 1 8 0V8" />
+                    <text x="12" y="16.5" fontSize="6.5" fontWeight="900" fontFamily="system-ui, -apple-system, sans-serif" textAnchor="middle" fill="var(--color-sunset-600)" stroke="none" style={{ textTransform: 'lowercase', letterSpacing: '-0.08em' }}>new</text>
+                  </svg>
+                </>
+              ) : (
+                "Search Results"
+              )}
             </h3>
             <span style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-muted)' }}>
               {isLoading ? '...' : `${results.length} Items`}

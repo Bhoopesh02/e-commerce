@@ -8,7 +8,8 @@ import { Drawer } from '@/components/ui/Drawer';
 import { Button } from '@/components/ui/Button';
 import { useCartStore } from '@/store/useCartStore';
 import { formatPrice } from '@/lib/formatPrice';
-import { Trash2, Plus, Minus, Tag, Check, ArrowRight, ShoppingBag } from 'lucide-react';
+import { Plus, Minus, Tag, Check, ArrowRight, ShoppingBag } from 'lucide-react';
+import { AnimatedTrashIcon } from '@/components/ui/AnimatedTrashIcon';
 
 export const CartDrawer: React.FC = () => {
   const router = useRouter();
@@ -157,7 +158,7 @@ export const CartDrawer: React.FC = () => {
                         style={{ color: 'var(--text-muted)', padding: '2px' }}
                         aria-label={`Remove ${item.product.name}`}
                       >
-                        <Trash2 size={15} />
+                        <AnimatedTrashIcon size={15} />
                       </button>
                     </div>
 

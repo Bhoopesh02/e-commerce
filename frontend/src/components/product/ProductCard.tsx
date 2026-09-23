@@ -15,11 +15,13 @@ import { Badge } from '@/components/ui/Badge';
 export interface ProductCardProps {
   product: Product;
   aspectRatio?: string;
+  variant?: 'standard' | 'overlay';
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   aspectRatio = '3 / 4',
+  variant = 'standard',
 }) => {
   const shouldReduceMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
@@ -173,7 +175,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div
           style={{
             position: 'absolute',
-            bottom: '12px',
+            bottom: variant === 'overlay' ? '80px' : '12px',
             left: '12px',
             right: '12px',
             zIndex: 3,
@@ -207,10 +209,63 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </button>
         </div>
+
+        {/* Overlay Product Meta */}
+        {variant === 'overlay' && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: '60px 16px 16px',
+              background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%)',
+              zIndex: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4px',
+              pointerEvents: 'none',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+              <div style={{ flex: 1, paddingRight: '12px' }}>
+                <h3
+                  style={{
+                    fontSize: '1.05rem',
+                    fontWeight: 500,
+                    color: '#FFFFFF',
+                    lineHeight: 1.2,
+                    fontFamily: 'var(--font-display)',
+                    marginBottom: '2px',
+                    textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                  }}
+                >
+                  {product.name}
+                </h3>
+                {product.subtitle && (
+                  <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.85)' }}>
+                    {product.subtitle}
+                  </span>
+                )}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                <span style={{ fontSize: '1rem', fontWeight: 600, color: '#FFFFFF', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
+                  {formatPrice(product.price)}
+                </span>
+                {product.compareAtPrice && (
+                  <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.7)', textDecoration: 'line-through' }}>
+                    {formatPrice(product.compareAtPrice)}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </Link>
 
       {/* Product Meta */}
-      <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      {variant === 'standard' && (
+        <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <Link href={`/product/${product.slug}`}>
             <h3
@@ -247,7 +302,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
           <RatingStars rating={product.rating.average} size={12} totalReviews={product.rating.count} />
         </div>
-      </div>
+        </div>
+      )}
     </motion.div>
   );
 };

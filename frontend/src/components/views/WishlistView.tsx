@@ -94,7 +94,7 @@ export const WishlistView: React.FC = () => {
               <Heart size={13} fill="currentColor" />
               <span>Personal Curation</span>
             </div>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)' }}>Client Wishlist</h1>
+            <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)' }}>Wishlist</h1>
           </div>
 
           {products.length > 0 && (

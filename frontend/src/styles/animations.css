@@ -5,6 +5,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -16,6 +17,7 @@
     opacity: 0;
     transform: translateY(16px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -26,6 +28,7 @@
   from {
     transform: scale(1.06);
   }
+
   to {
     transform: scale(1);
   }
@@ -35,6 +38,7 @@
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
@@ -44,20 +48,19 @@
   0% {
     background-position: 200% center;
   }
+
   100% {
     background-position: -200% center;
   }
 }
 
 .typography-shimmer {
-  background: linear-gradient(
-    105deg,
-    var(--color-sunset-400) 0%,
-    var(--color-sunset-400) 35%,
-    #FFF9F6 50%,
-    var(--color-sunset-400) 65%,
-    var(--color-sunset-400) 100%
-  );
+  background: linear-gradient(105deg,
+      var(--color-sunset-400) 0%,
+      var(--color-sunset-400) 35%,
+      #FFF9F6 50%,
+      var(--color-sunset-400) 65%,
+      var(--color-sunset-400) 100%);
   background-size: 200% auto;
   color: transparent !important;
   -webkit-background-clip: text;
@@ -68,18 +71,24 @@
 }
 
 @keyframes pulseSubtle {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.6;
   }
 }
 
 @keyframes floatBadge {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-4px);
   }
@@ -94,18 +103,17 @@
 }
 
 .skeleton-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(232, 188, 185, 0.15) 0%,
-    rgba(243, 159, 90, 0.25) 50%,
-    rgba(232, 188, 185, 0.15) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(232, 188, 185, 0.15) 0%,
+      rgba(243, 159, 90, 0.25) 50%,
+      rgba(232, 188, 185, 0.15) 100%);
   background-size: 200% 100%;
   animation: shimmer 1.8s infinite;
 }
 
 /* Reduced Motion preferences */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -123,6 +131,27 @@
     color: var(--color-sunset-400) !important;
     -webkit-text-fill-color: var(--color-sunset-400) !important;
   }
+
+  .animate-infinite-scroll {
+    animation-play-state: paused !important;
+  }
+}
+
+@keyframes infiniteScroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-infinite-scroll {
+  /* High performance infinite horizontal scroll */
+  display: flex;
+  width: max-content;
+  animation: infiniteScroll 90s linear infinite;
+  will-change: transform;
 }
 
 /* Custom Hover Fill Animation */
@@ -222,7 +251,7 @@
 
 .product-image-secondary {
   transition: opacity var(--product-switch-duration, 1200ms) var(--ease-luxury),
-              transform var(--product-switch-duration, 1200ms) var(--ease-luxury);
+    transform var(--product-switch-duration, 1200ms) var(--ease-luxury);
   will-change: opacity, transform;
 }
 
@@ -327,12 +356,10 @@
   left: 0;
   width: 100%;
   height: 300%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.45) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.45) 50%,
+      transparent 100%);
   transform: translateX(-150%) rotate(25deg);
   pointer-events: none;
   z-index: 1;
@@ -342,12 +369,10 @@
 
 /* Sheen color for white / outline buttons (subtle warm amber sheen for contrast) */
 .luxury-btn-outline::after {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(243, 159, 90, 0.4) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(243, 159, 90, 0.4) 50%,
+      transparent 100%);
 }
 
 .luxury-btn-outline {
@@ -395,12 +420,10 @@ a:hover .luxury-btn-white:not(:disabled) {
 }
 
 .luxury-btn-white::after {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(243, 159, 90, 0.25) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(243, 159, 90, 0.25) 50%,
+      transparent 100%);
 }
 
 /* Diagonal sweep across pill on hover / focus-visible (supports both direct button hover and Link parent hover) */
@@ -413,7 +436,7 @@ a:focus-visible .luxury-btn:not(:disabled)::after {
 
 /* Typography label: crisp, isolated, and completely stationary */
 .luxury-btn-label,
-.luxury-btn > span:not(.luxury-btn-icon-right):not(.luxury-btn-icon-left) {
+.luxury-btn>span:not(.luxury-btn-icon-right):not(.luxury-btn-icon-left) {
   position: relative;
   z-index: 2;
   display: inline-block;
@@ -430,7 +453,7 @@ a:focus-visible .luxury-btn:not(:disabled)::after {
 /* Trailing arrow icon (→): subtle ease-out translation on hover, smooth return on leave */
 .luxury-btn-icon-right,
 .luxury-btn svg.lucide-arrow-right:not(.luxury-btn-icon-right *),
-.luxury-btn > span:last-child svg {
+.luxury-btn>span:last-child svg {
   position: relative;
   z-index: 2;
   display: inline-flex;
@@ -441,16 +464,16 @@ a:focus-visible .luxury-btn:not(:disabled)::after {
 
 .luxury-btn:hover:not(:disabled) .luxury-btn-icon-right,
 .luxury-btn:hover:not(:disabled) svg.lucide-arrow-right:not(.luxury-btn-icon-right *),
-.luxury-btn:hover:not(:disabled) > span:last-child svg,
+.luxury-btn:hover:not(:disabled)>span:last-child svg,
 .luxury-btn:focus-visible:not(:disabled) .luxury-btn-icon-right,
 .luxury-btn:focus-visible:not(:disabled) svg.lucide-arrow-right:not(.luxury-btn-icon-right *),
-.luxury-btn:focus-visible:not(:disabled) > span:last-child svg,
+.luxury-btn:focus-visible:not(:disabled)>span:last-child svg,
 a:hover .luxury-btn:not(:disabled) .luxury-btn-icon-right,
 a:hover .luxury-btn:not(:disabled) svg.lucide-arrow-right:not(.luxury-btn-icon-right *),
-a:hover .luxury-btn:not(:disabled) > span:last-child svg,
+a:hover .luxury-btn:not(:disabled)>span:last-child svg,
 a:focus-visible .luxury-btn:not(:disabled) .luxury-btn-icon-right,
 a:focus-visible .luxury-btn:not(:disabled) svg.lucide-arrow-right:not(.luxury-btn-icon-right *),
-a:focus-visible .luxury-btn:not(:disabled) > span:last-child svg {
+a:focus-visible .luxury-btn:not(:disabled)>span:last-child svg {
   transform: translateX(3px);
 }
 
@@ -488,9 +511,9 @@ a:focus-visible .luxury-btn:not(:disabled) > span:last-child svg {
   box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   cursor: pointer;
   transition: transform 250ms var(--ease-editorial),
-              background-color 250ms ease,
-              border-color 250ms ease,
-              box-shadow 250ms var(--ease-editorial);
+    background-color 250ms ease,
+    border-color 250ms ease,
+    box-shadow 250ms var(--ease-editorial);
   will-change: transform, box-shadow;
 }
 
@@ -539,4 +562,47 @@ a:focus-visible .luxury-btn:not(:disabled) > span:last-child svg {
 
 .quick-add-btn:hover:not(:disabled) .quick-add-icon {
   transform: translateY(-2px) scale(1.18);
+}
+
+/* Nav Icon Animations */
+.nav-icon.search:hover {
+  transform: rotate(-10deg) scale(1.15);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.22); }
+  50% { transform: scale(1.08); }
+  75% { transform: scale(1.18); }
+  100% { transform: scale(1.12); }
+}
+
+.nav-icon.heart:hover {
+  animation: heartbeat 0.45s ease-in-out forwards;
+}
+
+.nav-icon.heart:hover .badge {
+  transform: scale(1.1) translateY(-2px);
+  transition: transform 0.2s ease;
+}
+
+.nav-icon.profile:hover {
+  transform: translateY(-3px) scale(1.08);
+  transition: transform 0.25s ease-out;
+  opacity: 0.85;
+}
+
+@keyframes bagSwing {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-10deg); }
+  40% { transform: rotate(8deg); }
+  60% { transform: rotate(-5deg); }
+  80% { transform: rotate(3deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.nav-icon.bag:hover {
+  transform-origin: top center;
+  animation: bagSwing 0.55s ease-in-out;
 }

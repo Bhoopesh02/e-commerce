@@ -28,6 +28,7 @@ export const StorefrontLayoutWrapper: React.FC<StorefrontLayoutWrapperProps> = (
 }) => {
   const { initStorefront, setStorefront } = useStorefrontStore();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (storefrontId) {
@@ -37,14 +38,11 @@ export const StorefrontLayoutWrapper: React.FC<StorefrontLayoutWrapperProps> = (
     }
   }, [storefrontId, setStorefront, initStorefront]);
 
-  const pathname = usePathname();
-  const isHomePage = pathname === '/';
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
       <div style={{ flex: 1 }}>{children}</div>
-      {isHomePage && <Footer />}
+      {pathname === '/' && <Footer />}
 
       {/* Global Interactive Overlays */}
       <CartDrawer />

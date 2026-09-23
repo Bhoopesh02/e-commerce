@@ -17,9 +17,7 @@ export function proxy(request: NextRequest) {
   const storefrontParam = searchParams.get('storefront');
   const response = NextResponse.next();
 
-  if (storefrontParam === 'b') {
-    response.cookies.set('storefront', 'b', { path: '/' });
-  } else if (storefrontParam === 'a') {
+  if (storefrontParam === 'a') {
     response.cookies.set('storefront', 'a', { path: '/' });
   }
 

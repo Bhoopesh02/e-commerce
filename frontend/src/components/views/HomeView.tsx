@@ -214,8 +214,8 @@ export const HomeView: React.FC = () => {
                   <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
                     <div
                       style={{
-                        width: 44,
-                        height: 44,
+                        width: 48,
+                        height: 48,
                         borderRadius: 'var(--radius-pill)',
                         backgroundColor: 'rgba(243, 159, 90, 0.15)',
                         display: 'flex',
@@ -227,9 +227,9 @@ export const HomeView: React.FC = () => {
                       <Image
                         src="/images/icons/icon-purity.webp"
                         alt="Purity of Material"
-                        width={22}
-                        height={22}
-                        style={{ width: 22, height: 22, objectFit: 'contain' }}
+                        width={32}
+                        height={32}
+                        style={{ width: 32, height: 32, objectFit: 'contain' }}
                       />
                     </div>
                     <div>
@@ -245,8 +245,8 @@ export const HomeView: React.FC = () => {
                   <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
                     <div
                       style={{
-                        width: 44,
-                        height: 44,
+                        width: 48,
+                        height: 48,
                         borderRadius: 'var(--radius-pill)',
                         backgroundColor: 'rgba(243, 159, 90, 0.15)',
                         display: 'flex',
@@ -258,9 +258,9 @@ export const HomeView: React.FC = () => {
                       <Image
                         src="/images/icons/icon-guarantee.webp"
                         alt="Atelier Guarantee"
-                        width={22}
-                        height={22}
-                        style={{ width: 22, height: 22, objectFit: 'contain' }}
+                        width={32}
+                        height={32}
+                        style={{ width: 32, height: 32, objectFit: 'contain' }}
                       />
                     </div>
                     <div>
@@ -276,8 +276,8 @@ export const HomeView: React.FC = () => {
                   <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
                     <div
                       style={{
-                        width: 44,
-                        height: 44,
+                        width: 48,
+                        height: 48,
                         borderRadius: 'var(--radius-pill)',
                         backgroundColor: 'rgba(243, 159, 90, 0.15)',
                         display: 'flex',
@@ -289,9 +289,9 @@ export const HomeView: React.FC = () => {
                       <Image
                         src="/images/icons/icon-traceable.webp"
                         alt="Traceable Craft"
-                        width={22}
-                        height={22}
-                        style={{ width: 22, height: 22, objectFit: 'contain' }}
+                        width={32}
+                        height={32}
+                        style={{ width: 32, height: 32, objectFit: 'contain' }}
                       />
                     </div>
                     <div>

@@ -17,6 +17,7 @@ html {
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
   color-scheme: light;
+  scrollbar-gutter: stable;
 }
 
 html[data-theme="dark"] {
@@ -145,6 +146,13 @@ p {
 :focus-visible {
   outline: 2px solid var(--cta-primary);
   outline-offset: 3px;
+}
+
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible {
+  outline: none !important;
 }
 
 /* Custom Editorial Scrollbars */

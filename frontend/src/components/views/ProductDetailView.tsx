@@ -16,8 +16,8 @@ import { Modal } from '@/components/ui/Modal';
 import { RatingStars } from '@/components/ui/RatingStars';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { ReviewList } from '@/components/product/ReviewList';
-import { ReviewForm } from '@/components/product/ReviewForm';
 import { ProductCard } from '@/components/product/ProductCard';
+import { RecommendedProducts } from '@/components/product/RecommendedProducts';
 import {
   Heart,
   ShoppingBag,
@@ -28,6 +28,7 @@ import {
   RotateCcw,
   Sparkles,
   ChevronDown,
+  ChevronLeft,
   ArrowRight,
 } from 'lucide-react';
 
@@ -38,7 +39,7 @@ interface ProductDetailViewProps {
 export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ slug }) => {
   const [product, setProduct] = useState<Product | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [related, setRelated] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Gallery state
@@ -71,15 +72,15 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ slug }) =>
           return;
         }
 
-        const [revs, allProds] = await Promise.all([
+        const [revs, catalogProds] = await Promise.all([
           getReviews(prod.id),
-          getProducts({ categorySlug: prod.categoryId }),
+          getProducts(),
         ]);
 
         if (isMounted) {
           setProduct(prod);
           setReviews(revs);
-          setRelated(allProds.filter((p) => p.id !== prod.id).slice(0, 4));
+          setAllProducts(catalogProds);
 
           // Set default selected variant (first in stock, or first)
           const firstInStock = prod.variants.find((v) => v.stock > 0) || prod.variants[0];
@@ -160,30 +161,29 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ slug }) =>
     }, 300);
   };
 
-  const handleReviewAdded = (newRev: Review) => {
-    setReviews([newRev, ...reviews]);
-  };
-
   return (
     <div style={{ paddingTop: '110px', paddingBottom: '96px', backgroundColor: 'var(--bg-primary)' }}>
       <div className="container">
-        {/* Breadcrumb Navigation */}
-        <div
+        {/* Back Navigation */}
+        <button
+          onClick={() => router.back()}
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            fontSize: '0.8rem',
-            color: 'var(--text-muted)',
+            fontSize: '0.9rem',
+            color: 'var(--text-primary)',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: 0,
             marginBottom: '32px',
+            fontWeight: 500,
           }}
         >
-          <Link href="/" style={{ textDecoration: 'none' }}>Atelier</Link>
-          <span>/</span>
-          <Link href="/shop" style={{ textDecoration: 'none' }}>Collections</Link>
-          <span>/</span>
-          <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{product.name}</span>
-        </div>
+          <ChevronLeft size={16} />
+          Back
+        </button>
 
         {/* Top Split: Gallery & Product Info */}
         <div
@@ -619,6 +619,14 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ slug }) =>
           </div>
         </div>
 
+        {/* Complete the Look Section */}
+        <RecommendedProducts
+          currentProduct={product}
+          products={allProducts}
+          recommendationType="complete-the-look"
+          limit={4}
+        />
+
         {/* Client Reflections / Reviews Section */}
         <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '64px', marginBottom: '80px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '32px' }}>
@@ -642,29 +650,19 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ slug }) =>
             </div>
           </div>
 
-          <ReviewForm productId={product.id} onReviewAdded={handleReviewAdded} />
+          {/* Review submission temporarily disabled until post-purchase flow is implemented */}
           <div style={{ marginTop: '32px' }}>
             <ReviewList reviews={reviews} />
           </div>
         </section>
 
-        {/* Related Silhouettes */}
-        {related.length > 0 && (
-          <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '64px' }}>
-            <h2 style={{ fontSize: '1.8rem', marginBottom: '32px' }}>Complementary Silhouettes</h2>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                gap: '32px',
-              }}
-            >
-              {related.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
-          </section>
-        )}
+        {/* You May Also Like Section */}
+        <RecommendedProducts
+          currentProduct={product}
+          products={allProducts}
+          recommendationType="similar"
+          limit={4}
+        />
       </div>
 
       {/* Sizing Chart Modal */}

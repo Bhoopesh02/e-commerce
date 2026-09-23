@@ -16,17 +16,17 @@ import {
   MapPin,
   Bell,
   LogOut,
-  Shield,
   ArrowRight,
   ExternalLink,
   CheckCircle2,
   Clock,
   Truck,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export const AccountView: React.FC = () => {
   const router = useRouter();
-  const { user, role, logout, loginAsAdmin } = useAuthStore();
+  const { user, role, logout } = useAuthStore();
   const { showToast } = useToastStore();
 
   const [orders, setOrders] = useState<Order[]>([]);
@@ -101,18 +101,7 @@ export const AccountView: React.FC = () => {
           </div>
 
           <div style={{ display: 'flex', gap: '12px' }}>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                loginAsAdmin();
-                showToast('Authorized as Operations Admin (Demo Shortcut)', 'success');
-                router.push('/admin/dashboard');
-              }}
-              leftIcon={<Shield size={14} />}
-            >
-              Switch to Admin Portal
-            </Button>
+
             <Button variant="ghost" size="sm" onClick={handleLogout} leftIcon={<LogOut size={14} />}>
               Sign Out
             </Button>
@@ -128,74 +117,66 @@ export const AccountView: React.FC = () => {
             marginBottom: '32px',
             overflowX: 'auto',
           }}
+          className="account-tabs-container"
         >
-          <button
-            onClick={() => setActiveTab('orders')}
-            style={{
-              padding: '12px 20px',
-              fontSize: '0.9rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              color: activeTab === 'orders' ? 'var(--color-sunset-700)' : 'var(--text-muted)',
-              borderBottom: activeTab === 'orders' ? '2px solid var(--color-sunset-700)' : '2px solid transparent',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
-            <Package size={16} /> Commission History ({orders.length})
-          </button>
-
-          <button
-            onClick={() => setActiveTab('addresses')}
-            style={{
-              padding: '12px 20px',
-              fontSize: '0.9rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              color: activeTab === 'addresses' ? 'var(--color-sunset-700)' : 'var(--text-muted)',
-              borderBottom: activeTab === 'addresses' ? '2px solid var(--color-sunset-700)' : '2px solid transparent',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
-            <MapPin size={16} /> Residences & Addresses
-          </button>
-
-          <button
-            onClick={() => setActiveTab('returns')}
-            style={{
-              padding: '12px 20px',
-              fontSize: '0.9rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              color: activeTab === 'returns' ? 'var(--color-sunset-700)' : 'var(--text-muted)',
-              borderBottom: activeTab === 'returns' ? '2px solid var(--color-sunset-700)' : '2px solid transparent',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
-            <Clock size={16} /> Returns & Exchanges ({returns.length})
-          </button>
-
-          <button
-            onClick={() => setActiveTab('notifications')}
-            style={{
-              padding: '12px 20px',
-              fontSize: '0.9rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              color: activeTab === 'notifications' ? 'var(--color-sunset-700)' : 'var(--text-muted)',
-              borderBottom: activeTab === 'notifications' ? '2px solid var(--color-sunset-700)' : '2px solid transparent',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
-            <Bell size={16} /> Email Dispatches
-          </button>
+          {[
+            { id: 'orders', label: `Commission History (${orders.length})`, icon: Package },
+            { id: 'addresses', label: 'Residences & Addresses', icon: MapPin },
+            { id: 'returns', label: `Returns & Exchanges (${returns.length})`, icon: Clock },
+            { id: 'notifications', label: 'Email Dispatches', icon: Bell },
+          ].map((tab) => {
+            const isActive = activeTab === tab.id;
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className="account-tab-btn"
+                style={{
+                  position: 'relative',
+                  padding: '12px 20px',
+                  fontSize: '0.9rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  color: isActive ? 'var(--color-sunset-700)' : 'var(--text-muted)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  border: 'none',
+                  background: 'transparent',
+                  outline: 'none',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <Icon size={16} /> {tab.label}
+                
+                {!isActive && (
+                  <span className="hover-underline-custom" />
+                )}
+                
+                {isActive && (
+                  <motion.div
+                    layoutId="activeAccountTabUnderline"
+                    initial={false}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 400,
+                      damping: 35,
+                    }}
+                    style={{
+                      position: 'absolute',
+                      bottom: -1, /* Align exactly with the border-bottom of container */
+                      left: 0,
+                      width: '100%',
+                      height: '2px',
+                      backgroundColor: 'var(--color-sunset-700)',
+                      pointerEvents: 'none',
+                    }}
+                  />
+                )}
+              </button>
+            );
+          })}
         </div>
 
         {/* Tab 1: Orders */}
@@ -446,6 +427,34 @@ export const AccountView: React.FC = () => {
           </div>
         )}
       </div>
+
+      <style jsx global>{`
+        .account-tabs-container::-webkit-scrollbar {
+          display: none;
+        }
+        .account-tab-btn {
+          transition: color 0.2s ease;
+        }
+        .account-tab-btn:hover:not(:has(.motion-div)) {
+          color: var(--color-sunset-700) !important;
+        }
+        .hover-underline-custom {
+          position: absolute;
+          bottom: -1px;
+          left: 0;
+          width: 100%;
+          height: 2px;
+          background-color: var(--border-color);
+          display: block;
+          transform-origin: left;
+          transform: scaleX(0);
+          transition: transform 0.3s ease-out;
+          pointer-events: none;
+        }
+        .account-tab-btn:hover .hover-underline-custom {
+          transform: scaleX(1);
+        }
+      `}</style>
     </div>
   );
 };

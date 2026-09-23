@@ -34,7 +34,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
         overflow: 'hidden',
         borderRadius: '20px',
         marginBottom: '36px',
-        minHeight: '300px',
+        height: '300px',
         display: 'flex',
         alignItems: 'center',
         boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',
@@ -187,11 +187,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-            backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
             color: '#fff',
-            borderRadius: '50%',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
           }}
@@ -214,11 +210,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-            backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
             color: '#fff',
-            borderRadius: '50%',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
           }}
@@ -240,10 +232,10 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
           }
         }
         .carousel-arrow-btn:hover {
-          background-color: rgba(255, 255, 255, 0.25) !important;
+          opacity: 0.8;
         }
         .carousel-arrow-btn:active {
-          background-color: rgba(255, 255, 255, 0.35) !important;
+          opacity: 0.6;
         }
       `}</style>
     </div>

@@ -48,8 +48,8 @@
   --duration-normal: 350ms;
   --duration-medium: 500ms;
   --duration-slow: 800ms;
-  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Elevation Shadows */
   --shadow-sm: 0 2px 8px rgba(29, 26, 57, 0.04);
@@ -121,13 +121,3 @@
   --heading-letter-spacing: -0.02em;
 }
 
-/* Storefront B: Refined Mode Overrides (Minimal, Product-Led, Generous Whitespace) */
-[data-storefront="b"] {
-  --storefront-mode: 'refined';
-  --editorial-accent: var(--color-sunset-700);
-  --carousel-card-ratio: 1.2;
-  --hero-min-height: 100vh;
-  --hero-min-height: 100dvh;
-  --heading-letter-spacing: 0.01em;
-  --border-color: rgba(232, 188, 185, 0.35);
-}

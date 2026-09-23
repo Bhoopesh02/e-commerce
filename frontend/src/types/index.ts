@@ -1,4 +1,4 @@
-export type StorefrontId = 'a' | 'b';
+export type StorefrontId = 'a';
 
 export type AvailabilityStatus = 'in_stock' | 'low_stock' | 'out_of_stock';
 

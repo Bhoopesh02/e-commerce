@@ -15,22 +15,22 @@ interface StorefrontState {
 function getStoredStorefront(): StorefrontId {
   if (typeof window === 'undefined') return 'a';
   try {
-    // 1. Check query parameter ?storefront=b
+    // 1. Check query parameter ?storefront=a
     const urlParams = new URLSearchParams(window.location.search);
     const param = urlParams.get('storefront');
-    if (param === 'a' || param === 'b') {
+    if (param === 'a') {
       return param;
     }
 
     // 2. Check localStorage
     const local = window.localStorage.getItem('aurelia_storefront');
-    if (local === 'a' || local === 'b') {
-      return local;
+    if (local === 'a') {
+      return local as StorefrontId;
     }
 
     // 3. Check document cookie
-    const match = document.cookie.match(/storefront=(a|b)/);
-    if (match && (match[1] === 'a' || match[1] === 'b')) {
+    const match = document.cookie.match(/storefront=(a)/);
+    if (match && match[1] === 'a') {
       return match[1] as StorefrontId;
     }
   } catch {
@@ -66,11 +66,7 @@ export const useStorefrontStore = create<StorefrontState>((set) => ({
   },
 
   toggleStorefront: () => {
-    set((state) => {
-      const next: StorefrontId = state.storefront === 'a' ? 'b' : 'a';
-      setStoredStorefront(next);
-      return { storefront: next };
-    });
+    // Storefront B is removed. Only A exists.
   },
 
   toggleTheme: () => {

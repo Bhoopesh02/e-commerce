@@ -9,13 +9,28 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
 import { CategorySection, SectionAnimationVariant } from '@/components/shop/CategorySection';
+import { RangeSlider } from '@/components/ui/RangeSlider';
 import { ProductCard } from '@/components/product/ProductCard';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
-import { SlidersHorizontal, X, RotateCcw, ArrowUp } from 'lucide-react';
+import { SlidersHorizontal, X, RotateCcw, ArrowUp, CloudRain, Scissors, Sparkles, Shirt, ShoppingBag, Footprints, Gem, FlaskConical, Check } from 'lucide-react';
 
 import productsData from '@/data/products.json';
 import categoriesData from '@/data/categories.json';
+
+const getCategoryIcon = (slug: string) => {
+  switch (slug) {
+    case 'outerwear': return <CloudRain size={22} strokeWidth={1.2} />;
+    case 'tailoring': return <Scissors size={22} strokeWidth={1.2} />;
+    case 'eveningwear': return <Sparkles size={22} strokeWidth={1.2} />;
+    case 'knitwear': return <Shirt size={22} strokeWidth={1.2} />;
+    case 'leather-goods': return <ShoppingBag size={22} strokeWidth={1.2} />;
+    case 'footwear': return <Footprints size={22} strokeWidth={1.2} />;
+    case 'fine-jewelry': return <Gem size={22} strokeWidth={1.2} />;
+    case 'fragrances': return <FlaskConical size={22} strokeWidth={1.2} />;
+    default: return <Shirt size={22} strokeWidth={1.2} />;
+  }
+};
 
 /**
  * Section Animation Mapping
@@ -45,7 +60,7 @@ export const ShopView: React.FC = () => {
   // Filter & Navigation States
   const [activeCategory, setActiveCategory] = useState<string>('outerwear');
   const [navigationDirection, setNavigationDirection] = useState<number>(1);
-  const [selectedPriceRange, setSelectedPriceRange] = useState<string>('all');
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [selectedAvailability, setSelectedAvailability] = useState<string>('all');
   const [selectedSort, setSelectedSort] = useState<string>('popularity');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -88,13 +103,7 @@ export const ShopView: React.FC = () => {
     }
 
     // Price range
-    if (selectedPriceRange === 'under-20k') {
-      list = list.filter((p) => p.price < 20000);
-    } else if (selectedPriceRange === '20k-35k') {
-      list = list.filter((p) => p.price >= 20000 && p.price <= 35000);
-    } else if (selectedPriceRange === 'above-35k') {
-      list = list.filter((p) => p.price > 35000);
-    }
+    list = list.filter((p) => p.price >= priceRange[0] && p.price <= priceRange[1]);
 
     // Availability
     if (selectedAvailability === 'in_stock') {
@@ -122,7 +131,7 @@ export const ShopView: React.FC = () => {
     }
 
     return list;
-  }, [products, searchParams, selectedPriceRange, selectedAvailability, selectedSort]);
+  }, [products, searchParams, priceRange, selectedAvailability, selectedSort]);
 
   // Handle category selection
   const handleCategorySelect = useCallback((slug: string) => {
@@ -149,14 +158,16 @@ export const ShopView: React.FC = () => {
   }, [categories, activeCategory]);
 
   const handleNextCategory = useCallback(() => {
-    if (activeCategoryIndex >= 0 && activeCategoryIndex < categories.length - 1) {
-      handleCategorySelect(categories[activeCategoryIndex + 1].slug);
+    if (activeCategoryIndex >= 0) {
+      const nextIndex = (activeCategoryIndex + 1) % categories.length;
+      handleCategorySelect(categories[nextIndex].slug);
     }
   }, [activeCategoryIndex, categories, handleCategorySelect]);
 
   const handlePrevCategory = useCallback(() => {
-    if (activeCategoryIndex > 0) {
-      handleCategorySelect(categories[activeCategoryIndex - 1].slug);
+    if (activeCategoryIndex >= 0) {
+      const prevIndex = (activeCategoryIndex - 1 + categories.length) % categories.length;
+      handleCategorySelect(categories[prevIndex].slug);
     }
   }, [activeCategoryIndex, categories, handleCategorySelect]);
 
@@ -172,14 +183,14 @@ export const ShopView: React.FC = () => {
   }, [searchParams, loading, handleCategorySelect]);
 
   const resetFilters = () => {
-    setSelectedPriceRange('all');
+    setPriceRange([0, 100000]);
     setSelectedAvailability('all');
     setSelectedSort('popularity');
     handleCategorySelect('outerwear');
   };
 
   const hasActiveFilters =
-    selectedPriceRange !== 'all' ||
+    priceRange[0] > 0 || priceRange[1] < 100000 ||
     selectedAvailability !== 'all';
 
   return (
@@ -287,23 +298,7 @@ export const ShopView: React.FC = () => {
                 gap: '10px',
               }}
             >
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  padding: '5px 14px',
-                  borderRadius: '6px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(8px)',
-                  border: '1px solid rgba(255, 255, 255, 0.18)',
-                  fontSize: '0.75rem',
-                  color: '#fff8f5',
-                  fontWeight: 500,
-                  letterSpacing: '0.04em',
-                }}
-              >
-                {filteredProducts.length} Editorial Pieces
-              </span>
+
               <span
                 style={{
                   display: 'inline-flex',
@@ -388,32 +383,24 @@ export const ShopView: React.FC = () => {
                     key={cat.id}
                     type="button"
                     onClick={() => handleCategorySelect(cat.slug)}
-                    className="group relative inline-flex flex-col items-center justify-center py-2 px-1 cursor-pointer bg-transparent border-0 outline-none select-none"
-                    style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+                    className="nav-btn-custom"
                   >
                     {/* Category Label */}
                     <span
-                      className={`text-xs md:text-[13px] tracking-[0.2em] uppercase transition-colors duration-200 ${
-                        isActive
-                          ? 'text-[#121624] font-semibold'
-                          : 'text-neutral-500 group-hover:text-black font-normal'
-                      }`}
+                      className={`nav-label-custom ${isActive ? 'active' : ''}`}
                     >
                       {cat.name}
                     </span>
 
                     {/* 1. Inactive Hover Underline (Left-to-Right sweep on hover) */}
                     {!isActive && (
-                      <span
-                        className="absolute bottom-0 left-0 w-full h-[1.5px] bg-neutral-400 block origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out pointer-events-none"
-                      />
+                      <span className="hover-underline-custom" />
                     )}
 
                     {/* 2. Active Fixed Underline (Scoped to active word width) */}
                     {isActive && (
                       <motion.div
                         layoutId="activeCategoryUnderline"
-                        className="absolute bottom-0 left-0 w-full h-[2px] bg-[#121624] pointer-events-none"
                         initial={false}
                         transition={{
                           type: 'spring',
@@ -421,6 +408,13 @@ export const ShopView: React.FC = () => {
                           damping: 35,
                         }}
                         style={{
+                          position: 'absolute',
+                          bottom: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '2px',
+                          backgroundColor: '#121624',
+                          pointerEvents: 'none',
                           originX: navigationDirection > 0 ? 0 : 1,
                         }}
                       />
@@ -452,10 +446,6 @@ export const ShopView: React.FC = () => {
                 <SlidersHorizontal size={14} />
                 <span>Filters {hasActiveFilters && '•'}</span>
               </button>
-
-              <span style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }} className="silhouette-counter">
-                {filteredProducts.length} Silhouettes
-              </span>
             </div>
           </div>
 
@@ -463,7 +453,7 @@ export const ShopView: React.FC = () => {
           {hasActiveFilters && (
             <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px', marginTop: '12px' }}>
               <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Active Filters:</span>
-              {selectedPriceRange !== 'all' && (
+              {(priceRange[0] > 0 || priceRange[1] < 100000) && (
                 <span
                   style={{
                     display: 'inline-flex',
@@ -476,8 +466,8 @@ export const ShopView: React.FC = () => {
                     fontSize: '0.78rem',
                   }}
                 >
-                  Price: {selectedPriceRange}
-                  <X size={12} style={{ cursor: 'pointer' }} onClick={() => setSelectedPriceRange('all')} />
+                  Price: ₹{priceRange[0].toLocaleString()} - ₹{priceRange[1].toLocaleString()}
+                  <X size={12} style={{ cursor: 'pointer' }} onClick={() => setPriceRange([0, 100000])} />
                 </span>
               )}
               {selectedAvailability !== 'all' && (
@@ -557,8 +547,8 @@ export const ShopView: React.FC = () => {
                     animationVariant={SECTION_ANIMATIONS[category.slug] || 'fade-up'}
                     onNext={handleNextCategory}
                     onPrev={handlePrevCategory}
-                    hasNext={index < categories.length - 1}
-                    hasPrev={index > 0}
+                    hasNext={true}
+                    hasPrev={true}
                   />
                 );
               })}
@@ -621,16 +611,27 @@ export const ShopView: React.FC = () => {
       <Drawer
         isOpen={mobileFiltersOpen}
         onClose={() => setMobileFiltersOpen(false)}
-        title="Refine Collection"
+        title="REFINE COLLECTION"
         position="right"
+        contentStyle={{ backgroundColor: '#F8F5F0' }}
+        headerStyle={{ 
+          borderBottom: '1px solid rgba(0,0,0,0.06)',
+          padding: '24px 32px 16px',
+        }}
+        titleStyle={{
+          fontFamily: 'var(--font-serif)',
+          fontSize: '1.4rem',
+          letterSpacing: '0.02em',
+          color: '#1a1a1a',
+        }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '16px 8px 120px' }}>
           {/* Jump to Category */}
           <div>
-            <h4 style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>
-              Jump to Discipline
+            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: '#1a1a1a', textTransform: 'uppercase' }}>
+              Categories
             </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {categories.map((c) => {
                 const isActive = activeCategory === c.slug;
                 return (
@@ -642,22 +643,26 @@ export const ShopView: React.FC = () => {
                     }}
                     style={{
                       textAlign: 'left',
-                      padding: '12px 12px',
-                      color: isActive ? '#121624' : 'var(--text-primary)',
+                      padding: '8px 12px',
+                      color: isActive ? '#A37C63' : '#333',
                       border: 'none',
                       backgroundColor: 'transparent',
-                      fontSize: '1rem',
-                      fontWeight: isActive ? 600 : 400,
+                      fontSize: '1.05rem',
+                      fontWeight: isActive ? 500 : 400,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '12px',
+                      gap: '16px',
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    {isActive && <div style={{ width: '4px', height: '4px', backgroundColor: '#121624', borderRadius: '50%' }} />}
-                    {!isActive && <div style={{ width: '4px', height: '4px', backgroundColor: 'transparent' }} />}
-                    {c.name}
+                    <span style={{ color: isActive ? '#A37C63' : '#555', display: 'flex', alignItems: 'center' }}>
+                      {getCategoryIcon(c.slug)}
+                    </span>
+                    <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                      {isActive && <span style={{ position: 'absolute', left: '-12px', width: '6px', height: '6px', backgroundColor: '#A37C63', borderRadius: '50%' }} />}
+                      {c.name}
+                    </div>
                   </button>
                 );
               })}
@@ -666,49 +671,154 @@ export const ShopView: React.FC = () => {
 
           {/* Price Range */}
           <div>
-            <h4 style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>
+            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: '#1a1a1a', textTransform: 'uppercase' }}>
               Price Tier
             </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {[
-                { id: 'all', label: 'All Price Tiers' },
-                { id: 'under-20k', label: 'Under ₹20,000' },
-                { id: '20k-35k', label: '₹20,000 - ₹35,000' },
-                { id: 'above-35k', label: 'Above ₹35,000' },
-              ].map((p) => (
-                <label key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', cursor: 'pointer' }}>
-                  <input
-                    type="radio"
-                    name="price"
-                    checked={selectedPriceRange === p.id}
-                    onChange={() => setSelectedPriceRange(p.id)}
-                  />
-                  {p.label}
-                </label>
-              ))}
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '20px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
+                {[
+                  { id: 'all', label: 'All Price Tiers', range: [0, 100000] },
+                  { id: 'under-20k', label: 'Under ₹20,000', range: [0, 20000] },
+                  { id: '20k-35k', label: '₹20,000 - ₹35,000', range: [20000, 35000] },
+                  { id: 'above-35k', label: 'Above ₹35,000', range: [35000, 100000] },
+                ].map((p) => {
+                  const isChecked = priceRange[0] === p.range[0] && priceRange[1] === p.range[1];
+                  return (
+                    <label key={p.id} style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '10px', 
+                      fontSize: '1rem', 
+                      cursor: 'pointer',
+                      padding: '10px 14px',
+                      backgroundColor: isChecked && p.id !== 'all' ? '#FFFFFF' : 'transparent',
+                      borderRadius: '12px',
+                      boxShadow: isChecked && p.id !== 'all' ? '0 2px 8px rgba(0,0,0,0.03)' : 'none',
+                      border: isChecked && p.id !== 'all' ? '1px solid rgba(0,0,0,0.04)' : '1px solid transparent',
+                      transition: 'all 0.2s ease',
+                      marginLeft: '-14px'
+                    }}>
+                      <div style={{
+                        width: '16px',
+                        height: '16px',
+                        borderRadius: '50%',
+                        border: '1px solid #758b85',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        backgroundColor: isChecked ? '#758b85' : 'transparent'
+                      }}>
+                        {isChecked && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#fff' }} />}
+                      </div>
+                      <input
+                        type="radio"
+                        name="price"
+                        checked={isChecked}
+                        onChange={() => setPriceRange(p.range as [number, number])}
+                        style={{ display: 'none' }}
+                      />
+                      <span style={{ color: '#1a1a1a' }}>{p.label}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              
+              {/* Range Slider Visual */}
+              <div style={{ flex: 1, padding: '0 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                 <RangeSlider 
+                   min={0} 
+                   max={100000} 
+                   step={5000} 
+                   value={priceRange} 
+                   onChange={setPriceRange} 
+                   milestones={useMemo(() => [
+                     { value: 0, label: '₹0' },
+                     { value: 20000, label: '₹20K' },
+                     { value: 35000, label: '₹35K' },
+                     { value: 100000, label: '₹100K+' }
+                   ], [])}
+                 />
+              </div>
             </div>
           </div>
 
           {/* Availability */}
           <div>
-            <h4 style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>
+            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: '#1a1a1a', textTransform: 'uppercase' }}>
               Availability
             </h4>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', cursor: 'pointer' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1rem', cursor: 'pointer', color: '#1a1a1a', marginLeft: '-2px' }}>
+              <div style={{
+                width: '16px',
+                height: '16px',
+                borderRadius: '4px',
+                border: '1px solid #758b85',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: selectedAvailability === 'in_stock' ? '#758b85' : 'transparent',
+              }}>
+                {selectedAvailability === 'in_stock' && <Check size={12} color="#fff" strokeWidth={3} />}
+              </div>
               <input
                 type="checkbox"
                 checked={selectedAvailability === 'in_stock'}
                 onChange={(e) => setSelectedAvailability(e.target.checked ? 'in_stock' : 'all')}
+                style={{ display: 'none' }}
               />
               In Stock Pieces Only
             </label>
           </div>
-
-          <div style={{ display: 'flex', gap: '12px', marginTop: 'auto', paddingTop: '20px' }}>
-            <Button variant="outline" fullWidth onClick={resetFilters}>
+        </div>
+        
+        {/* Sticky Footer Buttons */}
+        <div style={{ 
+          position: 'absolute', 
+          bottom: 0, 
+          left: 0, 
+          width: '100%', 
+          padding: '24px 32px 32px', 
+          display: 'flex', 
+          gap: '16px',
+          background: 'linear-gradient(to top, #F8F5F0 70%, rgba(248, 245, 240, 0) 100%)',
+          borderTop: 'none',
+          pointerEvents: 'none',
+        }}>
+          <div style={{ display: 'flex', gap: '12px', width: '100%', pointerEvents: 'auto' }}>
+            <Button 
+              variant="outline" 
+              fullWidth 
+              onClick={resetFilters}
+              style={{ 
+                borderRadius: '30px', 
+                borderColor: '#A37C63', 
+                color: '#1a1a1a',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                fontWeight: 600,
+                height: '48px',
+                backgroundColor: 'transparent'
+              }}
+            >
               Reset
             </Button>
-            <Button variant="primary" fullWidth onClick={() => setMobileFiltersOpen(false)}>
+            <Button 
+              variant="primary" 
+              fullWidth 
+              onClick={() => setMobileFiltersOpen(false)}
+              style={{ 
+                borderRadius: '30px', 
+                backgroundColor: '#D19662', 
+                color: '#fff',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                fontWeight: 600,
+                height: '48px',
+                boxShadow: '0 8px 16px rgba(209, 150, 98, 0.25)',
+                border: 'none'
+              }}
+            >
               Apply Filters
             </Button>
           </div>
@@ -722,6 +832,58 @@ export const ShopView: React.FC = () => {
         @media (max-width: 768px) {
           .silhouette-counter {
             display: none !important;
+          }
+        }
+        .nav-btn-custom {
+          position: relative;
+          display: inline-flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 8px 4px;
+          background: transparent;
+          border: none;
+          outline: none;
+          cursor: pointer;
+          user-select: none;
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
+        .nav-label-custom {
+          font-size: 11px;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          transition: color 0.2s ease;
+          color: #737373;
+          font-weight: 400;
+          font-family: inherit;
+        }
+        .nav-label-custom.active {
+          color: #121624;
+          font-weight: 600;
+        }
+        .nav-btn-custom:hover .nav-label-custom:not(.active) {
+          color: #000;
+        }
+        .hover-underline-custom {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 1.5px;
+          background-color: #a3a3a3;
+          display: block;
+          transform-origin: left;
+          transform: scaleX(0);
+          transition: transform 0.3s ease-out;
+          pointer-events: none;
+        }
+        .nav-btn-custom:hover .hover-underline-custom {
+          transform: scaleX(1);
+        }
+        @media (min-width: 768px) {
+          .nav-label-custom {
+            font-size: 13px;
           }
         }
       `}</style>

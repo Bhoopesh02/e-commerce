@@ -70,10 +70,55 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
     },
   };
 
-  const items = products.slice(0, 4);
+  // Use up to 8 items to ensure the track is wide enough to cover desktop screens
+  const items = products.slice(0, 8);
+  const itemCount = items.length || 1;
+  // Duplicate 3x for a perfectly seamless infinite scroll loop (left buffer, visible set, right buffer)
+  const carouselItems = [...items, ...items, ...items];
+
+  // Calculate dynamic step scroll keyframes
+  const pauseTime = 1.5; // seconds
+  const moveTime = 0.8; // seconds
+  const totalTimePerItem = pauseTime + moveTime;
+  const totalDuration = totalTimePerItem * itemCount;
+
+  const pausePercent = (pauseTime / totalDuration) * 100;
+  const movePercent = (moveTime / totalDuration) * 100;
+
+  const baseTranslate = -33.333333;
+  const stepTranslate = -33.333333 / itemCount;
+
+  let keyframes = '';
+  for (let i = 0; i < itemCount; i++) {
+    const startPause = i * (pausePercent + movePercent);
+    const endPause = startPause + pausePercent;
+    const translate = baseTranslate + (i * stepTranslate);
+    keyframes += `
+      ${startPause.toFixed(3)}%, ${endPause.toFixed(3)}% { transform: translate3d(${translate.toFixed(6)}%, 0, 0); }
+    `;
+  }
+  keyframes += `
+    100% { transform: translate3d(-66.666666%, 0, 0); }
+  `;
 
   return (
-    <section ref={sectionRef} style={{ padding: '80px 0', backgroundColor: 'var(--bg-primary)' }}>
+    <section ref={sectionRef} style={{ padding: '80px 0', backgroundColor: 'var(--bg-primary)', overflow: 'hidden' }}>
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes stepScrollDynamic {
+          ${keyframes}
+        }
+        .animate-step-scroll {
+          display: flex;
+          width: max-content;
+          animation: stepScrollDynamic ${totalDuration}s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+          will-change: transform;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-step-scroll {
+            animation-play-state: paused !important;
+          }
+        }
+      `}} />
       <div className="container">
         {/* Section Header */}
         <motion.div
@@ -129,29 +174,38 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
             </motion.span>
           </Link>
         </motion.div>
-
-        {/* Staggered Grid with Framer Motion */}
-        <motion.div
-          initial="hidden"
-          animate={isSectionInView ? 'visible' : 'hidden'}
-          variants={containerVariants}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-            gap: '32px',
-          }}
-        >
-          {items.map((product) => (
-            <motion.div
-              key={product.id}
-              variants={cardVariants}
-              style={{ height: '100%' }}
-            >
-              <ProductCard product={product} />
-            </motion.div>
-          ))}
-        </motion.div>
       </div>
+
+      {/* Infinite Scroll Track */}
+      <div style={{ overflow: 'hidden', width: '100%', paddingBottom: '20px' }}>
+        <div style={{ paddingLeft: 'calc(50vw - (clamp(280px, 28vw, 420px) / 2))' }}>
+            <motion.div
+              initial="hidden"
+              animate={isSectionInView ? 'visible' : 'hidden'}
+              variants={containerVariants}
+              className="animate-step-scroll"
+              style={{
+                display: 'flex',
+                gap: '16px',
+                width: 'max-content',
+                paddingRight: '16px', // matches gap, making total width exactly 3x the first set
+              }}
+            >
+            {carouselItems.map((product, index) => (
+              <motion.div
+                key={`${product.id}-${index}`}
+                variants={cardVariants}
+                style={{ 
+                  width: 'clamp(280px, 28vw, 420px)',
+                  flexShrink: 0 
+                }}
+              >
+                <ProductCard product={product} variant="overlay" aspectRatio="3 / 4" />
+              </motion.div>
+            ))}
+            </motion.div>
+          </div>
+        </div>
     </section>
   );
 };
