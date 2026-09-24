@@ -17,11 +17,15 @@ import {
   ArrowUpRight,
   Truck,
   CheckCircle2,
+  Search,
+  Filter,
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [recentOrders, setRecentOrders] = useState<Order[]>([]);
+  const [allOrders, setAllOrders] = useState<Order[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState<string>('All');
   const [lowStockProducts, setLowStockProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const { showToast } = useToastStore();
@@ -36,7 +40,7 @@ export default function AdminDashboardPage() {
           getProducts(),
         ]);
         setStats(dashStats);
-        setRecentOrders(orders.slice(0, 5));
+        setAllOrders(orders);
         setLowStockProducts(prods.filter((p) => p.availability === 'low_stock' || p.availability === 'out_of_stock'));
       } finally {
         setLoading(false);
@@ -48,12 +52,22 @@ export default function AdminDashboardPage() {
   const handleAdvanceStatus = async (orderId: string, nextStatus: OrderStatus) => {
     try {
       const updated = await adminUpdateOrderStatus(orderId, nextStatus);
-      setRecentOrders((prev) => prev.map((o) => (o.id === orderId ? updated : o)));
+      setAllOrders((prev) => prev.map((o) => (o.id === orderId ? updated : o)));
       showToast(`Commission #${orderId} status advanced to "${nextStatus}".`, 'success');
     } catch {
       showToast('Failed to update status.', 'error');
     }
   };
+
+  const displayOrders = (searchQuery || filterStatus !== 'All') 
+    ? allOrders.filter(order => {
+        const matchesSearch = 
+          order.id.toLowerCase().includes(searchQuery.toLowerCase()) || 
+          (order.customerName && order.customerName.toLowerCase().includes(searchQuery.toLowerCase()));
+        const matchesStatus = filterStatus === 'All' || order.status === filterStatus;
+        return matchesSearch && matchesStatus;
+      })
+    : allOrders.slice(0, 5); // default to recent 5
 
   if (loading) {
     return <div style={{ padding: '40px', color: 'var(--admin-text-primary)' }}>Loading Atelier Executive Overview...</div>;
@@ -243,6 +257,53 @@ export default function AdminDashboardPage() {
           </Link>
         </div>
 
+        <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', alignItems: 'center' }}>
+          <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+            <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#595F69' }}>
+              <Search size={16} />
+            </div>
+            <input
+              type="text"
+              placeholder="Search by order ID or client name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px 10px 10px 38px',
+                border: '1px solid rgba(29, 26, 57, 0.1)',
+                borderRadius: '8px',
+                fontSize: '0.88rem',
+                outline: 'none',
+                transition: 'border-color 0.2s',
+              }}
+            />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Filter size={16} color="#595F69" />
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              style={{
+                padding: '10px 16px',
+                border: '1px solid rgba(29, 26, 57, 0.1)',
+                borderRadius: '8px',
+                fontSize: '0.88rem',
+                outline: 'none',
+                cursor: 'pointer',
+                backgroundColor: 'white',
+              }}
+            >
+              <option value="All">All Statuses</option>
+              <option value="Placed">Placed</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Packed">Packed</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
             <thead>
@@ -256,7 +317,7 @@ export default function AdminDashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {recentOrders.map((order) => (
+              {displayOrders.map((order) => (
                 <tr key={order.id} className="admin-table-row">
                   <td style={{ padding: '14px', fontWeight: 600, color: 'var(--admin-text-primary)' }}>#{order.id}</td>
                   <td style={{ padding: '14px' }}>

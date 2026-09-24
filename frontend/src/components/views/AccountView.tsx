@@ -8,32 +8,20 @@ import { useToastStore } from '@/store/useToastStore';
 import { getOrders, getReturns } from '@/lib/mockApi';
 import { Order, ReturnRequest } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
-import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
 import {
-  User,
-  Package,
-  MapPin,
-  Bell,
-  LogOut,
-  ArrowRight,
-  ExternalLink,
-  CheckCircle2,
-  Clock,
-  Truck,
+  ArrowRight
 } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 export const AccountView: React.FC = () => {
   const router = useRouter();
-  const { user, role, logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const { showToast } = useToastStore();
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [returns, setReturns] = useState<ReturnRequest[]>([]);
-  const [activeTab, setActiveTab] = useState<'orders' | 'addresses' | 'returns' | 'notifications'>('orders');
+  const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'addresses' | 'returns' | 'preferences' | 'profile'>('overview');
 
-  // Email notifications strictly only per specification
+  // Email notifications
   const [emailOrderUpdates, setEmailOrderUpdates] = useState(true);
   const [emailPromotions, setEmailPromotions] = useState(false);
   const [emailJournal, setEmailJournal] = useState(true);
@@ -55,404 +43,982 @@ export const AccountView: React.FC = () => {
     router.push('/signout');
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'Delivered':
-        return <Badge variant="success">Delivered</Badge>;
+        return { bg: 'rgba(102, 37, 73, 0.08)', text: '#662549' };
       case 'Shipped':
-        return <Badge variant="gold">Shipped</Badge>;
-      case 'Packed':
-      case 'Confirmed':
+      case 'Out for Delivery':
+        return { bg: 'rgba(243, 159, 90, 0.1)', text: '#B2621C' };
       case 'Placed':
-        return <Badge variant="warning">{status}</Badge>;
+      case 'Confirmed':
+      case 'Packed':
+        return { bg: '#F8F9FA', text: '#1D1A39' };
       case 'Cancelled':
-        return <Badge variant="danger">Cancelled</Badge>;
+        return { bg: 'rgba(174, 68, 90, 0.08)', text: '#AE445A' };
       default:
-        return <Badge variant="default">{status}</Badge>;
+        return { bg: '#F8F9FA', text: '#1D1A39' };
     }
   };
 
-  return (
-    <div style={{ paddingTop: '110px', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      <div className="container" style={{ maxWidth: '1100px' }}>
-        {/* Account Header */}
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '20px',
-            marginBottom: '40px',
-            paddingBottom: '28px',
-            borderBottom: '1px solid var(--border-light)',
-          }}
-        >
-          <div>
-            <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sunset-600)' }}>
-              Private Client Portfolio
-            </span>
-            <h1 style={{ fontSize: 'clamp(1.9rem, 3.5vw, 2.6rem)' }}>
-              {user?.name || 'Ayesha Rahman'}
-            </h1>
-            <span style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
-              Client ID: {user?.id || 'usr_001'} · {user?.email || 'ayesha@example.com'}
-            </span>
-          </div>
+  const activeOrdersCount = orders.filter(o => !['Delivered', 'Cancelled'].includes(o.status)).length;
 
-          <div style={{ display: 'flex', gap: '12px' }}>
-
-            <Button variant="ghost" size="sm" onClick={handleLogout} leftIcon={<LogOut size={14} />}>
-              Sign Out
-            </Button>
-          </div>
-        </div>
-
-        {/* Tab Navigation */}
-        <div
-          style={{
-            display: 'flex',
-            gap: '12px',
-            borderBottom: '1px solid var(--border-color)',
-            marginBottom: '32px',
-            overflowX: 'auto',
-          }}
-          className="account-tabs-container"
-        >
-          {[
-            { id: 'orders', label: `Commission History (${orders.length})`, icon: Package },
-            { id: 'addresses', label: 'Residences & Addresses', icon: MapPin },
-            { id: 'returns', label: `Returns & Exchanges (${returns.length})`, icon: Clock },
-            { id: 'notifications', label: 'Email Dispatches', icon: Bell },
-          ].map((tab) => {
-            const isActive = activeTab === tab.id;
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className="account-tab-btn"
-                style={{
-                  position: 'relative',
-                  padding: '12px 20px',
-                  fontSize: '0.9rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  color: isActive ? 'var(--color-sunset-700)' : 'var(--text-muted)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  border: 'none',
-                  background: 'transparent',
-                  outline: 'none',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                <Icon size={16} /> {tab.label}
-                
-                {!isActive && (
-                  <span className="hover-underline-custom" />
-                )}
-                
-                {isActive && (
-                  <motion.div
-                    layoutId="activeAccountTabUnderline"
-                    initial={false}
-                    transition={{
-                      type: 'spring',
-                      stiffness: 400,
-                      damping: 35,
-                    }}
-                    style={{
-                      position: 'absolute',
-                      bottom: -1, /* Align exactly with the border-bottom of container */
-                      left: 0,
-                      width: '100%',
-                      height: '2px',
-                      backgroundColor: 'var(--color-sunset-700)',
-                      pointerEvents: 'none',
-                    }}
-                  />
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Tab 1: Orders */}
-        {activeTab === 'orders' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {orders.map((order) => (
-              <div
-                key={order.id}
-                style={{
-                  backgroundColor: 'var(--bg-surface)',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '1px solid var(--border-color)',
-                  padding: '24px',
-                  boxShadow: 'var(--shadow-sm)',
-                }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '12px',
-                    borderBottom: '1px solid var(--border-light)',
-                    paddingBottom: '16px',
-                    marginBottom: '16px',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                    <span style={{ fontSize: '1.05rem', fontWeight: 600, fontFamily: 'var(--font-display)' }}>
-                      Commission #{order.id}
-                    </span>
-                    {getStatusBadge(order.status)}
-                  </div>
-
-                  <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                    Registered on{' '}
-                    {new Date(order.createdAt).toLocaleDateString('en-IN', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                    })}
-                  </div>
-                </div>
-
-                {/* Items preview */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
-                  {order.items.map((item, idx) => (
-                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.92rem' }}>
-                        {item.quantity}x {item.productName || 'Garment'} ({item.size})
-                      </span>
-                      <span style={{ fontWeight: 600, fontSize: '0.92rem' }}>
-                        {formatPrice(item.price * item.quantity)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Card Footer */}
-                <div
-                  style={{
-                    borderTop: '1px solid var(--border-light)',
-                    paddingTop: '16px',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: '12px',
-                  }}
-                >
-                  <div>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Total Amount</span>
-                    <p style={{ fontSize: '1.15rem', fontWeight: 600, color: 'var(--color-sunset-700)' }}>
-                      {formatPrice(order.totals.total)}
-                    </p>
-                  </div>
-
-                  <div style={{ display: 'flex', gap: '12px' }}>
-                    <Link href={`/account/orders/${order.id}`}>
-                      <Button variant="primary" size="sm" rightIcon={<ArrowRight size={14} />}>
-                        View Order Details & Timeline
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'overview':
+        return (
+          <div className="account-section fade-in">
+            <h2 className="section-title">Overview</h2>
+            <div className="overview-grid">
+              <div className="overview-block" onClick={() => setActiveTab('orders')}>
+                <span className="overview-label">ORDERS</span>
+                <span className="overview-number">{orders.length}</span>
+                <div className="overview-action">View order history <ArrowRight size={14} /></div>
               </div>
-            ))}
-          </div>
-        )}
-
-        {/* Tab 2: Addresses */}
-        {activeTab === 'addresses' && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
-            {user?.addresses?.map((addr) => (
-              <div
-                key={addr.id}
-                style={{
-                  backgroundColor: 'var(--bg-surface)',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '1px solid var(--border-color)',
-                  padding: '24px',
-                  position: 'relative',
-                }}
-              >
-                {addr.isDefault && (
-                  <div style={{ position: 'absolute', top: '16px', right: '16px' }}>
-                    <Badge variant="gold">Primary Residence</Badge>
-                  </div>
-                )}
-                <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '8px' }}>
-                  {addr.name || user.name}
-                </h3>
-                <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                  {addr.line1}
-                  <br />
-                  {addr.city}, {addr.state} — {addr.pincode}
-                </p>
-                <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '8px' }}>
-                  {addr.phone || user.phone}
-                </p>
+              <div className="overview-block" onClick={() => setActiveTab('orders')}>
+                <span className="overview-label">ACTIVE ORDERS</span>
+                <span className="overview-number">{activeOrdersCount}</span>
+                <div className="overview-action">Track current orders <ArrowRight size={14} /></div>
               </div>
-            ))}
-          </div>
-        )}
-
-        {/* Tab 3: Returns */}
-        {activeTab === 'returns' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {returns.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '48px', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-sm)' }}>
-                <p style={{ color: 'var(--text-muted)' }}>No return requests initiated.</p>
+              <div className="overview-block" onClick={() => setActiveTab('returns')}>
+                <span className="overview-label">RETURNS</span>
+                <span className="overview-number">{returns.length}</span>
+                <div className="overview-action">View returns <ArrowRight size={14} /></div>
               </div>
+              <div className="overview-block" onClick={() => setActiveTab('addresses')}>
+                <span className="overview-label">ADDRESSES</span>
+                <span className="overview-number">{user?.addresses?.length || 0}</span>
+                <div className="overview-action">Manage addresses <ArrowRight size={14} /></div>
+              </div>
+            </div>
+          </div>
+        );
+      case 'orders':
+        return (
+          <div className="account-section fade-in">
+            <h2 className="section-title">Recent Orders</h2>
+            {orders.length === 0 ? (
+              <p className="empty-text">You have no orders yet.</p>
             ) : (
-              returns.map((ret) => (
-                <div
-                  key={ret.id}
-                  style={{
-                    padding: '20px 24px',
-                    backgroundColor: 'var(--bg-surface)',
-                    borderRadius: 'var(--radius-sm)',
-                    border: '1px solid var(--border-color)',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: '16px',
-                  }}
-                >
-                  <div>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Reference: #{ret.id}</span>
-                    <h3 style={{ fontSize: '1rem', fontWeight: 600 }}>Commission #{ret.orderId}</h3>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                      Reason: {ret.reason}
-                    </p>
-                  </div>
+              <div className="list-container">
+                {orders.map((order) => {
+                  const statusColors = getStatusColor(order.status);
+                  const firstItem = order.items[0];
+                  const additionalItems = order.items.length - 1;
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                    <Badge variant="warning">{ret.status}</Badge>
-                    <Link href={`/account/returns/${ret.id}`}>
-                      <Button variant="outline" size="sm">
-                        View Status
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              ))
+                  return (
+                    <div key={order.id} className="list-row">
+                      <div className="row-col col-left">
+                        <span className="row-title">ORDER #{order.id}</span>
+                        <span className="row-meta">
+                          {new Date(order.createdAt).toLocaleDateString('en-GB', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })}
+                        </span>
+                        <span className="status-pill" style={{ backgroundColor: statusColors.bg, color: statusColors.text }}>
+                          {order.status}
+                        </span>
+                      </div>
+                      <div className="row-col col-center">
+                        <span className="product-title">{firstItem?.productName || 'Garment'}</span>
+                        <span className="product-meta">Size {firstItem?.size || 'Standard'}</span>
+                        {additionalItems > 0 && (
+                          <span className="product-meta">+{additionalItems} more item{additionalItems > 1 ? 's' : ''}</span>
+                        )}
+                      </div>
+                      <div className="row-col col-right">
+                        <span className="amount">{formatPrice(order.totals.total)}</span>
+                        <Link href={`/account/orders/${order.id}`} className="text-action">
+                          View details <ArrowRight size={14} />
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
-        )}
-
-        {/* Tab 4: Email Notifications (Strictly email only per specification) */}
-        {activeTab === 'notifications' && (
-          <div
-            style={{
-              backgroundColor: 'var(--bg-surface)',
-              borderRadius: 'var(--radius-sm)',
-              border: '1px solid var(--border-color)',
-              padding: '32px',
-              maxWidth: '680px',
-            }}
-          >
-            <h3 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', marginBottom: '8px' }}>
-              Atelier Correspondence Channels
-            </h3>
-            <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '24px' }}>
-              In accordance with house privacy tenets, all communications are dispatched exclusively to your registered Gmail / Email address. We never dispatch SMS, WhatsApp, or unsolicited push alerts.
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid var(--border-light)' }}>
-                <div>
-                  <span style={{ fontSize: '0.92rem', fontWeight: 600, display: 'block' }}>
-                    Commission & Delivery Dossiers
-                  </span>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    Tracking updates, status changes, and physical delivery signatures.
-                  </span>
+        );
+      case 'addresses':
+        return (
+          <div className="account-section fade-in">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+              <div>
+                <h2 className="section-title" style={{ marginBottom: '8px' }}>Addresses</h2>
+                <p className="section-subtitle">Manage your saved delivery addresses.</p>
+              </div>
+            </div>
+            
+            <div className="addresses-grid">
+              {user?.addresses?.map((addr) => (
+                <div key={addr.id} className="address-card">
+                  {addr.isDefault && <span className="default-label">DEFAULT ADDRESS</span>}
+                  <div className="address-content">
+                    <span className="address-name">{addr.name || user.name}</span>
+                    <span className="address-line">{addr.line1}</span>
+                    <span className="address-line">{addr.city}, {addr.state}</span>
+                    <span className="address-line">{addr.pincode}</span>
+                  </div>
+                  <div className="address-actions">
+                    <button className="text-action-sm">Edit <ArrowRight size={12}/></button>
+                    <button className="text-action-sm">Remove <ArrowRight size={12}/></button>
+                  </div>
                 </div>
-                <input
-                  type="checkbox"
-                  checked={emailOrderUpdates}
-                  onChange={(e) => setEmailOrderUpdates(e.target.checked)}
-                />
-              </label>
-
-              <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid var(--border-light)' }}>
-                <div>
-                  <span style={{ fontSize: '0.92rem', fontWeight: 600, display: 'block' }}>
-                    Private Client Privileges
-                  </span>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    Seasonal courtesy codes and private preview invitations.
-                  </span>
+              ))}
+              <div className="address-card new-address-card">
+                <button className="text-action">Add New Address +</button>
+              </div>
+            </div>
+          </div>
+        );
+      case 'returns':
+        return (
+          <div className="account-section fade-in">
+            <h2 className="section-title">Returns & Exchanges</h2>
+            {returns.length === 0 ? (
+              <p className="empty-text">No returns or exchanges at the moment.</p>
+            ) : (
+              <div className="list-container">
+                {returns.map((ret) => {
+                   const order = orders.find(o => o.id === ret.orderId);
+                   const firstItem = order?.items[0];
+                   return (
+                     <div key={ret.id} className="list-row">
+                       <div className="row-col col-left">
+                         <span className="row-title">Return #{ret.id}</span>
+                         <span className="row-meta">Order #{ret.orderId}</span>
+                         <span className="row-meta">
+                           {new Date(ret.createdAt).toLocaleDateString('en-GB', {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric',
+                            })}
+                         </span>
+                       </div>
+                       <div className="row-col col-center">
+                         <span className="product-title">{firstItem?.productName || 'Item'}</span>
+                         <span className="product-meta">Reason: {ret.reason}</span>
+                       </div>
+                       <div className="row-col col-right">
+                         <span className="status-meta">Status: <br/>{ret.status}</span>
+                         <Link href={`/account/returns/${ret.id}`} className="text-action">
+                           View Details <ArrowRight size={14} />
+                         </Link>
+                       </div>
+                     </div>
+                   );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      case 'preferences':
+        return (
+          <div className="account-section fade-in">
+            <h2 className="section-title" style={{ marginBottom: '8px' }}>Email Preferences</h2>
+            <p className="section-subtitle">Choose the types of emails you'd like to receive from Aurelia.</p>
+            
+            <div className="toggle-list">
+              <div className="toggle-row">
+                <div className="toggle-info">
+                  <span className="toggle-title">Order updates</span>
+                  <span className="toggle-desc">Shipping and delivery updates</span>
                 </div>
-                <input
-                  type="checkbox"
-                  checked={emailPromotions}
-                  onChange={(e) => setEmailPromotions(e.target.checked)}
-                />
-              </label>
-
-              <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0' }}>
-                <div>
-                  <span style={{ fontSize: '0.92rem', fontWeight: 600, display: 'block' }}>
-                    The Aurelia Journal
-                  </span>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    Quarterly essays on tailoring provenance and material science.
-                  </span>
+                <label className="switch">
+                  <input type="checkbox" checked={emailOrderUpdates} onChange={(e) => setEmailOrderUpdates(e.target.checked)} />
+                  <span className="slider round"></span>
+                </label>
+              </div>
+              <div className="toggle-row">
+                <div className="toggle-info">
+                  <span className="toggle-title">Promotions</span>
+                  <span className="toggle-desc">Exclusive offers and promotions</span>
                 </div>
-                <input
-                  type="checkbox"
-                  checked={emailJournal}
-                  onChange={(e) => setEmailJournal(e.target.checked)}
-                />
-              </label>
+                <label className="switch">
+                  <input type="checkbox" checked={emailPromotions} onChange={(e) => setEmailPromotions(e.target.checked)} />
+                  <span className="slider round"></span>
+                </label>
+              </div>
+              <div className="toggle-row">
+                <div className="toggle-info">
+                  <span className="toggle-title">New collections</span>
+                  <span className="toggle-desc">Updates about new arrivals and collections</span>
+                </div>
+                <label className="switch">
+                  <input type="checkbox" checked={emailJournal} onChange={(e) => setEmailJournal(e.target.checked)} />
+                  <span className="slider round"></span>
+                </label>
+              </div>
+            </div>
+            <div style={{ marginTop: '32px' }}>
+              <button 
+                className="btn-primary"
+                onClick={() => showToast('Preferences updated', 'success')}
+              >
+                Save Preferences
+              </button>
+            </div>
+          </div>
+        );
+      case 'profile':
+        return (
+          <div className="account-section fade-in">
+            <h2 className="section-title">Profile Settings</h2>
+            
+            <div className="settings-group">
+              <div className="settings-header">
+                <h3 className="settings-subtitle">Personal Information</h3>
+              </div>
+              <div className="settings-row">
+                <div className="settings-info">
+                  <span className="settings-label">Full Name</span>
+                  <span className="settings-value">{user?.name || 'Ayesha Rahman'}</span>
+                </div>
+                <button className="text-action-sm">Edit</button>
+              </div>
+              <div className="settings-row">
+                <div className="settings-info">
+                  <span className="settings-label">Email Address</span>
+                  <span className="settings-value">{user?.email || 'ayesha@example.com'}</span>
+                </div>
+                <button className="text-action-sm">Edit</button>
+              </div>
+              <div className="settings-row">
+                <div className="settings-info">
+                  <span className="settings-label">Phone Number</span>
+                  <span className="settings-value">{user?.phone || '+91 98765 43210'}</span>
+                </div>
+                <button className="text-action-sm">Edit</button>
+              </div>
             </div>
 
-            <Button
-              variant="primary"
-              size="sm"
-              style={{ marginTop: '24px' }}
-              onClick={() => showToast('Email correspondence preferences updated.', 'success')}
-            >
-              Save Preferences
-            </Button>
+            <div className="settings-group" style={{ marginTop: '48px' }}>
+              <div className="settings-header">
+                <h3 className="settings-subtitle">Password</h3>
+              </div>
+              <div className="settings-row">
+                <div className="settings-info">
+                  <span className="settings-label">Password</span>
+                  <span className="settings-value">••••••••</span>
+                </div>
+                <button className="text-action-sm">Change Password</button>
+              </div>
+            </div>
           </div>
-        )}
+        );
+    }
+  };
+
+  const tabs = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'orders', label: 'Orders' },
+    { id: 'addresses', label: 'Addresses' },
+    { id: 'returns', label: 'Returns & Exchanges' },
+    { id: 'preferences', label: 'Email Preferences' },
+    { id: 'profile', label: 'Profile Settings' },
+  ] as const;
+
+  return (
+    <div className="account-page">
+      <div className="container account-container">
+        {/* Left Sidebar */}
+        <aside className="account-sidebar">
+          <div className="sidebar-profile">
+            <h1 className="profile-name">{user?.name || 'Ayesha Rahman'}</h1>
+            <p className="profile-email">{user?.email || 'ayesha@example.com'}</p>
+          </div>
+          
+          <nav className="account-nav">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                className={`nav-item ${activeTab === tab.id ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab.id as any)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </nav>
+          
+          <div className="sidebar-footer">
+            <button className="signout-link" onClick={handleLogout}>
+              Sign Out <ArrowRight size={14} />
+            </button>
+          </div>
+        </aside>
+
+        {/* Right Content */}
+        <main className="account-content">
+          <div className="content-header">
+            <h1 className="page-heading">My Account</h1>
+            <p className="page-subheading">Manage your orders, addresses and account preferences.</p>
+          </div>
+          
+          {renderContent()}
+
+          <div className="mobile-signout">
+             <button className="signout-link" onClick={handleLogout}>
+              Sign Out <ArrowRight size={14} />
+            </button>
+          </div>
+        </main>
       </div>
 
       <style jsx global>{`
-        .account-tabs-container::-webkit-scrollbar {
-          display: none;
+        .account-page {
+          padding-top: 80px;
+          padding-bottom: 80px;
+          min-height: 100vh;
+          background-color: #fff;
+          color: #1D1A39;
         }
-        .account-tab-btn {
-          transition: color 0.2s ease;
+        
+        .account-container {
+          max-width: 1024px;
+          margin: 0 auto;
+          display: flex;
+          gap: 48px;
         }
-        .account-tab-btn:hover:not(:has(.motion-div)) {
-          color: var(--color-sunset-700) !important;
+
+        /* Sidebar Styles */
+        .account-sidebar {
+          width: 240px;
+          flex-shrink: 0;
+          display: flex;
+          flex-direction: column;
         }
-        .hover-underline-custom {
+        
+        .sidebar-profile {
+          margin-bottom: 48px;
+        }
+        
+        .profile-name {
+          font-family: var(--font-display);
+          font-size: 1.5rem;
+          font-weight: 400;
+          margin-bottom: 4px;
+          color: #1D1A39;
+        }
+        
+        .profile-email {
+          font-size: 0.9rem;
+          color: rgba(29, 26, 57, 0.6);
+        }
+        
+        .account-nav {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          margin-bottom: 32px;
+        }
+        
+        .nav-item {
+          text-align: left;
+          background: none;
+          border: none;
+          padding: 0;
+          font-size: 0.95rem;
+          color: #1D1A39;
+          opacity: 0.6;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          position: relative;
+          display: inline-block;
+          width: fit-content;
+        }
+        
+        .nav-item:hover {
+          opacity: 1;
+        }
+        
+        .nav-item.active {
+          opacity: 1;
+          font-weight: 500;
+        }
+        
+        .nav-item::after {
+          content: '';
           position: absolute;
-          bottom: -1px;
+          bottom: -4px;
           left: 0;
           width: 100%;
-          height: 2px;
-          background-color: var(--border-color);
-          display: block;
-          transform-origin: left;
+          height: 1px;
+          background-color: #1D1A39;
           transform: scaleX(0);
-          transition: transform 0.3s ease-out;
-          pointer-events: none;
+          transform-origin: left;
+          transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .account-tab-btn:hover .hover-underline-custom {
+
+        .nav-item.active::after,
+        .nav-item:hover::after {
           transform: scaleX(1);
+        }
+        
+        .sidebar-footer {
+          padding-top: 32px;
+          border-top: 1px solid rgba(29, 26, 57, 0.1);
+        }
+        
+        .signout-link {
+          background: none;
+          border: none;
+          padding: 0;
+          font-size: 0.95rem;
+          color: #1D1A39;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          opacity: 0.7;
+          transition: opacity 0.2s ease;
+        }
+        
+        .signout-link:hover {
+          opacity: 1;
+        }
+        
+        .signout-link svg {
+          transition: transform 0.2s ease;
+        }
+        
+        .signout-link:hover svg {
+          transform: translateX(4px);
+        }
+
+        /* Content Styles */
+        .account-content {
+          flex: 1;
+          min-width: 0;
+        }
+        
+        .content-header {
+          margin-bottom: 32px;
+          display: none;
+        }
+        
+        @media (min-width: 769px) {
+          .content-header {
+            display: block;
+          }
+        }
+        
+        .page-heading {
+          font-family: var(--font-display);
+          font-size: 2.2rem;
+          font-weight: 400;
+          margin-bottom: 8px;
+          color: #1D1A39;
+        }
+        
+        .page-subheading {
+          font-size: 0.95rem;
+          color: rgba(29, 26, 57, 0.6);
+        }
+        
+        .section-title {
+          font-size: 0.8rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          font-weight: 500;
+          margin-bottom: 24px;
+          color: #1D1A39;
+        }
+        
+        .section-subtitle {
+          font-size: 0.9rem;
+          color: rgba(29, 26, 57, 0.6);
+          margin-bottom: 32px;
+        }
+
+        /* Overview Grid */
+        .overview-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 24px;
+        }
+        
+        .overview-block {
+          padding: 32px 24px;
+          border: 1px solid rgba(29, 26, 57, 0.1);
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .overview-block:hover {
+          border-color: rgba(29, 26, 57, 0.3);
+        }
+        
+        .overview-block:hover .overview-action {
+          opacity: 1;
+        }
+        
+        .overview-block:hover .overview-action svg {
+          transform: translateX(4px);
+        }
+        
+        .overview-label {
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: rgba(29, 26, 57, 0.6);
+          margin-bottom: 16px;
+        }
+        
+        .overview-number {
+          font-family: var(--font-display);
+          font-size: 2.5rem;
+          margin-bottom: 24px;
+          color: #1D1A39;
+        }
+        
+        .overview-action {
+          font-size: 0.85rem;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          opacity: 0.7;
+          transition: all 0.3s ease;
+          margin-top: auto;
+        }
+        
+        .overview-action svg {
+          transition: transform 0.3s ease;
+        }
+
+        /* List Rows (Orders, Returns) */
+        .list-container {
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .list-row {
+          display: flex;
+          justify-content: space-between;
+          padding: 32px 0;
+          border-bottom: 1px solid rgba(29, 26, 57, 0.1);
+          transition: background-color 0.3s ease;
+        }
+        
+        .list-row:first-child {
+          border-top: 1px solid rgba(29, 26, 57, 0.1);
+        }
+        
+        .row-col {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        
+        .col-left {
+          flex: 1;
+        }
+        
+        .col-center {
+          flex: 1.5;
+        }
+        
+        .col-right {
+          flex: 1;
+          align-items: flex-end;
+          text-align: right;
+        }
+        
+        .row-title {
+          font-size: 0.85rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          font-weight: 500;
+        }
+        
+        .row-meta {
+          font-size: 0.9rem;
+          color: rgba(29, 26, 57, 0.6);
+        }
+        
+        .status-pill {
+          display: inline-block;
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          padding: 4px 10px;
+          border-radius: 100px;
+          width: fit-content;
+          margin-top: 8px;
+          font-weight: 500;
+        }
+        
+        .product-title {
+          font-size: 1rem;
+          color: #1D1A39;
+        }
+        
+        .product-meta {
+          font-size: 0.9rem;
+          color: rgba(29, 26, 57, 0.6);
+        }
+        
+        .amount {
+          font-size: 1.05rem;
+          margin-bottom: auto;
+        }
+        
+        .status-meta {
+          font-size: 0.85rem;
+          color: rgba(29, 26, 57, 0.6);
+          margin-bottom: auto;
+        }
+        
+        .text-action {
+          font-size: 0.9rem;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          color: #1D1A39;
+          text-decoration: none;
+          transition: opacity 0.2s ease;
+          opacity: 0.8;
+          cursor: pointer;
+          background: none;
+          border: none;
+          padding: 0;
+        }
+        
+        .text-action:hover {
+          opacity: 1;
+        }
+        
+        .text-action svg {
+          transition: transform 0.2s ease;
+        }
+        
+        .text-action:hover svg {
+          transform: translateX(4px);
+        }
+        
+        .text-action-sm {
+          font-size: 0.85rem;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          color: rgba(29, 26, 57, 0.7);
+          text-decoration: none;
+          transition: opacity 0.2s ease;
+          cursor: pointer;
+          background: none;
+          border: none;
+          padding: 0;
+        }
+        
+        .text-action-sm:hover {
+          opacity: 1;
+          color: #1D1A39;
+        }
+
+        /* Addresses */
+        .addresses-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 24px;
+        }
+        
+        .address-card {
+          padding: 32px 24px;
+          border: 1px solid rgba(29, 26, 57, 0.1);
+          display: flex;
+          flex-direction: column;
+          position: relative;
+        }
+        
+        .default-label {
+          font-size: 0.7rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: #662549;
+          margin-bottom: 16px;
+          font-weight: 500;
+        }
+        
+        .address-content {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          margin-bottom: 24px;
+        }
+        
+        .address-name {
+          font-weight: 500;
+          font-size: 1rem;
+          margin-bottom: 8px;
+        }
+        
+        .address-line {
+          font-size: 0.9rem;
+          color: rgba(29, 26, 57, 0.7);
+        }
+        
+        .address-actions {
+          margin-top: auto;
+          display: flex;
+          gap: 16px;
+        }
+        
+        .new-address-card {
+          border: 1px dashed rgba(29, 26, 57, 0.2);
+          align-items: center;
+          justify-content: center;
+          background-color: rgba(29, 26, 57, 0.01);
+          transition: background-color 0.2s ease;
+        }
+        
+        .new-address-card:hover {
+          background-color: rgba(29, 26, 57, 0.03);
+        }
+
+        /* Toggles */
+        .toggle-list {
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .toggle-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 24px 0;
+          border-bottom: 1px solid rgba(29, 26, 57, 0.1);
+        }
+        
+        .toggle-row:first-child {
+          border-top: 1px solid rgba(29, 26, 57, 0.1);
+        }
+        
+        .toggle-info {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        
+        .toggle-title {
+          font-size: 1rem;
+        }
+        
+        .toggle-desc {
+          font-size: 0.85rem;
+          color: rgba(29, 26, 57, 0.6);
+        }
+        
+        /* Switch */
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 44px;
+          height: 24px;
+        }
+        
+        .switch input { 
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+        
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(29, 26, 57, 0.2);
+          transition: .3s;
+        }
+        
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 18px;
+          width: 18px;
+          left: 3px;
+          bottom: 3px;
+          background-color: white;
+          transition: .3s;
+        }
+        
+        input:checked + .slider {
+          background-color: #1D1A39;
+        }
+        
+        input:focus + .slider {
+          box-shadow: 0 0 1px #1D1A39;
+        }
+        
+        input:checked + .slider:before {
+          transform: translateX(20px);
+        }
+        
+        .slider.round {
+          border-radius: 24px;
+        }
+        
+        .slider.round:before {
+          border-radius: 50%;
+        }
+
+        /* Profile Settings */
+        .settings-group {
+          margin-bottom: 32px;
+        }
+        
+        .settings-header {
+          margin-bottom: 16px;
+        }
+        
+        .settings-subtitle {
+          font-size: 0.95rem;
+          font-weight: 500;
+        }
+        
+        .settings-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 20px 0;
+          border-bottom: 1px solid rgba(29, 26, 57, 0.1);
+        }
+        
+        .settings-row:first-of-type {
+          border-top: 1px solid rgba(29, 26, 57, 0.1);
+        }
+        
+        .settings-info {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        
+        .settings-label {
+          font-size: 0.8rem;
+          color: rgba(29, 26, 57, 0.6);
+        }
+        
+        .settings-value {
+          font-size: 1rem;
+        }
+
+        .btn-primary {
+          background-color: #1D1A39;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: background-color 0.2s ease;
+          border-radius: var(--radius-sm, 4px);
+        }
+        
+        .btn-primary:hover {
+          background-color: #451952;
+        }
+
+        .empty-text {
+          font-size: 0.95rem;
+          color: rgba(29, 26, 57, 0.6);
+          padding: 32px 0;
+        }
+
+        .fade-in {
+          animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(4px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .mobile-signout {
+          display: none;
+          margin-top: 48px;
+          padding-top: 24px;
+          border-top: 1px solid rgba(29, 26, 57, 0.1);
+          justify-content: flex-start;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+          .account-container {
+            flex-direction: column;
+            gap: 32px;
+          }
+          
+          .account-sidebar {
+            width: 100%;
+          }
+          
+          .sidebar-profile {
+            margin-bottom: 24px;
+            text-align: left;
+          }
+          
+          .account-nav {
+            flex-direction: row;
+            overflow-x: auto;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+            gap: 24px;
+            border-bottom: 1px solid rgba(29, 26, 57, 0.1);
+            scrollbar-width: none;
+          }
+          
+          .account-nav::-webkit-scrollbar {
+            display: none;
+          }
+          
+          .nav-item {
+            white-space: nowrap;
+          }
+          
+          .sidebar-footer {
+            display: none;
+          }
+          
+          .mobile-signout {
+            display: flex;
+          }
+          
+          .list-row {
+            flex-direction: column;
+            gap: 16px;
+          }
+          
+          .col-center, .col-right {
+            text-align: left;
+            align-items: flex-start;
+          }
+          
+          .col-right {
+            margin-top: 8px;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+          }
+          
+          .amount {
+            margin-bottom: 0;
+          }
+          
+          .content-header {
+            display: none;
+          }
         }
       `}</style>
     </div>

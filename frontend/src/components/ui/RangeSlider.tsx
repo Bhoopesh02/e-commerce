@@ -33,7 +33,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   const [activeThumb, setActiveThumb] = useState<'left' | 'right' | null>(null);
   const [liveValues, setLiveValues] = useState<[number, number]>(value);
   const [isClose, setIsClose] = useState(false);
-  const activeTimerRef = useRef<NodeJS.Timeout>();
+  const activeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [minInput, setMinInput] = useState(value[0].toString());
   const [maxInput, setMaxInput] = useState(value[1].toString());

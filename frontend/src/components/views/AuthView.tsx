@@ -230,6 +230,34 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
             )}
           </div>
 
+          {/* Admin Toggle */}
+          {mode === 'login' && (
+            <div style={{ marginTop: '32px', textAlign: 'center', paddingTop: '24px', borderTop: '1px solid rgba(230, 185, 195, 0.3)' }}>
+              <button
+                type="button"
+                onClick={() => {
+                  loginAsAdmin();
+                  showToast('Admin access granted.', 'success');
+                  router.push('/admin/dashboard');
+                }}
+                style={{
+                  fontSize: '0.86rem',
+                  color: '#6E555C',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <ShieldCheck size={16} />
+                Access Admin Portal
+              </button>
+            </div>
+          )}
+
+
 
         </div>
       </div>

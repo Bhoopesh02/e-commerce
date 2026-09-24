@@ -11,6 +11,7 @@ import { Drawer } from '@/components/ui/Drawer';
 import { CategorySection, SectionAnimationVariant } from '@/components/shop/CategorySection';
 import { RangeSlider } from '@/components/ui/RangeSlider';
 import { ProductCard } from '@/components/product/ProductCard';
+import { CollectionNewArrivals } from '@/components/sections/CollectionNewArrivals';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { SlidersHorizontal, X, RotateCcw, ArrowUp, CloudRain, Scissors, Sparkles, Shirt, ShoppingBag, Footprints, Gem, FlaskConical, Check } from 'lucide-react';
@@ -133,6 +134,10 @@ export const ShopView: React.FC = () => {
     return list;
   }, [products, searchParams, priceRange, selectedAvailability, selectedSort]);
 
+  const newArrivals = useMemo(() => {
+    return products.filter((p) => p.isNewArrival);
+  }, [products]);
+
   // Handle category selection
   const handleCategorySelect = useCallback((slug: string) => {
     setActiveCategory((prev) => {
@@ -194,25 +199,22 @@ export const ShopView: React.FC = () => {
     selectedAvailability !== 'all';
 
   return (
-    <div style={{ paddingTop: '100px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      <div className="container">
-        {/* Editorial Campaign Master Hero Banner (Untouched New Collections Banner) */}
-        <div
-          ref={heroBannerRef}
-          style={{
-            position: 'relative',
-            overflow: 'hidden',
-            borderRadius: '20px',
-            marginBottom: '32px',
-            minHeight: '320px',
-            display: 'flex',
-            alignItems: 'center',
-            boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',
-            border: '1px solid rgba(232, 188, 185, 0.22)',
-            backgroundColor: '#0c0a14',
-          }}
-          className="group hero-master-banner"
-        >
+    <div style={{ paddingTop: '76px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+      {/* Editorial Campaign Master Hero Banner (Untouched New Collections Banner) */}
+      <div
+        ref={heroBannerRef}
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          marginBottom: '40px',
+          height: 'calc(100vh - 76px)',
+          display: 'flex',
+          alignItems: 'center',
+          boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',
+          backgroundColor: '#0c0a14',
+        }}
+        className="group hero-master-banner"
+      >
           {/* Background Image Container */}
           <div
             style={{
@@ -226,7 +228,7 @@ export const ShopView: React.FC = () => {
               alt="New Collections Campaign"
               fill
               priority
-              sizes="(max-width: 1280px) 100vw, 1280px"
+              sizes="100vw"
               style={{
                 objectFit: 'cover',
                 objectPosition: 'center 26%',
@@ -254,14 +256,13 @@ export const ShopView: React.FC = () => {
           </div>
 
           {/* Banner Typography & Accents */}
-          <div
-            style={{
-              position: 'relative',
-              zIndex: 2,
-              padding: 'clamp(36px, 5vw, 60px)',
-              maxWidth: '740px',
-            }}
-          >
+          <div className="container" style={{ position: 'relative', zIndex: 2, width: '100%' }}>
+            <div
+              style={{
+                padding: 'clamp(36px, 5vw, 60px) 0',
+                maxWidth: '740px',
+              }}
+            >
             <h1
               style={{
                 fontSize: 'clamp(2.4rem, 4.5vw, 3.6rem)',
@@ -334,8 +335,24 @@ export const ShopView: React.FC = () => {
                 Complimentary Global Shipping
               </span>
             </div>
+            </div>
           </div>
         </div>
+
+      <div className="container">
+        {newArrivals.length > 0 && (
+          <CollectionNewArrivals
+            products={newArrivals}
+            title="New Arrivals"
+            subtitle="Latest Discoveries"
+            onExploreClick={() => {
+              if (stickyBarRef.current) {
+                const offset = stickyBarRef.current.getBoundingClientRect().top + window.pageYOffset - 76;
+                window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+              }
+            }}
+          />
+        )}
 
         {/* Sticky Category Navigation Bar & Global Controls */}
         <div

@@ -606,3 +606,47 @@ a:focus-visible .luxury-btn:not(:disabled)>span:last-child svg {
   transform-origin: top center;
   animation: bagSwing 0.55s ease-in-out;
 }
+
+/* Custom Navigation Button Hover Animation */
+.nav-btn-custom {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  outline: none;
+}
+
+.nav-label-custom {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary, #666);
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+
+.nav-label-custom.active,
+.nav-btn-custom:hover .nav-label-custom {
+  color: var(--text-primary, #121624);
+}
+
+.hover-underline-custom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--text-primary, #121624);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.nav-btn-custom:hover .hover-underline-custom {
+  transform: scaleX(1);
+}

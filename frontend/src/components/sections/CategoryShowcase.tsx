@@ -26,6 +26,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   const [enableTransition, setEnableTransition] = useState(true);
   const [containerWidth, setContainerWidth] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [hasMoved, setHasMoved] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll logic
@@ -35,6 +36,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
     const intervalId = setInterval(() => {
       if (!enableTransition) return;
       setActiveIndex((prev) => prev + 1);
+      setHasMoved(true);
     }, 2000);
 
     return () => clearInterval(intervalId);
@@ -62,11 +64,13 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   const handleNext = () => {
     if (!enableTransition) return;
     setActiveIndex((prev) => prev + 1);
+    setHasMoved(true);
   };
 
   const handlePrev = () => {
     if (!enableTransition) return;
     setActiveIndex((prev) => prev - 1);
+    setHasMoved(true);
   };
 
   const handleTransitionEnd = (e: React.TransitionEvent) => {
@@ -169,12 +173,16 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
         }}>
           {carouselItems.map((cat, idx) => {
             const isActive = idx === activeIndex;
+            const distance = Math.abs(idx - activeIndex);
+            const isVisible = hasMoved || distance <= 2;
+            
             return (
               <div
                 key={`${cat.id}-${idx}`}
                 onClick={() => {
                   setEnableTransition(true);
                   setActiveIndex(idx);
+                  setHasMoved(true);
                 }}
                 className="category-slider-card"
                 style={{
@@ -185,7 +193,8 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                   transition: enableTransition ? 'all 0.7s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
                   transform: isActive ? 'scale(1.12)' : 'scale(0.85)',
                   zIndex: isActive ? 10 : 1,
-                  opacity: isActive ? 1 : 0.5,
+                  opacity: !isVisible ? 0 : (isActive ? 1 : 0.5),
+                  pointerEvents: !isVisible ? 'none' : 'auto',
                   borderRadius: 'var(--radius-md)',
                   overflow: 'hidden',
                   boxShadow: isActive ? '0 24px 50px rgba(0,0,0,0.2)' : 'none',

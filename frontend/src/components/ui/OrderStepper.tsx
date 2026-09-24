@@ -19,7 +19,7 @@ const defaultSteps: Step[] = [
   { id: 'delivered', label: 'Delivered', date: '22 Sept, 12:50 pm', icon: Home },
 ];
 
-const customEase = [0.16, 1, 0.3, 1];
+const customEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const segmentDuration = 0.5;
 
 interface OrderStepperProps {

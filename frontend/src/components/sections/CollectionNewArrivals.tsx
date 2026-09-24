@@ -7,7 +7,7 @@ import { ArrowRight } from 'lucide-react';
 import { Product } from '@/types';
 import { ProductCard } from '@/components/product/ProductCard';
 
-interface MostCovetedSilhouettesProps {
+interface CollectionNewArrivalsProps {
   products: Product[];
   title?: string;
   subtitle?: string;
@@ -16,7 +16,7 @@ interface MostCovetedSilhouettesProps {
 
 const EASE_LUXURY = [0.22, 1, 0.36, 1] as const;
 
-export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
+export const CollectionNewArrivals: React.FC<CollectionNewArrivalsProps> = ({
   products,
   title = 'Most Coveted Silhouettes',
   subtitle = 'House Signatures',
@@ -129,18 +129,20 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
     },
   };
 
-  // Card entrance variant: opacity 0, y 35 -> opacity 1, y 0 over 500ms with --ease-luxury
+  // Card entrance variant: opacity 0, scale 0.95 -> opacity 1, scale 1 over 600ms
   const cardVariants = {
     hidden: {
       opacity: 0,
-      y: shouldReduceMotion ? 0 : 35,
+      scale: shouldReduceMotion ? 1 : 0.9,
+      y: shouldReduceMotion ? 0 : 25,
     },
     visible: {
       opacity: 1,
+      scale: 1,
       y: 0,
       transition: {
-        duration: 0.5,
-        ease: EASE_LUXURY,
+        duration: 0.6,
+        ease: [0.25, 0.1, 0.25, 1],
       },
     },
   };
