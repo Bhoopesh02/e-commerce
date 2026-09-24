@@ -113,6 +113,9 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
           animation: stepScrollDynamic ${totalDuration}s cubic-bezier(0.4, 0, 0.2, 1) infinite;
           will-change: transform;
         }
+        .animate-step-scroll:hover {
+          animation-play-state: paused;
+        }
         @media (prefers-reduced-motion: reduce) {
           .animate-step-scroll {
             animation-play-state: paused !important;

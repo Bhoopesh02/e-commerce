@@ -95,7 +95,8 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                   borderRadius: 'var(--radius-md)',
                   overflow: 'hidden',
                   cursor: 'pointer',
-                  transition: 'flex var(--carousel-expand-duration, 1200ms) var(--ease-luxury), box-shadow var(--carousel-expand-duration, 1200ms) var(--ease-luxury)',
+                  willChange: 'flex, box-shadow',
+                  transition: 'flex var(--carousel-expand-duration, 1600ms) cubic-bezier(0.25, 1, 0.5, 1), box-shadow var(--carousel-expand-duration, 1600ms) cubic-bezier(0.25, 1, 0.5, 1)',
                   boxShadow: isActive ? 'var(--shadow-editorial)' : 'var(--shadow-sm)',
                 }}
               >
@@ -107,8 +108,9 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   style={{
                     objectFit: 'cover',
-                    transition: 'transform var(--carousel-expand-duration, 1200ms) var(--ease-luxury), filter var(--carousel-expand-duration, 1200ms) var(--ease-luxury)',
-                    transform: isActive ? 'scale(1.05)' : 'scale(1)',
+                    willChange: 'transform, filter',
+                    transition: 'transform var(--carousel-expand-duration, 1600ms) cubic-bezier(0.25, 1, 0.5, 1), filter var(--carousel-expand-duration, 1600ms) cubic-bezier(0.25, 1, 0.5, 1)',
+                    transform: isActive ? 'scale3d(1.05, 1.05, 1)' : 'scale3d(1, 1, 1)',
                     filter: isActive ? 'brightness(0.9)' : 'brightness(0.75)',
                   }}
                 />
@@ -124,7 +126,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                     background: isActive
                       ? 'linear-gradient(180deg, rgba(29, 26, 57, 0.1) 0%, rgba(29, 26, 57, 0.85) 100%)'
                       : 'linear-gradient(180deg, rgba(29, 26, 57, 0.2) 0%, rgba(29, 26, 57, 0.75) 100%)',
-                    transition: 'background var(--carousel-expand-duration, 1200ms) var(--ease-luxury)',
+                    transition: 'background var(--carousel-expand-duration, 1600ms) cubic-bezier(0.25, 1, 0.5, 1)',
                   }}
                 />
 
@@ -165,7 +167,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                       whiteSpace: isActive ? 'normal' : 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      transition: 'font-size 800ms var(--ease-luxury)',
+                      transition: 'font-size 1000ms cubic-bezier(0.25, 1, 0.5, 1)',
                     }}
                   >
                     {product.name}
@@ -179,27 +181,13 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                       transform: isActive ? 'translateY(0)' : 'translateY(14px)',
                       overflow: 'hidden',
                       transition: isActive
-                        ? 'opacity 800ms var(--ease-luxury) 250ms, transform 800ms var(--ease-luxury) 250ms, max-height 800ms var(--ease-luxury) 250ms'
-                        : 'opacity 400ms var(--ease-luxury), transform 400ms var(--ease-luxury), max-height 450ms var(--ease-luxury)',
+                        ? 'opacity 1000ms cubic-bezier(0.25, 1, 0.5, 1) 250ms, transform 1000ms cubic-bezier(0.25, 1, 0.5, 1) 250ms, max-height 1000ms cubic-bezier(0.25, 1, 0.5, 1) 250ms'
+                        : 'opacity 500ms cubic-bezier(0.25, 1, 0.5, 1), transform 500ms cubic-bezier(0.25, 1, 0.5, 1), max-height 550ms cubic-bezier(0.25, 1, 0.5, 1)',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '12px',
                     }}
                   >
-                    <p
-                      style={{
-                        fontSize: '0.85rem',
-                        color: 'var(--color-sunset-200)',
-                        lineHeight: 1.5,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                      }}
-                    >
-                      {product.description}
-                    </p>
-
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <span style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--color-sunset-400)' }}>
                         {formatPrice(product.price)}

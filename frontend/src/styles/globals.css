@@ -443,3 +443,35 @@ textarea:focus-visible {
 }
 
 
+
+/* Animated Back Button */
+.animated-back-btn .back-text {
+  position: relative;
+  display: inline-block;
+}
+
+.animated-back-btn .back-text::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1.5px;
+  bottom: -2px;
+  left: 0;
+  background-color: currentColor;
+  transform-origin: bottom right;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.animated-back-btn:hover .back-text::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.animated-back-btn svg {
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.animated-back-btn:hover svg {
+  transform: translateX(-4px);
+}

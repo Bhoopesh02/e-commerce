@@ -426,6 +426,11 @@ export const Footer: React.FC = () => {
                     House Favorites
                   </Link>
                 </li>
+                <li>
+                  <Link href="/admin/dashboard" className="footer-link">
+                    Admin Portal
+                  </Link>
+                </li>
               </ul>
 
               {/* Non-linked editorial hallmarks */}

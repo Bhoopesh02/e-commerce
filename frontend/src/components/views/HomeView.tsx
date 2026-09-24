@@ -83,7 +83,7 @@ export const HomeView: React.FC = () => {
 
       case 'brand_intro':
         return (
-          <section key={id} style={{ padding: '80px 0', backgroundColor: 'var(--bg-primary)' }}>
+          <section key={id} style={{ padding: '80px 0 20px', backgroundColor: 'var(--bg-primary)' }}>
             <div className="container" style={{ maxWidth: '880px', textAlign: 'center' }}>
               <ScrollReveal duration={0.6}>
                 <span
@@ -109,7 +109,7 @@ export const HomeView: React.FC = () => {
                 >
                   Couture is not merely garment construction; it is the physical manifestation of discipline and form.
                 </h2>
-                <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', lineHeight: 1.7 }}>
+                <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', lineHeight: 1.7, margin: 0 }}>
                   At Aurelia, each edition is produced in numbered runs to maintain exacting craftsmanship. We source our virgin wool from Biella, silk from Lake Como, and box calf from artisanal tanneries in Tuscany.
                 </p>
               </ScrollReveal>

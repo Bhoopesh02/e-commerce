@@ -88,20 +88,9 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
                 letterSpacing: '0.2em',
                 color: '#2A1D20',
                 display: 'block',
-                marginBottom: '6px',
               }}
             >
               {BRAND_NAME}
-            </span>
-            <span
-              style={{
-                fontSize: '0.75rem',
-                color: '#8A6D73',
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-              }}
-            >
-              Private Client Gateway
             </span>
           </div>
 
@@ -241,63 +230,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
             )}
           </div>
 
-          {/* Quick Demo Login Helpers */}
-          <div
-            style={{
-              marginTop: '32px',
-              paddingTop: '20px',
-              borderTop: '1px solid rgba(240, 210, 218, 0.7)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '0.72rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                color: '#8A6D73',
-                textAlign: 'center',
-              }}
-            >
-              Quick Demo Access
-            </span>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  loginAsCustomer();
-                  showToast('Authorized as Customer (Ayesha Rahman).', 'success');
-                  router.push('/account');
-                }}
-                style={{
-                  borderColor: 'rgba(230, 185, 195, 0.7)',
-                  color: '#4A3338',
-                  backgroundColor: '#FFF8FA',
-                }}
-              >
-                Customer Demo
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  loginAsAdmin();
-                  showToast('Authorized as Operations Admin.', 'success');
-                  router.push('/admin/dashboard');
-                }}
-                style={{
-                  borderColor: 'rgba(230, 185, 195, 0.7)',
-                  color: '#4A3338',
-                  backgroundColor: '#FFF8FA',
-                }}
-              >
-                Admin Demo
-              </Button>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

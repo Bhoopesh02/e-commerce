@@ -18,30 +18,60 @@ export const EditorialCampaign: React.FC = () => {
         overflow: 'hidden',
       }}
     >
+      <style>{`
+        .editorial-reveal {
+          position: relative;
+          height: 100%;
+          min-height: 580px;
+        }
+        .editorial-image {
+          position: absolute;
+          top: -100px;
+          bottom: -100px;
+          right: 0;
+          width: calc(50vw - 32px);
+          overflow: hidden;
+          box-shadow: var(--shadow-editorial);
+          border-radius: 0;
+        }
+        .editorial-tag {
+          left: max(24px, calc((100vw - 1280px) / 2 + 24px)) !important;
+        }
+        @media (max-width: 1024px) {
+          .editorial-image {
+            position: relative;
+            top: 0;
+            bottom: 0;
+            right: auto;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            height: 580px;
+          }
+          .editorial-tag {
+            left: 24px !important;
+          }
+          .editorial-reveal {
+            min-height: auto;
+          }
+        }
+      `}</style>
       <div className="container">
         <div
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
             gap: '64px',
-            alignItems: 'center',
+            alignItems: 'stretch',
           }}
         >
           {/* Visual Canvas */}
-          <ScrollReveal duration={0.7} yOffset={20}>
-            <div
-              style={{
-                position: 'relative',
-                height: '580px',
-                borderRadius: 'var(--radius-md)',
-                overflow: 'hidden',
-                boxShadow: 'var(--shadow-editorial)',
-              }}
-            >
+          <ScrollReveal duration={0.7} yOffset={20} className="editorial-reveal">
+            <div className="editorial-image">
               <Image
                 src="/images/campaign/editorial-florence.webp"
                 alt="Editorial Campaign Aurelia"
                 fill
+                quality={100}
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 style={{ objectFit: 'cover' }}
               />
@@ -58,10 +88,10 @@ export const EditorialCampaign: React.FC = () => {
               />
               {/* Tag Overlay */}
               <div
+                className="editorial-tag"
                 style={{
                   position: 'absolute',
                   bottom: '24px',
-                  left: '24px',
                   padding: '12px 18px',
                   backgroundColor: 'rgba(29, 26, 57, 0.8)',
                   backdropFilter: 'blur(8px)',
@@ -87,7 +117,7 @@ export const EditorialCampaign: React.FC = () => {
           </ScrollReveal>
 
           {/* Editorial Copy */}
-          <ScrollReveal delay={0.15} duration={0.65}>
+          <ScrollReveal delay={0.15} duration={0.65} style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{ maxWidth: '520px' }}>
 
               <h2
@@ -145,3 +175,4 @@ export const EditorialCampaign: React.FC = () => {
     </section>
   );
 };
+

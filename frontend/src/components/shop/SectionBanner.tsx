@@ -59,6 +59,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
           style={{
             objectFit: 'cover',
             objectPosition: 'center 35%',
+            willChange: 'transform',
             transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
           className="group-hover:scale-105"

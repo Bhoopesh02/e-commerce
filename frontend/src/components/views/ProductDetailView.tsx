@@ -167,6 +167,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ slug }) =>
         {/* Back Navigation */}
         <button
           onClick={() => router.back()}
+          className="animated-back-btn"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -182,7 +183,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ slug }) =>
           }}
         >
           <ChevronLeft size={16} />
-          Back
+          <span className="back-text">Back</span>
         </button>
 
         {/* Top Split: Gallery & Product Info */}

@@ -1,10 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Category } from '@/types';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 
 interface CategoryShowcaseProps {
@@ -18,10 +18,83 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   title = 'Curated Disciplines',
   subtitle = 'Discover tailored collections crafted for longevity and quiet distinction.',
 }) => {
+  const baseCount = categories.length;
+  // 5x duplication to allow rapid clicking without hitting edges before transition snaps
+  const carouselItems = [...categories, ...categories, ...categories, ...categories, ...categories];
+  
+  const [activeIndex, setActiveIndex] = useState(baseCount * 2);
+  const [enableTransition, setEnableTransition] = useState(true);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll logic
+  useEffect(() => {
+    if (isHovered) return;
+
+    const intervalId = setInterval(() => {
+      if (!enableTransition) return;
+      setActiveIndex((prev) => prev + 1);
+    }, 2000);
+
+    return () => clearInterval(intervalId);
+  }, [isHovered, enableTransition]);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+    updateWidth();
+    setTimeout(updateWidth, 100);
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
+  const cardWidth = 320;
+  const gap = 32;
+
+  const trackTranslateX = containerWidth > 0 
+    ? (containerWidth / 2) - (cardWidth / 2) - (activeIndex * (cardWidth + gap))
+    : 0;
+
+  const handleNext = () => {
+    if (!enableTransition) return;
+    setActiveIndex((prev) => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (!enableTransition) return;
+    setActiveIndex((prev) => prev - 1);
+  };
+
+  const handleTransitionEnd = (e: React.TransitionEvent) => {
+    // Ensure we only snap on the track's transform transition, not child elements
+    if (e.target !== e.currentTarget) return;
+    
+    if (activeIndex >= baseCount * 3) {
+      setEnableTransition(false);
+      setActiveIndex((prev) => prev - baseCount);
+    } else if (activeIndex < baseCount * 2) {
+      setEnableTransition(false);
+      setActiveIndex((prev) => prev + baseCount);
+    }
+  };
+
+  // Turn transition back on after snapping
+  useEffect(() => {
+    if (!enableTransition) {
+      const timeout = setTimeout(() => {
+        setEnableTransition(true);
+      }, 50);
+      return () => clearTimeout(timeout);
+    }
+  }, [enableTransition]);
+
   return (
-    <section style={{ padding: '80px 0', backgroundColor: 'var(--bg-primary)' }}>
-      <div className="container">
-        {/* Section Header */}
+    <section style={{ padding: '40px 0 80px', backgroundColor: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
+      <div className="container" style={{ position: 'relative', zIndex: 2 }}>
         <ScrollReveal duration={0.6}>
           <div
             style={{
@@ -31,88 +104,112 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
               marginBottom: '48px',
             }}
           >
-          <span
-            style={{
-              fontSize: '0.78rem',
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
-              color: 'var(--color-sunset-600)',
-              fontWeight: 600,
-            }}
-          >
-            Atelier Divisions
-          </span>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'baseline',
-              justifyContent: 'space-between',
-              gap: '16px',
-            }}
-          >
-            <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)' }}>{title}</h2>
-            <Link
-              href="/shop"
-              className="editorial-arrow-link"
+            <span
               style={{
-                fontSize: '0.85rem',
+                fontSize: '0.78rem',
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: 'var(--color-sunset-600)',
                 fontWeight: 600,
-                color: 'var(--color-sunset-700)',
-                letterSpacing: '0.04em',
               }}
             >
-              <span className="editorial-arrow-link-text">View Full Catalog</span>
-              <ArrowUpRight size={15} className="editorial-arrow-icon editorial-arrow-diagonal" />
-            </Link>
-          </div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: '540px' }}>
-            {subtitle}
-          </p>
-        </div>
-        </ScrollReveal>
-
-        {/* Editorial Category Grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            columnGap: '24px',
-            rowGap: '12px',
-          }}
-        >
-          {categories.map((cat, idx) => (
-            <ScrollReveal key={cat.id} delay={idx * 0.07} duration={0.6}>
+              Atelier Divisions
+            </span>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'baseline',
+                justifyContent: 'space-between',
+                gap: '16px',
+              }}
+            >
+              <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)' }}>{title}</h2>
               <Link
-                href={`/shop?categorySlug=${cat.slug}`}
+                href="/shop"
+                className="editorial-arrow-link"
+                style={{
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  color: 'var(--color-sunset-700)',
+                  letterSpacing: '0.04em',
+                }}
+              >
+                <span className="editorial-arrow-link-text">View Full Catalog</span>
+                <ArrowUpRight size={15} className="editorial-arrow-icon editorial-arrow-diagonal" />
+              </Link>
+            </div>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: '540px' }}>
+              {subtitle}
+            </p>
+          </div>
+        </ScrollReveal>
+      </div>
+
+      <div 
+        ref={containerRef}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        style={{ 
+          position: 'relative', 
+          width: '100%', 
+          padding: '60px 0', 
+          zIndex: 2 
+        }}
+      >
+        <div 
+          onTransitionEnd={handleTransitionEnd}
+          style={{
+          display: 'flex',
+          alignItems: 'center',
+          transform: `translateX(${trackTranslateX}px)`,
+          transition: enableTransition ? 'transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
+          willChange: 'transform',
+          width: 'max-content',
+        }}>
+          {carouselItems.map((cat, idx) => {
+            const isActive = idx === activeIndex;
+            return (
+              <div
+                key={`${cat.id}-${idx}`}
+                onClick={() => {
+                  setEnableTransition(true);
+                  setActiveIndex(idx);
+                }}
+                className="category-slider-card"
                 style={{
                   position: 'relative',
-                  height: '420px',
+                  width: `${cardWidth}px`,
+                  height: '460px',
+                  marginRight: idx === carouselItems.length - 1 ? '0' : `${gap}px`,
+                  transition: enableTransition ? 'all 0.7s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
+                  transform: isActive ? 'scale(1.12)' : 'scale(0.85)',
+                  zIndex: isActive ? 10 : 1,
+                  opacity: isActive ? 1 : 0.5,
                   borderRadius: 'var(--radius-md)',
                   overflow: 'hidden',
+                  boxShadow: isActive ? '0 24px 50px rgba(0,0,0,0.2)' : 'none',
+                  cursor: 'pointer',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'flex-end',
-                  padding: '24px',
+                  padding: '32px',
                   color: '#FFF8F5',
-                  boxShadow: 'var(--shadow-sm)',
-                  transition: 'transform 600ms var(--ease-luxury)',
                 }}
-                className="category-card"
               >
                 <Image
                   src={cat.image}
                   alt={cat.name}
                   fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  sizes="(max-width: 768px) 100vw, 400px"
                   style={{
                     objectFit: 'cover',
-                    transition: 'transform 600ms var(--ease-luxury)',
                   }}
                   className="category-image"
+                  priority={true}
+                  unoptimized={true}
                 />
 
-                {/* Scrim Overlay */}
                 <div
                   className="category-scrim"
                   style={{
@@ -122,89 +219,153 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                     right: 0,
                     bottom: 0,
                     background:
-                      'linear-gradient(180deg, rgba(29, 26, 57, 0.1) 0%, rgba(29, 26, 57, 0.75) 100%)',
+                      'linear-gradient(180deg, rgba(29, 26, 57, 0.1) 0%, rgba(29, 26, 57, 0.85) 100%)',
                     zIndex: 1,
+                    transition: enableTransition ? 'opacity 0.7s ease' : 'none',
+                    opacity: isActive ? 0.8 : 0.95,
                   }}
                 />
 
-                {/* Text Meta */}
                 <div style={{ position: 'relative', zIndex: 2 }}>
                   <div
                     style={{
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      marginBottom: '6px',
+                      marginBottom: '8px',
                     }}
                   >
                     <h3
                       style={{
-                        fontSize: '1.45rem',
+                        fontSize: '1.6rem',
                         fontFamily: 'var(--font-display)',
                         color: '#FFF8F5',
+                        transition: enableTransition ? 'transform 0.7s ease' : 'none',
+                        transform: isActive ? 'translateY(0)' : 'translateY(10px)',
                       }}
                     >
                       {cat.name}
                     </h3>
-                    <div
-                      className="category-arrow-btn"
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 'var(--radius-pill)',
-                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backdropFilter: 'blur(4px)',
-                      }}
-                    >
-                      <ArrowUpRight size={16} />
-                    </div>
+                    
+                    {isActive && (
+                      <Link 
+                        href={`/shop?categorySlug=${cat.slug}`}
+                        className="category-arrow-btn"
+                        style={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: 'var(--radius-pill)',
+                          backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backdropFilter: 'blur(4px)',
+                          color: '#fff',
+                        }}
+                      >
+                        <ArrowUpRight size={18} />
+                      </Link>
+                    )}
                   </div>
 
                   {cat.description && (
                     <p
                       style={{
-                        fontSize: '0.82rem',
-                        color: 'var(--color-sunset-200)',
-                        lineHeight: 1.4,
+                        fontSize: '0.9rem',
+                        color: 'var(--color-sunset-100)',
+                        lineHeight: 1.5,
                         display: '-webkit-box',
                         WebkitLineClamp: 2,
                         WebkitBoxOrient: 'vertical',
                         overflow: 'hidden',
+                        transition: enableTransition ? 'opacity 0.7s ease, transform 0.7s ease' : 'none',
+                        opacity: isActive ? 1 : 0,
+                        transform: isActive ? 'translateY(0)' : 'translateY(10px)',
                       }}
                     >
                       {cat.description}
                     </p>
                   )}
                 </div>
-              </Link>
-            </ScrollReveal>
-          ))}
+              </div>
+            );
+          })}
+        </div>
+        
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '5%',
+          right: '5%',
+          transform: 'translateY(-50%)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          pointerEvents: 'none',
+          zIndex: 20,
+        }}>
+          <button 
+            onClick={(e) => { e.stopPropagation(); handlePrev(); }}
+            style={{ 
+              pointerEvents: 'auto',
+              width: 50,
+              height: 50,
+              borderRadius: '50%',
+              backgroundColor: 'var(--bg-primary)',
+              color: 'var(--text-primary)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+              border: '1px solid var(--border-color)',
+              opacity: 0.9,
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+            }}
+            className="slider-nav-btn"
+          >
+            <ChevronLeft size={24} />
+          </button>
+          
+          <button 
+            onClick={(e) => { e.stopPropagation(); handleNext(); }}
+            style={{ 
+              pointerEvents: 'auto',
+              width: 50,
+              height: 50,
+              borderRadius: '50%',
+              backgroundColor: 'var(--bg-primary)',
+              color: 'var(--text-primary)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+              border: '1px solid var(--border-color)',
+              opacity: 0.9,
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+            }}
+            className="slider-nav-btn"
+          >
+            <ChevronRight size={24} />
+          </button>
         </div>
       </div>
 
       <style jsx global>{`
-        .category-card .category-image {
-          transition: transform 600ms var(--ease-luxury) !important;
-        }
-        .category-card:hover .category-image {
-          transform: scale(1.06);
-        }
-        .category-card .category-scrim {
-          transition: opacity 600ms var(--ease-luxury);
-        }
-        .category-card:hover .category-scrim {
-          opacity: 0.82;
-        }
-        .category-card .category-arrow-btn {
+        .category-arrow-btn {
           transition: transform 600ms var(--ease-luxury), background-color 600ms var(--ease-luxury), color 600ms var(--ease-luxury);
         }
-        .category-card:hover .category-arrow-btn {
+        .category-arrow-btn:hover {
           transform: translate(2px, -2px) scale(1.08);
-          background-color: var(--cta-primary);
-          color: var(--cta-text);
+          background-color: var(--cta-primary) !important;
+          color: var(--cta-text) !important;
+        }
+        
+        .slider-nav-btn:not(:disabled):hover {
+          transform: scale(1.1);
+          background-color: var(--cta-primary) !important;
+          color: var(--cta-text) !important;
+          border-color: var(--cta-primary) !important;
         }
       `}</style>
     </section>
