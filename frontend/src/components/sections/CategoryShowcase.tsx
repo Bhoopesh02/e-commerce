@@ -97,7 +97,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   }, [enableTransition]);
 
   return (
-    <section style={{ padding: '40px 0 80px', backgroundColor: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
+    <section style={{ padding: '40px 0', backgroundColor: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
         <ScrollReveal duration={0.6}>
           <div
@@ -157,7 +157,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
         style={{ 
           position: 'relative', 
           width: '100%', 
-          padding: '60px 0', 
+          padding: '40px 0', 
           zIndex: 2,
           opacity: containerWidth > 0 ? 1 : 0,
           transition: 'opacity 0.3s ease',

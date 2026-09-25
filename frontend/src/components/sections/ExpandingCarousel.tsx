@@ -24,7 +24,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   return (
-    <section style={{ padding: '96px 0', backgroundColor: 'var(--bg-primary)' }}>
+    <section style={{ padding: '48px 0 96px', backgroundColor: 'var(--bg-primary)' }}>
       <div className="container">
         {/* Section Header */}
         <div
