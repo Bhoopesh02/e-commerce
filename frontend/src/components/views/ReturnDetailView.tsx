@@ -43,10 +43,10 @@ export const ReturnDetailView: React.FC<ReturnDetailViewProps> = ({ returnId }) 
   }
 
   return (
-    <div style={{ paddingTop: '110px', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      <div className="container" style={{ maxWidth: '780px' }}>
+    <div className="account-section fade-in">
+      <div className="container" style={{ maxWidth: '100%', padding: 0 }}>
         <Link
-          href="/account"
+          href="/account/returns"
           style={{
             display: 'inline-flex',
             alignItems: 'center',

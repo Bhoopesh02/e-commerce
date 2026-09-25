@@ -108,11 +108,11 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
   };
 
   return (
-    <div style={{ paddingTop: '110px', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      <div className="container" style={{ maxWidth: '960px' }}>
+    <div className="account-section fade-in">
+      <div className="container" style={{ maxWidth: '100%', padding: 0 }}>
         {/* Navigation back */}
         <Link
-          href="/account"
+          href="/account/orders"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
