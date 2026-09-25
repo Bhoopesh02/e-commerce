@@ -18,9 +18,9 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   title = 'Curated Disciplines',
   subtitle = 'Discover tailored collections crafted for longevity and quiet distinction.',
 }) => {
-  const baseCount = categories.length;
+  const baseCount = categories?.length || 0;
   // 5x duplication to allow rapid clicking without hitting edges before transition snaps
-  const carouselItems = [...categories, ...categories, ...categories, ...categories, ...categories];
+  const carouselItems = baseCount > 0 ? [...categories, ...categories, ...categories, ...categories, ...categories] : [];
   
   const [activeIndex, setActiveIndex] = useState(baseCount * 2);
   const [enableTransition, setEnableTransition] = useState(true);
@@ -158,19 +158,31 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
           position: 'relative', 
           width: '100%', 
           padding: '60px 0', 
-          zIndex: 2 
+          zIndex: 2,
+          opacity: containerWidth > 0 ? 1 : 0,
+          transition: 'opacity 0.3s ease',
         }}
       >
-        <div 
-          onTransitionEnd={handleTransitionEnd}
-          style={{
-          display: 'flex',
-          alignItems: 'center',
-          transform: `translateX(${trackTranslateX}px)`,
-          transition: enableTransition ? 'transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
-          willChange: 'transform',
-          width: 'max-content',
-        }}>
+        {baseCount === 0 ? (
+          <div style={{ display: 'flex', gap: '32px', padding: '0 5%' }}>
+            {[1, 2, 3].map((i) => (
+              <div key={i} style={{ width: '320px', height: '460px', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--bg-surface)', overflow: 'hidden' }}>
+                <Skeleton width="100%" height="100%" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <>
+            <div 
+              onTransitionEnd={handleTransitionEnd}
+              style={{
+              display: 'flex',
+              alignItems: 'center',
+              transform: `translateX(${trackTranslateX}px)`,
+              transition: enableTransition ? 'transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
+              willChange: 'transform',
+              width: 'max-content',
+            }}>
           {carouselItems.map((cat, idx) => {
             const isActive = idx === activeIndex;
             const distance = Math.abs(idx - activeIndex);
@@ -187,6 +199,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                 className="category-slider-card"
                 style={{
                   position: 'relative',
+                  flexShrink: 0,
                   width: `${cardWidth}px`,
                   height: '460px',
                   marginRight: idx === carouselItems.length - 1 ? '0' : `${gap}px`,
@@ -358,6 +371,8 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
             <ChevronRight size={24} />
           </button>
         </div>
+          </>
+        )}
       </div>
 
       <style jsx global>{`
