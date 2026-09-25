@@ -47,10 +47,19 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   const pauseTimerRef = useRef(0);
   const lastCenteredIndexRef = useRef(-1);
   const isHoveredRef = useRef(isCarouselHovered);
+  const containerWidthCacheRef = useRef<{ center: number, totalWidth: number, cardWidth: number, firstCardLeft: number } | null>(null);
   
   useEffect(() => {
     isHoveredRef.current = isCarouselHovered;
   }, [isCarouselHovered]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      containerWidthCacheRef.current = null;
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -79,55 +88,62 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
         } else {
           const moveAmount = SPEED * (deltaTime / 1000);
           
-          const containerRect = container.getBoundingClientRect();
-          const containerCenter = containerRect.left + containerRect.width / 2;
-          const cards = Array.from(track.children) as HTMLElement[];
+          if (!containerWidthCacheRef.current) {
+             const containerRect = container.getBoundingClientRect();
+             const cards = Array.from(track.children) as HTMLElement[];
+             if (cards.length > 0) {
+               const firstCard = cards[0];
+               const nextSetFirstCard = cards[originalItems.length];
+               let totalWidth = 0;
+               if (nextSetFirstCard) {
+                 totalWidth = nextSetFirstCard.getBoundingClientRect().left - firstCard.getBoundingClientRect().left;
+               } else {
+                 totalWidth = (firstCard.getBoundingClientRect().width + 16) * originalItems.length;
+               }
+               
+               const cardWidth = firstCard.getBoundingClientRect().width + 16;
+               containerWidthCacheRef.current = {
+                  center: containerRect.left + containerRect.width / 2,
+                  totalWidth: totalWidth,
+                  cardWidth: cardWidth,
+                  firstCardLeft: firstCard.getBoundingClientRect().left
+               };
+             }
+          }
           
           let crossedIndex = -1;
           let snapDrift = 0;
 
-          for (let i = 0; i < cards.length; i++) {
-            const card = cards[i];
-            const rect = card.getBoundingClientRect();
-            const cardCenter = rect.left + rect.width / 2;
-            const nextCardCenter = cardCenter - moveAmount;
+          if (containerWidthCacheRef.current) {
+            const cache = containerWidthCacheRef.current;
+            const containerCenter = cache.center;
             
-            if (cardCenter >= containerCenter - 0.1 && nextCardCenter < containerCenter - 0.1) {
-              const logicalIndex = i % originalItems.length;
-              if (lastCenteredIndexRef.current !== logicalIndex) {
-                crossedIndex = i;
-                snapDrift = cardCenter - containerCenter;
-                break;
+            for (let i = 0; i < originalItems.length * 3; i++) {
+              const cardLeft = cache.firstCardLeft + (i * cache.cardWidth) + currentXRef.current;
+              const cardCenter = cardLeft + (cache.cardWidth - 16) / 2;
+              const nextCardCenter = cardCenter - moveAmount;
+              
+              if (cardCenter >= containerCenter - 0.1 && nextCardCenter < containerCenter - 0.1) {
+                const logicalIndex = i % originalItems.length;
+                if (lastCenteredIndexRef.current !== logicalIndex) {
+                  crossedIndex = i;
+                  snapDrift = cardCenter - containerCenter;
+                  break;
+                }
               }
             }
-          }
 
-          if (crossedIndex !== -1) {
-            currentXRef.current -= snapDrift;
-            isCenterPausedRef.current = true;
-            lastCenteredIndexRef.current = crossedIndex % originalItems.length;
-            pauseTimerRef.current = ((moveAmount - snapDrift) / SPEED) * 1000;
-          } else {
-            currentXRef.current -= moveAmount;
-          }
-
-          const firstCard = cards[0];
-          const nextSetFirstCard = cards[originalItems.length];
-          
-          if (firstCard) {
-            let totalOriginalWidth = 0;
-            if (nextSetFirstCard) {
-              // Exact sub-pixel distance between Set 1 and Set 2, completely eliminating flex gap/rounding errors
-              totalOriginalWidth = nextSetFirstCard.getBoundingClientRect().left - firstCard.getBoundingClientRect().left;
+            if (crossedIndex !== -1) {
+              currentXRef.current -= snapDrift;
+              isCenterPausedRef.current = true;
+              lastCenteredIndexRef.current = crossedIndex % originalItems.length;
+              pauseTimerRef.current = ((moveAmount - snapDrift) / SPEED) * 1000;
             } else {
-              // Fallback
-              const cardWidth = firstCard.getBoundingClientRect().width + 16; 
-              totalOriginalWidth = cardWidth * originalItems.length;
+              currentXRef.current -= moveAmount;
             }
-            
-            // When we've scrolled exactly one original set's width left, seamlessly snap back
-            if (currentXRef.current <= -totalOriginalWidth) {
-               currentXRef.current += totalOriginalWidth;
+
+            if (currentXRef.current <= -cache.totalWidth) {
+               currentXRef.current += cache.totalWidth;
             }
           }
 
@@ -323,7 +339,12 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                 flexShrink: 0,
               }}
             >
-              <ProductCard product={product} variant="overlay" aspectRatio="3 / 4" />
+              <ProductCard 
+                product={product} 
+                variant="overlay" 
+                aspectRatio="3 / 4"
+                sizes="(max-width: 768px) 320px, (max-width: 1440px) 28vw, 420px" 
+              />
             </motion.div>
           ))}
         </motion.div>

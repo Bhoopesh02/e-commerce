@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Category } from '@/types';
 import { ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
+import { Skeleton } from '../ui/Skeleton';
 
 interface CategoryShowcaseProps {
   categories: Category[];
@@ -21,7 +22,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   const baseCount = categories?.length || 0;
   // 5x duplication to allow rapid clicking without hitting edges before transition snaps
   const carouselItems = baseCount > 0 ? [...categories, ...categories, ...categories, ...categories, ...categories] : [];
-  
+
   const [activeIndex, setActiveIndex] = useState(baseCount * 2);
   const [enableTransition, setEnableTransition] = useState(true);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -43,21 +44,20 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   }, [isHovered, enableTransition]);
 
   useEffect(() => {
-    const updateWidth = () => {
-      if (containerRef.current) {
-        setContainerWidth(containerRef.current.offsetWidth);
+    if (!containerRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        setContainerWidth(entry.contentRect.width);
       }
-    };
-    updateWidth();
-    setTimeout(updateWidth, 100);
-    window.addEventListener('resize', updateWidth);
-    return () => window.removeEventListener('resize', updateWidth);
+    });
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
   }, []);
 
   const cardWidth = 320;
   const gap = 32;
 
-  const trackTranslateX = containerWidth > 0 
+  const trackTranslateX = containerWidth > 0
     ? (containerWidth / 2) - (cardWidth / 2) - (activeIndex * (cardWidth + gap))
     : 0;
 
@@ -76,7 +76,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   const handleTransitionEnd = (e: React.TransitionEvent) => {
     // Ensure we only snap on the track's transform transition, not child elements
     if (e.target !== e.currentTarget) return;
-    
+
     if (activeIndex >= baseCount * 3) {
       setEnableTransition(false);
       setActiveIndex((prev) => prev - baseCount);
@@ -97,7 +97,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   }, [enableTransition]);
 
   return (
-    <section style={{ padding: '40px 0', backgroundColor: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
+    <section style={{ padding: '40px 0 80px', backgroundColor: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
         <ScrollReveal duration={0.6}>
           <div
@@ -150,14 +150,14 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
         </ScrollReveal>
       </div>
 
-      <div 
+      <div
         ref={containerRef}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        style={{ 
-          position: 'relative', 
-          width: '100%', 
-          padding: '40px 0', 
+        style={{
+          position: 'relative',
+          width: '100%',
+          padding: '60px 0',
           zIndex: 2,
           opacity: containerWidth > 0 ? 1 : 0,
           transition: 'opacity 0.3s ease',
@@ -173,204 +173,207 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
           </div>
         ) : (
           <>
-            <div 
+            <div
               onTransitionEnd={handleTransitionEnd}
               style={{
-              display: 'flex',
-              alignItems: 'center',
-              transform: `translateX(${trackTranslateX}px)`,
-              transition: enableTransition ? 'transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
-              willChange: 'transform',
-              width: 'max-content',
-            }}>
-          {carouselItems.map((cat, idx) => {
-            const isActive = idx === activeIndex;
-            const distance = Math.abs(idx - activeIndex);
-            const isVisible = hasMoved || distance <= 2;
-            
-            return (
-              <div
-                key={`${cat.id}-${idx}`}
-                onClick={() => {
-                  setEnableTransition(true);
-                  setActiveIndex(idx);
-                  setHasMoved(true);
-                }}
-                className="category-slider-card"
-                style={{
-                  position: 'relative',
-                  flexShrink: 0,
-                  width: `${cardWidth}px`,
-                  height: '460px',
-                  marginRight: idx === carouselItems.length - 1 ? '0' : `${gap}px`,
-                  transition: enableTransition ? 'all 0.7s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
-                  transform: isActive ? 'scale(1.12)' : 'scale(0.85)',
-                  zIndex: isActive ? 10 : 1,
-                  opacity: !isVisible ? 0 : (isActive ? 1 : 0.5),
-                  pointerEvents: !isVisible ? 'none' : 'auto',
-                  borderRadius: 'var(--radius-md)',
-                  overflow: 'hidden',
-                  boxShadow: isActive ? '0 24px 50px rgba(0,0,0,0.2)' : 'none',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'flex-end',
-                  padding: '32px',
-                  color: '#FFF8F5',
-                }}
-              >
-                <Image
-                  src={cat.image}
-                  alt={cat.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 400px"
-                  style={{
-                    objectFit: 'cover',
-                  }}
-                  className="category-image"
-                  priority={true}
-                  unoptimized={true}
-                />
+                display: 'flex',
+                alignItems: 'center',
+                transform: `translateX(${trackTranslateX}px)`,
+                transition: enableTransition ? 'transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
+                willChange: 'transform',
+                width: 'max-content',
+              }}>
+              {carouselItems.map((cat, idx) => {
+                const isActive = idx === activeIndex;
+                const distance = Math.abs(idx - activeIndex);
+                const isVisible = hasMoved || distance <= 2;
 
-                <div
-                  className="category-scrim"
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background:
-                      'linear-gradient(180deg, rgba(29, 26, 57, 0.1) 0%, rgba(29, 26, 57, 0.85) 100%)',
-                    zIndex: 1,
-                    transition: enableTransition ? 'opacity 0.7s ease' : 'none',
-                    opacity: isActive ? 0.8 : 0.95,
-                  }}
-                />
-
-                <div style={{ position: 'relative', zIndex: 2 }}>
+                return (
                   <div
+                    key={`${cat.id}-${idx}`}
+                    onClick={() => {
+                      setEnableTransition(true);
+                      setActiveIndex(idx);
+                      setHasMoved(true);
+                    }}
+                    className="category-slider-card"
                     style={{
+                      position: 'relative',
+                      flexShrink: 0,
+                      width: `${cardWidth}px`,
+                      height: '460px',
+                      marginRight: idx === carouselItems.length - 1 ? '0' : `${gap}px`,
+                      transition: enableTransition ? 'all 0.7s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
+                      transform: isActive ? 'scale(1.12)' : 'scale(0.85)',
+                      zIndex: isActive ? 10 : 1,
+                      opacity: !isVisible ? 0 : (isActive ? 1 : 0.5),
+                      pointerEvents: !isVisible ? 'none' : 'auto',
+                      borderRadius: 'var(--radius-md)',
+                      overflow: 'hidden',
+                      boxShadow: isActive ? '0 24px 50px rgba(0,0,0,0.2)' : 'none',
+                      cursor: 'pointer',
                       display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      marginBottom: '8px',
+                      flexDirection: 'column',
+                      justifyContent: 'flex-end',
+                      padding: '32px',
+                      color: '#FFF8F5',
                     }}
                   >
-                    <h3
+                    <Image
+                      src={cat.image}
+                      alt={cat.name}
+                      fill
+                      quality={60}
+                      sizes="400px"
                       style={{
-                        fontSize: '1.6rem',
-                        fontFamily: 'var(--font-display)',
-                        color: '#FFF8F5',
-                        transition: enableTransition ? 'transform 0.7s ease' : 'none',
-                        transform: isActive ? 'translateY(0)' : 'translateY(10px)',
+                        objectFit: 'cover',
                       }}
-                    >
-                      {cat.name}
-                    </h3>
-                    
-                    {isActive && (
-                      <Link 
-                        href={`/shop?categorySlug=${cat.slug}`}
-                        className="category-arrow-btn"
+                      className="category-image"
+                      priority={idx >= baseCount * 2 - 1 && idx <= baseCount * 2 + 3}
+                    />
+
+                    <div
+                      className="category-scrim"
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background:
+                          'linear-gradient(180deg, rgba(29, 26, 57, 0.1) 0%, rgba(29, 26, 57, 0.85) 100%)',
+                        zIndex: 1,
+                        transition: enableTransition ? 'opacity 0.7s ease' : 'none',
+                        opacity: isActive ? 0.8 : 0.95,
+                      }}
+                    />
+
+                    <div style={{ position: 'relative', zIndex: 2 }}>
+                      <div
                         style={{
-                          width: 36,
-                          height: 36,
-                          borderRadius: 'var(--radius-pill)',
-                          backgroundColor: 'rgba(255, 255, 255, 0.25)',
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center',
-                          backdropFilter: 'blur(4px)',
-                          color: '#fff',
+                          justifyContent: 'space-between',
+                          marginBottom: '8px',
                         }}
                       >
-                        <ArrowUpRight size={18} />
-                      </Link>
-                    )}
-                  </div>
+                        <h3
+                          style={{
+                            fontSize: '1.6rem',
+                            fontFamily: 'var(--font-display)',
+                            color: '#FFF8F5',
+                            transition: enableTransition ? 'transform 0.7s ease' : 'none',
+                            transform: isActive ? 'translateY(0)' : 'translateY(10px)',
+                          }}
+                        >
+                          {cat.name}
+                        </h3>
 
-                  {cat.description && (
-                    <p
-                      style={{
-                        fontSize: '0.9rem',
-                        color: 'var(--color-sunset-100)',
-                        lineHeight: 1.5,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                        transition: enableTransition ? 'opacity 0.7s ease, transform 0.7s ease' : 'none',
-                        opacity: isActive ? 1 : 0,
-                        transform: isActive ? 'translateY(0)' : 'translateY(10px)',
-                      }}
-                    >
-                      {cat.description}
-                    </p>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '5%',
-          right: '5%',
-          transform: 'translateY(-50%)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          pointerEvents: 'none',
-          zIndex: 20,
-        }}>
-          <button 
-            onClick={(e) => { e.stopPropagation(); handlePrev(); }}
-            style={{ 
-              pointerEvents: 'auto',
-              width: 50,
-              height: 50,
-              borderRadius: '50%',
-              backgroundColor: 'var(--bg-primary)',
-              color: 'var(--text-primary)',
+                        {isActive && (
+                          <Link
+                            href={`/shop?categorySlug=${cat.slug}`}
+                            className="category-arrow-btn"
+                            aria-label={`View ${cat.name} category`}
+                            style={{
+                              width: 36,
+                              height: 36,
+                              borderRadius: 'var(--radius-pill)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              backdropFilter: 'blur(4px)',
+                              color: '#fff',
+                            }}
+                          >
+                            <ArrowUpRight size={18} />
+                          </Link>
+                        )}
+                      </div>
+
+                      {cat.description && (
+                        <p
+                          style={{
+                            fontSize: '0.9rem',
+                            color: 'var(--color-sunset-100)',
+                            lineHeight: 1.5,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            transition: enableTransition ? 'opacity 0.7s ease, transform 0.7s ease' : 'none',
+                            opacity: isActive ? 1 : 0,
+                            transform: isActive ? 'translateY(0)' : 'translateY(10px)',
+                          }}
+                        >
+                          {cat.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div style={{
+              position: 'absolute',
+              top: '50%',
+              left: '5%',
+              right: '5%',
+              transform: 'translateY(-50%)',
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-              border: '1px solid var(--border-color)',
-              opacity: 0.9,
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-            }}
-            className="slider-nav-btn"
-          >
-            <ChevronLeft size={24} />
-          </button>
-          
-          <button 
-            onClick={(e) => { e.stopPropagation(); handleNext(); }}
-            style={{ 
-              pointerEvents: 'auto',
-              width: 50,
-              height: 50,
-              borderRadius: '50%',
-              backgroundColor: 'var(--bg-primary)',
-              color: 'var(--text-primary)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-              border: '1px solid var(--border-color)',
-              opacity: 0.9,
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-            }}
-            className="slider-nav-btn"
-          >
-            <ChevronRight size={24} />
-          </button>
-        </div>
+              justifyContent: 'space-between',
+              pointerEvents: 'none',
+              zIndex: 20,
+            }}>
+              <button
+                aria-label="Previous slide"
+                onClick={(e) => { e.stopPropagation(); handlePrev(); }}
+                style={{
+                  pointerEvents: 'auto',
+                  width: 50,
+                  height: 50,
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--bg-primary)',
+                  color: 'var(--text-primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  border: '1px solid var(--border-color)',
+                  opacity: 0.9,
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                }}
+                className="slider-nav-btn"
+              >
+                <ChevronLeft size={24} />
+              </button>
+
+              <button
+                aria-label="Next slide"
+                onClick={(e) => { e.stopPropagation(); handleNext(); }}
+                style={{
+                  pointerEvents: 'auto',
+                  width: 50,
+                  height: 50,
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--bg-primary)',
+                  color: 'var(--text-primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  border: '1px solid var(--border-color)',
+                  opacity: 0.9,
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                }}
+                className="slider-nav-btn"
+              >
+                <ChevronRight size={24} />
+              </button>
+            </div>
           </>
         )}
       </div>

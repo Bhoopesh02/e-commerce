@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { motion, useInView, useReducedMotion } from 'framer-motion';
+import { motion, useInView, useReducedMotion, Variants } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { Product } from '@/types';
 import { ProductCard } from '@/components/product/ProductCard';
@@ -43,7 +43,7 @@ export const CollectionNewArrivals: React.FC<CollectionNewArrivalsProps> = ({
   };
 
   // Card entrance variant: opacity 0, scale 0.95 -> opacity 1, scale 1 over 600ms
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: {
       opacity: 0,
       scale: shouldReduceMotion ? 1 : 0.9,

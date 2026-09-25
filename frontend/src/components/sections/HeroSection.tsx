@@ -47,6 +47,7 @@ export const HeroSection: React.FC = () => {
           alt="Aurelia Luxury Campaign"
           fill
           priority
+          quality={60}
           sizes="100vw"
           className="animate-hero-scale"
           style={{

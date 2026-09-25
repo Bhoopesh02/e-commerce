@@ -135,7 +135,10 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
         justifyContent: 'flex-end',
         opacity: isOpen ? 1 : 0,
         pointerEvents: isOpen ? 'auto' : 'none',
-        transition: 'opacity 200ms ease-out',
+        visibility: isOpen ? 'visible' : 'hidden',
+        transition: isOpen 
+          ? 'opacity 200ms ease-out, visibility 0s linear 0s' 
+          : 'opacity 200ms ease-out, visibility 0s linear 200ms',
       }}
     >
       {/* Drawer Panel */}

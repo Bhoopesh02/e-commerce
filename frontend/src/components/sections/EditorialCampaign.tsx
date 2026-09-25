@@ -71,7 +71,7 @@ export const EditorialCampaign: React.FC = () => {
                 src="/images/campaign/editorial-florence.webp"
                 alt="Editorial Campaign Aurelia"
                 fill
-                quality={100}
+                quality={60}
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 style={{ objectFit: 'cover' }}
               />

@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     root: path.resolve(__dirname),
   },
   images: {
-    qualities: [75, 100],
+    qualities: [60, 75, 100],
     remotePatterns: [
       {
         protocol: 'https',

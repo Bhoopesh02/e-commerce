@@ -16,12 +16,14 @@ export interface ProductCardProps {
   product: Product;
   aspectRatio?: string;
   variant?: 'standard' | 'overlay';
+  sizes?: string;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   aspectRatio = '3 / 4',
   variant = 'standard',
+  sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 420px',
 }) => {
   const shouldReduceMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
@@ -91,7 +93,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           src={product.images[0]}
           alt={product.name}
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          quality={60}
+          sizes={sizes}
           className="product-image-primary"
           style={{
             objectFit: 'cover',
@@ -106,7 +109,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             src={product.images[1]}
             alt={`${product.name} alternate view`}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            quality={60}
+            sizes={sizes}
             className="product-image-secondary"
             style={{
               objectFit: 'cover',
@@ -191,6 +195,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             onClick={handleQuickAdd}
             disabled={isAdding}
             className="quick-add-btn"
+            aria-label={`Quick add ${product.name} to bag`}
           >
             {isAdding ? (
               <>

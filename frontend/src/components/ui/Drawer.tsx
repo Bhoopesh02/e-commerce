@@ -70,9 +70,10 @@ export const Drawer: React.FC<DrawerProps> = ({
         justifyContent: position === 'right' ? 'flex-end' : 'flex-start',
         opacity: isOpen ? 1 : 0,
         pointerEvents: isOpen ? 'auto' : 'none',
+        visibility: isOpen ? 'visible' : 'hidden',
         transition: isOpen
-          ? 'opacity 500ms var(--ease-luxury) 50ms'
-          : 'opacity 500ms var(--ease-luxury)',
+          ? 'opacity 500ms var(--ease-luxury) 50ms, visibility 0s linear 0s'
+          : 'opacity 500ms var(--ease-luxury), visibility 0s linear 500ms',
       }}
       onClick={onClose}
     >
