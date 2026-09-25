@@ -31,10 +31,16 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   const trackRef = useRef<HTMLDivElement>(null);
 
   // Allow up to 16 items for base loop
-  const originalItems = products.slice(0, 16);
+  const originalItems = React.useMemo(() => products.slice(0, 16), [products]);
   // Ensure we have enough items for smooth infinite scrolling on ultra-wide screens
   const replicationCount = Math.max(3, Math.ceil(40 / Math.max(1, originalItems.length)));
-  const items = Array(replicationCount).fill(originalItems).flat();
+  
+  // Build a completely flat, cloned dataset to ensure no reference collisions or stale data issues across loops
+  const items = React.useMemo(() => {
+    return Array.from({ length: replicationCount }).flatMap(() =>
+      originalItems.map(item => ({ ...item }))
+    );
+  }, [originalItems, replicationCount]);
 
   const currentXRef = useRef(0);
   const isCenterPausedRef = useRef(false);
@@ -106,10 +112,18 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
           }
 
           const firstCard = cards[0];
+          const nextSetFirstCard = cards[originalItems.length];
+          
           if (firstCard) {
-            // Use getBoundingClientRect for sub-pixel accuracy to prevent microscopic jumps
-            const cardWidth = firstCard.getBoundingClientRect().width + 16; 
-            const totalOriginalWidth = cardWidth * originalItems.length;
+            let totalOriginalWidth = 0;
+            if (nextSetFirstCard) {
+              // Exact sub-pixel distance between Set 1 and Set 2, completely eliminating flex gap/rounding errors
+              totalOriginalWidth = nextSetFirstCard.getBoundingClientRect().left - firstCard.getBoundingClientRect().left;
+            } else {
+              // Fallback
+              const cardWidth = firstCard.getBoundingClientRect().width + 16; 
+              totalOriginalWidth = cardWidth * originalItems.length;
+            }
             
             // When we've scrolled exactly one original set's width left, seamlessly snap back
             if (currentXRef.current <= -totalOriginalWidth) {
