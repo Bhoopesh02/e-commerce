@@ -41,13 +41,13 @@ export const HeroSection: React.FC = () => {
         <Image
           src={
             isEditorial
-              ? '/images/hero/photo-1635091984256-dc15291bb483-4k.webp'
+              ? '/images/hero/Gemini_Generated_Image_62wq5062wq5062wq.webp'
               : '/images/hero/hero-refined.webp'
           }
           alt="Aurelia Luxury Campaign"
           fill
           priority
-          quality={60}
+          quality={100}
           sizes="100vw"
           className="animate-hero-scale"
           style={{
