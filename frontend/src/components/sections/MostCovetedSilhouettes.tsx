@@ -27,7 +27,8 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   const [isCarouselHovered, setIsCarouselHovered] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   // Allow up to 16 items for base loop
   const originalItems = products.slice(0, 16);
@@ -36,68 +37,82 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   const items = Array(replicationCount).fill(originalItems).flat();
 
   useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
+    const container = containerRef.current;
+    const track = trackRef.current;
+    if (!container || !track) return;
 
     let animationId: number;
-    let lastTime = performance.now();
-    const SPEED = 220; // px/s
+    let lastTime: number | null = null;
+    const SPEED = 50; // px/s (slow speed)
     const PAUSE_DURATION = 1000; // 1 second
 
-    let isPaused = false;
+    let isCenterPaused = false;
     let pauseTimer = 0;
-
-    const getMetrics = () => {
-      const firstCard = scrollContainer.children[0] as HTMLElement;
-      if (!firstCard) return null;
-      const cardWidth = firstCard.offsetWidth + 16; // card + gap
-      // scrollLeft value where card 0 is centered in the viewport
-      const centerBase =
-        firstCard.offsetLeft + firstCard.offsetWidth / 2 - scrollContainer.clientWidth / 2;
-      const totalOriginalWidth = cardWidth * originalItems.length;
-      return { cardWidth, centerBase, totalOriginalWidth };
-    };
-
-    // Returns which center-snap index the scrollLeft is past
-    const centerIndex = (scrollLeft: number, cardWidth: number, centerBase: number) =>
-      Math.floor((scrollLeft - centerBase) / cardWidth);
+    let currentX = 0;
+    let lastCenteredIndex = -1;
 
     const step = (time: number) => {
+      if (lastTime === null) {
+        lastTime = time;
+      }
       const deltaTime = Math.min(time - lastTime, 50);
       lastTime = time;
 
       if (!isCarouselHovered && !shouldReduceMotion) {
-        const metrics = getMetrics();
-        if (metrics && metrics.totalOriginalWidth > 0) {
-          const { cardWidth, centerBase, totalOriginalWidth } = metrics;
+        if (isCenterPaused) {
+          pauseTimer += deltaTime;
+          if (pauseTimer >= PAUSE_DURATION) {
+            isCenterPaused = false;
+            pauseTimer = 0;
+          }
+        } else {
+          const moveAmount = SPEED * (deltaTime / 1000);
+          
+          const containerRect = container.getBoundingClientRect();
+          const containerCenter = containerRect.left + containerRect.width / 2;
+          const cards = Array.from(track.children) as HTMLElement[];
+          
+          let crossedIndex = -1;
+          let snapDrift = 0;
 
-          if (isPaused) {
-            pauseTimer += deltaTime;
-            if (pauseTimer >= PAUSE_DURATION) {
-              isPaused = false;
-              pauseTimer = 0;
-            }
-          } else {
-            const prevScrollLeft = scrollContainer.scrollLeft;
-            scrollContainer.scrollLeft += SPEED * (deltaTime / 1000);
-
-            // Seamless loop — jump back when we've scrolled 2 full original lengths
-            let afterLoop = scrollContainer.scrollLeft;
-            if (afterLoop >= 2 * totalOriginalWidth) {
-              afterLoop -= totalOriginalWidth;
-              scrollContainer.scrollLeft = afterLoop;
-            }
-
-            // Detect crossing a card-center snap point (only when not wrapping)
-            const idxBefore = centerIndex(prevScrollLeft, cardWidth, centerBase);
-            const idxAfter = centerIndex(afterLoop, cardWidth, centerBase);
-            if (idxAfter > idxBefore) {
-              // Snap exactly to the center point so the card is perfectly aligned
-              scrollContainer.scrollLeft = centerBase + idxAfter * cardWidth;
-              isPaused = true;
-              pauseTimer = 0;
+          for (let i = 0; i < cards.length; i++) {
+            const card = cards[i];
+            const rect = card.getBoundingClientRect();
+            const cardCenter = rect.left + rect.width / 2;
+            const nextCardCenter = cardCenter - moveAmount;
+            
+            if (cardCenter >= containerCenter - 0.1 && nextCardCenter < containerCenter - 0.1) {
+              const logicalIndex = i % originalItems.length;
+              if (lastCenteredIndex !== logicalIndex) {
+                crossedIndex = i;
+                snapDrift = cardCenter - containerCenter;
+                break;
+              }
             }
           }
+
+          if (crossedIndex !== -1) {
+            currentX -= snapDrift;
+            isCenterPaused = true;
+            lastCenteredIndex = crossedIndex % originalItems.length;
+            pauseTimer = ((moveAmount - snapDrift) / SPEED) * 1000;
+          } else {
+            currentX -= moveAmount;
+          }
+
+          const firstCard = cards[0];
+          if (firstCard) {
+            // Use getBoundingClientRect for sub-pixel accuracy to prevent microscopic jumps
+            const cardWidth = firstCard.getBoundingClientRect().width + 16; 
+            const totalOriginalWidth = cardWidth * originalItems.length;
+            
+            // When we've scrolled exactly one original set's width left, seamlessly snap back
+            if (currentX <= -totalOriginalWidth) {
+               currentX += totalOriginalWidth;
+            }
+          }
+
+          track.style.transform = `translateX(${currentX}px)`;
         }
       }
 
@@ -105,7 +120,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
     };
 
     const timeoutId = setTimeout(() => {
-      lastTime = performance.now();
+      lastTime = null;
       animationId = requestAnimationFrame(step);
     }, 500);
 
@@ -113,7 +128,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
       clearTimeout(timeoutId);
       cancelAnimationFrame(animationId);
     };
-  }, [isCarouselHovered, originalItems.length, shouldReduceMotion]);
+  }, [isCarouselHovered, originalItems.length, shouldReduceMotion, replicationCount]);
 
   // Trigger entrance when the section enters the viewport, strictly once per page load
   const isSectionInView = useInView(sectionRef, { once: true, amount: 0.1 });
@@ -256,7 +271,13 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
 
       {/* Auto Scroll Track */}
       <div 
-        style={{ width: '100%', paddingBottom: '20px' }}
+        ref={containerRef}
+        style={{ 
+          width: '100%', 
+          paddingBottom: '20px',
+          overflow: 'hidden',
+          touchAction: 'pan-y'
+        }}
         onMouseEnter={() => setIsCarouselHovered(true)}
         onMouseLeave={() => setIsCarouselHovered(false)}
       >
@@ -264,13 +285,12 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
           initial="hidden"
           animate={isSectionInView ? 'visible' : 'hidden'}
           variants={containerVariants}
-          ref={scrollRef}
+          ref={trackRef}
           style={{
             display: 'flex',
             gap: '16px',
-            overflowX: 'hidden',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
+            width: 'max-content',
+            willChange: 'transform',
             paddingLeft: 'max(24px, calc((100vw - 1440px) / 2 + 24px))',
             paddingRight: 'max(24px, calc((100vw - 1440px) / 2 + 24px))',
           }}
