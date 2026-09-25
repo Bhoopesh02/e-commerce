@@ -36,6 +36,16 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   const replicationCount = Math.max(3, Math.ceil(40 / Math.max(1, originalItems.length)));
   const items = Array(replicationCount).fill(originalItems).flat();
 
+  const currentXRef = useRef(0);
+  const isCenterPausedRef = useRef(false);
+  const pauseTimerRef = useRef(0);
+  const lastCenteredIndexRef = useRef(-1);
+  const isHoveredRef = useRef(isCarouselHovered);
+  
+  useEffect(() => {
+    isHoveredRef.current = isCarouselHovered;
+  }, [isCarouselHovered]);
+
   useEffect(() => {
     const container = containerRef.current;
     const track = trackRef.current;
@@ -46,11 +56,6 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
     const SPEED = 50; // px/s (slow speed)
     const PAUSE_DURATION = 1000; // 1 second
 
-    let isCenterPaused = false;
-    let pauseTimer = 0;
-    let currentX = 0;
-    let lastCenteredIndex = -1;
-
     const step = (time: number) => {
       if (lastTime === null) {
         lastTime = time;
@@ -58,12 +63,12 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
       const deltaTime = Math.min(time - lastTime, 50);
       lastTime = time;
 
-      if (!isCarouselHovered && !shouldReduceMotion) {
-        if (isCenterPaused) {
-          pauseTimer += deltaTime;
-          if (pauseTimer >= PAUSE_DURATION) {
-            isCenterPaused = false;
-            pauseTimer = 0;
+      if (!isHoveredRef.current && !shouldReduceMotion) {
+        if (isCenterPausedRef.current) {
+          pauseTimerRef.current += deltaTime;
+          if (pauseTimerRef.current >= PAUSE_DURATION) {
+            isCenterPausedRef.current = false;
+            pauseTimerRef.current = 0;
           }
         } else {
           const moveAmount = SPEED * (deltaTime / 1000);
@@ -83,7 +88,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
             
             if (cardCenter >= containerCenter - 0.1 && nextCardCenter < containerCenter - 0.1) {
               const logicalIndex = i % originalItems.length;
-              if (lastCenteredIndex !== logicalIndex) {
+              if (lastCenteredIndexRef.current !== logicalIndex) {
                 crossedIndex = i;
                 snapDrift = cardCenter - containerCenter;
                 break;
@@ -92,12 +97,12 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
           }
 
           if (crossedIndex !== -1) {
-            currentX -= snapDrift;
-            isCenterPaused = true;
-            lastCenteredIndex = crossedIndex % originalItems.length;
-            pauseTimer = ((moveAmount - snapDrift) / SPEED) * 1000;
+            currentXRef.current -= snapDrift;
+            isCenterPausedRef.current = true;
+            lastCenteredIndexRef.current = crossedIndex % originalItems.length;
+            pauseTimerRef.current = ((moveAmount - snapDrift) / SPEED) * 1000;
           } else {
-            currentX -= moveAmount;
+            currentXRef.current -= moveAmount;
           }
 
           const firstCard = cards[0];
@@ -107,12 +112,12 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
             const totalOriginalWidth = cardWidth * originalItems.length;
             
             // When we've scrolled exactly one original set's width left, seamlessly snap back
-            if (currentX <= -totalOriginalWidth) {
-               currentX += totalOriginalWidth;
+            if (currentXRef.current <= -totalOriginalWidth) {
+               currentXRef.current += totalOriginalWidth;
             }
           }
 
-          track.style.transform = `translateX(${currentX}px)`;
+          track.style.transform = `translateX(${currentXRef.current}px)`;
         }
       }
 
@@ -128,7 +133,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
       clearTimeout(timeoutId);
       cancelAnimationFrame(animationId);
     };
-  }, [isCarouselHovered, originalItems.length, shouldReduceMotion, replicationCount]);
+  }, [originalItems.length, shouldReduceMotion, replicationCount]);
 
   // Trigger entrance when the section enters the viewport, strictly once per page load
   const isSectionInView = useInView(sectionRef, { once: true, amount: 0.1 });
