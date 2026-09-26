@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, useRouter } from 'next/navigation';
@@ -34,19 +34,30 @@ import {
 
 interface ProductDetailViewProps {
   slug: string;
+  initialProduct: Product | null;
+  initialReviews: Review[];
+  initialAllProducts: Product[];
 }
 
-export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ slug }) => {
-  const [product, setProduct] = useState<Product | null>(null);
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
+  slug,
+  initialProduct,
+  initialReviews,
+  initialAllProducts,
+}) => {
+  const [product, setProduct] = useState<Product | null>(initialProduct);
+  const [reviews, setReviews] = useState<Review[]>(initialReviews);
+  const [allProducts, setAllProducts] = useState<Product[]>(initialAllProducts);
+  const [loading, setLoading] = useState(!initialProduct);
 
   // Gallery state
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   // Variant selection
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(() => {
+    if (!initialProduct) return null;
+    return initialProduct.variants.find((v) => v.stock > 0) || initialProduct.variants[0];
+  });
   const [quantity, setQuantity] = useState(1);
 
   // Accordion active tab
@@ -61,28 +72,38 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ slug }) =>
   const { showToast } = useToastStore();
   const router = useRouter();
 
+  // Server pre-fetched data for this slug — skip redundant first-mount fetch
+  const isInitialMount = useRef(true);
+
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      if (initialProduct) return;
+    }
+
     let isMounted = true;
     async function loadProductData() {
-      setLoading(true);
       try {
-        const prod = await getProductBySlug(slug);
+        // Concurrent fetch — no waterfall
+        const [prod, catalogProds] = await Promise.all([
+          getProductBySlug(slug),
+          getProducts(),
+        ]);
+
         if (!prod) {
-          if (isMounted) setProduct(null);
+          if (isMounted) {
+            setProduct(null);
+            setLoading(false);
+          }
           return;
         }
 
-        const [revs, catalogProds] = await Promise.all([
-          getReviews(prod.id),
-          getProducts(),
-        ]);
+        const revs = await getReviews(prod.id);
 
         if (isMounted) {
           setProduct(prod);
           setReviews(revs);
           setAllProducts(catalogProds);
-
-          // Set default selected variant (first in stock, or first)
           const firstInStock = prod.variants.find((v) => v.stock > 0) || prod.variants[0];
           setSelectedVariant(firstInStock);
         }

@@ -9,7 +9,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { gsap } from 'gsap';
 
 import './TextLoop.css';
 
@@ -240,18 +239,33 @@ export const TextLoop: React.FC<TextLoopProps> = ({
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced || speed <= 0) return undefined;
 
-    const state = { offset: 0 };
-    const tween = gsap.to(state, {
-      offset: direction === 'reverse' ? -length : length,
-      duration: length / speed,
-      ease: 'none',
-      repeat: -1,
-      onUpdate: () => apply(state.offset),
-    });
+    // Linear infinite scroll via requestAnimationFrame — replaces GSAP
+    const sign = direction === 'reverse' ? -1 : 1;
+    const pxPerMs = speed / 1000; // speed prop = px/sec
+    let offset = 0;
+    let prevTime: number | null = null;
+    let rafId = 0;
+    let paused = false;
+
+    const tick = (now: number) => {
+      if (!paused) {
+        if (prevTime !== null) {
+          const delta = now - prevTime;
+          offset = (offset + sign * pxPerMs * delta) % length;
+        }
+        prevTime = now;
+        apply(offset);
+      } else {
+        prevTime = null;
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
 
     const root = rootRef.current;
-    const pause = () => tween.pause();
-    const resume = () => tween.resume();
+    const pause = () => { paused = true; };
+    const resume = () => { paused = false; };
 
     if (pauseOnHover && root) {
       root.addEventListener('pointerenter', pause);
@@ -259,7 +273,7 @@ export const TextLoop: React.FC<TextLoopProps> = ({
     }
 
     return () => {
-      tween.kill();
+      cancelAnimationFrame(rafId);
       if (pauseOnHover && root) {
         root.removeEventListener('pointerenter', pause);
         root.removeEventListener('pointerleave', resume);
@@ -274,7 +288,7 @@ export const TextLoop: React.FC<TextLoopProps> = ({
     <div
       ref={rootRef}
       className={`text-loop ${className}`.trim()}
-      style={style}
+      style={{ ...style, position: 'relative' }}
     >
       <svg
         className="text-loop-svg"

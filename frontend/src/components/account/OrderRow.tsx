@@ -57,8 +57,10 @@ export const OrderRow: React.FC<OrderRowProps> = ({ order }) => {
       </div>
       <div className="row-col col-right">
         <span className="amount">{formatPrice(order.totals.total)}</span>
-        <Link href={`/account/orders/${order.id}`} className="text-action">
-          View details <ArrowRight size={14} />
+        <Link href={`/account/orders/${order.id}`} style={{ textDecoration: 'none' }}>
+          <div className="text-action">
+            <span className="action-text">View details</span> <span className="arrow-icon"><ArrowRight size={14} /></span>
+          </div>
         </Link>
       </div>
 
@@ -174,12 +176,35 @@ export const OrderRow: React.FC<OrderRowProps> = ({ order }) => {
           opacity: 1;
         }
         
-        .text-action svg {
-          transition: transform 0.2s ease;
+        .action-text {
+          position: relative;
+        }
+
+        .action-text::after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          transform: scaleX(0);
+          height: 1px;
+          bottom: -2px;
+          left: 0;
+          background-color: currentColor;
+          transform-origin: bottom right;
+          transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+        }
+
+        .text-action:hover .action-text::after {
+          transform: scaleX(1);
+          transform-origin: bottom left;
+        }
+
+        .arrow-icon {
+          display: inline-flex;
+          transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
-        .text-action:hover svg {
-          transform: translateX(4px);
+        .text-action:hover .arrow-icon {
+          transform: translateX(6px);
         }
       `}</style>
     </div>

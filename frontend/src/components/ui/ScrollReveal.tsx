@@ -25,6 +25,7 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   style = {},
 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isAnimationComplete, setIsAnimationComplete] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
 
     if (typeof IntersectionObserver === 'undefined') {
       setIsVisible(true);
+      setIsAnimationComplete(true);
       return;
     }
 
@@ -54,11 +56,16 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
     <div
       ref={ref}
       className={className}
+      onTransitionEnd={(e) => {
+        if (isVisible && (e.propertyName === 'opacity' || e.propertyName === 'transform')) {
+          setIsAnimationComplete(true);
+        }
+      }}
       style={{
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translateY(0)' : `translateY(${yOffset}px)`,
         transition: `opacity ${duration}s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s, transform ${duration}s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s`,
-        willChange: 'opacity, transform',
+        willChange: isAnimationComplete ? 'auto' : 'opacity, transform',
         ...style,
       }}
     >

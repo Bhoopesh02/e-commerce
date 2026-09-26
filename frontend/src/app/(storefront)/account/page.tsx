@@ -42,25 +42,33 @@ export default function AccountOverviewPage() {
       
       <h2 className="section-title">Overview</h2>
       <div className="overview-grid">
-        <Link href="/account/orders" className="overview-block">
-          <span className="overview-label">ORDERS</span>
-          <span className="overview-number">{orders.length}</span>
-          <div className="overview-action">View order history <ArrowRight size={14} /></div>
+        <Link href="/account/orders" style={{ textDecoration: 'none', display: 'block' }}>
+          <div className="overview-block">
+            <span className="overview-label">ORDERS</span>
+            <span className="overview-number">{orders.length}</span>
+            <div className="overview-action"><span className="action-text">View order history</span> <span className="arrow-icon"><ArrowRight size={14} /></span></div>
+          </div>
         </Link>
-        <Link href="/account/orders/tracking" className="overview-block">
-          <span className="overview-label">ACTIVE ORDERS</span>
-          <span className="overview-number">{activeOrdersCount}</span>
-          <div className="overview-action">Track current orders <ArrowRight size={14} /></div>
+        <Link href="/account/orders/tracking" style={{ textDecoration: 'none', display: 'block' }}>
+          <div className="overview-block">
+            <span className="overview-label">ACTIVE ORDERS</span>
+            <span className="overview-number">{activeOrdersCount}</span>
+            <div className="overview-action"><span className="action-text">Track current orders</span> <span className="arrow-icon"><ArrowRight size={14} /></span></div>
+          </div>
         </Link>
-        <Link href="/account/returns" className="overview-block">
-          <span className="overview-label">RETURNS</span>
-          <span className="overview-number">{returns.length}</span>
-          <div className="overview-action">View returns <ArrowRight size={14} /></div>
+        <Link href="/account/returns" style={{ textDecoration: 'none', display: 'block' }}>
+          <div className="overview-block">
+            <span className="overview-label">RETURNS</span>
+            <span className="overview-number">{returns.length}</span>
+            <div className="overview-action"><span className="action-text">View returns</span> <span className="arrow-icon"><ArrowRight size={14} /></span></div>
+          </div>
         </Link>
-        <Link href="/account/addresses" className="overview-block">
-          <span className="overview-label">ADDRESSES</span>
-          <span className="overview-number">{user?.addresses?.length || 0}</span>
-          <div className="overview-action">Manage addresses <ArrowRight size={14} /></div>
+        <Link href="/account/addresses" style={{ textDecoration: 'none', display: 'block' }}>
+          <div className="overview-block">
+            <span className="overview-label">ADDRESSES</span>
+            <span className="overview-number">{user?.addresses?.length || 0}</span>
+            <div className="overview-action"><span className="action-text">Manage addresses</span> <span className="arrow-icon"><ArrowRight size={14} /></span></div>
+          </div>
         </Link>
       </div>
 
@@ -90,8 +98,13 @@ export default function AccountOverviewPage() {
           opacity: 1;
         }
         
-        .overview-block:hover .overview-action svg {
-          transform: translateX(4px);
+        .overview-block:hover .arrow-icon {
+          transform: translateX(6px);
+        }
+
+        .overview-block:hover .action-text::after {
+          transform: scaleX(1);
+          transform-origin: bottom left;
         }
         
         .overview-label {
@@ -119,9 +132,27 @@ export default function AccountOverviewPage() {
           margin-top: auto;
           color: #1D1A39;
         }
+
+        .action-text {
+          position: relative;
+        }
+
+        .action-text::after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          transform: scaleX(0);
+          height: 1px;
+          bottom: -2px;
+          left: 0;
+          background-color: currentColor;
+          transform-origin: bottom right;
+          transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+        }
         
-        .overview-action svg {
-          transition: transform 0.3s ease;
+        .arrow-icon {
+          display: inline-flex;
+          transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
       `}</style>
     </div>

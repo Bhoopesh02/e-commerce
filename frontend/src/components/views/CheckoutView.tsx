@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import confetti from 'canvas-confetti';
+import dynamic from 'next/dynamic';
 import { useCartStore } from '@/store/useCartStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useToastStore } from '@/store/useToastStore';
@@ -12,7 +13,7 @@ import { validateStock, placeOrder } from '@/lib/mockApi';
 import { Order, Address } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { PaymentAdyenDropIn, PaymentMethodType, PaymentDetails } from '@/components/checkout/PaymentAdyenDropIn';
+import type { PaymentMethodType, PaymentDetails } from '@/components/checkout/PaymentAdyenDropIn';
 import {
   CheckCircle2,
   ShieldCheck,
@@ -23,6 +24,32 @@ import {
   AlertTriangle,
   Mail,
 } from 'lucide-react';
+
+// Lazy-load the payment component — only needed at checkout step 4
+const PaymentAdyenDropIn = dynamic(
+  () =>
+    import('@/components/checkout/PaymentAdyenDropIn').then(
+      (mod) => mod.PaymentAdyenDropIn,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        style={{
+          padding: '40px 20px',
+          textAlign: 'center',
+          border: '1px solid var(--border-color)',
+          borderRadius: 'var(--radius-sm)',
+          backgroundColor: 'var(--bg-surface)',
+        }}
+      >
+        <span style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
+          Loading secure payment options…
+        </span>
+      </div>
+    ),
+  },
+);
 
 export const CheckoutView: React.FC = () => {
   const { getActiveItems, clearCart, clearBuyNowItem, checkoutMode, getSubtotal, getTax, getDeliveryFee, getTotal, appliedCoupon, discountAmount } = useCartStore();

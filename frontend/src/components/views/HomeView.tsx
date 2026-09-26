@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { ExpandingCarousel } from '@/components/sections/ExpandingCarousel';
@@ -22,30 +22,41 @@ import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 
-import productsData from '@/data/products.json';
-import categoriesData from '@/data/categories.json';
-import storefrontConfigData from '@/data/storefrontConfig.json';
 
-export const HomeView: React.FC = () => {
+
+interface HomeViewProps {
+  initialProducts: Product[];
+  initialNewArrivals: Product[];
+  initialTrending: Product[];
+  initialCategories: Category[];
+  initialConfig: StorefrontConfig;
+}
+
+export const HomeView: React.FC<HomeViewProps> = ({
+  initialProducts,
+  initialNewArrivals,
+  initialTrending,
+  initialCategories,
+  initialConfig,
+}) => {
   const { storefront } = useStorefrontStore();
   const currentStorefront = storefront || 'a';
 
-  const [products, setProducts] = useState<Product[]>(() =>
-    (productsData as Product[]).filter((p) => p.storefronts.includes(currentStorefront))
-  );
-  const [newArrivals, setNewArrivals] = useState<Product[]>(() =>
-    (productsData as Product[]).filter((p) => p.storefronts.includes(currentStorefront) && p.isNewArrival)
-  );
-  const [trending, setTrending] = useState<Product[]>(() =>
-    (productsData as Product[]).filter((p) => p.storefronts.includes(currentStorefront) && p.isTrending)
-  );
-  const [categories, setCategories] = useState<Category[]>(() => categoriesData as Category[]);
-  const [config, setConfig] = useState<StorefrontConfig>(() =>
-    (storefrontConfigData as Record<string, StorefrontConfig>)[currentStorefront] ||
-    (storefrontConfigData as Record<string, StorefrontConfig>)['a']
-  );
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [newArrivals, setNewArrivals] = useState<Product[]>(initialNewArrivals);
+  const [trending, setTrending] = useState<Product[]>(initialTrending);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [config, setConfig] = useState<StorefrontConfig>(initialConfig);
+
+  // Server pre-fetched for storefront 'a' — skip redundant first-mount fetch
+  const isInitialMount = useRef(true);
 
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      if (currentStorefront === 'a') return;
+    }
+
     let isMounted = true;
     async function loadData() {
       try {

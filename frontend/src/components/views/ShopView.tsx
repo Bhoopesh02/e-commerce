@@ -16,8 +16,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { SlidersHorizontal, X, RotateCcw, ArrowUp, CloudRain, Scissors, Sparkles, Shirt, ShoppingBag, Footprints, Gem, FlaskConical, Check } from 'lucide-react';
 
-import productsData from '@/data/products.json';
-import categoriesData from '@/data/categories.json';
+
 
 const getCategoryIcon = (slug: string) => {
   switch (slug) {
@@ -48,14 +47,20 @@ const SECTION_ANIMATIONS: Record<string, SectionAnimationVariant> = {
   'fine-jewelry': 'fade-up',
 };
 
-export const ShopView: React.FC = () => {
+interface ShopViewProps {
+  initialProducts: Product[];
+  initialCategories: Category[];
+}
+
+export const ShopView: React.FC<ShopViewProps> = ({
+  initialProducts,
+  initialCategories,
+}) => {
   const searchParams = useSearchParams();
   const { storefront } = useStorefrontStore();
 
-  const [products, setProducts] = useState<Product[]>(productsData as Product[]);
-  const [categories, setCategories] = useState<Category[]>(
-    (categoriesData as Category[]).filter((c) => c.visible)
-  );
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [loading, setLoading] = useState(false);
 
   // Filter & Navigation States
@@ -69,8 +74,16 @@ export const ShopView: React.FC = () => {
   const heroBannerRef = useRef<HTMLDivElement>(null);
   const stickyBarRef = useRef<HTMLDivElement>(null);
 
+  // Server pre-fetched for storefront 'a' — skip redundant first-mount fetch
+  const isInitialMount = useRef(true);
+
   // Load catalog data
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      if (storefront === 'a') return;
+    }
+
     let isMounted = true;
     async function loadData() {
       setLoading(true);
