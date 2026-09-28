@@ -64,7 +64,8 @@ export default function ProfilePage() {
         
         .settings-subtitle {
           font-size: 0.9rem;
-          color: rgba(29, 26, 57, 0.6);
+          color: #1D1A39;
+          font-weight: bold;
         }
         
         .settings-row {

@@ -228,54 +228,54 @@ export const ShopView: React.FC<ShopViewProps> = ({
         }}
         className="group hero-master-banner"
       >
-          {/* Background Image Container */}
+        {/* Background Image Container */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 1,
+          }}
+        >
+          <Image
+            src="/images/banners/photo-1483985988355-763728e1935b.webp"
+            alt="New Collections Campaign"
+            fill
+            priority
+            sizes="100vw"
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center 26%',
+              transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
+            className="group-hover:scale-105"
+          />
+          {/* Multi-Stop Cinematic Editorial Gradients */}
           <div
             style={{
               position: 'absolute',
               inset: 0,
-              zIndex: 1,
+              background:
+                'linear-gradient(90deg, rgba(12, 10, 20, 0.94) 0%, rgba(12, 10, 20, 0.82) 42%, rgba(12, 10, 20, 0.42) 75%, rgba(12, 10, 20, 0.6) 100%)',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'linear-gradient(0deg, rgba(12, 10, 20, 0.7) 0%, transparent 65%)',
+            }}
+          />
+        </div>
+
+        {/* Banner Typography & Accents */}
+        <div className="container" style={{ position: 'relative', zIndex: 2, width: '100%' }}>
+          <div
+            style={{
+              padding: 'clamp(36px, 5vw, 60px) 0',
+              maxWidth: '740px',
             }}
           >
-            <Image
-              src="/images/banners/photo-1483985988355-763728e1935b.webp"
-              alt="New Collections Campaign"
-              fill
-              priority
-              sizes="100vw"
-              style={{
-                objectFit: 'cover',
-                objectPosition: 'center 26%',
-                transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-              }}
-              className="group-hover:scale-105"
-            />
-            {/* Multi-Stop Cinematic Editorial Gradients */}
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                background:
-                  'linear-gradient(90deg, rgba(12, 10, 20, 0.94) 0%, rgba(12, 10, 20, 0.82) 42%, rgba(12, 10, 20, 0.42) 75%, rgba(12, 10, 20, 0.6) 100%)',
-              }}
-            />
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                background:
-                  'linear-gradient(0deg, rgba(12, 10, 20, 0.7) 0%, transparent 65%)',
-              }}
-            />
-          </div>
-
-          {/* Banner Typography & Accents */}
-          <div className="container" style={{ position: 'relative', zIndex: 2, width: '100%' }}>
-            <div
-              style={{
-                padding: 'clamp(36px, 5vw, 60px) 0',
-                maxWidth: '740px',
-              }}
-            >
             <h1
               style={{
                 fontSize: 'clamp(2.4rem, 4.5vw, 3.6rem)',
@@ -288,7 +288,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 textShadow: '0 2px 18px rgba(0,0,0,0.5)',
               }}
             >
-              New Collections
+              Collections
             </h1>
 
             <p
@@ -301,7 +301,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 textShadow: '0 1px 10px rgba(0,0,0,0.6)',
               }}
             >
-              Explore our full editorial portfolio of outerwear, Italian tailoring, cashmere knitwear, and artisanal accessories.
+              Explore our full collections of outerwear, Italian tailoring, cashmere knitwear, and artisanal accessories.
             </p>
 
             {/* Quick Editorial Tags */}
@@ -348,9 +348,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 Complimentary Global Shipping
               </span>
             </div>
-            </div>
           </div>
         </div>
+      </div>
 
       <div className="container">
         {newArrivals.length > 0 && (
@@ -644,7 +644,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
         title="REFINE COLLECTION"
         position="right"
         contentStyle={{ backgroundColor: '#F8F5F0' }}
-        headerStyle={{ 
+        headerStyle={{
           borderBottom: '1px solid rgba(0,0,0,0.06)',
           padding: '24px 32px 16px',
         }}
@@ -714,11 +714,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 ].map((p) => {
                   const isChecked = priceRange[0] === p.range[0] && priceRange[1] === p.range[1];
                   return (
-                    <label key={p.id} style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '10px', 
-                      fontSize: '1rem', 
+                    <label key={p.id} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      fontSize: '1rem',
                       cursor: 'pointer',
                       padding: '10px 14px',
                       backgroundColor: isChecked && p.id !== 'all' ? '#FFFFFF' : 'transparent',
@@ -753,22 +753,22 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   );
                 })}
               </div>
-              
+
               {/* Range Slider Visual */}
               <div style={{ flex: 1, padding: '0 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                 <RangeSlider 
-                   min={0} 
-                   max={100000} 
-                   step={5000} 
-                   value={priceRange} 
-                   onChange={setPriceRange} 
-                   milestones={useMemo(() => [
-                     { value: 0, label: '₹0' },
-                     { value: 20000, label: '₹20K' },
-                     { value: 35000, label: '₹35K' },
-                     { value: 100000, label: '₹100K+' }
-                   ], [])}
-                 />
+                <RangeSlider
+                  min={0}
+                  max={100000}
+                  step={5000}
+                  value={priceRange}
+                  onChange={setPriceRange}
+                  milestones={useMemo(() => [
+                    { value: 0, label: '₹0' },
+                    { value: 20000, label: '₹20K' },
+                    { value: 35000, label: '₹35K' },
+                    { value: 100000, label: '₹100K+' }
+                  ], [])}
+                />
               </div>
             </div>
           </div>
@@ -801,28 +801,28 @@ export const ShopView: React.FC<ShopViewProps> = ({
             </label>
           </div>
         </div>
-        
+
         {/* Sticky Footer Buttons */}
-        <div style={{ 
-          position: 'absolute', 
-          bottom: 0, 
-          left: 0, 
-          width: '100%', 
-          padding: '24px 32px 32px', 
-          display: 'flex', 
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          width: '100%',
+          padding: '24px 32px 32px',
+          display: 'flex',
           gap: '16px',
           background: 'linear-gradient(to top, #F8F5F0 70%, rgba(248, 245, 240, 0) 100%)',
           borderTop: 'none',
           pointerEvents: 'none',
         }}>
           <div style={{ display: 'flex', gap: '12px', width: '100%', pointerEvents: 'auto' }}>
-            <Button 
-              variant="outline" 
-              fullWidth 
+            <Button
+              variant="outline"
+              fullWidth
               onClick={resetFilters}
-              style={{ 
-                borderRadius: '30px', 
-                borderColor: '#A37C63', 
+              style={{
+                borderRadius: '30px',
+                borderColor: '#A37C63',
                 color: '#1a1a1a',
                 textTransform: 'uppercase',
                 letterSpacing: '0.04em',
@@ -833,13 +833,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
             >
               Reset
             </Button>
-            <Button 
-              variant="primary" 
-              fullWidth 
+            <Button
+              variant="primary"
+              fullWidth
               onClick={() => setMobileFiltersOpen(false)}
-              style={{ 
-                borderRadius: '30px', 
-                backgroundColor: '#D19662', 
+              style={{
+                borderRadius: '30px',
+                backgroundColor: '#D19662',
                 color: '#fff',
                 textTransform: 'uppercase',
                 letterSpacing: '0.04em',
