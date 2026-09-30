@@ -173,7 +173,7 @@ export function CollectionsBannerCarousel() {
                   position: 'absolute',
                   inset: 0,
                   background:
-                    'linear-gradient(90deg, rgba(12, 10, 20, 0.94) 0%, rgba(12, 10, 20, 0.82) 42%, rgba(12, 10, 20, 0.42) 75%, rgba(12, 10, 20, 0.6) 100%)',
+                    'linear-gradient(90deg, rgba(12, 10, 20, 0.8) 0%, rgba(12, 10, 20, 0.6) 42%, rgba(12, 10, 20, 0.2) 75%, rgba(12, 10, 20, 0.4) 100%)',
                 }}
               />
               <div
@@ -365,7 +365,7 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(90deg, rgba(12, 10, 20, 0.94) 0%, rgba(12, 10, 20, 0.82) 42%, rgba(12, 10, 20, 0.42) 75%, rgba(12, 10, 20, 0.6) 100%)',
+              'linear-gradient(90deg, rgba(12, 10, 20, 0.8) 0%, rgba(12, 10, 20, 0.6) 42%, rgba(12, 10, 20, 0.2) 75%, rgba(12, 10, 20, 0.4) 100%)',
           }}
         />
         <div
