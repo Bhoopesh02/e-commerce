@@ -12,6 +12,7 @@ import { CategorySection, SectionAnimationVariant } from '@/components/shop/Cate
 import { RangeSlider } from '@/components/ui/RangeSlider';
 import { ProductCard } from '@/components/product/ProductCard';
 import { CollectionNewArrivals } from '@/components/sections/CollectionNewArrivals';
+import { CollectionsBannerCarousel } from '@/components/sections/CollectionsBannerCarousel';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { SlidersHorizontal, X, RotateCcw, ArrowUp, CloudRain, Scissors, Sparkles, Shirt, ShoppingBag, Footprints, Gem, FlaskConical, Check } from 'lucide-react';
@@ -71,7 +72,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [selectedSort, setSelectedSort] = useState<string>('popularity');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  const heroBannerRef = useRef<HTMLDivElement>(null);
   const stickyBarRef = useRef<HTMLDivElement>(null);
 
   // Server pre-fetched for storefront 'a' — skip redundant first-mount fetch
@@ -213,144 +213,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
   return (
     <div style={{ paddingTop: '76px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      {/* Editorial Campaign Master Hero Banner (Untouched New Collections Banner) */}
-      <div
-        ref={heroBannerRef}
-        style={{
-          position: 'relative',
-          overflow: 'hidden',
-          marginBottom: '40px',
-          height: 'calc(100vh - 76px)',
-          display: 'flex',
-          alignItems: 'center',
-          boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',
-          backgroundColor: '#0c0a14',
-        }}
-        className="group hero-master-banner"
-      >
-        {/* Background Image Container */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            zIndex: 1,
-          }}
-        >
-          <Image
-            src="/images/banners/photo-1483985988355-763728e1935b.webp"
-            alt="New Collections Campaign"
-            fill
-            priority
-            sizes="100vw"
-            style={{
-              objectFit: 'cover',
-              objectPosition: 'center 26%',
-              transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-            className="group-hover:scale-105"
-          />
-          {/* Multi-Stop Cinematic Editorial Gradients */}
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'linear-gradient(90deg, rgba(12, 10, 20, 0.94) 0%, rgba(12, 10, 20, 0.82) 42%, rgba(12, 10, 20, 0.42) 75%, rgba(12, 10, 20, 0.6) 100%)',
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'linear-gradient(0deg, rgba(12, 10, 20, 0.7) 0%, transparent 65%)',
-            }}
-          />
-        </div>
-
-        {/* Banner Typography & Accents */}
-        <div className="container" style={{ position: 'relative', zIndex: 2, width: '100%' }}>
-          <div
-            style={{
-              padding: 'clamp(36px, 5vw, 60px) 0',
-              maxWidth: '740px',
-            }}
-          >
-            <h1
-              style={{
-                fontSize: 'clamp(2.4rem, 4.5vw, 3.6rem)',
-                fontFamily: 'var(--font-serif)',
-                fontWeight: 400,
-                color: '#fff8f5',
-                letterSpacing: '-0.02em',
-                lineHeight: 1.15,
-                marginBottom: '14px',
-                textShadow: '0 2px 18px rgba(0,0,0,0.5)',
-              }}
-            >
-              Collections
-            </h1>
-
-            <p
-              style={{
-                color: 'rgba(255, 248, 245, 0.9)',
-                fontSize: 'clamp(0.95rem, 1.2vw, 1.1rem)',
-                lineHeight: 1.65,
-                marginBottom: '22px',
-                maxWidth: '620px',
-                textShadow: '0 1px 10px rgba(0,0,0,0.6)',
-              }}
-            >
-              Explore our full collections of outerwear, Italian tailoring, cashmere knitwear, and artisanal accessories.
-            </p>
-
-            {/* Quick Editorial Tags */}
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '10px',
-              }}
-            >
-
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  padding: '5px 14px',
-                  borderRadius: '6px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(8px)',
-                  border: '1px solid rgba(255, 255, 255, 0.18)',
-                  fontSize: '0.75rem',
-                  color: '#fff8f5',
-                  fontWeight: 500,
-                  letterSpacing: '0.04em',
-                }}
-              >
-                Hand-Finished in Italy
-              </span>
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  padding: '5px 14px',
-                  borderRadius: '6px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(8px)',
-                  border: '1px solid rgba(255, 255, 255, 0.18)',
-                  fontSize: '0.75rem',
-                  color: '#fff8f5',
-                  fontWeight: 500,
-                  letterSpacing: '0.04em',
-                }}
-              >
-                Complimentary Global Shipping
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <CollectionsBannerCarousel />
 
       <div className="container">
         {newArrivals.length > 0 && (
@@ -610,12 +473,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '60px' }}>
           <button
             onClick={() => {
-              if (heroBannerRef.current) {
-                const topOffset = heroBannerRef.current.getBoundingClientRect().top + window.pageYOffset - 90;
-                window.scrollTo({ top: Math.max(0, topOffset), behavior: 'smooth' });
-              } else {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             className="hover-fill-btn"
             style={{

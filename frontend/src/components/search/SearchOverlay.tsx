@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Search, X, ArrowLeft, Plus, Check } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { getProducts, getNewArrivals } from '@/lib/mockApi';
 import { Product } from '@/types';
 import { useCartStore } from '@/store/useCartStore';
@@ -40,6 +41,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
   
   const inputRef = useRef<HTMLInputElement>(null);
   const { addItem } = useCartStore();
+  const router = useRouter();
 
   // Rotating placeholder cycle every 2.5s when query is empty
   useEffect(() => {
@@ -207,6 +209,12 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && query.trim()) {
+                    router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+                    onClose();
+                  }
+                }}
                 placeholder={`Search for "${ROTATING_QUERIES[placeholderIdx]}"`}
                 style={{
                   width: '100%',
@@ -269,7 +277,11 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
               {SUGGESTIONS.map((tag) => (
                 <button
                   key={tag}
-                  onClick={() => setQuery(tag)}
+                  onClick={() => {
+                    setQuery(tag);
+                    router.push(`/search?q=${encodeURIComponent(tag)}`);
+                    onClose();
+                  }}
                   style={{
                     fontSize: '12px',
                     padding: '4px 12px',
