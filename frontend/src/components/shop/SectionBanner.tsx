@@ -58,7 +58,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
           sizes="(max-width: 1280px) 100vw, 1280px"
           style={{
             objectFit: 'cover',
-            objectPosition: 'center 35%',
+            objectPosition: 'center center',
             willChange: 'transform',
             transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
