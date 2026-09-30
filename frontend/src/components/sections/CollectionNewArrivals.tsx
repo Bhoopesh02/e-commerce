@@ -6,6 +6,7 @@ import { motion, useInView, useReducedMotion, Variants } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { Product } from '@/types';
 import { ProductCard } from '@/components/product/ProductCard';
+import { ScrollArrows, useHorizontalScroll } from '@/components/ui/ScrollArrows';
 
 interface CollectionNewArrivalsProps {
   products: Product[];
@@ -26,6 +27,8 @@ export const CollectionNewArrivals: React.FC<CollectionNewArrivalsProps> = ({
   const [isLinkHovered, setIsLinkHovered] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const { canScrollLeft, canScrollRight, isScrollable, scrollLeft, scrollRight } = useHorizontalScroll(scrollRef);
 
   const items = products;
   // Trigger entrance when the section enters the viewport, strictly once per page load
@@ -87,7 +90,7 @@ export const CollectionNewArrivals: React.FC<CollectionNewArrivalsProps> = ({
           style={{
             display: 'flex',
             flexWrap: 'wrap',
-            alignItems: 'baseline',
+            alignItems: 'flex-end',
             justifyContent: 'space-between',
             marginBottom: '40px',
             gap: '16px',
@@ -111,6 +114,13 @@ export const CollectionNewArrivals: React.FC<CollectionNewArrivalsProps> = ({
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+            <ScrollArrows
+              canScrollLeft={canScrollLeft}
+              canScrollRight={canScrollRight}
+              isScrollable={isScrollable}
+              onScrollLeft={scrollLeft}
+              onScrollRight={scrollRight}
+            />
             {onExploreClick ? (
               <button
                 onClick={onExploreClick}
