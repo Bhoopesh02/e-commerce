@@ -41,7 +41,7 @@ export const HeroSection: React.FC = () => {
         <Image
           src={
             isEditorial
-              ? '/images/hero/Gemini_Generated_Image_62wq5062wq5062wq.webp'
+              ? '/images/hero/Gemini_Generated_Image_62wq5062wq5062wq.png'
               : '/images/hero/hero-refined.webp'
           }
           alt="Aurelia Luxury Campaign"
