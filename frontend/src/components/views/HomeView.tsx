@@ -94,7 +94,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
       case 'brand_intro':
         return (
-          <section key={id} style={{ padding: '80px 0 20px', backgroundColor: 'var(--bg-primary)' }}>
+          <section key={id} className="brand-intro-section" style={{ padding: '80px 0 20px', backgroundColor: 'var(--bg-primary)' }}>
             <div className="container" style={{ maxWidth: '880px', textAlign: 'center' }}>
               <ScrollReveal duration={0.6}>
                 <span

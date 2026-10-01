@@ -475,3 +475,11 @@ textarea:focus-visible {
 .animated-back-btn:hover svg {
   transform: translateX(-4px);
 }
+
+/* Hide brand intro / House Philosophy on mobile */
+@media (max-width: 767px) {
+  .brand-intro-section {
+    display: none;
+  }
+}
+
