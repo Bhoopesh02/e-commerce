@@ -10,8 +10,8 @@ import { ScrollReveal } from '@/components/ui/ScrollReveal';
 export const EditorialCampaign: React.FC = () => {
   return (
     <section
+      className="editorial-section"
       style={{
-        padding: '100px 0',
         backgroundColor: 'var(--color-sunset-900)',
         color: '#FFF8F5',
         position: 'relative',
@@ -19,6 +19,15 @@ export const EditorialCampaign: React.FC = () => {
       }}
     >
       <style>{`
+        .editorial-section {
+          padding: 100px 0;
+        }
+        .editorial-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 64px;
+          align-items: stretch;
+        }
         .editorial-reveal {
           position: relative;
           height: 100%;
@@ -38,6 +47,12 @@ export const EditorialCampaign: React.FC = () => {
           left: max(24px, calc((100vw - 1280px) / 2 + 24px)) !important;
         }
         @media (max-width: 1024px) {
+          .editorial-section {
+            padding: 0 0 60px 0;
+          }
+          .editorial-grid {
+            gap: 40px;
+          }
           .editorial-image {
             position: relative;
             top: 0;
@@ -45,7 +60,7 @@ export const EditorialCampaign: React.FC = () => {
             right: auto;
             width: 100vw;
             margin-left: calc(-50vw + 50%);
-            height: 580px;
+            height: 460px;
           }
           .editorial-tag {
             left: 24px !important;
@@ -54,16 +69,14 @@ export const EditorialCampaign: React.FC = () => {
             min-height: auto;
           }
         }
+        @media (max-width: 640px) {
+          .editorial-image {
+            height: 360px;
+          }
+        }
       `}</style>
       <div className="container">
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '64px',
-            alignItems: 'stretch',
-          }}
-        >
+        <div className="editorial-grid">
           {/* Visual Canvas */}
           <ScrollReveal duration={0.7} yOffset={20} className="editorial-reveal">
             <div className="editorial-image">

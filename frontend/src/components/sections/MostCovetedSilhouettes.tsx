@@ -212,7 +212,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
 
 
   return (
-    <section ref={sectionRef} style={{ padding: '80px 0', backgroundColor: 'var(--bg-primary)', overflow: 'hidden' }}>
+    <section ref={sectionRef} className="most-coveted-section" style={{ padding: '80px 0', backgroundColor: 'var(--bg-primary)', overflow: 'hidden' }}>
       <div className="container">
         {/* Section Header */}
         <motion.div

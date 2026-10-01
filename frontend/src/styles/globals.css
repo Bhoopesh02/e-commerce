@@ -490,5 +490,14 @@ textarea:focus-visible {
   .expanding-carousel-section {
     padding-top: 16px !important;
   }
+
+  .most-coveted-section {
+    padding-bottom: 32px !important;
+  }
+
+  #brand-story {
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
 }
 
