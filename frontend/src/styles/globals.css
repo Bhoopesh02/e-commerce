@@ -481,5 +481,14 @@ textarea:focus-visible {
   .brand-intro-section {
     display: none;
   }
+
+  /* Reduce gap between CategoryShowcase and Signature Icons on mobile */
+  .category-showcase-section {
+    padding-bottom: 24px !important;
+  }
+
+  .expanding-carousel-section {
+    padding-top: 16px !important;
+  }
 }
 

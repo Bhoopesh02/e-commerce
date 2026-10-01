@@ -108,7 +108,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   }, [enableTransition]);
 
   return (
-    <section style={{ padding: '40px 0 80px', backgroundColor: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
+    <section className="category-showcase-section" style={{ padding: '40px 0 80px', backgroundColor: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
         <ScrollReveal duration={0.6}>
           <div
@@ -119,17 +119,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
               marginBottom: '48px',
             }}
           >
-            <span
-              style={{
-                fontSize: '0.78rem',
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-                color: 'var(--color-sunset-600)',
-                fontWeight: 600,
-              }}
-            >
-              Atelier Divisions
-            </span>
+
             <div
               style={{
                 display: 'flex',
