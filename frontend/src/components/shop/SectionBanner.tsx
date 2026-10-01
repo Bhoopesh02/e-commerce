@@ -112,6 +112,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
 
         {subtitle && (
           <p
+            className="banner-subtitle"
             style={{
               color: 'rgba(255, 248, 245, 0.9)',
               fontSize: 'clamp(0.92rem, 1.15vw, 1.05rem)',
@@ -127,6 +128,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
 
         {/* Quick Editorial Tags */}
         <div
+          className="banner-badges"
           style={{
             display: 'flex',
             flexWrap: 'wrap',
@@ -237,6 +239,15 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
         }
         .carousel-arrow-btn:active {
           opacity: 0.6;
+        }
+        @media (max-width: 767px) {
+          .section-banner {
+            height: 180px !important;
+          }
+          .banner-subtitle,
+          .banner-badges {
+            display: none !important;
+          }
         }
       `}</style>
     </div>

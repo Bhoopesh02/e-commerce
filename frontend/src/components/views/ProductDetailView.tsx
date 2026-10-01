@@ -454,14 +454,30 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     {isOutOfStock ? 'Sold Out' : 'Add to Atelier Bag'}
                   </Button>
                 </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <div style={{ flex: 1 }}>
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    fullWidth
+                    disabled={isOutOfStock}
+                    onClick={handleBuyNow}
+                    rightIcon={<ArrowRight size={17} />}
+                    style={{ letterSpacing: '0.05em' }}
+                  >
+                    PROCEED TO CHECKOUT
+                  </Button>
+                </div>
 
                 <button
                   className="hover-fill-btn"
                   type="button"
                   onClick={() => toggleItem(product.id)}
                   style={{
-                    width: '50px',
-                    height: '50px',
+                    width: '48px',
+                    height: '48px',
                     borderRadius: 'var(--radius-pill)',
                     border: '1px solid var(--border-color)',
                     '--fill-bg': 'var(--bg-surface)',
@@ -479,18 +495,6 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                   <Heart size={20} fill={isFavorited ? 'currentColor' : 'transparent'} strokeWidth={1.8} />
                 </button>
               </div>
-
-              <Button
-                variant="primary"
-                size="lg"
-                fullWidth
-                disabled={isOutOfStock}
-                onClick={handleBuyNow}
-                rightIcon={<ArrowRight size={17} />}
-                style={{ letterSpacing: '0.05em' }}
-              >
-                PROCEED TO CHECKOUT
-              </Button>
             </div>
 
             {/* Atelier Guarantees Pill */}

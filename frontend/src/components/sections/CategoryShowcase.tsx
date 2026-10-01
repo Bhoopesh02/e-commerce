@@ -28,6 +28,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   const [containerWidth, setContainerWidth] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [hasMoved, setHasMoved] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll logic
@@ -44,6 +45,13 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   }, [isHovered, enableTransition]);
 
   useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
     if (!containerRef.current) return;
     const observer = new ResizeObserver((entries) => {
       for (let entry of entries) {
@@ -54,8 +62,11 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
     return () => observer.disconnect();
   }, []);
 
-  const cardWidth = 320;
-  const gap = 32;
+  const cardWidth = isMobile ? 150 : 320;
+  const cardHeight = isMobile ? 210 : 460;
+  const gap = isMobile ? -17 : 32;
+  const activeScale = isMobile ? 1 : 1.12;
+  const inactiveScale = isMobile ? 0.666 : 0.85;
 
   const trackTranslateX = containerWidth > 0
     ? (containerWidth / 2) - (cardWidth / 2) - (activeIndex * (cardWidth + gap))
@@ -157,16 +168,16 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
         style={{
           position: 'relative',
           width: '100%',
-          padding: '60px 0',
+          padding: isMobile ? '20px 0' : '60px 0',
           zIndex: 2,
           opacity: containerWidth > 0 ? 1 : 0,
           transition: 'opacity 0.3s ease',
         }}
       >
         {baseCount === 0 ? (
-          <div style={{ display: 'flex', gap: '32px', padding: '0 5%' }}>
+          <div style={{ display: 'flex', gap: `${gap}px`, padding: '0 5%' }}>
             {[1, 2, 3].map((i) => (
-              <div key={i} style={{ width: '320px', height: '460px', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--bg-surface)', overflow: 'hidden' }}>
+              <div key={i} style={{ width: `${cardWidth}px`, height: `${cardHeight}px`, borderRadius: isMobile ? '12px' : 'var(--radius-md)', backgroundColor: 'var(--bg-surface)', overflow: 'hidden' }}>
                 <Skeleton width="100%" height="100%" />
               </div>
             ))}
@@ -201,21 +212,21 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                       position: 'relative',
                       flexShrink: 0,
                       width: `${cardWidth}px`,
-                      height: '460px',
+                      height: `${cardHeight}px`,
                       marginRight: idx === carouselItems.length - 1 ? '0' : `${gap}px`,
                       transition: enableTransition ? 'all 0.7s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
-                      transform: isActive ? 'scale(1.12)' : 'scale(0.85)',
+                      transform: isActive ? `scale(${activeScale})` : `scale(${inactiveScale})`,
                       zIndex: isActive ? 10 : 1,
                       opacity: !isVisible ? 0 : (isActive ? 1 : 0.5),
                       pointerEvents: !isVisible ? 'none' : 'auto',
-                      borderRadius: 'var(--radius-md)',
+                      borderRadius: isMobile ? '12px' : 'var(--radius-md)',
                       overflow: 'hidden',
                       boxShadow: isActive ? '0 24px 50px rgba(0,0,0,0.2)' : 'none',
                       cursor: 'pointer',
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'flex-end',
-                      padding: '32px',
+                      padding: isMobile ? '16px' : '32px',
                       color: '#FFF8F5',
                     }}
                   >
@@ -259,7 +270,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                       >
                         <h3
                           style={{
-                            fontSize: '1.6rem',
+                            fontSize: isMobile ? '1rem' : '1.6rem',
                             fontFamily: 'var(--font-display)',
                             color: '#FFF8F5',
                             transition: enableTransition ? 'transform 0.7s ease' : 'none',
@@ -272,9 +283,17 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                         {isActive && (
                           <Link
                             href={`/shop?categorySlug=${cat.slug}`}
-                            className="category-arrow-btn"
+                            className={isMobile ? '' : 'category-arrow-btn'}
                             aria-label={`View ${cat.name} category`}
-                            style={{
+                            style={isMobile ? {
+                              width: 24,
+                              height: 24,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: '#FFF',
+                              filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))',
+                            } : {
                               width: 36,
                               height: 36,
                               borderRadius: 'var(--radius-pill)',
@@ -286,7 +305,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                               color: '#fff',
                             }}
                           >
-                            <ArrowUpRight size={18} />
+                            <ArrowUpRight size={isMobile ? 12 : 18} />
                           </Link>
                         )}
                       </div>
@@ -294,7 +313,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                       {cat.description && (
                         <p
                           style={{
-                            fontSize: '0.9rem',
+                            fontSize: isMobile ? '10px' : '0.9rem',
                             color: 'var(--color-sunset-100)',
                             lineHeight: 1.5,
                             display: '-webkit-box',
@@ -302,8 +321,10 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                             WebkitBoxOrient: 'vertical',
                             overflow: 'hidden',
                             transition: enableTransition ? 'opacity 0.7s ease, transform 0.7s ease' : 'none',
-                            opacity: isActive ? 1 : 0,
+                            opacity: isActive ? (isMobile ? 0 : 1) : 0,
                             transform: isActive ? 'translateY(0)' : 'translateY(10px)',
+                            marginTop: isMobile ? 0 : '8px',
+                            height: isMobile ? 0 : 'auto', // hide on mobile to save space if needed, or rely on clamp
                           }}
                         >
                           {cat.description}
@@ -318,8 +339,8 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
             <div style={{
               position: 'absolute',
               top: '50%',
-              left: '5%',
-              right: '5%',
+              left: isMobile ? '4px' : '5%',
+              right: isMobile ? '4px' : '5%',
               transform: 'translateY(-50%)',
               display: 'flex',
               justifyContent: 'space-between',
@@ -329,7 +350,18 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
               <button
                 aria-label="Previous slide"
                 onClick={(e) => { e.stopPropagation(); handlePrev(); }}
-                style={{
+                style={isMobile ? {
+                  pointerEvents: 'auto',
+                  width: 28,
+                  height: 28,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#FFF',
+                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))',
+                  background: 'transparent',
+                  border: 'none',
+                } : {
                   pointerEvents: 'auto',
                   width: 50,
                   height: 50,
@@ -345,15 +377,26 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
                 }}
-                className="slider-nav-btn"
+                className={isMobile ? '' : 'slider-nav-btn'}
               >
-                <ChevronLeft size={24} />
+                <ChevronLeft size={isMobile ? 16 : 24} />
               </button>
 
               <button
                 aria-label="Next slide"
                 onClick={(e) => { e.stopPropagation(); handleNext(); }}
-                style={{
+                style={isMobile ? {
+                  pointerEvents: 'auto',
+                  width: 28,
+                  height: 28,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#FFF',
+                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))',
+                  background: 'transparent',
+                  border: 'none',
+                } : {
                   pointerEvents: 'auto',
                   width: 50,
                   height: 50,
@@ -369,9 +412,9 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
                 }}
-                className="slider-nav-btn"
+                className={isMobile ? '' : 'slider-nav-btn'}
               >
-                <ChevronRight size={24} />
+                <ChevronRight size={isMobile ? 16 : 24} />
               </button>
             </div>
           </>

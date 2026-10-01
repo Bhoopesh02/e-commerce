@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/Badge';
 export interface ProductCardProps {
   product: Product;
   aspectRatio?: string;
-  variant?: 'standard' | 'overlay';
+  variant?: 'standard' | 'overlay' | 'grid';
   sizes?: string;
 }
 
@@ -65,7 +65,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <motion.div
-      style={{
+      className={variant === 'grid' ? 'min-w-0 w-full p-3 rounded-xl md:p-0 md:rounded-none' : ''}
+      style={variant === 'grid' ? { display: 'flex', flexDirection: 'column', position: 'relative' } : {
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
@@ -78,7 +79,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Image Frame */}
       <Link
         href={`/product/${product.slug}`}
-        style={{
+        className={variant === 'grid' ? 'relative w-full block rounded-lg md:rounded-[var(--radius-sm)] md:overflow-hidden' : ''}
+        style={variant === 'grid' ? {
+          backgroundColor: 'var(--bg-surface)',
+          aspectRatio,
+        } : {
           position: 'relative',
           width: '100%',
           aspectRatio,
@@ -92,11 +97,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <Image
           src={product.images[0]}
           alt={product.name}
-          fill
+          fill={variant !== 'grid'}
+          width={variant === 'grid' ? 600 : undefined}
+          height={variant === 'grid' ? 800 : undefined}
           quality={60}
           sizes={sizes}
-          className="product-image-primary"
-          style={{
+          className={variant === 'grid' ? 'product-image-primary w-full h-auto object-cover rounded-lg md:rounded-none md:absolute md:h-full md:inset-0' : 'product-image-primary'}
+          style={variant === 'grid' ? {
+            transform: isHovered && !shouldReduceMotion ? 'scale(1.15)' : 'scale(1)',
+            transition: 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          } : {
             objectFit: 'cover',
             transform: isHovered && !shouldReduceMotion ? 'scale(1.15)' : 'scale(1)',
             transition: 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
@@ -108,11 +118,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <Image
             src={product.images[1]}
             alt={`${product.name} alternate view`}
-            fill
+            fill={variant !== 'grid'}
+            width={variant === 'grid' ? 600 : undefined}
+            height={variant === 'grid' ? 800 : undefined}
             quality={60}
             sizes={sizes}
-            className="product-image-secondary"
-            style={{
+            className={variant === 'grid' ? 'product-image-secondary absolute inset-0 w-full h-full object-cover rounded-lg md:rounded-none' : 'product-image-secondary'}
+            style={variant === 'grid' ? {
+              opacity: isHovered ? 1 : 0,
+              transform: isHovered && !shouldReduceMotion ? 'scale(1.15)' : 'scale(1)',
+              transition: 'opacity 450ms ease, transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              pointerEvents: 'none',
+            } : {
               objectFit: 'cover',
               opacity: isHovered ? 1 : 0,
               transform: isHovered && !shouldReduceMotion ? 'scale(1.15)' : 'scale(1)',
@@ -124,6 +141,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Top Badges */}
         <div
+          className={variant === 'grid' ? 'scale-[0.85] origin-top-left md:scale-100 drop-shadow-sm md:drop-shadow-none' : ''}
           style={{
             position: 'absolute',
             top: '12px',
@@ -142,12 +160,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Wishlist Button (♡/♥) with restrained spring pop */}
         <motion.button
-          className="hover-fill-btn"
+          className={`hover-fill-btn ${variant === 'grid' ? 'absolute top-2 right-2 z-10 flex shrink-0 items-center justify-center rounded-full bg-white/90 shadow-sm w-8 h-8 min-w-[32px] min-h-[32px] md:top-[12px] md:right-[12px] md:w-[36px] md:h-[36px]' : ''}`}
           onClick={handleWishlistToggle}
           aria-label={isFavorited ? 'Remove from wishlist' : 'Add to wishlist'}
           animate={heartControls}
           whileTap={shouldReduceMotion ? undefined : { scale: 0.92 }}
-          style={{
+          style={variant === 'grid' ? {
+            '--fill-bg': 'rgba(255, 255, 255, 0.85)',
+            '--fill-hover': 'var(--color-sunset-600)',
+            '--text-hover': '#FFF',
+            backdropFilter: 'blur(4px)',
+            border: 'none',
+            color: isFavorited ? 'var(--color-sunset-600)' : 'var(--color-sunset-900)',
+            cursor: 'pointer',
+          } : {
             position: 'absolute',
             top: '12px',
             right: '12px',
@@ -169,6 +195,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         >
           <Heart
             size={18}
+            className={variant === 'grid' ? 'w-4 h-4 md:w-[18px] md:h-[18px]' : ''}
             fill={isFavorited ? 'currentColor' : 'transparent'}
             stroke="currentColor"
             strokeWidth={1.8}
@@ -194,7 +221,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             onClick={handleQuickAdd}
             disabled={isAdding}
-            className="quick-add-btn"
+            className={`quick-add-btn ${variant === 'grid' ? 'h-9 text-[11px] md:h-[var(--btn-height)] md:text-[var(--btn-text)]' : ''}`}
             aria-label={`Quick add ${product.name} to bag`}
           >
             {isAdding ? (
@@ -269,12 +296,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </Link>
 
       {/* Product Meta */}
-      {variant === 'standard' && (
+      {(variant === 'standard' || variant === 'grid') && (
         <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <Link href={`/product/${product.slug}`}>
+          <Link href={`/product/${product.slug}`} className={variant === 'grid' ? 'min-w-0' : ''}>
             <h3
-              style={{
+              className={variant === 'grid' ? 'text-[15px] font-serif line-clamp-2 md:text-[1rem] md:font-display md:line-clamp-none' : ''}
+              style={variant === 'grid' ? {
+                fontWeight: 500,
+                color: 'var(--text-primary)',
+                lineHeight: 1.3,
+              } : {
                 fontSize: '1rem',
                 fontWeight: 500,
                 color: 'var(--text-primary)',
@@ -288,14 +320,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         {product.subtitle && (
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+          <span className={variant === 'grid' ? 'truncate block text-[12px] md:text-[0.8rem]' : ''} style={variant === 'grid' ? { color: 'var(--text-muted)' } : { fontSize: '0.8rem', color: 'var(--text-muted)' }}>
             {product.subtitle}
           </span>
         )}
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '6px' }}>
+        <div 
+          className={variant === 'grid' ? 'flex flex-wrap items-center gap-x-2 gap-y-1 min-w-0 mt-2 md:mt-[6px] md:flex-nowrap md:justify-between md:gap-0' : ''}
+          style={variant === 'grid' ? undefined : { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '6px' }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '0.98rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <span className={variant === 'grid' ? 'text-[15px] md:text-[0.98rem]' : ''} style={variant === 'grid' ? { fontWeight: 600, color: 'var(--text-primary)' } : { fontSize: '0.98rem', fontWeight: 600, color: 'var(--text-primary)' }}>
               {formatPrice(product.price)}
             </span>
             {product.compareAtPrice && (

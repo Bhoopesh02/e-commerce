@@ -38,10 +38,20 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
   const [isLoading, setIsLoading] = useState(false);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const [addedMap, setAddedMap] = useState<Record<string, boolean>>({});
+  const [isMobile, setIsMobile] = useState(false);
   
   const inputRef = useRef<HTMLInputElement>(null);
   const { addItem } = useCartStore();
   const router = useRouter();
+
+  // Track mobile viewport to keep search results inline on small screens
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 767px)');
+    setIsMobile(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
 
   // Rotating placeholder cycle every 2.5s when query is empty
   useEffect(() => {
@@ -211,8 +221,11 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && query.trim()) {
-                    router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-                    onClose();
+                    if (!isMobile) {
+                      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+                      onClose();
+                    }
+                    // On mobile, query state already drives inline results — no redirect needed
                   }
                 }}
                 placeholder={`Search for "${ROTATING_QUERIES[placeholderIdx]}"`}
@@ -279,8 +292,10 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                   key={tag}
                   onClick={() => {
                     setQuery(tag);
-                    router.push(`/search?q=${encodeURIComponent(tag)}`);
-                    onClose();
+                    if (!isMobile) {
+                      router.push(`/search?q=${encodeURIComponent(tag)}`);
+                      onClose();
+                    }
                   }}
                   style={{
                     fontSize: '12px',

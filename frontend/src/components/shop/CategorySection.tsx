@@ -124,7 +124,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
             gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
             gap: '36px',
           }}
-          className={`product-grid product-grid-${category.slug}`}
+          className={`product-grid product-grid-${category.slug} max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]`}
         >
           {products.map((product, idx) => (
             <motion.div

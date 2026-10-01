@@ -649,7 +649,7 @@ function SearchContent() {
             </div>
 
             {loading ? (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}>
+              <div className="max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}>
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i}>
                     <Skeleton height="380px" borderRadius="var(--radius-sm)" />
@@ -661,9 +661,9 @@ function SearchContent() {
                 ))}
               </div>
             ) : filteredProducts.length > 0 ? (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}>
+              <div className="max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}>
                 {filteredProducts.map(product => (
-                  <ProductCard key={product.id} product={product} variant="standard" />
+                  <ProductCard key={product.id} product={product} variant="standard" mobileCompact={true} />
                 ))}
               </div>
             ) : (

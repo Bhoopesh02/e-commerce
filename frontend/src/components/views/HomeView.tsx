@@ -136,7 +136,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
       case 'new_arrivals':
         return (
-          <section key={id} style={{ padding: '80px 0', backgroundColor: 'var(--bg-primary)' }}>
+          <section key={id} style={{ padding: '40px 0 80px', backgroundColor: 'var(--bg-primary)' }}>
             <div className="container">
               <ScrollReveal duration={0.5}>
                 <div
