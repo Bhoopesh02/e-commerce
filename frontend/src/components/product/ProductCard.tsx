@@ -173,7 +173,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             border: 'none',
             color: isFavorited ? 'var(--color-sunset-600)' : 'var(--color-sunset-900)',
             cursor: 'pointer',
-          } : {
+          } as React.CSSProperties : {
             position: 'absolute',
             top: '12px',
             right: '12px',

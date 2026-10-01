@@ -663,7 +663,7 @@ function SearchContent() {
             ) : filteredProducts.length > 0 ? (
               <div className="max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}>
                 {filteredProducts.map(product => (
-                  <ProductCard key={product.id} product={product} variant="standard" mobileCompact={true} />
+                  <ProductCard key={product.id} product={product} variant="standard" />
                 ))}
               </div>
             ) : (
