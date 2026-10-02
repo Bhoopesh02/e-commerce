@@ -650,3 +650,14 @@ a:focus-visible .luxury-btn:not(:disabled)>span:last-child svg {
 .nav-btn-custom:hover .hover-underline-custom {
   transform: scaleX(1);
 }
+
+/* ==========================================================================
+   Product Detail Page — Action Row Mobile Width Constraint
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .pdp-action-row {
+    max-width: 320px;
+    width: 100%;
+  }
+}

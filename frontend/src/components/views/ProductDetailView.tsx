@@ -410,7 +410,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
 
             {/* Quantity and Actions */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingTop: '8px' }}>
-              <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
+              <div className="pdp-action-row" style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
                 <div
                   style={{
                     display: 'inline-flex',
@@ -456,7 +456,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <div className="pdp-action-row" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                 <div style={{ flex: 1 }}>
                   <Button
                     variant="primary"
