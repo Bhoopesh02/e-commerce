@@ -1698,19 +1698,19 @@
       {
         "sku": "CRW-VIC-S",
         "size": "S",
-        "color": "Vicuna Amber",
+        "color": "Vicuna golden",
         "stock": 6
       },
       {
         "sku": "CRW-VIC-M",
         "size": "M",
-        "color": "Vicuna Amber",
+        "color": "Vicuna golden",
         "stock": 7
       },
       {
         "sku": "CRW-VIC-L",
         "size": "L",
-        "color": "Vicuna Amber",
+        "color": "Vicuna golden",
         "stock": 4
       }
     ],
@@ -1939,7 +1939,7 @@
       {
         "sku": "DUF-COGNAC-ONE",
         "size": "One Size",
-        "color": "Cognac Amber",
+        "color": "Cognac golden",
         "stock": 2
       }
     ],

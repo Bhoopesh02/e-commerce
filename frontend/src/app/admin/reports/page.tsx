@@ -39,7 +39,7 @@ export default function AdminReportsPage() {
         style={{
           backgroundColor: '#231F42',
           borderRadius: 'var(--radius-sm)',
-          border: '1px solid rgba(232, 188, 185, 0.15)',
+          border: '1px solid rgba(224, 224, 224, 0.15)',
           padding: '32px',
           display: 'flex',
           flexDirection: 'column',
@@ -63,9 +63,9 @@ export default function AdminReportsPage() {
                 style={{
                   padding: '16px',
                   borderRadius: 'var(--radius-sm)',
-                  backgroundColor: reportType === item.id ? 'rgba(243, 159, 90, 0.18)' : 'rgba(255, 255, 255, 0.04)',
-                  border: reportType === item.id ? '2px solid var(--color-sunset-400)' : '1px solid rgba(232, 188, 185, 0.15)',
-                  color: reportType === item.id ? '#FFF' : 'rgba(232, 188, 185, 0.75)',
+                  backgroundColor: reportType === item.id ? 'rgba(194, 155, 76, 0.18)' : 'rgba(255, 255, 255, 0.04)',
+                  border: reportType === item.id ? '2px solid var(--color-golden)' : '1px solid rgba(224, 224, 224, 0.15)',
+                  color: reportType === item.id ? '#FFF' : 'rgba(224, 224, 224, 0.75)',
                   textAlign: 'left',
                   fontSize: '0.88rem',
                   fontWeight: 600,
@@ -75,14 +75,14 @@ export default function AdminReportsPage() {
                   gap: '10px',
                 }}
               >
-                <FileSpreadsheet size={18} style={{ color: reportType === item.id ? 'var(--color-sunset-400)' : 'inherit' }} />
+                <FileSpreadsheet size={18} style={{ color: reportType === item.id ? 'var(--color-golden)' : 'inherit' }} />
                 <span>{item.label}</span>
               </button>
             ))}
           </div>
         </div>
 
-        <div style={{ borderTop: '1px solid rgba(232, 188, 185, 0.1)', paddingTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ borderTop: '1px solid rgba(224, 224, 224, 0.1)', paddingTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
           <Button
             variant="primary"
             size="lg"

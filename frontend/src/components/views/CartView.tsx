@@ -57,7 +57,7 @@ export const CartView: React.FC = () => {
               width: 72,
               height: 72,
               borderRadius: 'var(--radius-pill)',
-              backgroundColor: 'rgba(243, 159, 90, 0.15)',
+              backgroundColor: 'rgba(194, 155, 76, 0.15)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -281,7 +281,7 @@ export const CartView: React.FC = () => {
                     Inclusive of all taxes
                   </div>
                 </div>
-                <span style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-sunset-700)' }}>{formatPrice(total)}</span>
+                <span style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-sapphire)' }}>{formatPrice(total)}</span>
               </div>
             </div>
 
@@ -296,7 +296,7 @@ export const CartView: React.FC = () => {
             </Button>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)', fontSize: '0.78rem' }}>
-              <ShieldCheck size={16} style={{ color: 'var(--color-sunset-600)', flexShrink: 0 }} />
+              <ShieldCheck size={16} style={{ color: 'var(--color-sapphire)', flexShrink: 0 }} />
               <span>Adyen encrypted checkout · Real-time stock reservation</span>
             </div>
           </div>

@@ -112,7 +112,7 @@ export default function TrackOrdersPage() {
 
         .tracking-row {
           padding-bottom: 48px;
-          border-bottom: 1px solid rgba(29, 26, 57, 0.1);
+          border-bottom: 1px solid rgba(20, 20, 20, 0.1);
         }
 
         .tracking-row:last-child {
@@ -148,14 +148,14 @@ export default function TrackOrdersPage() {
 
         .row-meta {
           font-size: 0.9rem;
-          color: rgba(29, 26, 57, 0.6);
+          color: rgba(20, 20, 20, 0.6);
         }
 
         .status-label {
           font-size: 0.7rem;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: rgba(29, 26, 57, 0.5);
+          color: rgba(20, 20, 20, 0.5);
         }
 
         .status-value {
@@ -163,7 +163,7 @@ export default function TrackOrdersPage() {
           text-transform: uppercase;
           letter-spacing: 0.05em;
           font-weight: 500;
-          color: #1D1A39;
+          color: var(--color-black-tie);
         }
 
         .tracking-product {
@@ -175,12 +175,12 @@ export default function TrackOrdersPage() {
 
         .product-title {
           font-size: 1.1rem;
-          color: #1D1A39;
+          color: var(--color-black-tie);
         }
 
         .product-meta {
           font-size: 0.9rem;
-          color: rgba(29, 26, 57, 0.6);
+          color: rgba(20, 20, 20, 0.6);
         }
 
         .amount {
@@ -191,7 +191,7 @@ export default function TrackOrdersPage() {
         .tracking-timeline-container {
           margin-bottom: 32px;
           padding: 32px;
-          background-color: rgba(29, 26, 57, 0.02);
+          background-color: rgba(20, 20, 20, 0.02);
           border-radius: 4px;
         }
 
@@ -211,12 +211,12 @@ export default function TrackOrdersPage() {
           font-size: 0.7rem;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: rgba(29, 26, 57, 0.5);
+          color: rgba(20, 20, 20, 0.5);
         }
 
         .tracking-id {
           font-size: 0.9rem;
-          color: #1D1A39;
+          color: var(--color-black-tie);
           font-family: var(--font-mono);
         }
 
@@ -225,7 +225,7 @@ export default function TrackOrdersPage() {
           display: flex;
           align-items: center;
           gap: 6px;
-          color: #1D1A39;
+          color: var(--color-black-tie);
           text-decoration: none;
           transition: opacity 0.2s ease;
           opacity: 0.8;

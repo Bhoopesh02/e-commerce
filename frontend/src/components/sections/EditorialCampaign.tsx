@@ -12,7 +12,7 @@ export const EditorialCampaign: React.FC = () => {
     <section
       className="editorial-section"
       style={{
-        backgroundColor: 'var(--color-sunset-900)',
+        backgroundColor: 'var(--color-black-tie)',
         color: '#FFF8F5',
         position: 'relative',
         overflow: 'hidden',
@@ -96,7 +96,7 @@ export const EditorialCampaign: React.FC = () => {
                   right: 0,
                   bottom: 0,
                   background:
-                    'linear-gradient(180deg, rgba(29, 26, 57, 0.1) 0%, rgba(29, 26, 57, 0.6) 100%)',
+                    'linear-gradient(180deg, rgba(20, 20, 20, 0.1) 0%, rgba(20, 20, 20, 0.6) 100%)',
                 }}
               />
               {/* Tag Overlay */}
@@ -106,10 +106,10 @@ export const EditorialCampaign: React.FC = () => {
                   position: 'absolute',
                   bottom: '24px',
                   padding: '12px 18px',
-                  backgroundColor: 'rgba(29, 26, 57, 0.8)',
+                  backgroundColor: 'rgba(20, 20, 20, 0.8)',
                   backdropFilter: 'blur(8px)',
                   borderRadius: 'var(--radius-sm)',
-                  border: '1px solid rgba(232, 188, 185, 0.25)',
+                  border: '1px solid rgba(224, 224, 224, 0.25)',
                 }}
               >
                 <span
@@ -117,7 +117,7 @@ export const EditorialCampaign: React.FC = () => {
                     fontSize: '0.72rem',
                     textTransform: 'uppercase',
                     letterSpacing: '0.12em',
-                    color: 'var(--color-sunset-400)',
+                    color: 'var(--color-golden)',
                   }}
                 >
                   Look 04 · Florence Salon
@@ -152,7 +152,7 @@ export const EditorialCampaign: React.FC = () => {
               <p
                 style={{
                   fontSize: '1.05rem',
-                  color: 'var(--color-sunset-200)',
+                  color: 'var(--color-silver)',
                   lineHeight: 1.7,
                   marginBottom: '20px',
                 }}
@@ -165,7 +165,7 @@ export const EditorialCampaign: React.FC = () => {
               <p
                 style={{
                   fontSize: '0.9rem',
-                  color: 'rgba(232, 188, 185, 0.7)',
+                  color: 'rgba(224, 224, 224, 0.7)',
                   lineHeight: 1.6,
                   marginBottom: '36px',
                 }}

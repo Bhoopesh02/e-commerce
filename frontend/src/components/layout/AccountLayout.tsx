@@ -103,7 +103,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           padding-bottom: 80px;
           min-height: 100vh;
           background-color: #fff;
-          color: #1D1A39;
+          color: var(--color-black-tie);
         }
         
         .account-container {
@@ -138,7 +138,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           .account-mobile-nav {
             display: block;
             width: 100%;
-            border-bottom: 1px solid rgba(29, 26, 57, 0.1);
+            border-bottom: 1px solid rgba(20, 20, 20, 0.1);
             margin-bottom: 24px;
             overflow: hidden;
           }
@@ -157,7 +157,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
 
           .mobile-nav-item {
             font-size: 0.9rem;
-            color: #1D1A39;
+            color: var(--color-black-tie);
             opacity: 0.6;
             white-space: nowrap;
             text-decoration: none;
@@ -167,7 +167,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           .mobile-nav-item.active {
             opacity: 1;
             font-weight: 500;
-            border-bottom: 1px solid #1D1A39;
+            border-bottom: 1px solid var(--color-black-tie);
           }
         }
         
@@ -181,7 +181,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           font-weight: 400;
           letter-spacing: 0.05em;
           margin-bottom: 4px;
-          color: #1D1A39;
+          color: var(--color-black-tie);
           text-transform: uppercase;
         }
         
@@ -198,7 +198,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           border: none;
           padding: 0;
           font-size: 0.95rem;
-          color: #1D1A39;
+          color: var(--color-black-tie);
           opacity: 0.6;
           cursor: pointer;
           transition: all 0.2s ease;
@@ -224,7 +224,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           left: 0;
           width: 100%;
           height: 1px;
-          background-color: #1D1A39;
+          background-color: var(--color-black-tie);
           transform: scaleX(0);
           transform-origin: left;
           transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -237,7 +237,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
         
         .sidebar-footer {
           padding-top: 32px;
-          border-top: 1px solid rgba(29, 26, 57, 0.1);
+          border-top: 1px solid rgba(20, 20, 20, 0.1);
         }
         
         .signout-link {
@@ -245,7 +245,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           border: none;
           padding: 0;
           font-size: 0.95rem;
-          color: #1D1A39;
+          color: var(--color-black-tie);
           cursor: pointer;
           display: flex;
           align-items: center;
@@ -270,7 +270,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           display: none;
           margin-top: 48px;
           padding-top: 24px;
-          border-top: 1px solid rgba(29, 26, 57, 0.1);
+          border-top: 1px solid rgba(20, 20, 20, 0.1);
         }
 
         @media (max-width: 768px) {
@@ -294,12 +294,12 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           font-size: 2.2rem;
           font-weight: 400;
           margin-bottom: 8px;
-          color: #1D1A39;
+          color: var(--color-black-tie);
         }
         
         .page-subheading {
           font-size: 0.95rem;
-          color: rgba(29, 26, 57, 0.6);
+          color: rgba(20, 20, 20, 0.6);
         }
         
         .section-title {
@@ -308,12 +308,12 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           letter-spacing: 0.05em;
           font-weight: 500;
           margin-bottom: 24px;
-          color: #1D1A39;
+          color: var(--color-black-tie);
         }
         
         .section-subtitle {
           font-size: 0.9rem;
-          color: rgba(29, 26, 57, 0.6);
+          color: rgba(20, 20, 20, 0.6);
           margin-bottom: 32px;
         }
         
@@ -328,12 +328,12 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           letter-spacing: 0.05em;
           font-weight: 500;
           margin-bottom: 16px;
-          color: #1D1A39;
+          color: var(--color-black-tie);
         }
 
         .empty-state-text {
           font-size: 0.95rem;
-          color: rgba(29, 26, 57, 0.6);
+          color: rgba(20, 20, 20, 0.6);
           margin-bottom: 24px;
         }
       `}</style>

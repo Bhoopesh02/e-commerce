@@ -71,11 +71,11 @@ export default function PreferencesPage() {
           justify-content: space-between;
           align-items: center;
           padding: 32px 0;
-          border-bottom: 1px solid rgba(29, 26, 57, 0.1);
+          border-bottom: 1px solid rgba(20, 20, 20, 0.1);
         }
         
         .toggle-row:first-child {
-          border-top: 1px solid rgba(29, 26, 57, 0.1);
+          border-top: 1px solid rgba(20, 20, 20, 0.1);
         }
         
         .toggle-info {
@@ -86,13 +86,13 @@ export default function PreferencesPage() {
         
         .toggle-title {
           font-weight: 500;
-          color: #1D1A39;
+          color: var(--color-black-tie);
           font-size: 1.05rem;
         }
         
         .toggle-desc {
           font-size: 0.9rem;
-          color: rgba(29, 26, 57, 0.6);
+          color: rgba(20, 20, 20, 0.6);
         }
 
         /* Toggle Switch Styles */
@@ -116,7 +116,7 @@ export default function PreferencesPage() {
           left: 0;
           right: 0;
           bottom: 0;
-          background-color: rgba(29, 26, 57, 0.2);
+          background-color: rgba(20, 20, 20, 0.2);
           transition: .3s;
         }
 
@@ -132,11 +132,11 @@ export default function PreferencesPage() {
         }
 
         input:checked + .slider {
-          background-color: #1D1A39;
+          background-color: var(--color-black-tie);
         }
 
         input:focus + .slider {
-          box-shadow: 0 0 1px #1D1A39;
+          box-shadow: 0 0 1px var(--color-black-tie);
         }
 
         input:checked + .slider:before {
@@ -152,7 +152,7 @@ export default function PreferencesPage() {
         }
 
         .btn-primary {
-          background-color: #1D1A39;
+          background-color: var(--color-black-tie);
           color: #fff;
           border: none;
           padding: 12px 24px;

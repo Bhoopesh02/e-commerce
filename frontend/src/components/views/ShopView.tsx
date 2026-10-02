@@ -389,7 +389,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   background: 'none',
                   border: 'none',
                   fontSize: '0.78rem',
-                  color: 'var(--color-sunset-600)',
+                  color: 'var(--color-sapphire)',
                   cursor: 'pointer',
                   marginLeft: '4px',
                 }}

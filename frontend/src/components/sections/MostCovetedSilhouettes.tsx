@@ -235,7 +235,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                 fontWeight: 600,
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: 'var(--color-sunset-600)',
+                color: 'var(--color-sapphire)',
                 display: 'block',
                 marginBottom: '6px',
               }}

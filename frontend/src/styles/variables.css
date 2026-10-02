@@ -1,24 +1,23 @@
 /* Luxury Fashion Design Tokens - Unified Brand: AURELIA */
 :root {
-  /* Core Sunset Palette Tokens */
-  --color-sunset-900: #1D1A39;
-  --color-sunset-800: #451952;
-  --color-sunset-700: #662549;
-  --color-sunset-600: #AE445A;
-  --color-sunset-400: #F39F5A;
-  --color-sunset-200: #E8BCB9;
+  /* Brand */
+  --color-diamond: #FFFFFF;
+  --color-silver: #E0E0E0;
+  --color-icy-lake: #CAD4D6;
+  --color-golden: #C29B4C;
+  --color-sapphire: #244B57;
+  --color-black-tie: #141414;
 
   /* Neutrals & Semantics */
   --color-white: #FFFFFF;
-  --color-offwhite: #FFF9F6;
   --color-success: #1E6F5C;
   --color-success-bg: #E8F5E9;
   --color-error: #B00020;
   --color-error-bg: #FFEBEE;
-  --color-warning: #D97706;
-  --color-warning-bg: #FEF3C7;
-  --color-info: #2B59C3;
-  --color-info-bg: #E3F2FD;
+  --color-warning: #8A641F;
+  --color-warning-bg: #F6EEDB;
+  --color-info: #315F70;
+  --color-info-bg: #E7EFF1;
 
   /* Typography */
   --font-body: var(--font-body-next, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
@@ -52,69 +51,65 @@
   --ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Elevation Shadows */
-  --shadow-sm: 0 2px 8px rgba(29, 26, 57, 0.04);
-  --shadow-md: 0 8px 24px rgba(29, 26, 57, 0.08);
-  --shadow-lg: 0 16px 40px rgba(29, 26, 57, 0.12);
+  --shadow-sm: 0 2px 8px rgba(20, 20, 20, 0.04);
+  --shadow-md: 0 8px 24px rgba(20, 20, 20, 0.08);
+  --shadow-lg: 0 16px 40px rgba(20, 20, 20, 0.12);
   --shadow-editorial: 0 24px 60px rgba(69, 25, 82, 0.16);
 
   /* Luxury Signature Gradient (Hero, Campaigns, Newsletter, Footer) */
-  --gradient-sunset: linear-gradient(180deg, #F39F5A 0%, #AE445A 38%, #662549 70%, #1D1A39 100%);
-  --gradient-sunset-subtle: linear-gradient(135deg, rgba(243, 159, 90, 0.12) 0%, rgba(174, 68, 90, 0.08) 50%, rgba(102, 37, 73, 0.04) 100%);
+  --gradient-aurelia: linear-gradient(180deg, var(--color-golden) 0%, var(--color-sapphire) 50%, var(--color-black-tie) 100%);
+  --gradient-aurelia-subtle: linear-gradient(135deg, rgba(194, 155, 76, 0.12) 0%, rgba(36, 75, 87, 0.08) 50%, rgba(20, 20, 20, 0.04) 100%);
 
-  /* Default (Light) Theme Variables */
-  --bg-primary: #FFF9F6;
-  --bg-surface: #FFFFFF;
-  --bg-surface-elevated: #FFFFFF;
-  --bg-surface-translucent: rgba(255, 249, 246, 0.85);
-  --text-primary: #1D1A39;
-  --text-secondary: #662549;
-  --text-muted: #6F6870;
-  --border-color: #E8BCB9;
-  --border-light: rgba(232, 188, 185, 0.45);
-  --cta-primary: #F39F5A;
-  --cta-primary-hover: #E08E49;
-  --cta-text: #1D1A39;
-  --nav-backdrop: rgba(255, 249, 246, 0.88);
+  /* Backgrounds */
+  --bg-primary: var(--color-diamond);
+  --bg-surface: var(--color-diamond);
+  --bg-surface-elevated: var(--color-diamond);
+  --bg-secondary: var(--color-icy-lake);
+  --bg-surface-translucent: rgba(255, 255, 255, 0.85);
+
+  /* Text */
+  --text-primary: var(--color-black-tie);
+  --text-secondary: var(--color-sapphire);
+  --text-muted: #667276;
+  --text-inverse: var(--color-diamond);
+
+  /* Brand roles */
+  --brand-primary: var(--color-sapphire);
+  --brand-accent: var(--color-golden);
+
+  /* Borders */
+  --border-color: var(--color-silver);
+  --border-light: rgba(224, 224, 224, 0.65);
+
+  /* CTA */
+  --cta-primary: var(--color-golden);
+  --cta-primary-hover: #A9853F;
+  --cta-text: var(--color-black-tie);
+
+  /* Brand panels */
+  --surface-brand-dark: var(--color-black-tie);
+  --surface-brand-sapphire: var(--color-sapphire);
+  
+  --nav-backdrop: rgba(255, 255, 255, 0.88);
 
   /* Admin Panel Tokens */
-  --admin-canvas: #F8F9FA;
-  --admin-surface: #FFFFFF;
-  --admin-border: #E5E7EB;
-  --admin-border-light: #F3F4F6;
-  --admin-text-primary: #1E2024;
-  --admin-text-secondary: #5B6270;
-  --admin-accent: var(--color-sunset-200);
-  --admin-accent-hover: #DFADA9;
-  --admin-accent-text: var(--color-sunset-900);
+  --admin-canvas: var(--color-diamond);
+  --admin-surface: var(--color-diamond);
+  --admin-border: var(--border-color);
+  --admin-border-light: var(--border-light);
+  --admin-text-primary: var(--color-black-tie);
+  --admin-text-secondary: var(--color-sapphire);
+  --admin-accent: var(--color-sapphire);
+  --admin-accent-hover: #1A3740;
+  --admin-accent-text: var(--color-diamond);
   --admin-surface-glass: rgba(255, 255, 255, 0.78);
   --admin-border-glass: rgba(255, 255, 255, 0.85);
-}
-
-/* Dark Theme Overrides */
-[data-theme="dark"] {
-  --bg-primary: #1D1A39;
-  --bg-surface: #451952;
-  --bg-surface-elevated: #542263;
-  --bg-surface-translucent: rgba(69, 25, 82, 0.85);
-  --text-primary: #FFF8F5;
-  --text-secondary: #E8BCB9;
-  --text-muted: #C9A5AA;
-  --border-color: rgba(232, 188, 185, 0.20);
-  --border-light: rgba(232, 188, 185, 0.12);
-  --cta-primary: #F39F5A;
-  --cta-primary-hover: #F5AD70;
-  --cta-text: #1D1A39;
-  --nav-backdrop: rgba(29, 26, 57, 0.88);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.45);
-  --shadow-editorial: 0 24px 60px rgba(0, 0, 0, 0.60);
 }
 
 /* Storefront A: Editorial Mode Overrides (Dramatic, Expressive, Rich Fashion Magazine) */
 [data-storefront="a"] {
   --storefront-mode: 'editorial';
-  --editorial-accent: var(--color-sunset-600);
+  --editorial-accent: var(--color-sapphire);
   --carousel-card-ratio: 1.4;
   --hero-min-height: 100vh;
   --hero-min-height: 100dvh;

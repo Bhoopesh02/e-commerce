@@ -121,7 +121,7 @@ export const OrderStepper: React.FC<OrderStepperProps> = ({
                   >
                     <step.icon 
                       size={20} 
-                      className={isCompleted ? "text-white" : "text-gray-400"} 
+                      className={isCompleted ? "text-white" : "text-[var(--text-muted)]"} 
                       strokeWidth={2}
                     />
                   </motion.div>
@@ -142,13 +142,13 @@ export const OrderStepper: React.FC<OrderStepperProps> = ({
                   ease: customEase
                 }}
               >
-                <span className={`text-sm font-semibold mb-1 ${isCompleted ? 'text-gray-900' : 'text-gray-400'}`}>
+                <span className={`text-sm font-semibold mb-1 ${isCompleted ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>
                   {step.label}
                 </span>
-                <span className={`text-xs ${isCompleted ? 'text-gray-500' : 'text-gray-300'}`}>
+                <span className={`text-xs ${isCompleted ? 'text-[var(--text-muted)]' : 'text-[var(--border-color)]'}`}>
                   {step.date.split(',')[0]},
                 </span>
-                <span className={`text-xs ${isCompleted ? 'text-gray-500' : 'text-gray-300'}`}>
+                <span className={`text-xs ${isCompleted ? 'text-[var(--text-muted)]' : 'text-[var(--border-color)]'}`}>
                   {step.date.split(',')[1]?.trim()}
                 </span>
               </motion.div>

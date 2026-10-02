@@ -38,7 +38,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
         display: 'flex',
         alignItems: 'center',
         boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',
-        border: '1px solid rgba(232, 188, 185, 0.22)',
+        border: '1px solid rgba(224, 224, 224, 0.22)',
         backgroundColor: '#0c0a14',
       }}
       className="group section-banner"

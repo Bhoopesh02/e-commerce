@@ -274,9 +274,9 @@ function SearchContent() {
           gap: '8px',
           padding: '8px 16px',
           borderRadius: '6px',
-          border: `1px solid ${hasActive ? 'var(--color-sunset-600)' : 'var(--border-color)'}`,
-          backgroundColor: hasActive ? 'var(--color-sunset-50)' : 'transparent',
-          color: hasActive ? 'var(--color-sunset-800)' : 'var(--text-primary)',
+          border: `1px solid ${hasActive ? 'var(--color-sapphire)' : 'var(--border-color)'}`,
+          backgroundColor: hasActive ? 'var(--bg-secondary)' : 'transparent',
+          color: hasActive ? 'var(--color-sapphire)' : 'var(--text-primary)',
           fontSize: '0.85rem',
           fontWeight: 500,
           cursor: 'pointer',
@@ -322,7 +322,7 @@ function SearchContent() {
                     type="checkbox" 
                     checked={activeCategories.includes(c.slug)}
                     onChange={() => toggleFilter('category', c.slug)}
-                    style={{ accentColor: 'var(--color-sunset-600)' }}
+                    style={{ accentColor: 'var(--color-sapphire)' }}
                   />
                   {c.name}
                 </label>
@@ -339,7 +339,7 @@ function SearchContent() {
                     type="checkbox" 
                     checked={activeCollections.includes(c.id)}
                     onChange={() => toggleFilter('collection', c.id)}
-                    style={{ accentColor: 'var(--color-sunset-600)' }}
+                    style={{ accentColor: 'var(--color-sapphire)' }}
                   />
                   {c.label}
                 </label>
@@ -358,8 +358,8 @@ function SearchContent() {
                     style={{
                       padding: '6px 12px',
                       borderRadius: '4px',
-                      border: `1px solid ${activeSizes.includes(s) ? 'var(--color-sunset-600)' : 'var(--border-color)'}`,
-                      backgroundColor: activeSizes.includes(s) ? 'var(--color-sunset-600)' : '#fff',
+                      border: `1px solid ${activeSizes.includes(s) ? 'var(--color-sapphire)' : 'var(--border-color)'}`,
+                      backgroundColor: activeSizes.includes(s) ? 'var(--color-sapphire)' : '#fff',
                       color: activeSizes.includes(s) ? '#fff' : 'var(--text-primary)',
                       fontSize: '0.85rem',
                       cursor: 'pointer',
@@ -409,7 +409,7 @@ function SearchContent() {
                     onChange={() => {
                       updateUrl({ price: activePriceRange === p.id ? null : p.id });
                     }}
-                    style={{ accentColor: 'var(--color-sunset-600)' }}
+                    style={{ accentColor: 'var(--color-sapphire)' }}
                   />
                   {p.label}
                 </label>
@@ -441,7 +441,7 @@ function SearchContent() {
         
         {/* Search Header */}
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <h1 style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-sunset-700)', fontWeight: 600, marginBottom: '16px' }}>SEARCH</h1>
+          <h1 style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-sapphire)', fontWeight: 600, marginBottom: '16px' }}>SEARCH</h1>
           {initialQuery && (
             <>
               <h2 style={{ fontSize: '14px', fontFamily: 'var(--font-serif)', color: 'var(--text-primary)', fontWeight: 400, marginBottom: '16px' }}>
@@ -471,7 +471,7 @@ function SearchContent() {
                 color: 'var(--text-primary)',
                 transition: 'border-color 200ms ease'
               }}
-              onFocus={(e) => e.target.style.borderColor = 'var(--color-sunset-600)'}
+              onFocus={(e) => e.target.style.borderColor = 'var(--color-sapphire)'}
               onBlur={(e) => e.target.style.borderColor = 'var(--border-color)'}
             />
           </form>
@@ -485,7 +485,7 @@ function SearchContent() {
                 textTransform: 'uppercase',
                 fontWeight: 'bold',
                 letterSpacing: '0.1em',
-                color: 'var(--color-sunset-700)',
+                color: 'var(--color-sapphire)',
                 marginBottom: '12px',
               }}
             >
@@ -512,8 +512,8 @@ function SearchContent() {
                     transition: 'all 200ms',
                   }}
                   onMouseOver={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--color-sunset-600)';
-                    e.currentTarget.style.color = 'var(--color-sunset-700)';
+                    e.currentTarget.style.borderColor = 'var(--color-sapphire)';
+                    e.currentTarget.style.color = 'var(--color-sapphire)';
                     e.currentTarget.style.backgroundColor = 'var(--bg-surface)';
                   }}
                   onMouseOut={(e) => {
@@ -591,7 +591,7 @@ function SearchContent() {
                             style={{
                               display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
                               padding: '10px 16px', border: 'none', background: 'transparent', cursor: 'pointer',
-                              color: selectedSort === opt.id ? 'var(--color-sunset-700)' : 'var(--text-primary)',
+                              color: selectedSort === opt.id ? 'var(--color-sapphire)' : 'var(--text-primary)',
                               fontSize: '0.85rem', fontWeight: selectedSort === opt.id ? 600 : 400,
                               textAlign: 'left'
                             }}
@@ -622,8 +622,8 @@ function SearchContent() {
                       style={{
                         display: 'inline-flex', alignItems: 'center', gap: '6px',
                         padding: '4px 12px', borderRadius: '4px',
-                        backgroundColor: 'var(--color-sunset-50)', border: '1px solid var(--color-sunset-200)',
-                        color: 'var(--color-sunset-800)', fontSize: '0.8rem', fontWeight: 500,
+                        backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--color-silver)',
+                        color: 'var(--color-sapphire)', fontSize: '0.8rem', fontWeight: 500,
                         cursor: 'pointer', transition: 'all 200ms ease'
                       }}
                     >
@@ -673,7 +673,7 @@ function SearchContent() {
                   We couldn&apos;t find anything matching your filters.<br/>
                   Try adjusting your selections or explore our collections.
                 </p>
-                <button onClick={clearAllFilters} style={{ display: 'inline-flex', padding: '12px 28px', backgroundColor: '#7c1d35', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', transition: 'background-color 200ms ease', border: 'none', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#631427'} onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#7c1d35'}>
+                <button onClick={clearAllFilters} style={{ display: 'inline-flex', padding: '12px 28px', backgroundColor: '#7c1d35', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', transition: 'background-color 200ms ease', border: 'none', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-sapphire)'} onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#7c1d35'}>
                   Clear All Filters
                 </button>
               </div>

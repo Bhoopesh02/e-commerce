@@ -63,7 +63,7 @@ export const Drawer: React.FC<DrawerProps> = ({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(29, 26, 57, 0.55)',
+        backgroundColor: 'rgba(20, 20, 20, 0.55)',
         backdropFilter: 'blur(6px)',
         zIndex: 9998,
         display: 'flex',

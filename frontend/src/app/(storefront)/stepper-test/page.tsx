@@ -15,16 +15,16 @@ export default function StepperTestPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-8">
-      <div className="w-full max-w-5xl bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-        <h1 className="text-2xl font-bold mb-8 text-center text-gray-800">Order Tracking Test</h1>
+    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col items-center justify-center p-8">
+      <div className="w-full max-w-5xl bg-white p-8 rounded-xl shadow-sm border border-[var(--border-light)]">
+        <h1 className="text-2xl font-bold mb-8 text-center text-[var(--text-primary)]">Order Tracking Test</h1>
         
         <OrderStepper currentStepIndex={step} />
 
         <div className="mt-12 flex justify-center gap-4">
           <button 
             onClick={() => setStep(Math.max(0, step - 1))}
-            className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
+            className="px-4 py-2 bg-[var(--border-color)] rounded-md hover:bg-[var(--border-color)]"
           >
             Previous Step
           </button>

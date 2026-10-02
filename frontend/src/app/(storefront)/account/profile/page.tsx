@@ -64,7 +64,7 @@ export default function ProfilePage() {
         
         .settings-subtitle {
           font-size: 0.9rem;
-          color: #1D1A39;
+          color: var(--color-black-tie);
           font-weight: bold;
         }
         
@@ -73,11 +73,11 @@ export default function ProfilePage() {
           justify-content: space-between;
           align-items: center;
           padding: 24px 0;
-          border-bottom: 1px solid rgba(29, 26, 57, 0.1);
+          border-bottom: 1px solid rgba(20, 20, 20, 0.1);
         }
         
         .settings-row:first-of-type {
-          border-top: 1px solid rgba(29, 26, 57, 0.1);
+          border-top: 1px solid rgba(20, 20, 20, 0.1);
         }
         
         .settings-info {
@@ -90,12 +90,12 @@ export default function ProfilePage() {
           font-size: 0.75rem;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: rgba(29, 26, 57, 0.6);
+          color: rgba(20, 20, 20, 0.6);
         }
         
         .settings-value {
           font-size: 1.05rem;
-          color: #1D1A39;
+          color: var(--color-black-tie);
         }
         
         .text-action-sm {
@@ -103,7 +103,7 @@ export default function ProfilePage() {
           display: flex;
           align-items: center;
           gap: 4px;
-          color: rgba(29, 26, 57, 0.7);
+          color: rgba(20, 20, 20, 0.7);
           text-decoration: none;
           transition: opacity 0.2s ease;
           cursor: pointer;
@@ -114,7 +114,7 @@ export default function ProfilePage() {
         
         .text-action-sm:hover {
           opacity: 1;
-          color: #1D1A39;
+          color: var(--color-black-tie);
         }
       `}</style>
     </div>

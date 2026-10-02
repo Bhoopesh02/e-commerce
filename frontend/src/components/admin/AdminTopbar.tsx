@@ -10,7 +10,7 @@ export const AdminTopbar: React.FC = () => {
     <header
       style={{
         height: '68px',
-        backgroundColor: 'var(--color-sunset-900)',
+        backgroundColor: 'var(--color-black-tie)',
         borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
         display: 'flex',
         alignItems: 'center',
@@ -36,7 +36,7 @@ export const AdminTopbar: React.FC = () => {
               width: 32,
               height: 32,
               borderRadius: 'var(--radius-pill)',
-              backgroundColor: 'var(--color-sunset-700)',
+              backgroundColor: 'var(--color-sapphire)',
               color: '#FFF',
               display: 'flex',
               alignItems: 'center',
@@ -51,7 +51,7 @@ export const AdminTopbar: React.FC = () => {
             <span style={{ fontSize: '0.82rem', fontWeight: 600, display: 'block' }}>
               Marcus Vance
             </span>
-            <span style={{ fontSize: '0.7rem', color: 'var(--color-sunset-400)' }}>
+            <span style={{ fontSize: '0.7rem', color: 'var(--color-golden)' }}>
               Head of Atelier Logistics
             </span>
           </div>

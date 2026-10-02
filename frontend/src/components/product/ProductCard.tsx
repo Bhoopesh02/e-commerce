@@ -167,11 +167,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           whileTap={shouldReduceMotion ? undefined : { scale: 0.92 }}
           style={variant === 'grid' ? {
             '--fill-bg': 'rgba(255, 255, 255, 0.85)',
-            '--fill-hover': 'var(--color-sunset-600)',
+            '--fill-hover': 'var(--color-sapphire)',
             '--text-hover': '#FFF',
             backdropFilter: 'blur(4px)',
             border: 'none',
-            color: isFavorited ? 'var(--color-sunset-600)' : 'var(--color-sunset-900)',
+            color: isFavorited ? 'var(--color-sapphire)' : 'var(--color-black-tie)',
             cursor: 'pointer',
           } as React.CSSProperties : {
             position: 'absolute',
@@ -181,14 +181,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             height: '36px',
             borderRadius: 'var(--radius-pill)',
             '--fill-bg': 'rgba(255, 255, 255, 0.85)',
-            '--fill-hover': 'var(--color-sunset-600)',
+            '--fill-hover': 'var(--color-sapphire)',
             '--text-hover': '#FFF',
             backdropFilter: 'blur(4px)',
             border: 'none',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: isFavorited ? 'var(--color-sunset-600)' : 'var(--color-sunset-900)',
+            color: isFavorited ? 'var(--color-sapphire)' : 'var(--color-black-tie)',
             cursor: 'pointer',
             zIndex: 3,
           } as React.CSSProperties}

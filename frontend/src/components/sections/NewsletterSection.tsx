@@ -38,7 +38,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
     <section
       style={{
         padding: '80px 0',
-        background: 'var(--gradient-sunset)',
+        background: 'var(--gradient-aurelia)',
         color: '#FFF8F5',
         position: 'relative',
       }}
@@ -50,7 +50,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
             fontWeight: 600,
             letterSpacing: '0.16em',
             textTransform: 'uppercase',
-            color: 'var(--color-sunset-200)',
+            color: 'var(--color-silver)',
             display: 'block',
             marginBottom: '12px',
           }}
@@ -72,7 +72,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
         <p
           style={{
             fontSize: '1rem',
-            color: 'var(--color-sunset-200)',
+            color: 'var(--color-silver)',
             lineHeight: 1.6,
             marginBottom: '32px',
           }}
@@ -87,7 +87,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
               backgroundColor: 'rgba(255, 255, 255, 0.15)',
               backdropFilter: 'blur(8px)',
               borderRadius: 'var(--radius-sm)',
-              border: '1px solid rgba(232, 188, 185, 0.3)',
+              border: '1px solid rgba(224, 224, 224, 0.3)',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '12px',
@@ -118,10 +118,10 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
                 backdropFilter: 'blur(8px)',
                 borderRadius: 'var(--radius-pill)',
                 padding: '12px 20px',
-                border: '1px solid rgba(232, 188, 185, 0.35)',
+                border: '1px solid rgba(224, 224, 224, 0.35)',
               }}
             >
-              <Mail size={18} style={{ color: 'var(--color-sunset-200)', marginRight: '10px', flexShrink: 0 }} />
+              <Mail size={18} style={{ color: 'var(--color-silver)', marginRight: '10px', flexShrink: 0 }} />
               <input
                 type="email"
                 required

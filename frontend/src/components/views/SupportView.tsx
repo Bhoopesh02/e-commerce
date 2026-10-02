@@ -63,7 +63,7 @@ export const SupportView: React.FC = () => {
             alignItems: 'center',
             gap: '8px',
             fontSize: '0.85rem',
-            color: 'var(--color-sunset-600)',
+            color: 'var(--color-sapphire)',
             marginBottom: '24px',
             fontWeight: 500,
           }}
@@ -72,7 +72,7 @@ export const SupportView: React.FC = () => {
         </Link>
 
         <div style={{ marginBottom: '32px' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sunset-600)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
             Client Relations Desk
           </span>
           <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', marginTop: '4px' }}>
@@ -147,7 +147,7 @@ export const SupportView: React.FC = () => {
                   padding: '20px',
                   backgroundColor: 'var(--bg-surface)',
                   borderRadius: 'var(--radius-sm)',
-                  border: selectedTicket?.id === t.id ? '2px solid var(--color-sunset-700)' : '1px solid var(--border-color)',
+                  border: selectedTicket?.id === t.id ? '2px solid var(--color-sapphire)' : '1px solid var(--border-color)',
                   cursor: 'pointer',
                   boxShadow: 'var(--shadow-sm)',
                 }}
@@ -164,10 +164,10 @@ export const SupportView: React.FC = () => {
 
                 {/* Admin Responses */}
                 {t.responses.length > 0 ? (
-                  <div style={{ backgroundColor: 'rgba(243, 159, 90, 0.08)', padding: '12px 16px', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(243, 159, 90, 0.2)' }}>
+                  <div style={{ backgroundColor: 'rgba(194, 155, 76, 0.08)', padding: '12px 16px', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(194, 155, 76, 0.2)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                      <Shield size={13} style={{ color: 'var(--color-sunset-600)' }} />
-                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-sunset-700)' }}>
+                      <Shield size={13} style={{ color: 'var(--color-sapphire)' }} />
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-sapphire)' }}>
                         {t.responses[0].authorName}
                       </span>
                     </div>

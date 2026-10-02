@@ -33,7 +33,7 @@ export const AdminSidebar: React.FC = () => {
     <aside
       style={{
         width: '260px',
-        backgroundColor: 'var(--color-sunset-900)',
+        backgroundColor: 'var(--color-black-tie)',
         color: '#FFF8F5',
         borderRight: '1px solid rgba(255, 255, 255, 0.08)',
         display: 'flex',
@@ -60,7 +60,7 @@ export const AdminSidebar: React.FC = () => {
             width: 32,
             height: 32,
             borderRadius: 'var(--radius-sm)',
-            backgroundColor: 'var(--color-sunset-600)',
+            backgroundColor: 'var(--color-sapphire)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -73,7 +73,7 @@ export const AdminSidebar: React.FC = () => {
           <span style={{ fontSize: '1.05rem', fontWeight: 600, letterSpacing: '0.12em', fontFamily: 'var(--font-display)', display: 'block' }}>
             {BRAND_NAME}
           </span>
-          <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-sunset-200)' }}>
+          <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-silver)' }}>
             Atelier Operations
           </span>
         </div>
@@ -89,7 +89,7 @@ export const AdminSidebar: React.FC = () => {
               href={item.href}
               className={`admin-nav-link ${isActive ? 'admin-nav-link-active' : ''}`}
             >
-              <span style={{ color: isActive ? 'var(--color-sunset-200)' : 'inherit', display: 'flex', alignItems: 'center' }}>
+              <span style={{ color: isActive ? 'var(--color-silver)' : 'inherit', display: 'flex', alignItems: 'center' }}>
                 {item.icon}
               </span>
               <span>{item.label}</span>

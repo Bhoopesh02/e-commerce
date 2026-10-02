@@ -47,7 +47,7 @@ export default function AdminOrdersPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
       <div>
-        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sunset-700)' }}>
+        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
           Fulfillment Desk
         </span>
         <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: 'var(--admin-text-primary)', marginTop: '4px' }}>
@@ -102,7 +102,7 @@ export default function AdminOrdersPage() {
                       <span style={{ fontSize: '0.82rem', color: 'var(--admin-text-primary)', display: 'block' }}>
                         {o.trackingInfo.carrier}
                       </span>
-                      <span style={{ fontSize: '0.72rem', color: 'var(--color-sunset-800)', fontFamily: 'var(--font-mono)' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--color-sapphire)', fontFamily: 'var(--font-mono)' }}>
                         {o.trackingInfo.trackingId}
                       </span>
                     </div>

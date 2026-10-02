@@ -85,7 +85,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
               alignItems: 'center',
               justifyContent: 'space-between',
               cursor: 'pointer',
-              backgroundColor: selectedMethod === 'UPI' ? 'rgba(243, 159, 90, 0.06)' : 'transparent',
+              backgroundColor: selectedMethod === 'UPI' ? 'rgba(194, 155, 76, 0.06)' : 'transparent',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -95,7 +95,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 checked={selectedMethod === 'UPI'}
                 onChange={() => handleMethodChange('UPI')}
               />
-              <Smartphone size={20} style={{ color: 'var(--color-sunset-600)' }} />
+              <Smartphone size={20} style={{ color: 'var(--color-sapphire)' }} />
               <div>
                 <span style={{ fontSize: '0.92rem', fontWeight: 600, display: 'block' }}>
                   UPI (Google Pay, PhonePe, Paytm, BHIM)
@@ -105,7 +105,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 </span>
               </div>
             </div>
-            {selectedMethod === 'UPI' && <Check size={16} style={{ color: 'var(--color-sunset-600)' }} />}
+            {selectedMethod === 'UPI' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
           </div>
 
           {selectedMethod === 'UPI' && (
@@ -143,7 +143,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
               alignItems: 'center',
               justifyContent: 'space-between',
               cursor: 'pointer',
-              backgroundColor: selectedMethod === 'Card' ? 'rgba(243, 159, 90, 0.06)' : 'transparent',
+              backgroundColor: selectedMethod === 'Card' ? 'rgba(194, 155, 76, 0.06)' : 'transparent',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -153,7 +153,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 checked={selectedMethod === 'Card'}
                 onChange={() => handleMethodChange('Card')}
               />
-              <CreditCard size={20} style={{ color: 'var(--color-sunset-600)' }} />
+              <CreditCard size={20} style={{ color: 'var(--color-sapphire)' }} />
               <div>
                 <span style={{ fontSize: '0.92rem', fontWeight: 600, display: 'block' }}>
                   Credit or Debit Card
@@ -163,7 +163,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 </span>
               </div>
             </div>
-            {selectedMethod === 'Card' && <Check size={16} style={{ color: 'var(--color-sunset-600)' }} />}
+            {selectedMethod === 'Card' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
           </div>
 
           {selectedMethod === 'Card' && (
@@ -259,7 +259,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
               alignItems: 'center',
               justifyContent: 'space-between',
               cursor: 'pointer',
-              backgroundColor: selectedMethod === 'NetBanking' ? 'rgba(243, 159, 90, 0.06)' : 'transparent',
+              backgroundColor: selectedMethod === 'NetBanking' ? 'rgba(194, 155, 76, 0.06)' : 'transparent',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -269,7 +269,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 checked={selectedMethod === 'NetBanking'}
                 onChange={() => handleMethodChange('NetBanking')}
               />
-              <Building2 size={20} style={{ color: 'var(--color-sunset-600)' }} />
+              <Building2 size={20} style={{ color: 'var(--color-sapphire)' }} />
               <div>
                 <span style={{ fontSize: '0.92rem', fontWeight: 600, display: 'block' }}>
                   Net Banking
@@ -279,7 +279,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 </span>
               </div>
             </div>
-            {selectedMethod === 'NetBanking' && <Check size={16} style={{ color: 'var(--color-sunset-600)' }} />}
+            {selectedMethod === 'NetBanking' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
           </div>
 
           {selectedMethod === 'NetBanking' && (
@@ -320,7 +320,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
               alignItems: 'center',
               justifyContent: 'space-between',
               cursor: 'pointer',
-              backgroundColor: selectedMethod === 'Wallet' ? 'rgba(243, 159, 90, 0.06)' : 'transparent',
+              backgroundColor: selectedMethod === 'Wallet' ? 'rgba(194, 155, 76, 0.06)' : 'transparent',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -330,7 +330,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 checked={selectedMethod === 'Wallet'}
                 onChange={() => handleMethodChange('Wallet')}
               />
-              <Wallet size={20} style={{ color: 'var(--color-sunset-600)' }} />
+              <Wallet size={20} style={{ color: 'var(--color-sapphire)' }} />
               <div>
                 <span style={{ fontSize: '0.92rem', fontWeight: 600, display: 'block' }}>
                   Digital Wallets
@@ -340,7 +340,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 </span>
               </div>
             </div>
-            {selectedMethod === 'Wallet' && <Check size={16} style={{ color: 'var(--color-sunset-600)' }} />}
+            {selectedMethod === 'Wallet' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
           </div>
         </div>
 
@@ -354,7 +354,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
               alignItems: 'center',
               justifyContent: 'space-between',
               cursor: 'pointer',
-              backgroundColor: selectedMethod === 'COD' ? 'rgba(243, 159, 90, 0.06)' : 'transparent',
+              backgroundColor: selectedMethod === 'COD' ? 'rgba(194, 155, 76, 0.06)' : 'transparent',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -364,7 +364,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 checked={selectedMethod === 'COD'}
                 onChange={() => handleMethodChange('COD')}
               />
-              <Banknote size={20} style={{ color: 'var(--color-sunset-600)' }} />
+              <Banknote size={20} style={{ color: 'var(--color-sapphire)' }} />
               <div>
                 <span style={{ fontSize: '0.92rem', fontWeight: 600, display: 'block' }}>
                   Cash on Delivery (COD)
@@ -374,7 +374,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 </span>
               </div>
             </div>
-            {selectedMethod === 'COD' && <Check size={16} style={{ color: 'var(--color-sunset-600)' }} />}
+            {selectedMethod === 'COD' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
           </div>
         </div>
       </div>

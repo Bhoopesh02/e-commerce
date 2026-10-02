@@ -56,11 +56,11 @@
 
 .typography-shimmer {
   background: linear-gradient(105deg,
-      var(--color-sunset-400) 0%,
-      var(--color-sunset-400) 35%,
+      var(--color-golden) 0%,
+      var(--color-golden) 35%,
       #FFF9F6 50%,
-      var(--color-sunset-400) 65%,
-      var(--color-sunset-400) 100%);
+      var(--color-golden) 65%,
+      var(--color-golden) 100%);
   background-size: 200% auto;
   color: transparent !important;
   -webkit-background-clip: text;
@@ -104,9 +104,9 @@
 
 .skeleton-shimmer {
   background: linear-gradient(90deg,
-      rgba(232, 188, 185, 0.15) 0%,
-      rgba(243, 159, 90, 0.25) 50%,
-      rgba(232, 188, 185, 0.15) 100%);
+      rgba(224, 224, 224, 0.15) 0%,
+      rgba(194, 155, 76, 0.25) 50%,
+      rgba(224, 224, 224, 0.15) 100%);
   background-size: 200% 100%;
   animation: shimmer 1.8s infinite;
 }
@@ -128,8 +128,8 @@
   .typography-shimmer {
     animation: none !important;
     background: none !important;
-    color: var(--color-sunset-400) !important;
-    -webkit-text-fill-color: var(--color-sunset-400) !important;
+    color: var(--color-golden) !important;
+    -webkit-text-fill-color: var(--color-golden) !important;
   }
 
   .animate-infinite-scroll {
@@ -262,7 +262,7 @@
 :root {
   --editorial-link-duration: 600ms;
   --editorial-link-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --editorial-link-color: var(--color-sunset-700, #662549);
+  --editorial-link-color: var(--color-sapphire, var(--color-sapphire));
 }
 
 .editorial-arrow-link {
@@ -277,7 +277,7 @@
   cursor: pointer;
 }
 
-/* Hairline underline (1px, color-matched to deep plum text) */
+/* Hairline underline (1px, color-matched to deep sapphire text) */
 .editorial-arrow-link-text {
   position: relative;
   display: inline-block;
@@ -367,11 +367,11 @@
   will-change: transform;
 }
 
-/* Sheen color for white / outline buttons (subtle warm amber sheen for contrast) */
+/* Sheen color for white / outline buttons (subtle warm golden sheen for contrast) */
 .luxury-btn-outline::after {
   background: linear-gradient(90deg,
       transparent 0%,
-      rgba(243, 159, 90, 0.4) 50%,
+      rgba(194, 155, 76, 0.4) 50%,
       transparent 100%);
 }
 
@@ -381,20 +381,20 @@
 }
 
 .luxury-btn-outline:hover:not(:disabled) {
-  border-color: var(--color-sunset-500) !important;
-  color: var(--color-sunset-600) !important;
-  background-color: rgba(243, 159, 90, 0.08) !important;
+  border-color: var(--color-golden) !important;
+  color: var(--color-sapphire) !important;
+  background-color: rgba(194, 155, 76, 0.08) !important;
 }
 
 [data-theme="dark"] .luxury-btn-outline {
-  border-color: rgba(232, 188, 185, 0.35);
+  border-color: rgba(224, 224, 224, 0.35);
   color: #FFF8F5;
 }
 
 [data-theme="dark"] .luxury-btn-outline:hover:not(:disabled) {
-  border-color: var(--color-sunset-400) !important;
-  color: var(--color-sunset-400) !important;
-  background-color: rgba(243, 159, 90, 0.15) !important;
+  border-color: var(--color-golden) !important;
+  color: var(--color-golden) !important;
+  background-color: rgba(194, 155, 76, 0.15) !important;
 }
 
 /* Fixed solid white luxury button (e.g. Hero secondary pill) - locks solid white background on hover */
@@ -410,7 +410,7 @@ a:focus-visible .luxury-btn-white:not(:disabled),
 [data-theme="dark"] a:hover .luxury-btn-white:not(:disabled) {
   background-color: #FFFFFF !important;
   background: #FFFFFF !important;
-  color: var(--color-sunset-900) !important;
+  color: var(--color-black-tie) !important;
   border-color: #FFFFFF !important;
 }
 
@@ -422,7 +422,7 @@ a:hover .luxury-btn-white:not(:disabled) {
 .luxury-btn-white::after {
   background: linear-gradient(90deg,
       transparent 0%,
-      rgba(243, 159, 90, 0.25) 50%,
+      rgba(194, 155, 76, 0.25) 50%,
       transparent 100%);
 }
 
@@ -494,11 +494,11 @@ a:focus-visible .luxury-btn:not(:disabled)>span:last-child svg {
   overflow: hidden;
   width: 100%;
   padding: 10px 16px;
-  background-color: rgba(29, 26, 57, 0.82);
+  background-color: rgba(20, 20, 20, 0.82);
   backdrop-filter: blur(8px) saturate(120%);
   -webkit-backdrop-filter: blur(8px) saturate(120%);
   color: #FFF;
-  border: 1px solid rgba(232, 188, 185, 0.28);
+  border: 1px solid rgba(224, 224, 224, 0.28);
   border-radius: var(--radius-pill);
   font-size: 0.78rem;
   font-weight: 600;
@@ -519,9 +519,9 @@ a:focus-visible .luxury-btn:not(:disabled)>span:last-child svg {
 
 .quick-add-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  background-color: rgba(36, 33, 58, 0.9);
-  border-color: rgba(232, 188, 185, 0.6);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), 0 0 14px rgba(232, 188, 185, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  background-color: rgba(20, 20, 20, 0.9);
+  border-color: rgba(224, 224, 224, 0.6);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), 0 0 14px rgba(224, 224, 224, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .quick-add-btn:active:not(:disabled) {
@@ -539,7 +539,7 @@ a:focus-visible .luxury-btn:not(:disabled)>span:last-child svg {
   padding-bottom: 140%;
   border-radius: 50%;
   transform: translate(-50%, -50%) scale(0);
-  background: radial-gradient(circle, rgba(232, 188, 185, 0.35) 0%, rgba(232, 188, 185, 0) 70%);
+  background: radial-gradient(circle, rgba(224, 224, 224, 0.35) 0%, rgba(224, 224, 224, 0) 70%);
   opacity: 0;
   pointer-events: none;
   transition: transform 300ms ease-out, opacity 300ms ease-out;

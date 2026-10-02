@@ -30,7 +30,7 @@ export default function SignOutPage() {
         paddingTop: '120px',
         paddingBottom: '96px',
         minHeight: '100vh',
-        background: 'radial-gradient(ellipse at 50% 20%, #FFF5F7 0%, #FDEBF0 50%, #F9E2E8 100%)',
+        background: 'radial-gradient(ellipse at 50% 20%, #FFF5F7 0%, var(--bg-secondary) 50%, #F9E2E8 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -48,7 +48,7 @@ export default function SignOutPage() {
           style={{
             backgroundColor: '#FFFFFF',
             borderRadius: '24px',
-            border: '1px solid rgba(230, 185, 195, 0.55)',
+            border: '1px solid rgba(202, 212, 214, 0.55)',
             padding: '48px 40px',
             boxShadow: '0 24px 60px -12px rgba(186, 75, 102, 0.14), 0 4px 16px rgba(0, 0, 0, 0.03)',
             textAlign: 'center',
@@ -62,11 +62,11 @@ export default function SignOutPage() {
               margin: '0 auto 24px auto',
               borderRadius: '50%',
               backgroundColor: '#FFF0F3',
-              border: '1px solid rgba(230, 185, 195, 0.7)',
+              border: '1px solid rgba(202, 212, 214, 0.7)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#9B3356',
+              color: 'var(--color-sapphire)',
             }}
           >
             <ShieldCheck size={32} strokeWidth={1.5} />
@@ -79,7 +79,7 @@ export default function SignOutPage() {
               fontSize: '1.4rem',
               fontWeight: 600,
               letterSpacing: '0.22em',
-              color: '#2A1D20',
+              color: 'var(--text-primary)',
               display: 'block',
               marginBottom: '6px',
             }}
@@ -115,7 +115,7 @@ export default function SignOutPage() {
           <p
             style={{
               fontSize: '0.92rem',
-              color: '#6E555C',
+              color: 'var(--text-muted)',
               lineHeight: 1.6,
               marginBottom: '36px',
             }}
@@ -132,8 +132,8 @@ export default function SignOutPage() {
                 fullWidth
                 rightIcon={<ArrowRight size={16} />}
                 style={{
-                  backgroundColor: '#9B3356',
-                  borderColor: '#9B3356',
+                  backgroundColor: 'var(--color-sapphire)',
+                  borderColor: 'var(--color-sapphire)',
                   color: '#FFFFFF',
                 }}
               >
@@ -148,7 +148,7 @@ export default function SignOutPage() {
                 fullWidth
                 leftIcon={<ShoppingBag size={16} />}
                 style={{
-                  borderColor: 'rgba(230, 185, 195, 0.8)',
+                  borderColor: 'rgba(202, 212, 214, 0.8)',
                   color: '#4A3338',
                   backgroundColor: '#FFF8FA',
                 }}
@@ -172,7 +172,7 @@ export default function SignOutPage() {
             <Link
               href="/account/support"
               style={{
-                color: '#9B3356',
+                color: 'var(--color-sapphire)',
                 fontWeight: 600,
                 textDecoration: 'underline',
               }}

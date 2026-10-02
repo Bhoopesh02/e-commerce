@@ -41,7 +41,7 @@ export const RatingStars: React.FC<RatingStarsProps> = ({
                 border: 'none',
                 padding: interactive ? '2px' : '0',
                 cursor: interactive ? 'pointer' : 'default',
-                color: isFilled ? 'var(--color-sunset-400)' : 'var(--border-color)',
+                color: isFilled ? 'var(--color-golden)' : 'var(--border-color)',
                 display: 'flex',
                 alignItems: 'center',
               }}

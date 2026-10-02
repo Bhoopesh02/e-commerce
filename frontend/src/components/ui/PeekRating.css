@@ -1,7 +1,7 @@
 .peek-rating {
-  --pr-active: var(--color-sunset-400, #F39F5A);
-  --pr-idle: var(--border-color, #E8BCB9);
-  --pr-tip: var(--color-sunset-900, #1D1A39);
+  --pr-active: var(--color-golden, var(--color-golden));
+  --pr-idle: var(--border-color, var(--color-silver));
+  --pr-tip: var(--color-black-tie, var(--color-black-tie));
   --pr-tip-text: #FFF8F5;
   --pr-size: 22px;
   --pr-gap: 6px;
@@ -109,7 +109,7 @@
   line-height: 1;
   letter-spacing: 0.02em;
   white-space: nowrap;
-  box-shadow: 0 4px 14px rgba(29, 26, 57, 0.25);
+  box-shadow: 0 4px 14px rgba(20, 20, 20, 0.25);
   opacity: 0;
   pointer-events: none;
   transition:

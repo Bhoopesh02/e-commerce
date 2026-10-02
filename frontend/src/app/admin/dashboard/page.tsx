@@ -77,7 +77,7 @@ export default function AdminDashboardPage() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
       {/* Header */}
       <div>
-        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sunset-700)' }}>
+        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
           Executive Dashboard
         </span>
         <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: 'var(--admin-text-primary)', marginTop: '4px' }}>
@@ -96,7 +96,7 @@ export default function AdminDashboardPage() {
             left: '3%',
             width: '380px',
             height: '180px',
-            background: 'radial-gradient(ellipse at center, rgba(232, 188, 185, 0.6) 0%, rgba(243, 159, 90, 0.35) 45%, transparent 70%)',
+            background: 'radial-gradient(ellipse at center, rgba(224, 224, 224, 0.6) 0%, rgba(194, 155, 76, 0.35) 45%, transparent 70%)',
             filter: 'blur(36px)',
             pointerEvents: 'none',
             zIndex: 0,
@@ -110,7 +110,7 @@ export default function AdminDashboardPage() {
             right: '4%',
             width: '420px',
             height: '180px',
-            background: 'radial-gradient(ellipse at center, rgba(174, 68, 90, 0.25) 0%, rgba(232, 188, 185, 0.45) 50%, transparent 70%)',
+            background: 'radial-gradient(ellipse at center, rgba(174, 68, 90, 0.25) 0%, rgba(224, 224, 224, 0.45) 50%, transparent 70%)',
             filter: 'blur(40px)',
             pointerEvents: 'none',
             zIndex: 0,
@@ -144,7 +144,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: '#1D1A39', marginTop: '12px' }}>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
                 {formatPrice(stats?.grossRevenue)}
               </h3>
               <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', marginTop: '4px', display: 'block', fontWeight: 600 }}>
@@ -171,7 +171,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: '#1D1A39', marginTop: '12px' }}>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
                 {stats?.totalOrders}
               </h3>
               <span style={{ fontSize: '0.75rem', color: '#595F69', marginTop: '4px', display: 'block' }}>
@@ -198,7 +198,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: '#1D1A39', marginTop: '12px' }}>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
                 {formatPrice(stats?.averageOrderValue)}
               </h3>
               <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', marginTop: '4px', display: 'block', fontWeight: 600 }}>
@@ -225,7 +225,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: '#1D1A39', marginTop: '12px' }}>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
                 {stats?.lowStockItemsCount} Silhouettes
               </h3>
               <span style={{ fontSize: '0.75rem', color: 'var(--color-warning)', marginTop: '4px', display: 'block', fontWeight: 600 }}>
@@ -246,7 +246,7 @@ export default function AdminDashboardPage() {
             href="/admin/orders"
             style={{
               fontSize: '0.82rem',
-              color: 'var(--color-sunset-800)',
+              color: 'var(--color-sapphire)',
               fontWeight: 600,
               display: 'inline-flex',
               alignItems: 'center',
@@ -270,7 +270,7 @@ export default function AdminDashboardPage() {
               style={{
                 width: '100%',
                 padding: '10px 10px 10px 38px',
-                border: '1px solid rgba(29, 26, 57, 0.1)',
+                border: '1px solid rgba(20, 20, 20, 0.1)',
                 borderRadius: '8px',
                 fontSize: '0.88rem',
                 outline: 'none',
@@ -285,7 +285,7 @@ export default function AdminDashboardPage() {
               onChange={(e) => setFilterStatus(e.target.value)}
               style={{
                 padding: '10px 16px',
-                border: '1px solid rgba(29, 26, 57, 0.1)',
+                border: '1px solid rgba(20, 20, 20, 0.1)',
                 borderRadius: '8px',
                 fontSize: '0.88rem',
                 outline: 'none',

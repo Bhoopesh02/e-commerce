@@ -145,7 +145,7 @@ export const StatusTimeline: React.FC<StatusTimelineProps> = ({
                   alignItems: 'center',
                   justifyContent: 'center',
                   transition: 'all var(--duration-normal) var(--ease-editorial)',
-                  boxShadow: isCurrent ? '0 0 0 4px rgba(243, 159, 90, 0.25)' : 'none',
+                  boxShadow: isCurrent ? '0 0 0 4px rgba(194, 155, 76, 0.25)' : 'none',
                 }}
               >
                 {getIcon(step)}

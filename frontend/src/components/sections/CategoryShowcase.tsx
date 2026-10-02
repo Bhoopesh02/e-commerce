@@ -136,7 +136,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                 style={{
                   fontSize: '0.85rem',
                   fontWeight: 600,
-                  color: 'var(--color-sunset-700)',
+                  color: 'var(--color-sapphire)',
                   letterSpacing: '0.04em',
                 }}
               >
@@ -242,7 +242,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                         right: 0,
                         bottom: 0,
                         background:
-                          'linear-gradient(180deg, rgba(29, 26, 57, 0.1) 0%, rgba(29, 26, 57, 0.85) 100%)',
+                          'linear-gradient(180deg, rgba(20, 20, 20, 0.1) 0%, rgba(20, 20, 20, 0.85) 100%)',
                         zIndex: 1,
                         transition: enableTransition ? 'opacity 0.7s ease' : 'none',
                         opacity: isActive ? 0.8 : 0.95,
@@ -304,7 +304,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                         <p
                           style={{
                             fontSize: isMobile ? '10px' : '0.9rem',
-                            color: 'var(--color-sunset-100)',
+                            color: 'var(--color-silver)',
                             lineHeight: 1.5,
                             display: '-webkit-box',
                             WebkitLineClamp: 2,

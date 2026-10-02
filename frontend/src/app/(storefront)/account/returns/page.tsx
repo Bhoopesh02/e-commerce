@@ -100,12 +100,12 @@ export default function ReturnsPage() {
           display: flex;
           justify-content: space-between;
           padding: 32px 0;
-          border-bottom: 1px solid rgba(29, 26, 57, 0.1);
+          border-bottom: 1px solid rgba(20, 20, 20, 0.1);
           transition: background-color 0.3s ease;
         }
         
         .list-row:first-child {
-          border-top: 1px solid rgba(29, 26, 57, 0.1);
+          border-top: 1px solid rgba(20, 20, 20, 0.1);
         }
         
         .row-col {
@@ -137,30 +137,30 @@ export default function ReturnsPage() {
         
         .row-meta {
           font-size: 0.85rem;
-          color: rgba(29, 26, 57, 0.6);
+          color: rgba(20, 20, 20, 0.6);
         }
         
         .status-meta {
           font-size: 0.75rem;
-          color: rgba(29, 26, 57, 0.6);
+          color: rgba(20, 20, 20, 0.6);
           line-height: 1.5;
         }
         
         .product-title {
           font-size: 1rem;
-          color: #1D1A39;
+          color: var(--color-black-tie);
         }
         
         .product-meta {
           font-size: 0.9rem;
-          color: rgba(29, 26, 57, 0.6);
+          color: rgba(20, 20, 20, 0.6);
         }
         
         .status-label {
           font-size: 0.7rem;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: rgba(29, 26, 57, 0.5);
+          color: rgba(20, 20, 20, 0.5);
         }
         
         .status-value {
@@ -168,7 +168,7 @@ export default function ReturnsPage() {
           text-transform: uppercase;
           letter-spacing: 0.05em;
           font-weight: 500;
-          color: #1D1A39;
+          color: var(--color-black-tie);
         }
         
         .text-action {
@@ -176,7 +176,7 @@ export default function ReturnsPage() {
           display: flex;
           align-items: center;
           gap: 6px;
-          color: #1D1A39;
+          color: var(--color-black-tie);
           text-decoration: none;
           transition: opacity 0.2s ease;
           opacity: 0.8;

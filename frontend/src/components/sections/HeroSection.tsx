@@ -24,7 +24,7 @@ export const HeroSection: React.FC = () => {
         overflow: 'hidden',
         paddingTop: '88px',
         paddingBottom: '48px',
-        backgroundColor: 'var(--color-sunset-900)',
+        backgroundColor: 'var(--color-black-tie)',
       }}
     >
       {/* Background Image with Slow Scale Animation */}
@@ -65,8 +65,8 @@ export const HeroSection: React.FC = () => {
             right: 0,
             bottom: 0,
             background: isEditorial
-              ? 'linear-gradient(180deg, rgba(29, 26, 57, 0.4) 0%, rgba(69, 25, 82, 0.6) 50%, rgba(29, 26, 57, 0.9) 100%)'
-              : 'linear-gradient(180deg, rgba(29, 26, 57, 0.35) 0%, rgba(29, 26, 57, 0.75) 100%)',
+              ? 'linear-gradient(180deg, rgba(20, 20, 20, 0.4) 0%, rgba(69, 25, 82, 0.6) 50%, rgba(20, 20, 20, 0.9) 100%)'
+              : 'linear-gradient(180deg, rgba(20, 20, 20, 0.35) 0%, rgba(20, 20, 20, 0.75) 100%)',
           }}
         />
       </div>
@@ -104,7 +104,7 @@ export const HeroSection: React.FC = () => {
             <p
               style={{
                 fontSize: 'clamp(1rem, 1.5vw, 1.25rem)',
-                color: 'var(--color-sunset-200)',
+                color: 'var(--color-silver)',
                 lineHeight: 1.6,
                 maxWidth: '560px',
                 marginBottom: '36px',
@@ -142,7 +142,7 @@ export const HeroSection: React.FC = () => {
                 fontWeight: 600,
                 letterSpacing: '0.18em',
                 textTransform: 'uppercase',
-                color: 'var(--color-sunset-400)',
+                color: 'var(--color-golden)',
                 marginBottom: '16px',
               }}
             >
@@ -165,7 +165,7 @@ export const HeroSection: React.FC = () => {
             <p
               style={{
                 fontSize: '1.1rem',
-                color: 'var(--color-sunset-200)',
+                color: 'var(--color-silver)',
                 lineHeight: 1.6,
                 maxWidth: '620px',
                 marginBottom: '32px',
@@ -199,7 +199,7 @@ export const HeroSection: React.FC = () => {
           right: 0,
           width: '100%',
           zIndex: 10,
-          borderTop: '1px solid rgba(243, 159, 90, 0.18)',
+          borderTop: '1px solid rgba(194, 155, 76, 0.18)',
         }}
       >
         <TextLoop
@@ -212,9 +212,9 @@ export const HeroSection: React.FC = () => {
           fontWeight={500}
           letterSpacing={2.5}
           uppercase={true}
-          color="var(--color-sunset-400, #F39F5A)"
+          color="var(--color-golden, var(--color-golden))"
           ribbon={true}
-          ribbonColor="var(--color-sunset-900, #1D1A39)"
+          ribbonColor="var(--color-black-tie, var(--color-black-tie))"
           ribbonWidth={40}
           pauseOnHover={false}
         />

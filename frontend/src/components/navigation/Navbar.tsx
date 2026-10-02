@@ -275,7 +275,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     position: 'absolute',
                     top: '6px',
                     right: '6px',
-                    backgroundColor: 'var(--color-sunset-600)',
+                    backgroundColor: 'var(--color-sapphire)',
                     color: '#FFF',
                     fontSize: '0.65rem',
                     fontWeight: 700,

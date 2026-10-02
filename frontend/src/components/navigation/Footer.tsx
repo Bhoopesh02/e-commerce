@@ -34,9 +34,9 @@ export const Footer: React.FC = () => {
       role="contentinfo"
       aria-label="Atelier Footer"
       style={{
-        backgroundColor: 'var(--color-sunset-900, #1D1A39)',
+        backgroundColor: 'var(--color-black-tie, var(--color-black-tie))',
         color: '#FFF8F5',
-        borderTop: '1px solid rgba(232, 188, 185, 0.2)',
+        borderTop: '1px solid rgba(224, 224, 224, 0.2)',
         marginTop: 'auto',
         position: 'relative',
         zIndex: 10,
@@ -51,7 +51,7 @@ export const Footer: React.FC = () => {
           style={{
             paddingTop: '64px',
             paddingBottom: '56px',
-            borderBottom: '1px solid rgba(232, 188, 185, 0.15)',
+            borderBottom: '1px solid rgba(224, 224, 224, 0.15)',
           }}
         >
           <div
@@ -70,7 +70,7 @@ export const Footer: React.FC = () => {
                   fontWeight: 600,
                   letterSpacing: '0.18em',
                   textTransform: 'uppercase',
-                  color: 'var(--color-sunset-400, #F39F5A)',
+                  color: 'var(--color-golden, var(--color-golden))',
                   display: 'block',
                   marginBottom: '8px',
                 }}
@@ -94,7 +94,7 @@ export const Footer: React.FC = () => {
               <p
                 style={{
                   fontSize: '0.88rem',
-                  color: 'var(--color-sunset-200, #E8BCB9)',
+                  color: 'var(--color-silver, var(--color-silver))',
                   lineHeight: 1.65,
                 }}
               >
@@ -111,13 +111,13 @@ export const Footer: React.FC = () => {
                     backgroundColor: 'rgba(255, 255, 255, 0.08)',
                     backdropFilter: 'blur(8px)',
                     borderRadius: 'var(--radius-sm, 8px)',
-                    border: '1px solid rgba(243, 159, 90, 0.4)',
+                    border: '1px solid rgba(194, 155, 76, 0.4)',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
                   }}
                 >
-                  <CheckCircle2 size={20} style={{ color: 'var(--color-sunset-400, #F39F5A)', flexShrink: 0 }} />
+                  <CheckCircle2 size={20} style={{ color: 'var(--color-golden, var(--color-golden))', flexShrink: 0 }} />
                   <span style={{ fontSize: '0.86rem', color: '#FFF8F5', lineHeight: 1.5 }}>
                     Your email ({email}) is inscribed. We honor your privacy with email-only correspondence.
                   </span>
@@ -139,11 +139,11 @@ export const Footer: React.FC = () => {
                       backgroundColor: 'rgba(255, 255, 255, 0.07)',
                       borderRadius: 'var(--radius-pill, 999px)',
                       padding: '5px 6px 5px 18px',
-                      border: '1px solid rgba(232, 188, 185, 0.25)',
+                      border: '1px solid rgba(224, 224, 224, 0.25)',
                       transition: 'border-color 200ms ease, box-shadow 200ms ease',
                     }}
                   >
-                    <Mail size={17} className="mail-icon" style={{ color: 'var(--color-sunset-200, #E8BCB9)', marginRight: '10px', flexShrink: 0 }} />
+                    <Mail size={17} className="mail-icon" style={{ color: 'var(--color-silver, var(--color-silver))', marginRight: '10px', flexShrink: 0 }} />
                     <input
                       type="email"
                       required
@@ -167,8 +167,8 @@ export const Footer: React.FC = () => {
                       className="footer-inscribe-btn"
                       style={{
                         flexShrink: 0,
-                        backgroundColor: 'var(--color-sunset-400, #F39F5A)',
-                        color: '#1D1A39',
+                        backgroundColor: 'var(--color-golden, var(--color-golden))',
+                        color: 'var(--color-black-tie)',
                         fontSize: '0.82rem',
                         fontWeight: 600,
                         letterSpacing: '0.08em',
@@ -183,7 +183,7 @@ export const Footer: React.FC = () => {
                       {isLoading ? 'Inscribing...' : 'Inscribe'}
                     </button>
                   </div>
-                  <span style={{ fontSize: '0.74rem', color: 'rgba(232, 188, 185, 0.65)', paddingLeft: '14px' }}>
+                  <span style={{ fontSize: '0.74rem', color: 'rgba(224, 224, 224, 0.65)', paddingLeft: '14px' }}>
                     Strictly confidential. No SMS or promotional push alerts.
                   </span>
                 </form>
@@ -237,7 +237,7 @@ export const Footer: React.FC = () => {
                 fontSize: '0.78rem',
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                color: 'var(--color-sunset-400, #F39F5A)',
+                color: 'var(--color-golden, var(--color-golden))',
                 fontWeight: 500,
                 marginBottom: '16px',
               }}
@@ -248,7 +248,7 @@ export const Footer: React.FC = () => {
             <p
               style={{
                 fontSize: '0.86rem',
-                color: 'var(--color-sunset-200, #E8BCB9)',
+                color: 'var(--color-silver, var(--color-silver))',
                 lineHeight: 1.7,
                 marginBottom: '14px',
               }}
@@ -259,7 +259,7 @@ export const Footer: React.FC = () => {
             <p
               style={{
                 fontSize: '0.8rem',
-                color: 'rgba(232, 188, 185, 0.72)',
+                color: 'rgba(224, 224, 224, 0.72)',
                 lineHeight: 1.6,
                 fontStyle: 'italic',
                 marginBottom: '24px',
@@ -272,13 +272,13 @@ export const Footer: React.FC = () => {
             <div
               style={{
                 paddingTop: '16px',
-                borderTop: '1px solid rgba(232, 188, 185, 0.12)',
+                borderTop: '1px solid rgba(224, 224, 224, 0.12)',
                 fontSize: '0.78rem',
-                color: 'rgba(232, 188, 185, 0.7)',
+                color: 'rgba(224, 224, 224, 0.7)',
                 lineHeight: 1.65,
               }}
             >
-              <div style={{ color: 'var(--color-sunset-400, #F39F5A)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '2px' }}>
+              <div style={{ color: 'var(--color-golden, var(--color-golden))', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '2px' }}>
                 Atelier Operations
               </div>
               <div>Penthouse 9, UB City, Bengaluru, Karnataka, 560001, India</div>
@@ -293,7 +293,7 @@ export const Footer: React.FC = () => {
                 fontSize: '0.8rem',
                 letterSpacing: '0.16em',
                 textTransform: 'uppercase',
-                color: 'var(--color-sunset-200, #E8BCB9)',
+                color: 'var(--color-silver, var(--color-silver))',
                 fontWeight: 600,
                 marginBottom: '20px',
               }}
@@ -352,7 +352,7 @@ export const Footer: React.FC = () => {
                 fontSize: '0.8rem',
                 letterSpacing: '0.16em',
                 textTransform: 'uppercase',
-                color: 'var(--color-sunset-200, #E8BCB9)',
+                color: 'var(--color-silver, var(--color-silver))',
                 fontWeight: 600,
                 marginBottom: '20px',
               }}
@@ -396,7 +396,7 @@ export const Footer: React.FC = () => {
                 fontSize: '0.8rem',
                 letterSpacing: '0.16em',
                 textTransform: 'uppercase',
-                color: 'var(--color-sunset-200, #E8BCB9)',
+                color: 'var(--color-silver, var(--color-silver))',
                 fontWeight: 600,
                 marginBottom: '20px',
               }}
@@ -438,12 +438,12 @@ export const Footer: React.FC = () => {
                 style={{
                   marginTop: '18px',
                   paddingTop: '16px',
-                  borderTop: '1px solid rgba(232, 188, 185, 0.12)',
+                  borderTop: '1px solid rgba(224, 224, 224, 0.12)',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '6px',
                   fontSize: '0.78rem',
-                  color: 'rgba(232, 188, 185, 0.65)',
+                  color: 'rgba(224, 224, 224, 0.65)',
                   lineHeight: 1.6,
                 }}
               >
@@ -462,7 +462,7 @@ export const Footer: React.FC = () => {
         {/* ================================================================= */}
         <div
           style={{
-            borderTop: '1px solid rgba(232, 188, 185, 0.12)',
+            borderTop: '1px solid rgba(224, 224, 224, 0.12)',
             paddingTop: '24px',
             paddingBottom: '32px',
             display: 'flex',
@@ -471,7 +471,7 @@ export const Footer: React.FC = () => {
             justifyContent: 'space-between',
             gap: '16px',
             fontSize: '0.8rem',
-            color: 'rgba(232, 188, 185, 0.7)',
+            color: 'rgba(224, 224, 224, 0.7)',
           }}
         >
           <div>
@@ -486,7 +486,7 @@ export const Footer: React.FC = () => {
             }}
           >
             <span>Prices in Indian Rupees (INR ₹)</span>
-            <span aria-hidden="true" style={{ color: 'rgba(232, 188, 185, 0.3)' }}>·</span>
+            <span aria-hidden="true" style={{ color: 'rgba(224, 224, 224, 0.3)' }}>·</span>
             <span>Complimentary Insured Courier</span>
           </div>
         </div>
@@ -512,7 +512,7 @@ export const Footer: React.FC = () => {
 
         .footer-link {
           font-size: 0.88rem;
-          color: #E8BCB9;
+          color: var(--color-silver);
           text-decoration: none;
           display: inline-flex;
           align-items: center;
@@ -524,16 +524,16 @@ export const Footer: React.FC = () => {
           transform: translateX(3px);
         }
         .footer-link:focus-visible {
-          outline: 2px solid var(--color-sunset-400, #F39F5A);
+          outline: 2px solid var(--color-golden, var(--color-golden));
           outline-offset: 4px;
           border-radius: 2px;
         }
         .footer-input-wrapper:focus-within {
-          border-color: var(--color-sunset-400, #F39F5A) !important;
-          box-shadow: 0 0 0 1px var(--color-sunset-400, #F39F5A);
+          border-color: var(--color-golden, var(--color-golden)) !important;
+          box-shadow: 0 0 0 1px var(--color-golden, var(--color-golden));
         }
         .footer-inscribe-btn:hover:not(:disabled) {
-          background-color: #E08E49 !important;
+          background-color: #A9853F !important;
           transform: translateY(-1px);
         }
         .footer-inscribe-btn:focus-visible {
@@ -560,7 +560,7 @@ export const Footer: React.FC = () => {
           .footer-col-brand {
             max-width: 100% !important;
             padding-bottom: 24px;
-            border-bottom: 1px solid rgba(232, 188, 185, 0.15);
+            border-bottom: 1px solid rgba(224, 224, 224, 0.15);
           }
           .footer-link {
             min-height: 40px;

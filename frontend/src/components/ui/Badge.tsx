@@ -37,14 +37,14 @@ export const Badge: React.FC<BadgeProps> = ({
     case 'default':
       variantStyle = {
         backgroundColor: 'rgba(102, 37, 73, 0.1)',
-        color: 'var(--color-sunset-700)',
+        color: 'var(--color-sapphire)',
       };
       break;
     case 'gold':
       variantStyle = {
-        backgroundColor: 'rgba(243, 159, 90, 0.2)',
+        backgroundColor: 'rgba(194, 155, 76, 0.2)',
         color: '#B2621C',
-        border: '1px solid rgba(243, 159, 90, 0.4)',
+        border: '1px solid rgba(194, 155, 76, 0.4)',
       };
       break;
     case 'outline':

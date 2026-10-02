@@ -7,18 +7,18 @@ import { ArrowRight } from 'lucide-react';
 export const getStatusColor = (status: string) => {
   switch (status) {
     case 'Delivered':
-      return { bg: 'rgba(102, 37, 73, 0.08)', text: '#662549' };
+      return { bg: 'rgba(102, 37, 73, 0.08)', text: 'var(--color-sapphire)' };
     case 'Shipped':
     case 'Out for Delivery':
-      return { bg: 'rgba(243, 159, 90, 0.1)', text: '#B2621C' };
+      return { bg: 'rgba(194, 155, 76, 0.1)', text: '#B2621C' };
     case 'Placed':
     case 'Confirmed':
     case 'Packed':
-      return { bg: '#F8F9FA', text: '#1D1A39' };
+      return { bg: '#F8F9FA', text: 'var(--color-black-tie)' };
     case 'Cancelled':
-      return { bg: 'rgba(174, 68, 90, 0.08)', text: '#AE445A' };
+      return { bg: 'rgba(174, 68, 90, 0.08)', text: 'var(--color-golden)' };
     default:
-      return { bg: '#F8F9FA', text: '#1D1A39' };
+      return { bg: '#F8F9FA', text: 'var(--color-black-tie)' };
   }
 };
 
@@ -69,12 +69,12 @@ export const OrderRow: React.FC<OrderRowProps> = ({ order }) => {
           display: flex;
           justify-content: space-between;
           padding: 32px 0;
-          border-bottom: 1px solid rgba(29, 26, 57, 0.1);
+          border-bottom: 1px solid rgba(20, 20, 20, 0.1);
           transition: background-color 0.3s ease;
         }
         
         .list-row:first-child {
-          border-top: 1px solid rgba(29, 26, 57, 0.1);
+          border-top: 1px solid rgba(20, 20, 20, 0.1);
         }
         
         @media (max-width: 640px) {
@@ -124,7 +124,7 @@ export const OrderRow: React.FC<OrderRowProps> = ({ order }) => {
         
         .row-meta {
           font-size: 0.9rem;
-          color: rgba(29, 26, 57, 0.6);
+          color: rgba(20, 20, 20, 0.6);
         }
         
         .status-pill {
@@ -141,12 +141,12 @@ export const OrderRow: React.FC<OrderRowProps> = ({ order }) => {
         
         .product-title {
           font-size: 1rem;
-          color: #1D1A39;
+          color: var(--color-black-tie);
         }
         
         .product-meta {
           font-size: 0.9rem;
-          color: rgba(29, 26, 57, 0.6);
+          color: rgba(20, 20, 20, 0.6);
         }
         
         .amount {
@@ -165,7 +165,7 @@ export const OrderRow: React.FC<OrderRowProps> = ({ order }) => {
           display: flex;
           align-items: center;
           gap: 6px;
-          color: #1D1A39;
+          color: var(--color-black-tie);
           text-decoration: none;
           transition: opacity 0.2s ease;
           opacity: 0.8;

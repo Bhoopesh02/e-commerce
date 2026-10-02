@@ -150,7 +150,7 @@ export default function AddressesPage() {
         
         .address-card {
           padding: 32px 24px;
-          border: 1px solid rgba(29, 26, 57, 0.1);
+          border: 1px solid rgba(20, 20, 20, 0.1);
           display: flex;
           flex-direction: column;
           position: relative;
@@ -159,14 +159,14 @@ export default function AddressesPage() {
         }
 
         .address-card:hover {
-          border-color: rgba(29, 26, 57, 0.3);
+          border-color: rgba(20, 20, 20, 0.3);
         }
         
         .default-label {
           font-size: 0.7rem;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: #1D1A39;
+          color: var(--color-black-tie);
           margin-bottom: 16px;
           font-weight: 500;
         }
@@ -186,7 +186,7 @@ export default function AddressesPage() {
         
         .address-line {
           font-size: 0.9rem;
-          color: rgba(29, 26, 57, 0.7);
+          color: rgba(20, 20, 20, 0.7);
           line-height: 1.4;
         }
         
@@ -201,7 +201,7 @@ export default function AddressesPage() {
           display: flex;
           align-items: center;
           gap: 6px;
-          color: #1D1A39;
+          color: var(--color-black-tie);
           text-decoration: none;
           transition: opacity 0.2s ease;
           opacity: 0.8;
@@ -220,7 +220,7 @@ export default function AddressesPage() {
           display: flex;
           align-items: center;
           gap: 4px;
-          color: rgba(29, 26, 57, 0.7);
+          color: rgba(20, 20, 20, 0.7);
           text-decoration: none;
           transition: opacity 0.2s ease;
           cursor: pointer;
@@ -231,13 +231,13 @@ export default function AddressesPage() {
         
         .text-action-sm:hover {
           opacity: 1;
-          color: #1D1A39;
+          color: var(--color-black-tie);
         }
 
         /* Form Styles */
         .address-form-container {
           max-width: 600px;
-          border: 1px solid rgba(29, 26, 57, 0.1);
+          border: 1px solid rgba(20, 20, 20, 0.1);
           padding: 40px;
           background: #fafafa;
         }
@@ -246,7 +246,7 @@ export default function AddressesPage() {
           font-size: 1.1rem;
           font-family: var(--font-display);
           margin-bottom: 24px;
-          color: #1D1A39;
+          color: var(--color-black-tie);
         }
 
         .address-form {
@@ -273,24 +273,24 @@ export default function AddressesPage() {
         .form-group label {
           font-size: 0.8rem;
           font-weight: 500;
-          color: #1D1A39;
+          color: var(--color-black-tie);
         }
 
         .form-group input,
         .form-group select {
           padding: 12px 16px;
-          border: 1px solid rgba(29, 26, 57, 0.2);
+          border: 1px solid rgba(20, 20, 20, 0.2);
           border-radius: 0;
           background: #fff;
           font-size: 0.95rem;
-          color: #1D1A39;
+          color: var(--color-black-tie);
           outline: none;
           transition: border-color 0.2s ease;
         }
 
         .form-group input:focus,
         .form-group select:focus {
-          border-color: #1D1A39;
+          border-color: var(--color-black-tie);
         }
 
         .form-checkbox {
@@ -302,7 +302,7 @@ export default function AddressesPage() {
           align-items: center;
           gap: 8px;
           font-size: 0.9rem;
-          color: #1D1A39;
+          color: var(--color-black-tie);
           cursor: pointer;
         }
 
@@ -313,7 +313,7 @@ export default function AddressesPage() {
         }
 
         .btn-primary {
-          background-color: #1D1A39;
+          background-color: var(--color-black-tie);
           color: #fff;
           border: none;
           padding: 12px 24px;
@@ -328,8 +328,8 @@ export default function AddressesPage() {
 
         .btn-outline {
           background-color: transparent;
-          color: #1D1A39;
-          border: 1px solid rgba(29, 26, 57, 0.2);
+          color: var(--color-black-tie);
+          border: 1px solid rgba(20, 20, 20, 0.2);
           padding: 12px 24px;
           font-size: 0.9rem;
           cursor: pointer;
@@ -337,7 +337,7 @@ export default function AddressesPage() {
         }
 
         .btn-outline:hover {
-          border-color: #1D1A39;
+          border-color: var(--color-black-tie);
         }
       `}</style>
     </div>

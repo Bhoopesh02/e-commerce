@@ -71,7 +71,7 @@ export const CartDrawer: React.FC = () => {
                 width: 64,
                 height: 64,
                 borderRadius: 'var(--radius-pill)',
-                backgroundColor: 'rgba(243, 159, 90, 0.15)',
+                backgroundColor: 'rgba(194, 155, 76, 0.15)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -333,7 +333,7 @@ export const CartDrawer: React.FC = () => {
                     Inclusive of all taxes
                   </div>
                 </div>
-                <span style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--color-sunset-700)' }}>{formatPrice(total)}</span>
+                <span style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--color-sapphire)' }}>{formatPrice(total)}</span>
               </div>
             </div>
 

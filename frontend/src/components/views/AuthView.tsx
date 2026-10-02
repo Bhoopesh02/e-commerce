@@ -55,7 +55,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
         paddingTop: '120px',
         paddingBottom: '96px',
         minHeight: '100vh',
-        background: 'radial-gradient(ellipse at 50% 15%, #FFF5F7 0%, #FDEBF0 50%, #F9E2E8 100%)',
+        background: 'radial-gradient(ellipse at 50% 15%, #FFF5F7 0%, var(--bg-secondary) 50%, #F9E2E8 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -73,7 +73,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
           style={{
             backgroundColor: '#FFFFFF',
             borderRadius: '24px',
-            border: '1px solid rgba(230, 185, 195, 0.55)',
+            border: '1px solid rgba(202, 212, 214, 0.55)',
             padding: '44px 38px',
             boxShadow: '0 24px 60px -12px rgba(186, 75, 102, 0.14), 0 4px 16px rgba(0, 0, 0, 0.03)',
           }}
@@ -86,7 +86,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
                 fontSize: '1.6rem',
                 fontWeight: 600,
                 letterSpacing: '0.2em',
-                color: '#2A1D20',
+                color: 'var(--text-primary)',
                 display: 'block',
               }}
             >
@@ -113,7 +113,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
           <p
             style={{
               fontSize: '0.88rem',
-              color: '#6E555C',
+              color: 'var(--text-muted)',
               textAlign: 'center',
               marginBottom: '28px',
               lineHeight: 1.5,
@@ -163,7 +163,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
                   onClick={() => setMode('forgot-password')}
                   style={{
                     fontSize: '0.8rem',
-                    color: '#9B3356',
+                    color: 'var(--color-sapphire)',
                     textDecoration: 'underline',
                     background: 'none',
                     border: 'none',
@@ -183,8 +183,8 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
               fullWidth
               isLoading={isLoading}
               style={{
-                backgroundColor: '#9B3356',
-                borderColor: '#9B3356',
+                backgroundColor: 'var(--color-sapphire)',
+                borderColor: 'var(--color-sapphire)',
                 color: '#FFFFFF',
               }}
             >
@@ -196,7 +196,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
           </form>
 
           {/* Mode Switcher */}
-          <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.86rem', color: '#6E555C' }}>
+          <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.86rem', color: 'var(--text-muted)' }}>
             {mode === 'login' ? (
               <span>
                 New to the atelier?{' '}
@@ -207,7 +207,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
                     setMode('register');
                     window.history.pushState({}, '', '/signup');
                   }}
-                  style={{ color: '#9B3356', fontWeight: 600, textDecoration: 'underline' }}
+                  style={{ color: 'var(--color-sapphire)', fontWeight: 600, textDecoration: 'underline' }}
                 >
                   Sign Up
                 </Link>
@@ -222,7 +222,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
                     setMode('login');
                     window.history.pushState({}, '', '/signin');
                   }}
-                  style={{ color: '#9B3356', fontWeight: 600, textDecoration: 'underline' }}
+                  style={{ color: 'var(--color-sapphire)', fontWeight: 600, textDecoration: 'underline' }}
                 >
                   Sign In
                 </Link>
@@ -232,7 +232,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
 
           {/* Admin Toggle */}
           {mode === 'login' && (
-            <div style={{ marginTop: '32px', textAlign: 'center', paddingTop: '24px', borderTop: '1px solid rgba(230, 185, 195, 0.3)' }}>
+            <div style={{ marginTop: '32px', textAlign: 'center', paddingTop: '24px', borderTop: '1px solid rgba(202, 212, 214, 0.3)' }}>
               <button
                 type="button"
                 onClick={() => {
@@ -242,7 +242,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
                 }}
                 style={{
                   fontSize: '0.86rem',
-                  color: '#6E555C',
+                  color: 'var(--text-muted)',
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
