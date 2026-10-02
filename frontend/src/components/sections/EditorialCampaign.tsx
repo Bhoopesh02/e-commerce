@@ -70,6 +70,9 @@ export const EditorialCampaign: React.FC = () => {
           }
         }
         @media (max-width: 640px) {
+          .editorial-section {
+            display: none;
+          }
           .editorial-image {
             height: 360px;
           }

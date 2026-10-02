@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useAnimationControls, useReducedMotion } from 'framer-motion';
-import { Heart, ShoppingBag, Check } from 'lucide-react';
+import { Heart, ShoppingBag, Check, Star } from 'lucide-react';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
 import { useWishlistStore } from '@/store/useWishlistStore';
@@ -53,10 +53,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       await heartControls.start({
         scale: [1, 1.2, 1],
         transition: {
-          type: 'spring',
-          stiffness: 450,
-          damping: 25,
           duration: 0.28,
+          times: [0, 0.5, 1],
+          ease: 'easeInOut',
         },
       });
     }
@@ -141,7 +140,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Top Badges */}
         <div
-          className={variant === 'grid' ? 'scale-[0.85] origin-top-left md:scale-100 drop-shadow-sm md:drop-shadow-none' : ''}
+          className={`scale-[0.75] origin-top-left md:scale-100 ${variant === 'grid' ? 'drop-shadow-sm md:drop-shadow-none' : ''}`}
           style={{
             position: 'absolute',
             top: '12px',
@@ -340,10 +339,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </div>
 
-          <RatingStars rating={product.rating.average} size={12} totalReviews={product.rating.count} />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div className="desktop-rating">
+              <RatingStars rating={product.rating.average} size={12} totalReviews={product.rating.count} />
+            </div>
+            <div className="mobile-rating">
+              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1 }}>
+                {product.rating.average.toFixed(1)}
+              </span>
+              <Star size={13} fill="var(--color-golden)" stroke="var(--color-golden)" strokeWidth={1.5} />
+            </div>
+          </div>
         </div>
         </div>
       )}
     </motion.div>
   );
 };
+// Trigger rebuild

@@ -180,11 +180,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </ScrollReveal>
 
               <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                  gap: '32px',
-                }}
+                className="new-arrivals-grid"
               >
                 {newArrivals.slice(0, 4).map((product, idx) => (
                   <ScrollReveal key={product.id} delay={idx * 0.08} duration={0.5}>

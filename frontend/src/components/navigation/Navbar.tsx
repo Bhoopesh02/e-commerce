@@ -69,15 +69,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           background: isScrolled
             ? 'var(--nav-backdrop)'
             : isHomePage
-            ? 'linear-gradient(180deg, rgba(15, 12, 26, 0.85) 0%, rgba(15, 12, 26, 0.4) 60%, transparent 100%)'
-            : 'transparent',
+              ? 'linear-gradient(180deg, rgba(15, 12, 26, 0.85) 0%, rgba(15, 12, 26, 0.4) 60%, transparent 100%)'
+              : 'transparent',
           backdropFilter: isScrolled ? 'blur(16px)' : 'blur(0px)',
           WebkitBackdropFilter: isScrolled ? 'blur(16px)' : 'blur(0px)',
           borderBottom: 'none',
           boxShadow: 'none',
           color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
-          willChange: 'background, background-color, backdrop-filter, color',
-          transform: 'translateZ(0)',
         }}
       >
         <div
@@ -195,7 +193,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   letterSpacing: '0.22em',
                   color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
                   display: 'inline-block',
-                  transform: isScrolled ? 'scale(0.92)' : 'scale(1)',
+                  transform: isScrolled ? 'scale(0.92)' : 'scale(0.92)',
                   transition: 'transform 350ms var(--ease-luxury), color 350ms var(--ease-luxury), text-shadow 350ms var(--ease-luxury)',
                   willChange: 'transform, color',
                   textTransform: 'uppercase',

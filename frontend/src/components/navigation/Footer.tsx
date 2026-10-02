@@ -47,6 +47,7 @@ export const Footer: React.FC = () => {
         {/* 1. NEWSLETTER / PRIVATE LEDGER SECTION                            */}
         {/* ================================================================= */}
         <section
+          className="footer-newsletter-section"
           aria-labelledby="footer-newsletter-heading"
           style={{
             paddingTop: '64px',
@@ -551,6 +552,9 @@ export const Footer: React.FC = () => {
         }
 
         @media (max-width: 767px) {
+          .footer-newsletter-section {
+            display: none !important;
+          }
           .footer-columns-grid {
             grid-template-columns: 1fr !important;
             gap: 36px !important;

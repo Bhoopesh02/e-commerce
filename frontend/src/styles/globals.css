@@ -2,7 +2,9 @@
 @import './animations.css';
 
 /* CSS Reset & Base */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -37,7 +39,10 @@ a {
   text-decoration: none;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   font-family: inherit;
   font-size: inherit;
   color: inherit;
@@ -50,14 +55,20 @@ button {
   cursor: pointer;
 }
 
-img, video {
+img,
+video {
   max-width: 100%;
   height: auto;
   display: block;
 }
 
 /* Typography Hierarchy */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-display);
   font-weight: 500;
   line-height: 1.15;
@@ -243,19 +254,19 @@ textarea:focus-visible {
   border: 1px solid rgba(224, 224, 224, 0.5);
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(20, 20, 20, 0.05),
-              inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
-              inset 0 -1px 1px 0 rgba(224, 224, 224, 0.25);
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 1px 0 rgba(224, 224, 224, 0.25);
   transition: background var(--duration-normal) var(--ease-editorial),
-              border-color var(--duration-normal) var(--ease-editorial),
-              box-shadow var(--duration-normal) var(--ease-editorial),
-              transform var(--duration-normal) var(--ease-editorial);
+    border-color var(--duration-normal) var(--ease-editorial),
+    box-shadow var(--duration-normal) var(--ease-editorial),
+    transform var(--duration-normal) var(--ease-editorial);
 }
 
 .admin-glass-card:hover {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.72) 100%);
   border-color: rgba(224, 224, 224, 0.85);
   box-shadow: 0 12px 36px rgba(20, 20, 20, 0.08),
-              inset 0 1px 1px 0 rgba(255, 255, 255, 1);
+    inset 0 1px 1px 0 rgba(255, 255, 255, 1);
   transform: translateY(-2px);
 }
 
@@ -384,9 +395,9 @@ textarea:focus-visible {
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   cursor: pointer;
   transition: transform 250ms var(--ease-editorial),
-              background-color 250ms ease,
-              border-color 250ms ease,
-              box-shadow 250ms var(--ease-editorial);
+    background-color 250ms ease,
+    border-color 250ms ease,
+    box-shadow 250ms var(--ease-editorial);
   will-change: transform, box-shadow;
   -webkit-tap-highlight-color: transparent;
   outline: none;
@@ -498,3 +509,43 @@ textarea:focus-visible {
   }
 }
 
+/* Responsive grid for new arrivals and category sections */
+.new-arrivals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 32px;
+}
+
+@media (max-width: 1280px) {
+  .new-arrivals-grid,
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    /* lets columns shrink */
+    gap: 12px !important;
+  }
+
+  /* let grid items and their text shrink instead of forcing width */
+  .new-arrivals-grid > *,
+  .product-grid > * {
+    min-width: 0;
+  }
+}
+
+/* Rating Display Helpers */
+.desktop-rating {
+  display: block;
+}
+.mobile-rating {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .desktop-rating {
+    display: none !important;
+  }
+  .mobile-rating {
+    display: flex !important;
+    align-items: center;
+    gap: 4px;
+  }
+}

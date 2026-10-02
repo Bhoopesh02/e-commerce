@@ -98,12 +98,12 @@ export const HeroSection: React.FC = () => {
                 color: '#FFF8F5',
               }}
             >
-              Nocturnal <span className="text-editorial typography-shimmer">Silhouettes</span> & Sculptural Wool.
+              Nocturnal <span className="text-editorial typography-shimmer">Silhouettes</span> & Sculptural Wool
             </h1>
 
             <p
               style={{
-                fontSize: 'clamp(1rem, 1.5vw, 1.25rem)',
+                fontSize: 'clamp(0.875rem, 1.2vw, 1rem)',
                 color: 'var(--color-silver)',
                 lineHeight: 1.6,
                 maxWidth: '560px',
@@ -115,12 +115,12 @@ export const HeroSection: React.FC = () => {
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
               <Link href="/shop?categorySlug=outerwear">
-                <Button variant="primary" size="lg" rightIcon={<ArrowRight size={16} />}>
+                <Button variant="primary" size="md" rightIcon={<ArrowRight size={16} />}>
                   Discover Collection
                 </Button>
               </Link>
               <Link href="/shop?tag=new-arrival">
-                <Button variant="white" size="lg">
+                <Button variant="white" size="md">
                   View Runway Arrivals
                 </Button>
               </Link>

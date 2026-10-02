@@ -160,6 +160,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                   </span>
 
                   <h3
+                    className="carousel-title"
                     style={{
                       fontSize: isActive ? '1.5rem' : '1.1rem',
                       fontFamily: 'var(--font-display)',
@@ -189,12 +190,12 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                       gap: '12px',
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--color-golden)' }}>
+                    <div className="carousel-action-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span className="carousel-price" style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--color-golden)' }}>
                         {formatPrice(product.price)}
                       </span>
 
-                      <Link href={`/product/${product.slug}`}>
+                      <Link href={`/product/${product.slug}`} className="carousel-btn-wrapper">
                         <Button variant="primary" size="sm" rightIcon={<ArrowRight size={14} />}>
                           View Garment
                         </Button>
@@ -226,6 +227,22 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           .expanding-carousel-container > div {
             flex: 0 0 82% !important;
             scroll-snap-align: center;
+          }
+          .carousel-title {
+            white-space: nowrap !important;
+            font-size: 1.25rem !important;
+          }
+          .carousel-action-row {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 10px !important;
+          }
+          .carousel-price {
+            font-size: 1.05rem !important;
+          }
+          .carousel-btn-wrapper {
+            transform: scale(0.9);
+            transform-origin: left center;
           }
         }
       `}</style>
