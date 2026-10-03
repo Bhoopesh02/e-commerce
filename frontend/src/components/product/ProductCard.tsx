@@ -17,6 +17,7 @@ export interface ProductCardProps {
   aspectRatio?: string;
   variant?: 'standard' | 'overlay' | 'grid';
   sizes?: string;
+  onClick?: () => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -24,6 +25,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   aspectRatio = '3 / 4',
   variant = 'standard',
   sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 420px',
+  onClick,
 }) => {
   const shouldReduceMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
@@ -78,6 +80,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Image Frame */}
       <Link
         href={`/product/${product.slug}`}
+        onClick={onClick}
         className={variant === 'grid' ? 'relative w-full block rounded-lg md:rounded-[var(--radius-sm)] md:overflow-hidden' : ''}
         style={variant === 'grid' ? {
           backgroundColor: 'var(--bg-surface)',
@@ -152,9 +155,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           }}
         >
           {product.isNewArrival && <Badge variant="default">New</Badge>}
-          {product.availability === 'low_stock' && (
-            <Badge variant="warning">Low Stock</Badge>
-          )}
         </div>
 
         {/* Wishlist Button (♡/♥) with restrained spring pop */}
@@ -293,7 +293,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {(variant === 'standard' || variant === 'grid') && (
         <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <Link href={`/product/${product.slug}`} className={variant === 'grid' ? 'min-w-0' : ''}>
+          <Link href={`/product/${product.slug}`} onClick={onClick} className={variant === 'grid' ? 'min-w-0' : ''}>
             <h3
               className={variant === 'grid' ? 'text-[15px] font-serif line-clamp-2 md:text-[1rem] md:font-display md:line-clamp-none' : ''}
               style={variant === 'grid' ? {

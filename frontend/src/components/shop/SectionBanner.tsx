@@ -55,6 +55,8 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
           src={bannerSrc}
           alt={`${category.name} Editorial Campaign Banner`}
           fill
+          priority
+          loading="eager"
           sizes="(max-width: 1280px) 100vw, 1280px"
           style={{
             objectFit: 'cover',
@@ -97,11 +99,11 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
 
         <h2
           style={{
-            fontSize: 'clamp(2.1rem, 3.8vw, 3.2rem)',
-            fontFamily: 'var(--font-serif)',
+            fontSize: 'clamp(1.9rem, 4.5vw, 3.5rem)',
+            fontFamily: 'var(--font-display)',
             fontWeight: 400,
             color: '#fff8f5',
-            letterSpacing: '-0.02em',
+            letterSpacing: '0',
             lineHeight: 1.15,
             marginBottom: '14px',
             textShadow: '0 2px 18px rgba(0,0,0,0.55)',

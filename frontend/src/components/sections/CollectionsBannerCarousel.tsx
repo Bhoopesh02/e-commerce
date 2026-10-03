@@ -206,11 +206,11 @@ export function CollectionsBannerCarousel() {
                 {currentIndex === index ? (
                   <h1
                     style={{
-                      fontSize: 'clamp(2.4rem, 4.5vw, 3.6rem)',
-                      fontFamily: 'var(--font-serif)',
+                      fontSize: 'clamp(2.25rem, 5.5vw, 4rem)',
+                      fontFamily: 'var(--font-display)',
                       fontWeight: 400,
                       color: '#fff8f5',
-                      letterSpacing: '-0.02em',
+                      letterSpacing: '0',
                       lineHeight: 1.15,
                       marginBottom: '14px',
                       textShadow: '0 2px 18px rgba(0,0,0,0.5)',
@@ -221,11 +221,11 @@ export function CollectionsBannerCarousel() {
                 ) : (
                   <h2
                     style={{
-                      fontSize: 'clamp(2.4rem, 4.5vw, 3.6rem)',
-                      fontFamily: 'var(--font-serif)',
+                      fontSize: 'clamp(2.25rem, 5.5vw, 4rem)',
+                      fontFamily: 'var(--font-display)',
                       fontWeight: 400,
                       color: '#fff8f5',
-                      letterSpacing: '-0.02em',
+                      letterSpacing: '0',
                       lineHeight: 1.15,
                       marginBottom: '14px',
                       textShadow: '0 2px 18px rgba(0,0,0,0.5)',
@@ -387,11 +387,11 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
         >
           <h1
             style={{
-              fontSize: 'clamp(2.4rem, 4.5vw, 3.6rem)',
-              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(2.25rem, 5.5vw, 4rem)',
+              fontFamily: 'var(--font-display)',
               fontWeight: 400,
               color: '#fff8f5',
-              letterSpacing: '-0.02em',
+              letterSpacing: '0',
               lineHeight: 1.15,
               marginBottom: '14px',
               textShadow: '0 2px 18px rgba(0,0,0,0.5)',

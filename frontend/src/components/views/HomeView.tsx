@@ -136,7 +136,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
       case 'new_arrivals':
         return (
-          <section key={id} style={{ padding: '40px 0 80px', backgroundColor: 'var(--bg-primary)' }}>
+          <section key={id} className="new-arrivals-section" style={{ padding: '40px 0 80px', backgroundColor: 'var(--bg-primary)' }}>
             <div className="container">
               <ScrollReveal duration={0.5}>
                 <div
@@ -173,7 +173,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       fontWeight: 600,
                     }}
                   >
-                    <span className="editorial-arrow-link-text">View All New Editions</span>
+                    <span className="editorial-arrow-link-text">
+                      <span className="desktop-only">View All New Editions</span>
+                      <span className="mobile-only">View All</span>
+                    </span>
                     <ArrowRight size={15} className="editorial-arrow-icon editorial-arrow-forward" />
                   </Link>
                 </div>

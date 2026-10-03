@@ -68,11 +68,40 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [activeCategory, setActiveCategory] = useState<string>('outerwear');
   const [navigationDirection, setNavigationDirection] = useState<number>(1);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
+  const [appliedPriceRange, setAppliedPriceRange] = useState<[number, number]>([0, 100000]);
   const [selectedAvailability, setSelectedAvailability] = useState<string>('all');
+  const [appliedAvailability, setAppliedAvailability] = useState<string>('all');
   const [selectedSort, setSelectedSort] = useState<string>('popularity');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const stickyBarRef = useRef<HTMLDivElement>(null);
+  const categoryScrollContainerRef = useRef<HTMLDivElement>(null);
+  const categoryTabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  useEffect(() => {
+    const updateScroll = () => {
+      if (window.innerWidth > 767) return;
+      
+      const container = categoryScrollContainerRef.current;
+      const tab = categoryTabRefs.current[activeCategory];
+      
+      if (!container || !tab) return;
+      
+      const target = tab.offsetLeft - (container.clientWidth - tab.offsetWidth) / 2;
+      const max = container.scrollWidth - container.clientWidth;
+      
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      container.scrollTo({ 
+        left: Math.max(0, Math.min(target, max)), 
+        behavior: prefersReducedMotion ? 'auto' : 'smooth' 
+      });
+    };
+
+    updateScroll();
+    window.addEventListener('resize', updateScroll);
+    return () => window.removeEventListener('resize', updateScroll);
+  }, [activeCategory]);
 
   // Server pre-fetched for storefront 'a' — skip redundant first-mount fetch
   const isInitialMount = useRef(true);
@@ -117,10 +146,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
     }
 
     // Price range
-    list = list.filter((p) => p.price >= priceRange[0] && p.price <= priceRange[1]);
+    list = list.filter((p) => p.price >= appliedPriceRange[0] && p.price <= appliedPriceRange[1]);
 
     // Availability
-    if (selectedAvailability === 'in_stock') {
+    if (appliedAvailability === 'in_stock') {
       list = list.filter((p) => p.availability !== 'out_of_stock');
     }
 
@@ -145,7 +174,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
     }
 
     return list;
-  }, [products, searchParams, priceRange, selectedAvailability, selectedSort]);
+  }, [products, searchParams, appliedPriceRange, appliedAvailability, selectedSort]);
 
   const newArrivals = useMemo(() => {
     return products.filter((p) => p.isNewArrival);
@@ -202,14 +231,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
   const resetFilters = () => {
     setPriceRange([0, 100000]);
+    setAppliedPriceRange([0, 100000]);
     setSelectedAvailability('all');
+    setAppliedAvailability('all');
     setSelectedSort('popularity');
     handleCategorySelect('outerwear');
   };
 
   const hasActiveFilters =
-    priceRange[0] > 0 || priceRange[1] < 100000 ||
-    selectedAvailability !== 'all';
+    appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000 ||
+    appliedAvailability !== 'all';
 
   return (
     <div style={{ paddingTop: '76px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
@@ -257,6 +288,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           >
             {/* Category Typography Navigation */}
             <div
+              ref={categoryScrollContainerRef}
               className="flex items-center justify-center gap-6 md:gap-10 category-pill-strip"
               style={{
                 display: 'flex',
@@ -274,9 +306,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 return (
                   <button
                     key={cat.id}
+                    ref={(el) => {
+                      categoryTabRefs.current[cat.slug] = el;
+                    }}
                     type="button"
                     onClick={() => handleCategorySelect(cat.slug)}
-                    className="nav-btn-custom"
+                    className={`nav-btn-custom ${isActive ? 'active-mobile-tab' : ''}`}
                   >
                     {/* Category Label */}
                     <span
@@ -293,6 +328,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     {/* 2. Active Fixed Underline (Scoped to active word width) */}
                     {isActive && (
                       <motion.div
+                        className="mobile-hide-underline"
                         layoutId="activeCategoryUnderline"
                         initial={false}
                         transition={{
@@ -346,7 +382,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           {hasActiveFilters && (
             <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px', marginTop: '12px' }}>
               <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Active Filters:</span>
-              {(priceRange[0] > 0 || priceRange[1] < 100000) && (
+              {(appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000) && (
                 <span
                   style={{
                     display: 'inline-flex',
@@ -359,11 +395,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     fontSize: '0.78rem',
                   }}
                 >
-                  Price: ₹{priceRange[0].toLocaleString()} - ₹{priceRange[1].toLocaleString()}
-                  <X size={12} style={{ cursor: 'pointer' }} onClick={() => setPriceRange([0, 100000])} />
+                  Price: ₹{appliedPriceRange[0].toLocaleString()} - ₹{appliedPriceRange[1].toLocaleString()}
+                  <X size={12} style={{ cursor: 'pointer' }} onClick={() => { setPriceRange([0, 100000]); setAppliedPriceRange([0, 100000]); }} />
                 </span>
               )}
-              {selectedAvailability !== 'all' && (
+              {appliedAvailability !== 'all' && (
                 <span
                   style={{
                     display: 'inline-flex',
@@ -377,7 +413,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   }}
                 >
                   In Stock Only
-                  <X size={12} style={{ cursor: 'pointer' }} onClick={() => setSelectedAvailability('all')} />
+                  <X size={12} style={{ cursor: 'pointer' }} onClick={() => { setSelectedAvailability('all'); setAppliedAvailability('all'); }} />
                 </span>
               )}
               <button
@@ -498,7 +534,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
       {/* Mobile Filters Drawer / Bottom Sheet */}
       <Drawer
         isOpen={mobileFiltersOpen}
-        onClose={() => setMobileFiltersOpen(false)}
+        onClose={() => {
+          setPriceRange(appliedPriceRange);
+          setSelectedAvailability(appliedAvailability);
+          setMobileFiltersOpen(false);
+        }}
         title="REFINE COLLECTION"
         position="right"
         contentStyle={{ backgroundColor: '#F8F5F0' }}
@@ -562,8 +602,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
             <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: '#1a1a1a', textTransform: 'uppercase' }}>
               Price Tier
             </h4>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '20px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', minWidth: 0 }}>
                 {[
                   { id: 'all', label: 'All Price Tiers', range: [0, 100000] },
                   { id: 'under-20k', label: 'Under ₹20,000', range: [0, 20000] },
@@ -584,7 +624,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       boxShadow: isChecked && p.id !== 'all' ? '0 2px 8px rgba(0,0,0,0.03)' : 'none',
                       border: isChecked && p.id !== 'all' ? '1px solid rgba(0,0,0,0.04)' : '1px solid transparent',
                       transition: 'all 0.2s ease',
-                      marginLeft: '-14px'
+                      marginLeft: '-14px',
+                      whiteSpace: 'nowrap'
                     }}>
                       <div style={{
                         width: '16px',
@@ -613,7 +654,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
               </div>
 
               {/* Range Slider Visual */}
-              <div style={{ flex: 1, padding: '0 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div style={{ width: '100%', maxWidth: '420px', boxSizing: 'border-box', minWidth: 0 }}>
                 <RangeSlider
                   min={0}
                   max={100000}
@@ -694,7 +735,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
             <Button
               variant="primary"
               fullWidth
-              onClick={() => setMobileFiltersOpen(false)}
+              onClick={() => {
+                setAppliedPriceRange(priceRange);
+                setAppliedAvailability(selectedAvailability);
+                setMobileFiltersOpen(false);
+              }}
               style={{
                 borderRadius: '30px',
                 backgroundColor: '#D19662',
@@ -719,6 +764,19 @@ export const ShopView: React.FC<ShopViewProps> = ({
         }
         @media (max-width: 768px) {
           .silhouette-counter {
+            display: none !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .category-pill-strip {
+            justify-content: flex-start !important;
+            padding-inline: 16px !important;
+            scroll-padding-inline: 16px !important;
+          }
+          .nav-btn-custom.active-mobile-tab {
+            border-bottom: 2px solid var(--color-sapphire);
+          }
+          .mobile-hide-underline {
             display: none !important;
           }
         }

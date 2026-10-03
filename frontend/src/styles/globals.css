@@ -499,7 +499,12 @@ textarea:focus-visible {
     padding-top: 16px !important;
   }
 
+  .new-arrivals-section {
+    padding-bottom: 32px !important;
+  }
+
   .most-coveted-section {
+    padding-top: 32px !important;
     padding-bottom: 32px !important;
   }
 
@@ -528,6 +533,23 @@ textarea:focus-visible {
   .new-arrivals-grid > *,
   .product-grid > * {
     min-width: 0;
+  }
+}
+
+/* Responsive Display Helpers */
+.desktop-only {
+  display: inline-block;
+}
+.mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .mobile-only {
+    display: inline-block !important;
   }
 }
 

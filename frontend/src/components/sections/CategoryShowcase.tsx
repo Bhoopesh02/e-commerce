@@ -356,13 +356,13 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                   width: 50,
                   height: 50,
                   borderRadius: '50%',
-                  backgroundColor: 'var(--bg-primary)',
+                  background: 'transparent',
                   color: 'var(--text-primary)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                  border: '1px solid var(--border-color)',
+                  boxShadow: 'none',
+                  border: 'none',
                   opacity: 0.9,
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
@@ -391,13 +391,13 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                   width: 50,
                   height: 50,
                   borderRadius: '50%',
-                  backgroundColor: 'var(--bg-primary)',
+                  background: 'transparent',
                   color: 'var(--text-primary)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                  border: '1px solid var(--border-color)',
+                  boxShadow: 'none',
+                  border: 'none',
                   opacity: 0.9,
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
@@ -423,9 +423,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
         
         .slider-nav-btn:not(:disabled):hover {
           transform: scale(1.1);
-          background-color: var(--cta-primary) !important;
-          color: var(--cta-text) !important;
-          border-color: var(--cta-primary) !important;
+          color: var(--cta-primary) !important;
         }
       `}</style>
     </section>

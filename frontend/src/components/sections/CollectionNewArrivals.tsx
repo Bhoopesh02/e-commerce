@@ -114,17 +114,19 @@ export const CollectionNewArrivals: React.FC<CollectionNewArrivalsProps> = ({
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-            <ScrollArrows
-              canScrollLeft={canScrollLeft}
-              canScrollRight={canScrollRight}
-              isScrollable={isScrollable}
-              onScrollLeft={scrollLeft}
-              onScrollRight={scrollRight}
-            />
+            <div className="desktop-only">
+              <ScrollArrows
+                canScrollLeft={canScrollLeft}
+                canScrollRight={canScrollRight}
+                isScrollable={isScrollable}
+                onScrollLeft={scrollLeft}
+                onScrollRight={scrollRight}
+              />
+            </div>
             {onExploreClick ? (
               <button
                 onClick={onExploreClick}
-                className="editorial-arrow-link"
+                className="editorial-arrow-link desktop-only"
                 onMouseEnter={() => setIsLinkHovered(true)}
                 onMouseLeave={() => setIsLinkHovered(false)}
                 style={{
@@ -153,7 +155,7 @@ export const CollectionNewArrivals: React.FC<CollectionNewArrivalsProps> = ({
             ) : (
               <Link
                 href="/shop"
-                className="editorial-arrow-link"
+                className="editorial-arrow-link desktop-only"
                 onMouseEnter={() => setIsLinkHovered(true)}
                 onMouseLeave={() => setIsLinkHovered(false)}
                 style={{

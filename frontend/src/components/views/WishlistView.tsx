@@ -55,10 +55,14 @@ export const WishlistView: React.FC = () => {
     return (
       <div style={{ paddingTop: '110px', paddingBottom: '96px' }} className="container">
         <Skeleton height="40px" width="300px" style={{ marginBottom: '32px' }} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}>
+        <div 
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}
+          className="product-grid"
+        >
           <Skeleton height="380px" />
           <Skeleton height="380px" />
           <Skeleton height="380px" />
+          <Skeleton height="380px" className="max-md:block hidden" />
         </div>
       </div>
     );
@@ -140,6 +144,7 @@ export const WishlistView: React.FC = () => {
               gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
               gap: '36px',
             }}
+            className="product-grid"
           >
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />

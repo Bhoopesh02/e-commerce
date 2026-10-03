@@ -7,8 +7,8 @@ import { Search, X, ArrowLeft, Plus, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { getProducts, getNewArrivals } from '@/lib/mockApi';
 import { Product } from '@/types';
-import { useCartStore } from '@/store/useCartStore';
 import { formatPrice } from '@/lib/formatPrice';
+import { ProductCard } from '@/components/product/ProductCard';
 
 interface SearchOverlayProps {
   isOpen: boolean;
@@ -37,11 +37,9 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
   const [results, setResults] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
-  const [addedMap, setAddedMap] = useState<Record<string, boolean>>({});
   const [isMobile, setIsMobile] = useState(false);
   
   const inputRef = useRef<HTMLInputElement>(null);
-  const { addItem } = useCartStore();
   const router = useRouter();
 
   // Track mobile viewport to keep search results inline on small screens
@@ -113,19 +111,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
     return () => clearTimeout(timer);
   }, [query, isOpen]);
 
-  const handleQuickAdd = (product: Product) => {
-    const defaultVariant = product.variants?.[0];
-    const sku = defaultVariant ? defaultVariant.sku : product.id;
-    const size = defaultVariant ? defaultVariant.size : 'OS';
-    const color = defaultVariant ? defaultVariant.color : 'Default';
 
-    addItem(product, sku, size, color, 1);
-    
-    setAddedMap((prev) => ({ ...prev, [product.id]: true }));
-    setTimeout(() => {
-      setAddedMap((prev) => ({ ...prev, [product.id]: false }));
-    }, 1500);
-  };
 
   return (
     <div
@@ -357,120 +343,10 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
             </span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }}>
-            {results.map((item) => {
-              const isAdded = !!addedMap[item.id];
-              return (
-                <div
-                  key={item.id}
-                  style={{
-                    position: 'relative',
-                    borderRadius: '12px',
-                    backgroundColor: '#FFFFFF',
-                    border: '1px solid var(--border-light)',
-                    boxShadow: 'var(--shadow-sm)',
-                    padding: '10px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    transition: 'all 200ms',
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--color-sapphire)';
-                    e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border-light)';
-                    e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-                  }}
-                >
-                  <Link href={`/product/${item.slug}`} onClick={onClose} style={{ textDecoration: 'none' }}>
-                    <div style={{ position: 'relative', aspectRatio: '1/1', width: '100%', borderRadius: '8px', overflow: 'hidden', backgroundColor: 'var(--bg-primary)', marginBottom: '8px' }}>
-                      {(item.featured || item.isNewArrival) && (
-                        <span style={{
-                          position: 'absolute',
-                          top: '6px',
-                          left: '6px',
-                          zIndex: 10,
-                          fontSize: '9px',
-                          fontWeight: 'bold',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
-                          backgroundColor: 'rgba(20, 20, 20, 0.82)',
-                          backdropFilter: 'blur(4px)',
-                          color: '#FFF8F5',
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          border: '1px solid rgba(255,255,255,0.15)'
-                        }}>
-                          {item.isNewArrival ? 'New Season' : 'Featured'}
-                        </span>
-                      )}
-                      <Image
-                        src={item.images[0]}
-                        alt={item.name}
-                        fill
-                        sizes="200px"
-                        style={{ objectFit: 'cover' }}
-                      />
-                    </div>
-                    <span style={{ fontSize: '10px', color: 'var(--color-sapphire)', textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '0.05em', display: 'block', fontWeight: 600 }}>
-                      {item.categoryId.replace('cat_', '')}
-                    </span>
-                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '12px', color: 'var(--text-primary)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginTop: '2px', lineHeight: '1.25', fontWeight: 500 }}>
-                      {item.name}
-                    </h3>
-                  </Link>
-
-                  <div style={{ marginTop: '12px' }}>
-                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)', display: 'block', marginBottom: '8px' }}>
-                      {formatPrice(item.price)}
-                    </span>
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleQuickAdd(item);
-                      }}
-                      style={{
-                        width: '100%',
-                        padding: '6px',
-                        borderRadius: '8px',
-                        fontSize: '12px',
-                        fontWeight: 600,
-                        letterSpacing: '0.05em',
-                        transition: 'all 200ms',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '4px',
-                        cursor: 'pointer',
-                        backgroundColor: isAdded ? 'var(--color-success)' : '#7c1d35',
-                        color: '#ffffff',
-                        border: 'none',
-                        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
-                      }}
-                      onMouseOver={(e) => {
-                        if (!isAdded) e.currentTarget.style.backgroundColor = 'var(--color-sapphire)';
-                      }}
-                      onMouseOut={(e) => {
-                        if (!isAdded) e.currentTarget.style.backgroundColor = '#7c1d35';
-                      }}
-                    >
-                      {isAdded ? (
-                        <>
-                          <Check size={14} /> Added
-                        </>
-                      ) : (
-                        <>
-                          <Plus size={14} /> ADD
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }} className="max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]">
+            {results.map((item) => (
+              <ProductCard key={item.id} product={item} onClick={onClose} />
+            ))}
           </div>
         </div>
 

@@ -91,6 +91,7 @@ export const Drawer: React.FC<DrawerProps> = ({
           position: 'relative',
           transform: isOpen ? 'translateX(0)' : `translateX(${position === 'right' ? '100%' : '-100%'})`,
           transition: 'transform 500ms var(--ease-luxury)',
+          boxSizing: 'border-box',
           ...contentStyle,
         }}
         onClick={(e) => e.stopPropagation()}
@@ -152,7 +153,7 @@ export const Drawer: React.FC<DrawerProps> = ({
           </motion.button>
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
+        <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', overscrollBehaviorX: 'none', padding: '24px' }}>
           {children}
         </div>
       </div>
