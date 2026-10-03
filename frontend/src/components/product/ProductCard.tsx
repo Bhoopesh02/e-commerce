@@ -283,11 +283,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 <span style={{ fontSize: '1rem', fontWeight: 600, color: '#FFFFFF', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
                   {formatPrice(product.price)}
                 </span>
-                {product.compareAtPrice && (
-                  <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.7)', textDecoration: 'line-through' }}>
-                    {formatPrice(product.compareAtPrice)}
-                  </span>
-                )}
               </div>
             </div>
           </div>
@@ -332,11 +327,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <span className={variant === 'grid' ? 'text-[15px] md:text-[0.98rem]' : ''} style={variant === 'grid' ? { fontWeight: 600, color: 'var(--text-primary)' } : { fontSize: '0.98rem', fontWeight: 600, color: 'var(--text-primary)' }}>
               {formatPrice(product.price)}
             </span>
-            {product.compareAtPrice && (
-              <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', textDecoration: 'line-through' }}>
-                {formatPrice(product.compareAtPrice)}
-              </span>
-            )}
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center' }}>
