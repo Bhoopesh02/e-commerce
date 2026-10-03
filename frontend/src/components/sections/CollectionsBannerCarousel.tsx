@@ -118,6 +118,7 @@ export function CollectionsBannerCarousel() {
       style={{
         position: 'relative',
         overflow: 'hidden',
+        touchAction: 'pan-y pinch-zoom',
         marginBottom: '40px',
         height: 'calc(100vh - 76px)',
         boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',
