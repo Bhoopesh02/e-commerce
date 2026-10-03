@@ -196,7 +196,7 @@ export const CollectionNewArrivals: React.FC<CollectionNewArrivalsProps> = ({
             overflowX: 'auto',
             overflowY: 'hidden',
             scrollSnapType: 'x mandatory',
-            touchAction: 'pan-x',
+            overscrollBehaviorX: 'contain',
             scrollbarWidth: 'none',
             msOverflowStyle: 'none',
             paddingLeft: 'max(24px, calc((100vw - 1440px) / 2 + 24px))',
