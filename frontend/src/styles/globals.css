@@ -635,3 +635,38 @@ textarea:focus-visible {
     font-size: 0.55rem !important; /* Reduces from text-xs equivalent */
   }
 }
+
+/* Modal text styles */
+.modal-description {
+  font-size: 0.85rem;
+}
+
+/* Modal Action Buttons Mobile Adjustments */
+@media (max-width: 767px) {
+  .modal-action-buttons {
+    gap: 8px !important;
+  }
+  .modal-action-buttons button {
+    font-size: 0.65rem !important;
+    padding: 0 10px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+  }
+  .modal-description {
+    font-size: 0.72rem !important;
+  }
+  .modal-content-box {
+    padding: 20px !important;
+    width: 90% !important;
+    max-width: 90% !important;
+  }
+  .modal-content-box h3 {
+    font-size: 1.1rem !important;
+  }
+  .modal-close-btn {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+  }
+}

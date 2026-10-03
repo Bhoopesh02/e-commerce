@@ -150,12 +150,12 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
             }}
           >
             <div>
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
+              <span style={{ display: 'block', marginBottom: '8px', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
                 Official Atelier Commission
               </span>
-              <h1 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', marginTop: '4px' }}>
+              {/* <h1 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', marginTop: '4px' }}>
                 Commission #{order.id}
-              </h1>
+              </h1> */}
               <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                 Registered: {new Date(order.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
               </span>
@@ -358,10 +358,10 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
       {/* Cancellation Modal */}
       <Modal isOpen={cancelModalOpen} onClose={() => setCancelModalOpen(false)} title="Confirm Commission Cancellation">
         <div>
-          <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
+          <p className="modal-description" style={{ color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
             Are you certain you wish to cancel Commission #{order.id}? Your reservation of this limited edition will be released back to the central atelier inventory.
           </p>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+          <div className="modal-action-buttons" style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
             <Button variant="ghost" onClick={() => setCancelModalOpen(false)} disabled={isProcessing}>
               Keep Commission
             </Button>
@@ -375,7 +375,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
       {/* Return Request Modal */}
       <Modal isOpen={returnModalOpen} onClose={() => setReturnModalOpen(false)} title="Request Return / Exchange Privilege">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
+          <p className="modal-description" style={{ color: 'var(--text-muted)' }}>
             Returns are accommodated within 7 days of physical delivery. Our concierge courier will collect the sealed package at your delivery residence.
           </p>
 
@@ -423,7 +423,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
             />
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' }}>
+          <div className="modal-action-buttons" style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' }}>
             <Button variant="ghost" onClick={() => setReturnModalOpen(false)} disabled={isProcessing}>
               Dismiss
             </Button>

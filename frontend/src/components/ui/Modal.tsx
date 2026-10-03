@@ -66,6 +66,7 @@ export const Modal: React.FC<ModalProps> = ({
       onClick={onClose}
     >
       <div
+        className="modal-content-box"
         style={{
           backgroundColor: 'var(--bg-surface)',
           border: '1px solid var(--border-color)',
@@ -94,6 +95,7 @@ export const Modal: React.FC<ModalProps> = ({
             </h3>
           )}
           <button
+            className="modal-close-btn"
             onClick={onClose}
             aria-label="Close dialog"
             style={{
