@@ -116,6 +116,15 @@ export default function OrdersPage() {
           display: flex;
           flex-direction: column;
         }
+        @media (max-width: 767px) {
+          .orders-filter {
+            flex-wrap: wrap;
+            row-gap: 12px;
+          }
+          .filter-btn {
+            min-width: 0;
+          }
+        }
       `}</style>
     </div>
   );
