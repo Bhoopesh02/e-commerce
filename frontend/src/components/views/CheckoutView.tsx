@@ -268,7 +268,7 @@ export const CheckoutView: React.FC = () => {
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
+          <div className="order-success-actions">
             <Link href={`/account/orders/${confirmedOrder.id}`}>
               <Button variant="primary">Track Order Progress</Button>
             </Link>
@@ -307,21 +307,21 @@ export const CheckoutView: React.FC = () => {
           <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', marginBottom: '16px' }}>
             Atelier Checkout
           </h1>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', fontSize: '0.85rem' }}>
-            <span style={{ color: step >= 1 ? 'var(--color-sapphire)' : 'var(--text-muted)', fontWeight: step === 1 ? 700 : 500 }}>
-              1. Contact
+          <div className="checkout-step-container" style={{ display: 'flex', justifyContent: 'center', fontSize: '0.85rem' }}>
+            <span style={{ color: step >= 1 ? 'var(--color-sapphire)' : 'var(--text-muted)', fontWeight: step === 1 ? 700 : 500, textAlign: 'center' }}>
+              <span className="step-num">1. </span><span className="step-text">Contact</span>
             </span>
-            <span>→</span>
-            <span style={{ color: step >= 2 ? 'var(--color-sapphire)' : 'var(--text-muted)', fontWeight: step === 2 ? 700 : 500 }}>
-              2. Shipping
+            <span className="step-arrow">→</span>
+            <span style={{ color: step >= 2 ? 'var(--color-sapphire)' : 'var(--text-muted)', fontWeight: step === 2 ? 700 : 500, textAlign: 'center' }}>
+              <span className="step-num">2. </span><span className="step-text">Shipping</span>
             </span>
-            <span>→</span>
-            <span style={{ color: step >= 3 ? 'var(--color-sapphire)' : 'var(--text-muted)', fontWeight: step === 3 ? 700 : 500 }}>
-              3. Delivery
+            <span className="step-arrow">→</span>
+            <span style={{ color: step >= 3 ? 'var(--color-sapphire)' : 'var(--text-muted)', fontWeight: step === 3 ? 700 : 500, textAlign: 'center' }}>
+              <span className="step-num">3. </span><span className="step-text">Delivery</span>
             </span>
-            <span>→</span>
-            <span style={{ color: step >= 4 ? 'var(--color-sapphire)' : 'var(--text-muted)', fontWeight: step === 4 ? 700 : 500 }}>
-              4. Payment
+            <span className="step-arrow">→</span>
+            <span style={{ color: step >= 4 ? 'var(--color-sapphire)' : 'var(--text-muted)', fontWeight: step === 4 ? 700 : 500, textAlign: 'center' }}>
+              <span className="step-num">4. </span><span className="step-text">Payment</span>
             </span>
           </div>
         </div>

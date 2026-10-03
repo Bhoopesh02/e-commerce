@@ -571,3 +571,67 @@ textarea:focus-visible {
     gap: 4px;
   }
 }
+
+/* Checkout Step Progress */
+.checkout-step-container {
+  gap: 24px;
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  .checkout-step-container {
+    gap: 8px; 
+    align-items: flex-start !important;
+  }
+  
+  .checkout-step-container > span:not(.step-arrow) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .step-text {
+    font-size: 0.75rem;
+    margin-top: 4px;
+  }
+  
+  .step-num {
+    font-size: 0.85rem;
+  }
+  
+  .step-arrow {
+    margin-top: 2px;
+  }
+}
+
+/* Order Success Actions */
+.order-success-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+@media (max-width: 767px) {
+  .order-success-actions {
+    flex-direction: column;
+  }
+  
+  .order-success-actions a {
+    width: 100%;
+    display: block;
+  }
+
+  .order-success-actions a button {
+    width: 100%;
+  }
+}
+
+/* Order Stepper Mobile Adjustments */
+@media (max-width: 767px) {
+  .order-stepper-label {
+    font-size: 0.65rem !important; /* Reduces from text-sm equivalent */
+  }
+  .order-stepper-date {
+    font-size: 0.55rem !important; /* Reduces from text-xs equivalent */
+  }
+}

@@ -142,13 +142,13 @@ export const OrderStepper: React.FC<OrderStepperProps> = ({
                   ease: customEase
                 }}
               >
-                <span className={`text-sm font-semibold mb-1 ${isCompleted ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>
+                <span className={`text-sm font-semibold mb-1 order-stepper-label ${isCompleted ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>
                   {step.label}
                 </span>
-                <span className={`text-xs ${isCompleted ? 'text-[var(--text-muted)]' : 'text-[var(--border-color)]'}`}>
+                <span className={`text-xs order-stepper-date ${isCompleted ? 'text-[var(--text-muted)]' : 'text-[var(--border-color)]'}`}>
                   {step.date.split(',')[0]},
                 </span>
-                <span className={`text-xs ${isCompleted ? 'text-[var(--text-muted)]' : 'text-[var(--border-color)]'}`}>
+                <span className={`text-xs order-stepper-date ${isCompleted ? 'text-[var(--text-muted)]' : 'text-[var(--border-color)]'}`}>
                   {step.date.split(',')[1]?.trim()}
                 </span>
               </motion.div>
