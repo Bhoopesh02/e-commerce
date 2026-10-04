@@ -1,29 +1,44 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { getProducts } from '@/lib/mockApi';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { Package, Search, Plus, Sparkles } from 'lucide-react';
+import { Package, Search, Plus, Sparkles, Filter, ChevronDown, Check } from 'lucide-react';
 
 function AdminProductsPageContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const initialCategory = searchParams.get('category') || 'all';
 
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [categoryFilter, setCategoryFilter] = useState(initialCategory);
+  const [filterValue, setFilterValue] = useState(initialCategory !== 'all' ? initialCategory : 'all');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filterTab, setFilterTab] = useState<'categories' | 'statuses'>('categories');
+  const [categorySearch, setCategorySearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 20;
 
+  const filterRef = React.useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    setCategoryFilter(searchParams.get('category') || 'all');
+    function handleClickOutside(event: MouseEvent) {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setIsFilterOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    setFilterValue(searchParams.get('category') || 'all');
   }, [searchParams]);
 
   useEffect(() => {
@@ -41,7 +56,7 @@ function AdminProductsPageContent() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, statusFilter, categoryFilter]);
+  }, [search, filterValue]);
 
   if (loading) {
     return <div style={{ padding: '40px', color: 'var(--admin-text-primary)' }}>Loading Atelier Silhouettes...</div>;
@@ -53,9 +68,17 @@ function AdminProductsPageContent() {
                           p.categoryId.toLowerCase().includes(q) ||
                           p.id.toLowerCase().includes(q) ||
                           (p.description || '').toLowerCase().includes(q);
-    const matchesStatus = statusFilter === 'all' || p.availability === statusFilter;
-    const matchesCategory = categoryFilter === 'all' || p.categoryId === categoryFilter;
-    return matchesSearch && matchesStatus && matchesCategory;
+                          
+    let matchesFilter = true;
+    if (filterValue !== 'all') {
+      if (['in_stock', 'low_stock', 'out_of_stock'].includes(filterValue)) {
+        matchesFilter = p.availability === filterValue;
+      } else {
+        matchesFilter = p.categoryId === filterValue;
+      }
+    }
+    
+    return matchesSearch && matchesFilter;
   });
 
   const categories = Array.from(new Set(products.map(p => p.categoryId)));
@@ -75,7 +98,7 @@ function AdminProductsPageContent() {
           </h1>
         </div>
 
-        <Button variant="primary" size="sm" leftIcon={<Plus size={15} />}>
+        <Button variant="primary" size="sm" leftIcon={<Plus size={15} />} onClick={() => router.push('/admin/products/new')}>
           Draft New Silhouette
         </Button>
       </div>
@@ -114,51 +137,199 @@ function AdminProductsPageContent() {
           />
         </div>
         
-        {/* Category Dropdown */}
-        <select
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-          style={{
-            backgroundColor: 'var(--admin-surface)',
-            color: 'var(--admin-text-primary)',
-            padding: '10px 18px',
-            borderRadius: 'var(--radius-sm)',
-            border: '1px solid var(--admin-border)',
-            fontSize: '0.88rem',
-            outline: 'none',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-            cursor: 'pointer'
-          }}
-        >
-          <option value="all">All Categories</option>
-          {categories.map(cat => (
-            <option key={cat} value={cat}>
-              {cat.replace('cat_', '').charAt(0).toUpperCase() + cat.replace('cat_', '').slice(1)}
-            </option>
-          ))}
-        </select>
-        
-        {/* Status Dropdown */}
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          style={{
-            backgroundColor: 'var(--admin-surface)',
-            color: 'var(--admin-text-primary)',
-            padding: '10px 18px',
-            borderRadius: 'var(--radius-sm)',
-            border: '1px solid var(--admin-border)',
-            fontSize: '0.88rem',
-            outline: 'none',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-            cursor: 'pointer'
-          }}
-        >
-          <option value="all">All Statuses</option>
-          <option value="in_stock">In Stock</option>
-          <option value="low_stock">Low Stock</option>
-          <option value="out_of_stock">Depleted</option>
-        </select>
+        {/* Custom Filter Dropdown */}
+        <div style={{ position: 'relative' }} ref={filterRef}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
+            style={{ height: '40px', display: 'flex', alignItems: 'center' }}
+          >
+            <Filter size={16} style={{ marginRight: '8px' }} />
+            {filterValue === 'all' ? 'Filter' : 
+             ['in_stock', 'low_stock', 'out_of_stock'].includes(filterValue) ? 
+             filterValue === 'in_stock' ? 'In Stock' : filterValue === 'low_stock' ? 'Low Stock' : 'Depleted'
+             : filterValue.replace('cat_', '').charAt(0).toUpperCase() + filterValue.replace('cat_', '').slice(1)}
+            <ChevronDown size={16} style={{ marginLeft: '8px', opacity: 0.7 }} />
+          </Button>
+          
+          {isFilterOpen && (
+            <div style={{ 
+              position: 'absolute', 
+              top: '100%', 
+              right: 0, 
+              marginTop: '8px',
+              backgroundColor: 'var(--admin-surface)',
+              border: '1px solid var(--admin-border)',
+              borderRadius: 'var(--radius-md)',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+              width: '280px',
+              zIndex: 50,
+              overflow: 'hidden'
+            }}>
+              <div style={{ display: 'flex', borderBottom: '1px solid var(--admin-border)' }}>
+                <button 
+                  onClick={() => setFilterTab('categories')}
+                  style={{ 
+                    flex: 1, 
+                    padding: '12px 10px', 
+                    background: filterTab === 'categories' ? 'var(--admin-background)' : 'transparent', 
+                    border: 'none', 
+                    borderBottom: filterTab === 'categories' ? '2px solid var(--color-sapphire)' : '2px solid transparent', 
+                    color: filterTab === 'categories' ? 'var(--color-sapphire)' : 'var(--admin-text-secondary)', 
+                    fontWeight: 600, 
+                    cursor: 'pointer', 
+                    fontSize: '0.85rem',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  Categories
+                </button>
+                <button 
+                  onClick={() => setFilterTab('statuses')}
+                  style={{ 
+                    flex: 1, 
+                    padding: '12px 10px', 
+                    background: filterTab === 'statuses' ? 'var(--admin-background)' : 'transparent', 
+                    border: 'none', 
+                    borderBottom: filterTab === 'statuses' ? '2px solid var(--color-sapphire)' : '2px solid transparent', 
+                    color: filterTab === 'statuses' ? 'var(--color-sapphire)' : 'var(--admin-text-secondary)', 
+                    fontWeight: 600, 
+                    cursor: 'pointer', 
+                    fontSize: '0.85rem',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  Statuses
+                </button>
+              </div>
+              
+              <div style={{ padding: '12px', backgroundColor: 'var(--admin-surface)' }}>
+                {filterTab === 'categories' && (
+                  <>
+                    <div style={{ marginBottom: '12px', position: 'relative' }}>
+                      <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--admin-text-secondary)' }} />
+                      <input 
+                        type="text" 
+                        placeholder="Search categories..." 
+                        value={categorySearch}
+                        onChange={e => setCategorySearch(e.target.value)}
+                        style={{ 
+                          width: '100%', 
+                          padding: '8px 10px 8px 32px', 
+                          fontSize: '0.85rem', 
+                          borderRadius: 'var(--radius-sm)', 
+                          border: '1px solid var(--admin-border)', 
+                          backgroundColor: 'var(--admin-background)', 
+                          color: 'var(--admin-text-primary)', 
+                          outline: 'none' 
+                        }}
+                      />
+                    </div>
+                    <div style={{ maxHeight: '220px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <button
+                        onClick={() => { setFilterValue('all'); setIsFilterOpen(false); }}
+                        style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'space-between', 
+                          padding: '10px 12px', 
+                          borderRadius: 'var(--radius-sm)', 
+                          border: 'none', 
+                          backgroundColor: filterValue === 'all' ? 'var(--admin-background)' : 'transparent', 
+                          color: 'var(--admin-text-primary)', 
+                          cursor: 'pointer', 
+                          textAlign: 'left', 
+                          fontSize: '0.85rem' 
+                        }}
+                      >
+                        All Categories
+                        {filterValue === 'all' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                      </button>
+                      {categories.filter(c => c.toLowerCase().includes(categorySearch.toLowerCase())).map(cat => (
+                        <button
+                          key={cat}
+                          onClick={() => { setFilterValue(cat); setIsFilterOpen(false); }}
+                          style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'space-between', 
+                            padding: '10px 12px', 
+                            borderRadius: 'var(--radius-sm)', 
+                            border: 'none', 
+                            backgroundColor: filterValue === cat ? 'var(--admin-background)' : 'transparent', 
+                            color: 'var(--admin-text-primary)', 
+                            cursor: 'pointer', 
+                            textAlign: 'left', 
+                            fontSize: '0.85rem' 
+                          }}
+                        >
+                          {cat.replace('cat_', '').charAt(0).toUpperCase() + cat.replace('cat_', '').slice(1)}
+                          {filterValue === cat && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                        </button>
+                      ))}
+                      {categories.filter(c => c.toLowerCase().includes(categorySearch.toLowerCase())).length === 0 && (
+                        <div style={{ padding: '20px 10px', textAlign: 'center', color: 'var(--admin-text-secondary)', fontSize: '0.85rem' }}>
+                          No categories found.
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+                
+                {filterTab === 'statuses' && (
+                  <div style={{ maxHeight: '220px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                     <button
+                        onClick={() => { setFilterValue('all'); setIsFilterOpen(false); }}
+                        style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'space-between', 
+                          padding: '10px 12px', 
+                          borderRadius: 'var(--radius-sm)', 
+                          border: 'none', 
+                          backgroundColor: filterValue === 'all' ? 'var(--admin-background)' : 'transparent', 
+                          color: 'var(--admin-text-primary)', 
+                          cursor: 'pointer', 
+                          textAlign: 'left', 
+                          fontSize: '0.85rem' 
+                        }}
+                      >
+                        All Statuses
+                        {filterValue === 'all' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                      </button>
+                    {[
+                      { id: 'in_stock', label: 'In Stock' },
+                      { id: 'low_stock', label: 'Low Stock' },
+                      { id: 'out_of_stock', label: 'Depleted' }
+                    ].map(status => (
+                      <button
+                        key={status.id}
+                        onClick={() => { setFilterValue(status.id); setIsFilterOpen(false); }}
+                        style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'space-between', 
+                          padding: '10px 12px', 
+                          borderRadius: 'var(--radius-sm)', 
+                          border: 'none', 
+                          backgroundColor: filterValue === status.id ? 'var(--admin-background)' : 'transparent', 
+                          color: 'var(--admin-text-primary)', 
+                          cursor: 'pointer', 
+                          textAlign: 'left', 
+                          fontSize: '0.85rem' 
+                        }}
+                      >
+                        {status.label}
+                        {filterValue === status.id && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Products Table */}

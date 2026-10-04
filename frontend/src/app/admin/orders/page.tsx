@@ -8,16 +8,28 @@ import { useToastStore } from '@/store/useToastStore';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Truck, CheckCircle2, Search } from 'lucide-react';
+import { Truck, CheckCircle2, Search, Filter, ChevronDown, Check } from 'lucide-react';
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 20;
   const [loading, setLoading] = useState(true);
   const { showToast } = useToastStore();
+  const filterRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setIsFilterOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     async function load() {
@@ -82,25 +94,88 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Filters and Search */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {['all', 'Placed', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'].map((st) => (
-            <button
-              key={st}
-              onClick={() => setFilterStatus(st)}
-              className={`admin-filter-pill ${filterStatus === st ? 'admin-filter-pill-active' : 'admin-filter-pill-inactive'}`}
-            >
-              {st === 'all' ? 'All Commissions' : st}
-            </button>
-          ))}
-        </div>
-        <div style={{ maxWidth: '400px' }}>
+      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '8px' }}>
+        <div style={{ maxWidth: '400px', flex: 1 }}>
           <Input 
             placeholder="Search commissions..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             leftIcon={<Search size={16} />}
           />
+        </div>
+        
+        <div style={{ position: 'relative' }} ref={filterRef}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
+            style={{ height: '40px', display: 'flex', alignItems: 'center' }}
+          >
+            <Filter size={16} style={{ marginRight: '8px' }} />
+            {filterStatus === 'all' ? 'All Commissions' : filterStatus}
+            <ChevronDown size={16} style={{ marginLeft: '8px', opacity: 0.7 }} />
+          </Button>
+          
+          {isFilterOpen && (
+            <div style={{ 
+              position: 'absolute', 
+              top: '100%', 
+              right: 0, 
+              marginTop: '8px',
+              backgroundColor: 'var(--admin-surface)',
+              border: '1px solid var(--admin-border)',
+              borderRadius: 'var(--radius-md)',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+              width: '240px',
+              zIndex: 50,
+              overflow: 'hidden',
+              padding: '12px'
+            }}>
+              <div style={{ maxHeight: '280px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <button
+                  onClick={() => { setFilterStatus('all'); setIsFilterOpen(false); }}
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between', 
+                    padding: '10px 12px', 
+                    borderRadius: 'var(--radius-sm)', 
+                    border: 'none', 
+                    backgroundColor: filterStatus === 'all' ? 'var(--admin-background)' : 'transparent', 
+                    color: 'var(--admin-text-primary)', 
+                    cursor: 'pointer', 
+                    textAlign: 'left', 
+                    fontSize: '0.85rem' 
+                  }}
+                >
+                  All Commissions
+                  {filterStatus === 'all' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                </button>
+                {['Placed', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'].map(status => (
+                  <button
+                    key={status}
+                    onClick={() => { setFilterStatus(status); setIsFilterOpen(false); }}
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'space-between', 
+                      padding: '10px 12px', 
+                      borderRadius: 'var(--radius-sm)', 
+                      border: 'none', 
+                      backgroundColor: filterStatus === status ? 'var(--admin-background)' : 'transparent', 
+                      color: 'var(--admin-text-primary)', 
+                      cursor: 'pointer', 
+                      textAlign: 'left', 
+                      fontSize: '0.85rem' 
+                    }}
+                  >
+                    {status}
+                    {filterStatus === status && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
