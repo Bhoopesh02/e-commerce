@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { SearchView } from '@/components/views/SearchView';
 
 export const metadata = {
@@ -6,5 +7,9 @@ export const metadata = {
 };
 
 export default function SearchPage() {
-  return <SearchView />;
+  return (
+    <Suspense fallback={<div style={{ paddingTop: '140px', textAlign: 'center' }}>Loading Search...</div>}>
+      <SearchView />
+    </Suspense>
+  );
 }
