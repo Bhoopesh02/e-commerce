@@ -7,21 +7,7 @@ export const AdminTopbar: React.FC = () => {
   const { user } = useAuthStore();
 
   return (
-    <header
-      style={{
-        height: '68px',
-        backgroundColor: 'var(--color-black-tie)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 32px',
-        color: '#FFF8F5',
-        position: 'sticky',
-        top: 0,
-        zIndex: 40,
-      }}
-    >
+    <header className="admin-topbar">
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <h2 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#FFF8F5', margin: 0 }}>
           Aurelia Central Control Console

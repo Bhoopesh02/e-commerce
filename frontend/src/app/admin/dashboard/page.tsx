@@ -28,6 +28,8 @@ export default function AdminDashboardPage() {
   const [filterStatus, setFilterStatus] = useState<string>('All');
   const [lowStockProducts, setLowStockProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 20;
   const { showToast } = useToastStore();
 
   useEffect(() => {
@@ -59,19 +61,27 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const displayOrders = (searchQuery || filterStatus !== 'All') 
-    ? allOrders.filter(order => {
-        const matchesSearch = 
-          order.id.toLowerCase().includes(searchQuery.toLowerCase()) || 
-          (order.customerName && order.customerName.toLowerCase().includes(searchQuery.toLowerCase()));
-        const matchesStatus = filterStatus === 'All' || order.status === filterStatus;
-        return matchesSearch && matchesStatus;
-      })
-    : allOrders.slice(0, 5); // default to recent 5
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, filterStatus]);
 
   if (loading) {
     return <div style={{ padding: '40px', color: 'var(--admin-text-primary)' }}>Loading Atelier Executive Overview...</div>;
   }
+
+  const filteredOrders = allOrders.filter(order => {
+    const query = searchQuery.toLowerCase();
+    const matchesSearch = 
+      order.id.toLowerCase().includes(query) || 
+      (order.customerName && order.customerName.toLowerCase().includes(query)) ||
+      (order.address?.city && order.address.city.toLowerCase().includes(query)) ||
+      (order.address?.state && order.address.state.toLowerCase().includes(query));
+    const matchesStatus = filterStatus === 'All' || order.status === filterStatus;
+    return matchesSearch && matchesStatus;
+  });
+
+  const totalPages = Math.ceil(filteredOrders.length / ITEMS_PER_PAGE);
+  const displayOrders = filteredOrders.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
@@ -257,14 +267,14 @@ export default function AdminDashboardPage() {
           </Link>
         </div>
 
-        <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', alignItems: 'center' }}>
-          <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+        <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ position: 'relative', flex: 1, minWidth: '250px', maxWidth: '400px' }}>
             <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#595F69' }}>
               <Search size={16} />
             </div>
             <input
               type="text"
-              placeholder="Search by order ID or client name..."
+              placeholder="Search by order ID, client name, or place..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
@@ -305,8 +315,9 @@ export default function AdminDashboardPage() {
         </div>
 
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
-            <thead>
+          <div style={{ minWidth: '800px' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+              <thead>
               <tr className="admin-table-header">
                 <th style={{ padding: '12px 14px' }}>Commission</th>
                 <th style={{ padding: '12px 14px' }}>Client</th>
@@ -407,7 +418,33 @@ export default function AdminDashboardPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '20px', alignItems: 'center' }}>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+            >
+              Previous
+            </Button>
+            <span style={{ fontSize: '0.88rem', color: 'var(--admin-text-primary)' }}>
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+            >
+              Next
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

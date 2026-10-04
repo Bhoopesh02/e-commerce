@@ -50,7 +50,7 @@ export default function AdminReportsPage() {
           <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#FFF', marginBottom: '12px' }}>
             Select Dataset to Export
           </label>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px' }}>
             {[
               { id: 'orders', label: 'Commissions & Fulfillment Log' },
               { id: 'inventory', label: 'Silhouette Reserves & Variant Stock' },

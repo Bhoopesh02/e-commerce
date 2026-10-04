@@ -9,11 +9,11 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div data-admin="true" style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--admin-canvas)', color: 'var(--admin-text-primary)' }}>
+    <div data-admin="true" className="admin-layout">
       <AdminSidebar />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
+      <div className="admin-main">
         <AdminTopbar />
-        <main style={{ flex: 1, padding: '32px' }}>{children}</main>
+        <main className="admin-main-content">{children}</main>
         <ToastContainer />
       </div>
     </div>

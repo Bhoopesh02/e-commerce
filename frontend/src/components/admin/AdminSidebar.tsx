@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { BRAND_NAME } from '@/lib/constants';
 import { useAuthStore } from '@/store/useAuthStore';
 import {
@@ -16,7 +16,21 @@ import {
   Settings,
   ArrowLeft,
   Shield,
+  ChevronDown,
+  ChevronRight,
 } from 'lucide-react';
+
+const DIVISIONS = [
+  { id: 'all', name: 'All Divisions' },
+  { id: 'cat_outerwear', name: 'Outerwear' },
+  { id: 'cat_tailoring', name: 'Tailoring' },
+  { id: 'cat_eveningwear', name: 'Eveningwear' },
+  { id: 'cat_knitwear', name: 'Knitwear' },
+  { id: 'cat_leather_goods', name: 'Leather Goods' },
+  { id: 'cat_footwear', name: 'Footwear' },
+  { id: 'cat_jewelry', name: 'Fine Jewelry' },
+  { id: 'cat_fragrances', name: 'Fragrances' },
+];
 
 const ADMIN_NAV_ITEMS = [
   { href: '/admin/dashboard', label: 'Executive Overview', icon: <LayoutDashboard size={18} /> },
@@ -27,34 +41,17 @@ const ADMIN_NAV_ITEMS = [
 
 export const AdminSidebar: React.FC = () => {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { loginAsCustomer } = useAuthStore();
+  
+  const [isProductsExpanded, setIsProductsExpanded] = React.useState(pathname === '/admin/products');
+  
+  const currentCategory = searchParams.get('category') || 'all';
 
   return (
-    <aside
-      style={{
-        width: '260px',
-        backgroundColor: 'var(--color-black-tie)',
-        color: '#FFF8F5',
-        borderRight: '1px solid rgba(255, 255, 255, 0.08)',
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100vh',
-        position: 'sticky',
-        top: 0,
-        flexShrink: 0,
-        zIndex: 50,
-      }}
-    >
+    <aside className="admin-sidebar">
       {/* Brand Header */}
-      <div
-        style={{
-          padding: '24px',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-        }}
-      >
+      <div className="admin-sidebar-header">
         <div
           style={{
             width: 32,
@@ -80,9 +77,57 @@ export const AdminSidebar: React.FC = () => {
       </div>
 
       {/* Navigation List */}
-      <nav style={{ padding: '16px 12px', flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <nav className="admin-sidebar-nav">
         {ADMIN_NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href;
+          
+          if (item.href === '/admin/products') {
+            return (
+              <div key={item.href} style={{ display: 'flex', flexDirection: 'column' }}>
+                <button
+                  className={`admin-nav-link ${isActive ? 'admin-nav-link-active' : ''}`}
+                  onClick={() => setIsProductsExpanded(!isProductsExpanded)}
+                  style={{ width: '100%', justifyContent: 'space-between', border: 'none', background: 'transparent', cursor: 'pointer' }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <span style={{ color: isActive ? 'var(--color-silver)' : 'inherit', display: 'flex', alignItems: 'center' }}>
+                      {item.icon}
+                    </span>
+                    <span>{item.label}</span>
+                  </div>
+                  <span style={{ color: 'inherit', display: 'flex', alignItems: 'center' }}>
+                    {isProductsExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                  </span>
+                </button>
+                {isProductsExpanded && (
+                  <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '32px', marginTop: '4px', gap: '4px' }}>
+                    {DIVISIONS.map(div => {
+                      const isDivActive = isActive && currentCategory === div.id;
+                      const href = div.id === 'all' ? '/admin/products' : `/admin/products?category=${div.id}`;
+                      return (
+                        <Link
+                          key={div.id}
+                          href={href}
+                          style={{
+                            padding: '6px 12px',
+                            fontSize: '0.85rem',
+                            color: isDivActive ? 'var(--color-silver)' : 'var(--color-diamond)',
+                            textDecoration: 'none',
+                            borderRadius: '4px',
+                            backgroundColor: isDivActive ? 'rgba(255,255,255,0.05)' : 'transparent',
+                            transition: 'all 0.2s ease'
+                          }}
+                        >
+                          {div.name}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          }
+
           return (
             <Link
               key={item.href}
@@ -99,7 +144,7 @@ export const AdminSidebar: React.FC = () => {
       </nav>
 
       {/* Return to Customer Storefront Shortcut */}
-      <div style={{ padding: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+      <div className="admin-sidebar-footer">
         <Link
           href="/"
           onClick={loginAsCustomer}
