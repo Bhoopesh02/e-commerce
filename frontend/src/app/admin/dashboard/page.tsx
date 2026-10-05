@@ -168,7 +168,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
                 {formatPrice(stats?.grossRevenue)}
               </h3>
               <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', marginTop: '4px', display: 'block', fontWeight: 600 }}>
@@ -195,7 +195,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
                 {stats?.totalOrders}
               </h3>
               <span style={{ fontSize: '0.75rem', color: '#595F69', marginTop: '4px', display: 'block' }}>
@@ -222,7 +222,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
                 {formatPrice(stats?.averageOrderValue)}
               </h3>
               <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', marginTop: '4px', display: 'block', fontWeight: 600 }}>
@@ -249,7 +249,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
                 {stats?.lowStockItemsCount} Silhouettes
               </h3>
               <span style={{ fontSize: '0.75rem', color: 'var(--color-warning)', marginTop: '4px', display: 'block', fontWeight: 600 }}>
