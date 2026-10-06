@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { CreditCard, Smartphone, Building2, Wallet, Banknote, ShieldCheck, Check } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { CreditCard, Smartphone, Building2, Wallet, Banknote, ShieldCheck, Check, ChevronDown } from 'lucide-react';
 import { formatPrice } from '@/lib/formatPrice';
 
 export type PaymentMethodType = 'UPI' | 'Card' | 'NetBanking' | 'Wallet' | 'COD';
@@ -20,6 +20,21 @@ interface PaymentAdyenDropInProps {
   selectedMethod: PaymentMethodType;
 }
 
+const POPULAR_BANKS = [
+  'HDFC Bank',
+  'ICICI Bank',
+  'State Bank of India',
+  'Axis Bank',
+  'Kotak Mahindra Bank',
+  'Punjab National Bank',
+  'Bank of Baroda',
+  'Canara Bank',
+  'IndusInd Bank',
+  'Union Bank of India',
+  'IDFC FIRST Bank',
+  'Yes Bank',
+];
+
 export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
   amount,
   onSelectPayment,
@@ -32,8 +47,27 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
   const [cardName, setCardName] = useState('AYESHA RAHMAN');
   const [selectedBank, setSelectedBank] = useState('HDFC Bank');
   const [selectedWallet, _setSelectedWallet] = useState('Apple Pay / PhonePe Wallet');
+  const [isBankDropdownOpen, setIsBankDropdownOpen] = useState(false);
+  const bankDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (bankDropdownRef.current && !bankDropdownRef.current.contains(event.target as Node)) {
+        setIsBankDropdownOpen(false);
+      }
+    };
+    if (isBankDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isBankDropdownOpen]);
 
   const handleMethodChange = (method: PaymentMethodType) => {
+    if (method !== 'NetBanking') {
+      setIsBankDropdownOpen(false);
+    }
     const details: PaymentDetails = { method };
     if (method === 'UPI') details.upiVpa = upiVpa;
     if (method === 'Card') details.cardLast4 = cardNumber.slice(-4);
@@ -47,8 +81,8 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
       style={{
         border: '1px solid var(--border-color)',
         borderRadius: 'var(--radius-sm)',
-        overflow: 'hidden',
         backgroundColor: 'var(--bg-surface)',
+        position: 'relative',
       }}
     >
       {/* Adyen Drop-In Style Header */}
@@ -57,6 +91,8 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
           padding: '14px 20px',
           backgroundColor: 'var(--bg-surface-elevated)',
           borderBottom: '1px solid var(--border-light)',
+          borderTopLeftRadius: 'calc(var(--radius-sm) - 1px)',
+          borderTopRightRadius: 'calc(var(--radius-sm) - 1px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -284,28 +320,132 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
 
           {selectedMethod === 'NetBanking' && (
             <div style={{ padding: '0 20px 20px 48px' }}>
-              <select
-                value={selectedBank}
-                onChange={(e) => {
-                  setSelectedBank(e.target.value);
-                  onSelectPayment({ method: 'NetBanking', bankName: e.target.value });
-                }}
+              <div
+                ref={bankDropdownRef}
                 style={{
-                  padding: '10px 14px',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-sm)',
-                  backgroundColor: 'var(--bg-surface)',
+                  position: 'relative',
                   width: '100%',
                   maxWidth: '360px',
-                  fontSize: '0.9rem',
                 }}
               >
-                <option value="HDFC Bank">HDFC Bank</option>
-                <option value="ICICI Bank">ICICI Bank</option>
-                <option value="State Bank of India">State Bank of India</option>
-                <option value="Axis Bank">Axis Bank</option>
-                <option value="Kotak Mahindra Bank">Kotak Mahindra Bank</option>
-              </select>
+                {/* Custom Dropdown Trigger Bar */}
+                <button
+                  type="button"
+                  id="netbanking-bank-trigger"
+                  aria-haspopup="listbox"
+                  aria-expanded={isBankDropdownOpen}
+                  onClick={() => setIsBankDropdownOpen((prev) => !prev)}
+                  className="bank-dropdown-trigger"
+                  style={{
+                    padding: '10px 14px',
+                    border: isBankDropdownOpen
+                      ? '1px solid var(--color-sapphire)'
+                      : '1px solid var(--border-color)',
+                    borderRadius: 'var(--radius-sm)',
+                    backgroundColor: 'var(--bg-surface)',
+                    width: '100%',
+                    fontSize: '0.9rem',
+                    color: 'var(--text-primary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    cursor: 'pointer',
+                    outline: 'none',
+                    boxShadow: isBankDropdownOpen ? '0 0 0 1px var(--color-sapphire)' : 'none',
+                    transition: 'border-color 180ms ease, box-shadow 180ms ease',
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') {
+                      setIsBankDropdownOpen(false);
+                    } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                      e.preventDefault();
+                      if (!isBankDropdownOpen) {
+                        setIsBankDropdownOpen(true);
+                      }
+                    }
+                  }}
+                >
+                  <span style={{ fontWeight: 500 }}>{selectedBank}</span>
+                  <ChevronDown
+                    size={16}
+                    style={{
+                      color: 'var(--text-secondary)',
+                      transform: isBankDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 200ms ease',
+                    }}
+                  />
+                </button>
+
+                {/* Dropdown Options Menu: Sized for max 4 items with vertical scrollbar */}
+                {isBankDropdownOpen && (
+                  <div
+                    role="listbox"
+                    aria-label="Select Bank"
+                    className="bank-dropdown-menu"
+                    style={{
+                      position: 'absolute',
+                      top: 'calc(100% + 4px)',
+                      left: 0,
+                      right: 0,
+                      maxHeight: '160px',
+                      overflowY: 'auto',
+                      overflowX: 'hidden',
+                      backgroundColor: 'var(--bg-surface)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: 'var(--radius-sm)',
+                      boxShadow: 'var(--shadow-md)',
+                      zIndex: 60,
+                      outline: 'none',
+                    }}
+                  >
+                    {POPULAR_BANKS.map((bank) => {
+                      const isSelected = selectedBank === bank;
+                      return (
+                        <div
+                          key={bank}
+                          role="option"
+                          aria-selected={isSelected}
+                          onClick={() => {
+                            setSelectedBank(bank);
+                            onSelectPayment({ method: 'NetBanking', bankName: bank });
+                            setIsBankDropdownOpen(false);
+                          }}
+                          style={{
+                            height: '40px',
+                            boxSizing: 'border-box',
+                            padding: '0 14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            fontSize: '0.9rem',
+                            cursor: 'pointer',
+                            backgroundColor: isSelected ? 'rgba(36, 75, 87, 0.08)' : 'transparent',
+                            color: isSelected ? 'var(--color-sapphire)' : 'var(--text-primary)',
+                            fontWeight: isSelected ? 600 : 400,
+                            transition: 'background-color 150ms ease',
+                            userSelect: 'none',
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!isSelected) {
+                              e.currentTarget.style.backgroundColor = 'rgba(202, 212, 214, 0.2)';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!isSelected) {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                            }
+                          }}
+                        >
+                          <span>{bank}</span>
+                          {isSelected && (
+                            <Check size={16} style={{ color: 'var(--color-sapphire)', flexShrink: 0 }} />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -354,6 +494,8 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
               alignItems: 'center',
               justifyContent: 'space-between',
               cursor: 'pointer',
+              borderBottomLeftRadius: 'calc(var(--radius-sm) - 1px)',
+              borderBottomRightRadius: 'calc(var(--radius-sm) - 1px)',
               backgroundColor: selectedMethod === 'COD' ? 'rgba(194, 155, 76, 0.06)' : 'transparent',
             }}
           >

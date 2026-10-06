@@ -156,11 +156,27 @@ p {
   outline-offset: 3px;
 }
 
+/* Remove orange outline from inputs, selects, dropdowns, and filter buttons */
 input:focus,
 input:focus-visible,
 textarea:focus,
-textarea:focus-visible {
+textarea:focus-visible,
+select:focus,
+select:focus-visible,
+button.filter-btn:focus,
+button.filter-btn:focus-visible,
+.filter-btn:focus,
+.filter-btn:focus-visible,
+.mobile-filter-btn:focus,
+.mobile-filter-btn:focus-visible,
+.admin-filter-pill:focus,
+.admin-filter-pill:focus-visible,
+.bank-dropdown-trigger:focus,
+.bank-dropdown-trigger:focus-visible,
+[data-filter]:focus,
+[data-filter]:focus-visible {
   outline: none !important;
+  outline-offset: 0 !important;
 }
 
 /* Custom Editorial Scrollbars */
@@ -179,6 +195,29 @@ textarea:focus-visible {
 }
 
 ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-sapphire);
+}
+
+/* Bank Selector & Custom Dropdown Scrollbar */
+.bank-dropdown-menu {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+.bank-dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.bank-dropdown-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bank-dropdown-menu::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: var(--radius-pill);
+}
+
+.bank-dropdown-menu::-webkit-scrollbar-thumb:hover {
   background: var(--color-sapphire);
 }
 
@@ -522,6 +561,7 @@ textarea:focus-visible {
 }
 
 @media (max-width: 1280px) {
+
   .new-arrivals-grid,
   .product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -530,8 +570,8 @@ textarea:focus-visible {
   }
 
   /* let grid items and their text shrink instead of forcing width */
-  .new-arrivals-grid > *,
-  .product-grid > * {
+  .new-arrivals-grid>*,
+  .product-grid>* {
     min-width: 0;
   }
 }
@@ -540,6 +580,7 @@ textarea:focus-visible {
 .desktop-only {
   display: inline-block;
 }
+
 .mobile-only {
   display: none !important;
 }
@@ -548,6 +589,7 @@ textarea:focus-visible {
   .desktop-only {
     display: none !important;
   }
+
   .mobile-only {
     display: inline-block !important;
   }
@@ -557,6 +599,7 @@ textarea:focus-visible {
 .desktop-rating {
   display: block;
 }
+
 .mobile-rating {
   display: none !important;
 }
@@ -565,6 +608,7 @@ textarea:focus-visible {
   .desktop-rating {
     display: none !important;
   }
+
   .mobile-rating {
     display: flex !important;
     align-items: center;
@@ -580,25 +624,25 @@ textarea:focus-visible {
 
 @media (max-width: 767px) {
   .checkout-step-container {
-    gap: 8px; 
+    gap: 8px;
     align-items: flex-start !important;
   }
-  
-  .checkout-step-container > span:not(.step-arrow) {
+
+  .checkout-step-container>span:not(.step-arrow) {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  
+
   .step-text {
     font-size: 0.75rem;
     margin-top: 4px;
   }
-  
+
   .step-num {
     font-size: 0.85rem;
   }
-  
+
   .step-arrow {
     margin-top: 2px;
   }
@@ -615,7 +659,7 @@ textarea:focus-visible {
   .order-success-actions {
     flex-direction: column;
   }
-  
+
   .order-success-actions a {
     width: 100%;
     display: block;
@@ -629,10 +673,13 @@ textarea:focus-visible {
 /* Order Stepper Mobile Adjustments */
 @media (max-width: 767px) {
   .order-stepper-label {
-    font-size: 0.65rem !important; /* Reduces from text-sm equivalent */
+    font-size: 0.65rem !important;
+    /* Reduces from text-sm equivalent */
   }
+
   .order-stepper-date {
-    font-size: 0.55rem !important; /* Reduces from text-xs equivalent */
+    font-size: 0.55rem !important;
+    /* Reduces from text-xs equivalent */
   }
 }
 
@@ -646,23 +693,28 @@ textarea:focus-visible {
   .modal-action-buttons {
     gap: 8px !important;
   }
+
   .modal-action-buttons button {
     font-size: 0.65rem !important;
     padding: 0 10px !important;
     height: 36px !important;
     min-height: 36px !important;
   }
+
   .modal-description {
     font-size: 0.72rem !important;
   }
+
   .modal-content-box {
     padding: 20px !important;
     width: 90% !important;
     max-width: 90% !important;
   }
+
   .modal-content-box h3 {
     font-size: 1.1rem !important;
   }
+
   .modal-close-btn {
     width: 32px !important;
     height: 32px !important;
@@ -670,6 +722,7 @@ textarea:focus-visible {
     min-height: 32px !important;
   }
 }
+
 /* --- Admin Panel Layout Responsiveness --- */
 .admin-layout {
   display: flex;
@@ -744,7 +797,7 @@ textarea:focus-visible {
   .admin-layout {
     flex-direction: column;
   }
-  
+
   .admin-sidebar {
     width: 100%;
     height: auto;
@@ -752,27 +805,27 @@ textarea:focus-visible {
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
-  
+
   .admin-sidebar-header {
     padding: 16px;
     justify-content: center;
   }
-  
+
   .admin-sidebar-nav {
     flex-direction: row;
     overflow-x: auto;
     padding: 8px 16px;
     -webkit-overflow-scrolling: touch;
   }
-  
+
   .admin-sidebar-nav::-webkit-scrollbar {
     display: none;
   }
-  
+
   .admin-sidebar-footer {
     display: none;
   }
-  
+
   .admin-nav-link {
     flex-direction: column;
     justify-content: center;
@@ -780,7 +833,7 @@ textarea:focus-visible {
     text-align: center;
     min-width: 100px;
   }
-  
+
   .admin-nav-link span:last-child {
     font-size: 0.65rem;
     margin-top: 4px;
@@ -790,11 +843,11 @@ textarea:focus-visible {
   .admin-topbar {
     padding: 0 16px;
   }
-  
+
   .admin-topbar h2 {
     font-size: 0.9rem !important;
   }
-  
+
   .admin-main-content {
     padding: 16px;
   }

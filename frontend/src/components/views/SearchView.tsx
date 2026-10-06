@@ -280,7 +280,8 @@ function SearchContent() {
           fontSize: '0.85rem',
           fontWeight: 500,
           cursor: 'pointer',
-          transition: 'all 200ms ease'
+          transition: 'all 200ms ease',
+          outline: 'none',
         }}
         onMouseOver={(e) => {
           if (!hasActive) {
@@ -571,7 +572,8 @@ function SearchContent() {
                         fontSize: '0.85rem',
                         fontWeight: 500,
                         cursor: 'pointer',
-                        transition: 'border-color 200ms ease'
+                        transition: 'border-color 200ms ease',
+                        outline: 'none',
                       }}
                     >
                       {SORT_OPTIONS.find(s => s.id === selectedSort)?.label}

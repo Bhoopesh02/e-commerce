@@ -12,6 +12,7 @@ import { formatPrice } from '@/lib/formatPrice';
 import { validateStock, placeOrder } from '@/lib/mockApi';
 import { Order, Address } from '@/types';
 import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 import { Input } from '@/components/ui/Input';
 import type { PaymentMethodType, PaymentDetails } from '@/components/checkout/PaymentAdyenDropIn';
 import {
@@ -444,24 +445,35 @@ export const CheckoutView: React.FC = () => {
                     border: '2px solid var(--color-sapphire)',
                     backgroundColor: 'rgba(194, 155, 76, 0.08)',
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
+                    flexDirection: 'column',
+                    gap: '12px',
                   }}
                 >
-                  <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
-                    <Truck size={24} style={{ color: 'var(--color-sapphire)' }} />
-                    <div>
-                      <span style={{ fontSize: '0.95rem', fontWeight: 600, display: 'block' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+                    <Badge
+                      variant="success"
+                      size="sm"
+                      style={{
+                        border: '1px solid rgba(30, 111, 92, 0.25)',
+                        fontWeight: 700,
+                        letterSpacing: '0.06em',
+                      }}
+                    >
+                      Complimentary
+                    </Badge>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                    <Truck size={22} style={{ color: 'var(--color-sapphire)', marginTop: '2px', flexShrink: 0 }} />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <span style={{ fontSize: '0.95rem', fontWeight: 600, display: 'block', color: 'var(--text-primary)' }}>
                         White-Glove Insured Courier
                       </span>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
                         BlueDart Luxury Service · 2–4 business days with signature handover
                       </span>
                     </div>
                   </div>
-                  <span style={{ fontWeight: 700, color: 'var(--color-success)', fontSize: '0.9rem' }}>
-                    Complimentary
-                  </span>
                 </div>
 
                 <Button variant="primary" onClick={() => setStep(4)} rightIcon={<ArrowRight size={16} />}>

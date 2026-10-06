@@ -369,6 +369,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   fontWeight: 600,
                   backgroundColor: 'var(--bg-surface)',
                   cursor: 'pointer',
+                  outline: 'none',
                 }}
                 className="mobile-filter-btn"
               >
