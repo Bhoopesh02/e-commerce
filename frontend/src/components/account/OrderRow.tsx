@@ -34,7 +34,7 @@ export const OrderRow: React.FC<OrderRowProps> = ({ order }) => {
   return (
     <div className="list-row">
       <div className="row-col col-left">
-        <span className="row-title">ORDER #{order.id}</span>
+        <span className="row-title">ORDER</span>
         <span className="row-meta">
           {new Date(order.createdAt).toLocaleDateString('en-GB', {
             day: 'numeric',

@@ -153,9 +153,9 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
               <span style={{ display: 'block', marginBottom: '8px', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
                 Official Atelier Commission
               </span>
-              {/* <h1 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', marginTop: '4px' }}>
-                Commission #{order.id}
-              </h1> */}
+              <h1 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', marginTop: '4px' }}>
+                Commission Details
+              </h1>
               <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                 Registered: {new Date(order.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
               </span>
@@ -359,7 +359,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
       <Modal isOpen={cancelModalOpen} onClose={() => setCancelModalOpen(false)} title="Confirm Commission Cancellation">
         <div>
           <p className="modal-description" style={{ color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
-            Are you certain you wish to cancel Commission #{order.id}? Your reservation of this limited edition will be released back to the central atelier inventory.
+            Are you certain you wish to cancel this commission? Your reservation of this limited edition will be released back to the central atelier inventory.
           </p>
           <div className="modal-action-buttons" style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
             <Button variant="ghost" onClick={() => setCancelModalOpen(false)} disabled={isProcessing}>

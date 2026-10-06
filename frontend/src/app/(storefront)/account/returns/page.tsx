@@ -56,10 +56,7 @@ export default function ReturnsPage() {
               return (
                 <div key={ret.id} className="list-row">
                   <div className="row-col col-left">
-                    <span className="row-title">RETURN #{ret.id}</span>
-                    <span className="row-meta">
-                      ORDER #{ret.orderId}
-                    </span>
+                    <span className="row-title">RETURN REQUEST</span>
                     <span className="status-meta" style={{ marginTop: '4px' }}>
                       REQUESTED<br/>
                       {new Date(ret.createdAt).toLocaleDateString('en-GB', {

@@ -36,6 +36,7 @@ const ADMIN_NAV_ITEMS = [
   { href: '/admin/dashboard', label: 'Executive Overview', icon: <LayoutDashboard size={18} /> },
   { href: '/admin/products', label: 'Silhouettes & Catalog', icon: <Package size={18} /> },
   { href: '/admin/orders', label: 'Commissions & Fulfillment', icon: <ShoppingCart size={18} /> },
+  { href: '/admin/returns', label: 'Returns & Authorizations', icon: <RotateCcw size={18} /> },
   { href: '/admin/reports', label: 'Analytics & CSV Export', icon: <BarChart3 size={18} /> },
 ];
 

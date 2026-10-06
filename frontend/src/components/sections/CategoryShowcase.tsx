@@ -6,22 +6,298 @@ import Image from 'next/image';
 import { Category } from '@/types';
 import { ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
-import { Skeleton } from '../ui/Skeleton';
+import { Skeleton } from '@/components/ui/Skeleton';
 
-interface CategoryShowcaseProps {
-  categories: Category[];
+export interface CategoryShowcaseProps {
+  categories?: Category[];
+  title?: string;
+  subtitle?: string;
+  isLoading?: boolean;
+}
+
+export interface CategoryShowcaseSkeletonProps {
   title?: string;
   subtitle?: string;
 }
 
-export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
-  categories,
+export const CategorySkeletonTrack: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
+  const cardWidth = isMobile ? 150 : 320;
+  const cardHeight = isMobile ? 210 : 460;
+  const gap = isMobile ? -17 : 32;
+  const activeScale = isMobile ? 1 : 1.12;
+  const inactiveScale = isMobile ? 0.666 : 0.85;
+
+  return (
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 'max-content',
+        }}
+      >
+        {[-2, -1, 0, 1, 2].map((offset) => {
+          const isActive = offset === 0;
+          return (
+            <div
+              key={offset}
+              className={`category-slider-card ${isMobile && Math.abs(offset) > 1 ? 'hidden-on-mobile-skeleton' : ''}`}
+              style={{
+                position: 'relative',
+                flexShrink: 0,
+                width: `${cardWidth}px`,
+                height: `${cardHeight}px`,
+                marginRight: offset === 2 ? '0' : `${gap}px`,
+                transform: isActive ? `scale(${activeScale})` : `scale(${inactiveScale})`,
+                zIndex: isActive ? 10 : 1,
+                opacity: isActive ? 1 : (Math.abs(offset) === 1 ? 0.5 : 0.35),
+                borderRadius: isMobile ? '12px' : 'var(--radius-md)',
+                overflow: 'hidden',
+                boxShadow: isActive ? '0 24px 50px rgba(0,0,0,0.2)' : 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
+                padding: isMobile ? '16px' : '32px',
+                backgroundColor: 'var(--bg-surface)',
+              }}
+            >
+              {/* Full Card Skeleton Shimmer */}
+              <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+                <Skeleton
+                  width="100%"
+                  height="100%"
+                  borderRadius={isMobile ? '12px' : 'var(--radius-md)'}
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                  }}
+                />
+              </div>
+
+              {/* Scrim Overlay */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background:
+                    'linear-gradient(180deg, rgba(20, 20, 20, 0.1) 0%, rgba(20, 20, 20, 0.85) 100%)',
+                  zIndex: 1,
+                  opacity: isActive ? 0.8 : 0.95,
+                }}
+              />
+
+              {/* Bottom Content Area */}
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: isActive ? '8px' : '0',
+                  }}
+                >
+                  <Skeleton
+                    width={isActive ? (isMobile ? '80px' : '140px') : (isMobile ? '60px' : '100px')}
+                    height={isActive ? (isMobile ? '18px' : '28px') : (isMobile ? '14px' : '20px')}
+                    borderRadius="6px"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.22)',
+                    }}
+                  />
+
+                  {isActive && (
+                    <Skeleton
+                      width={isMobile ? '24px' : '36px'}
+                      height={isMobile ? '24px' : '36px'}
+                      borderRadius="50%"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.2)',
+                        backdropFilter: 'blur(4px)',
+                      }}
+                    />
+                  )}
+                </div>
+
+                {isActive && !isMobile && (
+                  <div style={{ marginTop: '8px' }}>
+                    <Skeleton
+                      width="90%"
+                      height="12px"
+                      borderRadius="4px"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.15)',
+                        marginBottom: '6px',
+                      }}
+                    />
+                    <Skeleton
+                      width="60%"
+                      height="12px"
+                      borderRadius="4px"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.15)',
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Nav Chevrons in Skeleton State */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: isMobile ? '4px' : '5%',
+          right: isMobile ? '4px' : '5%',
+          transform: 'translateY(-50%)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          pointerEvents: 'none',
+          zIndex: 20,
+        }}
+      >
+        <div
+          style={{
+            width: isMobile ? 28 : 50,
+            height: isMobile ? 28 : 50,
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--text-primary)',
+            opacity: 0.35,
+          }}
+        >
+          <ChevronLeft size={isMobile ? 16 : 24} />
+        </div>
+        <div
+          style={{
+            width: isMobile ? 28 : 50,
+            height: isMobile ? 28 : 50,
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--text-primary)',
+            opacity: 0.35,
+          }}
+        >
+          <ChevronRight size={isMobile ? 16 : 24} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const CategoryShowcaseSkeleton: React.FC<CategoryShowcaseSkeletonProps> = ({
   title = 'Curated Disciplines',
   subtitle = 'Discover tailored collections crafted for longevity and quiet distinction.',
 }) => {
-  const baseCount = categories?.length || 0;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return (
+    <section
+      className="category-showcase-section category-showcase-skeleton"
+      aria-busy="true"
+      aria-label="Loading curated categories"
+      style={{
+        padding: '40px 0 80px',
+        backgroundColor: 'var(--bg-primary)',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+            marginBottom: '48px',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'baseline',
+              justifyContent: 'space-between',
+              gap: '16px',
+            }}
+          >
+            {title ? (
+              <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)' }}>{title}</h2>
+            ) : (
+              <Skeleton width="280px" height="38px" borderRadius="6px" />
+            )}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Skeleton width="130px" height="20px" borderRadius="4px" />
+            </div>
+          </div>
+          {subtitle ? (
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: '540px' }}>
+              {subtitle}
+            </p>
+          ) : (
+            <Skeleton width="420px" height="18px" borderRadius="4px" style={{ maxWidth: '100%' }} />
+          )}
+        </div>
+      </div>
+
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          padding: isMobile ? '20px 0' : '60px 0',
+          zIndex: 2,
+        }}
+      >
+        <CategorySkeletonTrack isMobile={isMobile} />
+      </div>
+
+      <style jsx global>{`
+        @media (max-width: 767px) {
+          .hidden-on-mobile-skeleton {
+            display: none !important;
+          }
+        }
+      `}</style>
+    </section>
+  );
+};
+
+export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
+  categories = [],
+  title = 'Curated Disciplines',
+  subtitle = 'Discover tailored collections crafted for longevity and quiet distinction.',
+  isLoading = false,
+}) => {
+  if (isLoading || !categories || categories.length === 0) {
+    return <CategoryShowcaseSkeleton title={title} subtitle={subtitle} />;
+  }
+
+  const baseCount = categories.length;
   // 5x duplication to allow rapid clicking without hitting edges before transition snaps
-  const carouselItems = baseCount > 0 ? [...categories, ...categories, ...categories, ...categories, ...categories] : [];
+  const carouselItems = [...categories, ...categories, ...categories, ...categories, ...categories];
 
   const [activeIndex, setActiveIndex] = useState(baseCount * 2);
   const [enableTransition, setEnableTransition] = useState(true);
@@ -29,6 +305,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [hasMoved, setHasMoved] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState<Record<string, boolean>>({});
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll logic
@@ -160,18 +437,10 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
           width: '100%',
           padding: isMobile ? '20px 0' : '60px 0',
           zIndex: 2,
-          opacity: containerWidth > 0 ? 1 : 0,
-          transition: 'opacity 0.3s ease',
         }}
       >
-        {baseCount === 0 ? (
-          <div style={{ display: 'flex', gap: `${gap}px`, padding: '0 5%' }}>
-            {[1, 2, 3].map((i) => (
-              <div key={i} style={{ width: `${cardWidth}px`, height: `${cardHeight}px`, borderRadius: isMobile ? '12px' : 'var(--radius-md)', backgroundColor: 'var(--bg-surface)', overflow: 'hidden' }}>
-                <Skeleton width="100%" height="100%" />
-              </div>
-            ))}
-          </div>
+        {containerWidth === 0 ? (
+          <CategorySkeletonTrack isMobile={isMobile} />
         ) : (
           <>
             <div
@@ -218,8 +487,27 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                       justifyContent: 'flex-end',
                       padding: isMobile ? '16px' : '32px',
                       color: '#FFF8F5',
+                      backgroundColor: 'var(--bg-surface)',
                     }}
                   >
+                    {/* Per-card image loading skeleton shimmer */}
+                    <div
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        zIndex: 0,
+                        opacity: imagesLoaded[cat.id] ? 0 : 1,
+                        transition: 'opacity 0.4s ease',
+                        pointerEvents: 'none',
+                      }}
+                    >
+                      <Skeleton
+                        width="100%"
+                        height="100%"
+                        borderRadius={isMobile ? '12px' : 'var(--radius-md)'}
+                      />
+                    </div>
+
                     <Image
                       src={cat.image}
                       alt={cat.name}
@@ -228,9 +516,14 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                       sizes="400px"
                       style={{
                         objectFit: 'cover',
+                        opacity: imagesLoaded[cat.id] ? 1 : 0,
+                        transition: 'opacity 0.4s ease',
                       }}
                       className="category-image"
                       priority={idx >= baseCount * 2 - 1 && idx <= baseCount * 2 + 3}
+                      onLoad={() => {
+                        setImagesLoaded((prev) => ({ ...prev, [cat.id]: true }));
+                      }}
                     />
 
                     <div
@@ -314,7 +607,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                             opacity: isActive ? (isMobile ? 0 : 1) : 0,
                             transform: isActive ? 'translateY(0)' : 'translateY(10px)',
                             marginTop: isMobile ? 0 : '8px',
-                            height: isMobile ? 0 : 'auto', // hide on mobile to save space if needed, or rely on clamp
+                            height: isMobile ? 0 : 'auto',
                           }}
                         >
                           {cat.description}
@@ -424,6 +717,12 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
         .slider-nav-btn:not(:disabled):hover {
           transform: scale(1.1);
           color: var(--cta-primary) !important;
+        }
+
+        @media (max-width: 767px) {
+          .hidden-on-mobile-skeleton {
+            display: none !important;
+          }
         }
       `}</style>
     </section>

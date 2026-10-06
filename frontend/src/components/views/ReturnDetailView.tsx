@@ -74,9 +74,9 @@ export const ReturnDetailView: React.FC<ReturnDetailViewProps> = ({ returnId }) 
               <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
                 Return Authorization Dossier
               </span>
-              <h1 style={{ fontSize: '1.8rem', marginTop: '4px' }}>Request #{returnReq.id}</h1>
+              <h1 style={{ fontSize: '1.8rem', marginTop: '4px' }}>Return Request Details</h1>
               <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                Linked to Commission #{returnReq.orderId}
+                Requested on {new Date(returnReq.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
               </span>
             </div>
             <Badge variant="warning">{returnReq.status}</Badge>

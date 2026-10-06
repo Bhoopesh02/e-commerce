@@ -56,7 +56,7 @@ export default function TrackOrdersPage() {
                 <div key={order.id} className="tracking-row">
                   <div className="tracking-header">
                     <div className="tracking-meta">
-                      <span className="row-title">ORDER #{order.id}</span>
+                      <span className="row-title">ORDER</span>
                       <span className="row-meta">
                         {new Date(order.createdAt).toLocaleDateString('en-GB', {
                           day: 'numeric',

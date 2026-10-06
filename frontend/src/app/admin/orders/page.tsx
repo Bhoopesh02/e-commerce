@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { getOrders, adminUpdateOrderStatus } from '@/lib/mockApi';
 import { Order, OrderStatus } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
@@ -8,7 +9,7 @@ import { useToastStore } from '@/store/useToastStore';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Truck, CheckCircle2, Search, Filter, ChevronDown, Check } from 'lucide-react';
+import { Truck, CheckCircle2, Search, Filter, ChevronDown, Check, ShoppingCart, RotateCcw } from 'lucide-react';
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -91,6 +92,42 @@ export default function AdminOrdersPage() {
         <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: 'var(--admin-text-primary)', marginTop: '4px' }}>
           Client Commissions & Dispatch
         </h1>
+      </div>
+
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid var(--admin-border)', paddingBottom: '12px' }}>
+        <div
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px 16px',
+            borderRadius: 'var(--radius-sm)',
+            fontSize: '0.85rem',
+            fontWeight: 600,
+            backgroundColor: 'rgba(194, 155, 76, 0.15)',
+            color: 'var(--color-sapphire)',
+            border: '1px solid rgba(194, 155, 76, 0.3)',
+          }}
+        >
+          <ShoppingCart size={16} /> Commissions & Dispatch ({orders.length})
+        </div>
+        <Link
+          href="/admin/returns"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px 16px',
+            borderRadius: 'var(--radius-sm)',
+            fontSize: '0.85rem',
+            fontWeight: 500,
+            color: 'var(--admin-text-secondary)',
+            textDecoration: 'none',
+          }}
+        >
+          <RotateCcw size={16} /> Returns & Authorizations
+        </Link>
       </div>
 
       {/* Filters and Search */}

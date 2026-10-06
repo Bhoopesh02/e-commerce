@@ -30,6 +30,7 @@ interface HomeViewProps {
   initialTrending: Product[];
   initialCategories: Category[];
   initialConfig: StorefrontConfig;
+  isLoading?: boolean;
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({
@@ -38,6 +39,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   initialTrending,
   initialCategories,
   initialConfig,
+  isLoading: initialLoading = false,
 }) => {
   const { storefront } = useStorefrontStore();
   const currentStorefront = storefront || 'a';
@@ -47,6 +49,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [trending, setTrending] = useState<Product[]>(initialTrending);
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [config, setConfig] = useState<StorefrontConfig>(initialConfig);
+  const [loading, setLoading] = useState<boolean>(initialLoading);
 
   // Server pre-fetched for storefront 'a' — skip redundant first-mount fetch
   const isInitialMount = useRef(true);
@@ -59,6 +62,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
     let isMounted = true;
     async function loadData() {
+      setLoading(true);
       try {
         const [allProds, newArr, trend, cats, cfg] = await Promise.all([
           getProducts({ storefront: currentStorefront }),
@@ -77,6 +81,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
         }
       } catch (err) {
         // Fallback gracefully to statically initialized data
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
 
@@ -87,7 +95,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   }, [currentStorefront]);
 
   // Render individual sections based on config order
-  const renderSection = (type: string, id: string) => {
+  const renderSection = (type: string, id: string, title?: string, subtitle?: string) => {
     switch (type) {
       case 'hero':
         return <HeroSection key={id} />;
@@ -129,7 +137,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
         );
 
       case 'category_showcase':
-        return <CategoryShowcase key={id} categories={categories} />;
+        return (
+          <CategoryShowcase
+            key={id}
+            categories={categories}
+            title={title}
+            subtitle={subtitle}
+            isLoading={loading}
+          />
+        );
 
       case 'expanding_carousel':
         return <ExpandingCarousel key={id} products={products} />;
@@ -327,7 +343,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
   return (
     <main>
-      {sections.map((sec) => renderSection(sec.type, sec.id))}
+      {sections.map((sec) => renderSection(sec.type, sec.id, sec.title, sec.subtitle))}
     </main>
   );
 };

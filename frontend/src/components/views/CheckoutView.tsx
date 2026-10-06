@@ -200,7 +200,7 @@ export const CheckoutView: React.FC = () => {
           </h1>
 
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '32px' }}>
-            Your commission has been registered under reference <strong>#{confirmedOrder.id}</strong>.
+            Your commission has been registered successfully.
             Our master tailors are preparing your pieces for white-glove dispatch.
           </p>
 
