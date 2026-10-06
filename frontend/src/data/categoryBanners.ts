@@ -1,0 +1,188 @@
+import { ShowcaseBannerConfig, CategoryShowcaseConfig } from '@/types';
+
+export const CATEGORY_SHOWCASE_CONFIG: Record<string, CategoryShowcaseConfig> = {
+  outerwear: {
+    newArrivals: {
+      headline: 'New Arrivals: Sculptural Outerwear',
+      subtitle: 'Double-faced virgin wool trench coats, Milanese nappa shearling, and technical weather-shielded parkas.',
+      badge: 'AW26 Drop',
+      image4k: '/images/sections/banners/outerwear-4k.webp',
+      fallbackImage: '/images/sections/banners/banner-outerwear.webp',
+    },
+    topPicks: {
+      headline: 'Top Picks: House Outerwear Icons',
+      subtitle: 'The atelier’s most celebrated overcoats, revered for timeless architectural silhouette and tactile drape.',
+      badge: 'House Signatures',
+      image4k: '/images/sections/banners/banner-outerwear.webp',
+      fallbackImage: '/images/sections/banners/outerwear-4k.webp',
+    },
+    recommended: {
+      headline: 'Recommended Outerwear For You',
+      subtitle: 'Hand-picked tailoring and thermal layering silhouettes curated to complement your signature wardrobe.',
+      badge: 'Tailored Curation',
+      image4k: '/images/sections/banners/outerwear-4k.webp',
+      fallbackImage: '/images/sections/banners/banner-outerwear.webp',
+    },
+  },
+  tailoring: {
+    newArrivals: {
+      headline: 'New Arrivals: Modern Sartorial Cuts',
+      subtitle: 'Deconstructed wool canvas suiting, razor-sharp peak lapels, and fluid pleated palazzo trousers.',
+      badge: 'Bespoke Atelier',
+      image4k: '/images/sections/banners/tailoring-4k.webp',
+      fallbackImage: '/images/sections/banners/banner-tailoring-v2.webp',
+    },
+    topPicks: {
+      headline: 'Top Picks: Sovereign Italian Suiting',
+      subtitle: 'Commanding double-breasted blazers engineered with full floating chest canvases in Super 140s wool.',
+      badge: 'Editor’s Choice',
+      image4k: '/images/sections/banners/banner-tailoring-v2.webp',
+      fallbackImage: '/images/sections/banners/tailoring-4k.webp',
+    },
+    recommended: {
+      headline: 'Recommended Tailoring For You',
+      subtitle: 'Precision-cut blazers and sculptural trousers calibrated for boardroom authority and evening occasions.',
+      badge: 'Curated Elegance',
+      image4k: '/images/sections/banners/tailoring-4k.webp',
+      fallbackImage: '/images/sections/banners/banner-tailoring-v2.webp',
+    },
+  },
+  eveningwear: {
+    newArrivals: {
+      headline: 'New Arrivals: Nocturne Gala Silhouettes',
+      subtitle: 'Liquid 30-momme mulberry silk charmeuse, floor-grazing puddle trains, and draped backless gowns.',
+      badge: 'Nocturne Collection',
+      image4k: '/images/sections/banners/eveningwear-4k.webp',
+      fallbackImage: '/images/sections/banners/banner-eveningwear-v2.webp',
+    },
+    topPicks: {
+      headline: 'Top Picks: Coveted Twilight Ensembles',
+      subtitle: 'The eveningwear pieces most requested by private atelier clients for grand galas and red-carpet moments.',
+      badge: 'Grand Gala Signatures',
+      image4k: '/images/sections/banners/banner-eveningwear-v2.webp',
+      fallbackImage: '/images/sections/banners/eveningwear-4k.webp',
+    },
+    recommended: {
+      headline: 'Recommended Eveningwear For You',
+      subtitle: 'Sculptural bias-cut silk gowns and velvet drapery selected to enhance your formal evening repertoire.',
+      badge: 'Private Salon Picks',
+      image4k: '/images/sections/banners/eveningwear-4k.webp',
+      fallbackImage: '/images/sections/banners/banner-eveningwear-v2.webp',
+    },
+  },
+  knitwear: {
+    newArrivals: {
+      headline: 'New Arrivals: Artisanal Cashmere Drops',
+      subtitle: 'Ultra-fine Grade-A Mongolian cashmere, brushed featherweight mohair, and seamless ribbed jumpers.',
+      badge: 'Pure Cashmere',
+      image4k: '/images/sections/banners/knitwear-4k.webp',
+      fallbackImage: '/images/sections/banners/banner-knitwear-v2.webp',
+    },
+    topPicks: {
+      headline: 'Top Picks: Heritage Cashmere & Merino',
+      subtitle: 'Unrivaled 15.2-micron softness and timeless thermal layering staples that define quiet luxury knitwear.',
+      badge: 'Timeless Essentials',
+      image4k: '/images/sections/banners/banner-knitwear-v2.webp',
+      fallbackImage: '/images/sections/banners/knitwear-4k.webp',
+    },
+    recommended: {
+      headline: 'Recommended Knitwear For You',
+      subtitle: 'Effortless textured crewnecks and cocoon cardigans styled for sophisticated everyday warmth.',
+      badge: 'Warmth & Comfort',
+      image4k: '/images/sections/banners/knitwear-4k.webp',
+      fallbackImage: '/images/sections/banners/banner-knitwear-v2.webp',
+    },
+  },
+  'leather-goods': {
+    newArrivals: {
+      headline: 'New Arrivals: Atelier Hand-Stitched Leather',
+      subtitle: 'Full-grain French box calfskin totes, structured saddle crossbodies, and weekend luggage.',
+      badge: 'Handcrafted',
+      image4k: '/images/sections/banners/leather-goods-4k.webp',
+      fallbackImage: '/images/sections/banners/banner-leather-goods.webp',
+    },
+    topPicks: {
+      headline: 'Top Picks: Iconic Leather Silhouettes',
+      subtitle: 'Signature carryalls with palladium hardware, waxed edge-burnishing, and suede-lined compartments.',
+      badge: 'Atelier Icons',
+      image4k: '/images/sections/banners/banner-leather-goods.webp',
+      fallbackImage: '/images/sections/banners/leather-goods-4k.webp',
+    },
+    recommended: {
+      headline: 'Recommended Leather Goods For You',
+      subtitle: 'Sculptural clutches and minimalist everyday totes tailored to your daily accessories rotation.',
+      badge: 'Daily Luxury',
+      image4k: '/images/sections/banners/leather-goods-4k.webp',
+      fallbackImage: '/images/sections/banners/banner-leather-goods.webp',
+    },
+  },
+  footwear: {
+    newArrivals: {
+      headline: 'New Arrivals: Florentine Footwear',
+      subtitle: 'Goodyear-welted Chelsea boots, chiseled architectural loafers, and Tuscan leather mules with Vibram treads.',
+      badge: 'Handmade in Tuscany',
+      image4k: '/images/sections/banners/footwear-4k.webp',
+      fallbackImage: '/images/sections/banners/banner-footwear.webp',
+    },
+    topPicks: {
+      headline: 'Top Picks: House Footwear Classics',
+      subtitle: 'Calfskin architectural dress shoes and Goodyear-welted boots celebrated for comfort and sharp presence.',
+      badge: 'Master Cobbled',
+      image4k: '/images/sections/banners/banner-footwear.webp',
+      fallbackImage: '/images/sections/banners/footwear-4k.webp',
+    },
+    recommended: {
+      headline: 'Recommended Footwear For You',
+      subtitle: 'Versatile Tuscan loafers and boot silhouettes engineered to effortlessly ground your tailored silhouettes.',
+      badge: 'Curated Footwear',
+      image4k: '/images/sections/banners/footwear-4k.webp',
+      fallbackImage: '/images/sections/banners/banner-footwear.webp',
+    },
+  },
+  'fine-jewelry': {
+    newArrivals: {
+      headline: 'New Arrivals: Sculptural Fine Jewelry',
+      subtitle: '3-micron 18k gold vermeil cuffs, organically shaped baroque freshwater pearls, and molten statement rings.',
+      badge: '18k Heavy Vermeil',
+      image4k: '/images/sections/banners/fine-jewelry-4k.webp',
+      fallbackImage: '/images/sections/banners/banner-fine-jewelry.webp',
+    },
+    topPicks: {
+      headline: 'Top Picks: Permanent Atelier Jewels',
+      subtitle: 'Statement molten cuffs and luminous baroque drop earrings revered for tactile organic geometries.',
+      badge: 'Atelier Classics',
+      image4k: '/images/sections/banners/banner-fine-jewelry.webp',
+      fallbackImage: '/images/sections/banners/fine-jewelry-4k.webp',
+    },
+    recommended: {
+      headline: 'Recommended Fine Jewelry For You',
+      subtitle: 'Luminous metallic accents and organic precious gems curated to subtly illuminate your neckline and wrists.',
+      badge: 'Private Salon Jewels',
+      image4k: '/images/sections/banners/fine-jewelry-4k.webp',
+      fallbackImage: '/images/sections/banners/banner-fine-jewelry.webp',
+    },
+  },
+  fragrances: {
+    newArrivals: {
+      headline: 'New Arrivals: Distilled Extrait Parfums',
+      subtitle: 'Small-batch artisanal extraits, rare Cambodian oud-wood signatures, and botanical essences bottled in Grasse.',
+      badge: 'Distilled in Grasse',
+      image4k: '/images/sections/banners/banner-fragrances.avif',
+      fallbackImage: '/images/sections/banners/optimized/banner-fragrances.webp',
+    },
+    topPicks: {
+      headline: 'Top Picks: Sillage Masterpieces',
+      subtitle: 'Enduring olfactory signatures known for intoxicating 24-hour longevity, amber resin, and velvety iris.',
+      badge: 'Signature Scent',
+      image4k: '/images/sections/banners/optimized/banner-fragrances.webp',
+      fallbackImage: '/images/sections/banners/banner-fragrances.avif',
+    },
+    recommended: {
+      headline: 'Recommended Fragrances For You',
+      subtitle: 'Complex warm woods and delicate floral extraits selected to complement your personal atmosphere.',
+      badge: 'Bespoke Olfactory',
+      image4k: '/images/sections/banners/banner-fragrances.avif',
+      fallbackImage: '/images/sections/banners/optimized/banner-fragrances.webp',
+    },
+  },
+};

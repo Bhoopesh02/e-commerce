@@ -20,6 +20,7 @@ html {
   scroll-behavior: smooth;
   color-scheme: light;
   scrollbar-gutter: stable;
+  overflow-x: clip;
 }
 
 
@@ -30,8 +31,47 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.55;
-  overflow-x: hidden;
+  overflow-x: clip;
   transition: background-color var(--duration-normal) var(--ease-editorial), color var(--duration-normal) var(--ease-editorial);
+}
+
+/* Sticky Collection Navigation & Filter Header */
+.sticky-navigation-header {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 76px;
+  z-index: 50;
+  width: 100%;
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+@media (max-width: 767px) {
+  .sticky-navigation-header {
+    top: 64px;
+  }
+}
+
+.sticky-navigation-header.is-stuck {
+  background-color: rgba(253, 252, 250, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 24px -4px rgba(18, 22, 36, 0.08);
+}
+
+.mobile-filter-btn {
+  transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.mobile-filter-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--text-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.mobile-filter-btn:active {
+  transform: translateY(0);
 }
 
 a {
@@ -852,3 +892,53 @@ button.filter-btn:focus-visible,
     padding: 16px;
   }
 }
+
+/* Category Showcase 4K Hero Banner & Product Carousel Styles */
+.banner-product-scroll-track {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.banner-product-scroll-track::-webkit-scrollbar {
+  display: none;
+}
+
+.banner-card-add-btn:hover {
+  background-color: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  transform: translateY(-1px);
+}
+
+.banner-card-add-btn:active {
+  transform: scale(0.97);
+}
+
+.category-subnav-pills::-webkit-scrollbar {
+  display: none;
+}
+.carousel-controls-bar {
+  display: flex;
+}
+
+@media (max-width: 767px) {
+  .carousel-controls-bar {
+    display: none !important;
+  }
+
+  .category-hero-banner {
+    min-height: 400px !important;
+    border-radius: 18px !important;
+    margin-bottom: 32px !important;
+  }
+
+  .category-hero-banner-description {
+    display: none !important;
+  }
+
+  .category-hero-banner-title {
+    font-size: 1.25rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0 !important;
+  }
+}
+

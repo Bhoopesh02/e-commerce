@@ -51,6 +51,20 @@ export interface Category {
   bannerBadges?: string[];
 }
 
+export interface ShowcaseBannerConfig {
+  headline: string;
+  subtitle: string;
+  badge: string;
+  image4k: string;
+  fallbackImage: string;
+}
+
+export interface CategoryShowcaseConfig {
+  newArrivals: ShowcaseBannerConfig;
+  topPicks: ShowcaseBannerConfig;
+  recommended: ShowcaseBannerConfig;
+}
+
 export interface Review {
   id: string;
   productId: string;

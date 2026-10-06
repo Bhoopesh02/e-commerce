@@ -73,10 +73,33 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [appliedAvailability, setAppliedAvailability] = useState<string>('all');
   const [selectedSort, setSelectedSort] = useState<string>('popularity');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [isStuck, setIsStuck] = useState(false);
 
   const stickyBarRef = useRef<HTMLDivElement>(null);
   const categoryScrollContainerRef = useRef<HTMLDivElement>(null);
   const categoryTabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  useEffect(() => {
+    let rafId: number | null = null;
+    const handleScroll = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        if (stickyBarRef.current) {
+          const navHeight = window.innerWidth <= 767 ? 64 : 76;
+          const rect = stickyBarRef.current.getBoundingClientRect();
+          setIsStuck(rect.top <= navHeight + 2);
+        }
+        rafId = null;
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+  }, []);
 
   useEffect(() => {
     const updateScroll = () => {
@@ -193,8 +216,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
     // Scroll to the sticky bar to ensure the category content is visible
     if (stickyBarRef.current) {
-      const offset = stickyBarRef.current.getBoundingClientRect().top + window.pageYOffset - 90;
-      window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+      const navHeight = typeof window !== 'undefined' && window.innerWidth <= 767 ? 64 : 76;
+      const naturalTop = stickyBarRef.current.offsetTop;
+      const targetScroll = naturalTop - navHeight;
+      if (Math.abs(window.pageYOffset - targetScroll) > 16) {
+        window.scrollTo({ top: Math.max(0, targetScroll), behavior: 'smooth' });
+      }
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -254,33 +281,28 @@ export const ShopView: React.FC<ShopViewProps> = ({
             subtitle="Latest Discoveries"
             onExploreClick={() => {
               if (stickyBarRef.current) {
-                const offset = stickyBarRef.current.getBoundingClientRect().top + window.pageYOffset - 76;
+                const navHeight = typeof window !== 'undefined' && window.innerWidth <= 767 ? 64 : 76;
+                const offset = stickyBarRef.current.offsetTop - navHeight;
                 window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
               }
             }}
           />
         )}
+      </div>
 
-        {/* Sticky Category Navigation Bar & Global Controls */}
-        <div
-          ref={stickyBarRef}
-          style={{
-            position: 'sticky',
-            top: '70px',
-            zIndex: 30,
-            backgroundColor: 'var(--bg-primary)',
-            paddingTop: '12px',
-            paddingBottom: '14px',
-            borderBottom: '1px solid var(--border-color)',
-            marginBottom: '40px',
-            transition: 'all 0.3s ease',
-          }}
-          className="sticky-navigation-header"
-        >
+      {/* Sticky Category Navigation Bar & Global Controls (Fixed Nav Bar on Collection Page) */}
+      <div
+        ref={stickyBarRef}
+        className={`sticky-navigation-header ${isStuck ? 'is-stuck' : ''}`}
+        style={{
+          paddingTop: '12px',
+          paddingBottom: '12px',
+        }}
+      >
+        <div className="container">
           <div
             style={{
               display: 'flex',
-              flexWrap: 'wrap',
               alignItems: 'center',
               justifyContent: 'space-between',
               gap: '16px',
@@ -353,28 +375,45 @@ export const ShopView: React.FC<ShopViewProps> = ({
               })}
             </div>
 
-            {/* Right: Sort Dropdown & Product Counter */}
+            {/* Right: Filters Trigger Button & Product Counter */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginLeft: 'auto', flexShrink: 0 }}>
-              {/* Mobile Filter Trigger */}
               <button
                 onClick={() => setMobileFiltersOpen(true)}
+                className="mobile-filter-btn"
+                id="collection-filters-btn"
+                aria-label="Open Collection Filters"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
-                  padding: '7px 16px',
+                  padding: '7px 18px',
                   borderRadius: 'var(--radius-pill)',
-                  border: '1px solid var(--border-color)',
+                  border: hasActiveFilters ? '1px solid var(--text-primary)' : '1px solid var(--border-color)',
                   fontSize: '0.82rem',
                   fontWeight: 600,
-                  backgroundColor: 'var(--bg-surface)',
+                  backgroundColor: hasActiveFilters ? 'var(--text-primary)' : 'var(--bg-surface)',
+                  color: hasActiveFilters ? 'var(--bg-primary)' : 'var(--text-primary)',
                   cursor: 'pointer',
                   outline: 'none',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                 }}
-                className="mobile-filter-btn"
               >
                 <SlidersHorizontal size={14} />
-                <span>Filters {hasActiveFilters && '•'}</span>
+                <span>Filters</span>
+                {hasActiveFilters && (
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '6px',
+                      height: '6px',
+                      borderRadius: '50%',
+                      backgroundColor: 'var(--color-terracotta, #D19662)',
+                      marginLeft: '2px',
+                    }}
+                  />
+                )}
               </button>
             </div>
           </div>
@@ -436,7 +475,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
             </div>
           )}
         </div>
+      </div>
 
+      <div className="container" style={{ marginTop: '36px' }}>
         {/* Distinct Category Sections */}
         {loading ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '64px' }}>

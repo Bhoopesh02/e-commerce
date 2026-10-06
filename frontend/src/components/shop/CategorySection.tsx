@@ -1,10 +1,12 @@
 'use client';
 
-import React from 'react';
-import { motion, useReducedMotion, Transition } from 'framer-motion';
-import { Category, Product } from '@/types';
+import React, { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Category, Product, CategoryShowcaseConfig } from '@/types';
 import { SectionBanner } from './SectionBanner';
-import { ProductCard } from '@/components/product/ProductCard';
+import { CategoryShowcaseSection } from './CategoryShowcaseSection';
+import { CATEGORY_SHOWCASE_CONFIG } from '@/data/categoryBanners';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export type SectionAnimationVariant =
   | 'fade-up'
@@ -23,79 +25,113 @@ interface CategorySectionProps {
   hasPrev?: boolean;
 }
 
-const ANIMATION_PRESETS: Record<
-  string,
-  {
-    initial: Record<string, number | string>;
-    whileInView: Record<string, number | string>;
-    transition: (i: number) => Transition;
-  }
-> = {
-  'fade-up': {
-    initial: { opacity: 0, y: 32 },
-    whileInView: { opacity: 1, y: 0 },
-    transition: (i: number) => ({
-      duration: 0.55,
-      delay: (i % 4) * 0.08,
-      ease: [0.22, 1, 0.36, 1],
-    }),
-  },
-  'stagger-slide': {
-    initial: { opacity: 0, x: -24 },
-    whileInView: { opacity: 1, x: 0 },
-    transition: (i: number) => ({
-      duration: 0.5,
-      delay: (i % 4) * 0.1,
-      ease: [0.22, 1, 0.36, 1],
-    }),
-  },
-  'scale-reveal': {
-    initial: { opacity: 0, scale: 0.94 },
-    whileInView: { opacity: 1, scale: 1 },
-    transition: (i: number) => ({
-      duration: 0.45,
-      delay: (i % 4) * 0.07,
-      ease: [0.22, 1, 0.36, 1],
-    }),
-  },
-  'subtle-float': {
-    initial: { opacity: 0, y: 20 },
-    whileInView: { opacity: 1, y: 0 },
-    transition: (i: number) => ({
-      duration: 0.6,
-      delay: (i % 4) * 0.08,
-      ease: [0.16, 1, 0.3, 1],
-    }),
-  },
-  default: {
-    initial: { opacity: 0, y: 24 },
-    whileInView: { opacity: 1, y: 0 },
-    transition: (i: number) => ({
-      duration: 0.48,
-      delay: (i % 4) * 0.06,
-      ease: [0.22, 1, 0.36, 1],
-    }),
-  },
-};
-
 export const CategorySection: React.FC<CategorySectionProps> = ({
   category,
   products,
-  animationVariant = 'fade-up',
   onNext,
   onPrev,
   hasNext,
   hasPrev,
 }) => {
-  const shouldReduceMotion = useReducedMotion();
-  const preset = ANIMATION_PRESETS[animationVariant] || ANIMATION_PRESETS.default;
+  const [activeSubTab, setActiveSubTab] = useState<'all' | 'new-arrivals' | 'top-picks' | 'recommended'>('all');
+
+  // Category Banner Configuration with safe fallback
+  const showcaseConfig: CategoryShowcaseConfig = useMemo(() => {
+    if (CATEGORY_SHOWCASE_CONFIG[category.slug]) {
+      return CATEGORY_SHOWCASE_CONFIG[category.slug];
+    }
+    const defaultImg = category.bannerImage || category.image || '/images/hero/hero-refined.webp';
+    return {
+      newArrivals: {
+        headline: `${category.name} New Arrivals`,
+        subtitle: `Discover the newly unveiled ${category.name.toLowerCase()} silhouettes crafted in our European ateliers.`,
+        badge: 'New Season Drop',
+        image4k: defaultImg,
+        fallbackImage: defaultImg,
+      },
+      topPicks: {
+        headline: `${category.name} Top Picks`,
+        subtitle: `Curated iconic ${category.name.toLowerCase()} pieces chosen for impeccable tailoring and material excellence.`,
+        badge: 'Atelier Icons',
+        image4k: defaultImg,
+        fallbackImage: defaultImg,
+      },
+      recommended: {
+        headline: `Recommended ${category.name}`,
+        subtitle: `Tailored silhouettes calibrated to complement your discerning aesthetic and seasonal wardrobe.`,
+        badge: 'Curated For You',
+        image4k: defaultImg,
+        fallbackImage: defaultImg,
+      },
+    };
+  }, [category]);
+
+  // Product Partitioning
+  const newArrivalsData = useMemo(() => {
+    let list = products.filter(
+      (p) => p.isNewArrival || p.tags?.includes('new-arrival')
+    );
+    if (list.length === 0) {
+      list = [...products].sort((a, b) => b.price - a.price);
+    }
+    const featured = list.slice(0, 6);
+    return { featured, catalog: list };
+  }, [products]);
+
+  const topPicksData = useMemo(() => {
+    let list = products.filter(
+      (p) =>
+        p.featured ||
+        p.isTrending ||
+        (p.rating && p.rating.average >= 4.8) ||
+        p.tags?.includes('bestseller') ||
+        p.tags?.includes('iconic') ||
+        p.tags?.includes('signature')
+    );
+    if (list.length === 0) {
+      list = [...products].sort((a, b) => (b.rating?.average || 0) - (a.rating?.average || 0));
+    }
+    const featured = list.slice(0, 6);
+    return { featured, catalog: list };
+  }, [products]);
+
+  const recommendedData = useMemo(() => {
+    // Curated recommendations prioritizing high quality ratings & diverse silhouettes
+    let list = products.filter(
+      (p) =>
+        p.tags?.some((t) => ['editorial', 'luxury', 'iconic', 'heritage', 'bestseller'].includes(t)) ||
+        p.featured
+    );
+    if (list.length === 0) {
+      list = [...products];
+    }
+    const featured = list.slice(0, 6);
+    return { featured, catalog: list };
+  }, [products]);
+
+  const scrollToSubSection = (sectionId: string, tab: 'all' | 'new-arrivals' | 'top-picks' | 'recommended') => {
+    setActiveSubTab(tab);
+    const navOffset = typeof window !== 'undefined' && window.innerWidth <= 767 ? 118 : 130;
+    if (tab === 'all') {
+      const topEl = document.getElementById(`section-${category.slug}`);
+      if (topEl) {
+        const offset = topEl.getBoundingClientRect().top + window.pageYOffset - navOffset;
+        window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+      }
+      return;
+    }
+    const el = document.getElementById(sectionId);
+    if (el) {
+      const offset = el.getBoundingClientRect().top + window.pageYOffset - navOffset;
+      window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+    }
+  };
 
   return (
     <motion.section
       key={category.id}
       id={`section-${category.slug}`}
       data-category-section={category.slug}
-      data-animation={animationVariant}
       className={`category-section section-${category.slug}`}
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
@@ -106,7 +142,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
         scrollMarginTop: '130px',
       }}
     >
-      {/* Dedicated Section Banner */}
+      {/* Existing Category Main Banner (Preserved) */}
       <SectionBanner
         category={category}
         productCount={products.length}
@@ -116,44 +152,184 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
         hasPrev={hasPrev}
       />
 
-      {/* Product Grid or Empty Filter Feedback */}
-      {products.length > 0 ? (
+      {/* Category Header Controls & Sub-Section Anchors */}
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '16px',
+          marginBottom: '36px',
+          paddingBottom: '16px',
+          borderBottom: '1px solid var(--border-color)',
+        }}
+      >
+        {/* Left: Section Jump Anchor Pills */}
         <div
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: '36px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            overflowX: 'auto',
+            scrollbarWidth: 'none',
+            maxWidth: '100%',
           }}
-          className={`product-grid product-grid-${category.slug} max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]`}
+          className="category-subnav-pills"
         >
-          {products.map((product, idx) => (
-            <motion.div
-              key={product.id}
-              className={`product-card-wrapper product-card-${category.slug}`}
-              initial={shouldReduceMotion ? undefined : preset.initial}
-              whileInView={shouldReduceMotion ? undefined : preset.whileInView}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={shouldReduceMotion ? undefined : preset.transition(idx)}
+          <button
+            onClick={() => scrollToSubSection(`section-${category.slug}`, 'all')}
+            style={{
+              padding: '6px 14px',
+              borderRadius: '999px',
+              fontSize: '0.8rem',
+              fontWeight: 500,
+              backgroundColor: activeSubTab === 'all' ? 'var(--text-primary)' : 'var(--bg-surface)',
+              color: activeSubTab === 'all' ? 'var(--bg-primary)' : 'var(--text-secondary)',
+              border: '1px solid var(--border-color)',
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            All Sections
+          </button>
+
+          <button
+            onClick={() =>
+              scrollToSubSection(`sec-${category.slug}-new-arrivals`, 'new-arrivals')
+            }
+            style={{
+              padding: '6px 14px',
+              borderRadius: '999px',
+              fontSize: '0.8rem',
+              fontWeight: 500,
+              backgroundColor: activeSubTab === 'new-arrivals' ? 'var(--text-primary)' : 'var(--bg-surface)',
+              color: activeSubTab === 'new-arrivals' ? 'var(--bg-primary)' : 'var(--text-secondary)',
+              border: '1px solid var(--border-color)',
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            New Arrivals
+          </button>
+
+          <button
+            onClick={() =>
+              scrollToSubSection(`sec-${category.slug}-top-picks`, 'top-picks')
+            }
+            style={{
+              padding: '6px 14px',
+              borderRadius: '999px',
+              fontSize: '0.8rem',
+              fontWeight: 500,
+              backgroundColor: activeSubTab === 'top-picks' ? 'var(--text-primary)' : 'var(--bg-surface)',
+              color: activeSubTab === 'top-picks' ? 'var(--bg-primary)' : 'var(--text-secondary)',
+              border: '1px solid var(--border-color)',
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Top Picks
+          </button>
+
+          <button
+            onClick={() =>
+              scrollToSubSection(`sec-${category.slug}-recommended`, 'recommended')
+            }
+            style={{
+              padding: '6px 14px',
+              borderRadius: '999px',
+              fontSize: '0.8rem',
+              fontWeight: 500,
+              backgroundColor: activeSubTab === 'recommended' ? 'var(--text-primary)' : 'var(--bg-surface)',
+              color: activeSubTab === 'recommended' ? 'var(--bg-primary)' : 'var(--text-secondary)',
+              border: '1px solid var(--border-color)',
+              cursor: 'pointer',
+              transition: 'all 200ms ease',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Recommended For You
+          </button>
+        </div>
+
+        {/* Right: Category Next / Prev Switches */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto' }}>
+          {hasPrev && onPrev && (
+            <button
+              onClick={onPrev}
+              aria-label="Previous Category"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '6px 12px',
+                borderRadius: '8px',
+                border: '1px solid var(--border-color)',
+                backgroundColor: 'var(--bg-surface)',
+                color: 'var(--text-primary)',
+                fontSize: '0.78rem',
+                cursor: 'pointer',
+              }}
             >
-              <ProductCard product={product} />
-            </motion.div>
-          ))}
+              <ChevronLeft size={14} />
+              <span className="hidden sm:inline">Prev Category</span>
+            </button>
+          )}
+
+          {hasNext && onNext && (
+            <button
+              onClick={onNext}
+              aria-label="Next Category"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '6px 12px',
+                borderRadius: '8px',
+                border: '1px solid var(--border-color)',
+                backgroundColor: 'var(--bg-surface)',
+                color: 'var(--text-primary)',
+                fontSize: '0.78rem',
+                cursor: 'pointer',
+              }}
+            >
+              <span className="hidden sm:inline">Next Category</span>
+              <ChevronRight size={14} />
+            </button>
+          )}
         </div>
-      ) : (
-        <div
-          style={{
-            textAlign: 'center',
-            padding: '48px 24px',
-            backgroundColor: 'var(--bg-surface)',
-            borderRadius: 'var(--radius-md)',
-            border: '1px dashed var(--border-color)',
-            color: 'var(--text-muted)',
-            fontSize: '0.9rem',
-          }}
-        >
-          No silhouettes in {category.name} match the currently applied filters.
-        </div>
-      )}
+      </div>
+
+      {/* SECTION 1: New Arrivals Showcase */}
+      <CategoryShowcaseSection
+        sectionId={`sec-${category.slug}-new-arrivals`}
+        config={showcaseConfig.newArrivals}
+        featuredProducts={newArrivalsData.featured}
+        catalogProducts={newArrivalsData.catalog}
+        categoryName={category.name}
+      />
+
+      {/* SECTION 2: Top Picks Showcase */}
+      <CategoryShowcaseSection
+        sectionId={`sec-${category.slug}-top-picks`}
+        config={showcaseConfig.topPicks}
+        featuredProducts={topPicksData.featured}
+        catalogProducts={topPicksData.catalog}
+        categoryName={category.name}
+      />
+
+      {/* SECTION 3: Recommended For You Showcase */}
+      <CategoryShowcaseSection
+        sectionId={`sec-${category.slug}-recommended`}
+        config={showcaseConfig.recommended}
+        featuredProducts={recommendedData.featured}
+        catalogProducts={recommendedData.catalog}
+        categoryName={category.name}
+      />
     </motion.section>
   );
 };

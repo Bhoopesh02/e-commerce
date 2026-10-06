@@ -247,6 +247,7 @@ export const Footer: React.FC = () => {
             </span>
 
             <p
+              className="hidden-mobile"
               style={{
                 fontSize: '0.86rem',
                 color: 'var(--color-silver, var(--color-silver))',
@@ -258,6 +259,7 @@ export const Footer: React.FC = () => {
             </p>
 
             <p
+              className="hidden-mobile"
               style={{
                 fontSize: '0.8rem',
                 color: 'rgba(224, 224, 224, 0.72)',
@@ -271,6 +273,7 @@ export const Footer: React.FC = () => {
 
             {/* Atelier Headquarters & Concierge Inquiries */}
             <div
+              className="hidden-mobile"
               style={{
                 paddingTop: '16px',
                 borderTop: '1px solid rgba(224, 224, 224, 0.12)',
@@ -318,7 +321,7 @@ export const Footer: React.FC = () => {
                   Silk Eveningwear
                 </Link>
               </li>
-              <li>
+              <li className="hidden-mobile">
                 <Link href="/shop?categorySlug=knitwear" className="footer-link">
                   Cashmere Knitwear
                 </Link>
@@ -328,17 +331,17 @@ export const Footer: React.FC = () => {
                   Hand-Finished Leather Goods
                 </Link>
               </li>
-              <li>
+              <li className="hidden-mobile">
                 <Link href="/shop?categorySlug=footwear" className="footer-link">
                   Florentine Footwear
                 </Link>
               </li>
-              <li>
+              <li className="hidden-mobile">
                 <Link href="/shop?categorySlug=fine-jewelry" className="footer-link">
                   Sculptural Fine Jewelry
                 </Link>
               </li>
-              <li>
+              <li className="hidden-mobile">
                 <Link href="/shop?categorySlug=fragrances" className="footer-link">
                   Artisanal Fragrances
                 </Link>
@@ -372,12 +375,12 @@ export const Footer: React.FC = () => {
                   Bespoke Inquiries & Support
                 </Link>
               </li>
-              <li>
+              <li className="hidden-mobile">
                 <Link href="/offers" className="footer-link">
                   Seasonal Privileges
                 </Link>
               </li>
-              <li>
+              <li className="hidden-mobile">
                 <Link href="/cart" className="footer-link">
                   Shopping Bag
                 </Link>
@@ -422,12 +425,12 @@ export const Footer: React.FC = () => {
                     Signature Icons
                   </Link>
                 </li>
-                <li>
+                <li className="hidden-mobile">
                   <Link href="/shop?tag=trending" className="footer-link">
                     House Favorites
                   </Link>
                 </li>
-                <li>
+                <li className="hidden-mobile">
                   <Link href="/admin/dashboard" className="footer-link">
                     Admin Portal
                   </Link>
@@ -436,6 +439,7 @@ export const Footer: React.FC = () => {
 
               {/* Non-linked editorial hallmarks */}
               <div
+                className="hidden-mobile"
                 style={{
                   marginTop: '18px',
                   paddingTop: '16px',
@@ -552,6 +556,9 @@ export const Footer: React.FC = () => {
         }
 
         @media (max-width: 767px) {
+          .hidden-mobile {
+            display: none !important;
+          }
           .footer-newsletter-section {
             display: none !important;
           }
