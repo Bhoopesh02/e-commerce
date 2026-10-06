@@ -529,6 +529,12 @@ button.filter-btn:focus-visible,
   transform: translateY(-2px) scale(1.18) !important;
 }
 
+/* Hide Quick Add overlay on mobile — no hover on touch devices */
+@media (max-width: 767px) {
+  .quick-add-overlay {
+    display: none !important;
+  }
+}
 
 
 /* Animated Back Button */

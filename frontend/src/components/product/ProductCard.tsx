@@ -229,6 +229,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Quick Add Overlay on Hover */}
         <div
+          className="quick-add-overlay"
           style={{
             position: 'absolute',
             bottom: variant === 'overlay' ? '80px' : '12px',

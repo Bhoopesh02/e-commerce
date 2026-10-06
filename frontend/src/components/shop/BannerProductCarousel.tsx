@@ -41,7 +41,7 @@ export const BannerProductCarouselSkeleton: React.FC = () => {
           overflowX: 'hidden',
           paddingBottom: '8px',
           paddingLeft: '4px',
-          paddingRight: '16px',
+          paddingRight: '4px',
         }}
       >
         {Array.from({ length: 6 }).map((_, idx) => (
@@ -231,6 +231,81 @@ export const BannerProductCarousel: React.FC<BannerProductCarouselProps> = ({
         )}
       </div>
 
+      {/* Mobile View Navigation Controls (Below Heading) */}
+      {isScrollable && (
+        <div
+          className="mobile-carousel-arrows-container"
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            gap: '8px',
+            marginBottom: '12px',
+            paddingRight: '16px',
+          }}
+        >
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleScroll('left');
+            }}
+            disabled={!canScrollLeft}
+            aria-label="Scroll banner products left"
+            className="mobile-carousel-arrow mobile-carousel-arrow-left"
+            style={{
+              width: '32px',
+              height: '32px',
+              minWidth: '32px',
+              minHeight: '32px',
+              borderRadius: '50%',
+              backgroundColor: 'transparent',
+              border: 'none',
+              boxShadow: 'none',
+              color: canScrollLeft ? '#FFFFFF' : 'rgba(255, 255, 255, 0.28)',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: canScrollLeft ? 'pointer' : 'default',
+              padding: 0,
+              filter: canScrollLeft ? 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.85))' : 'none',
+              transition: 'all 200ms ease',
+              pointerEvents: canScrollLeft ? 'auto' : 'none',
+            }}
+          >
+            <ChevronLeft size={22} strokeWidth={2.2} />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleScroll('right');
+            }}
+            disabled={!canScrollRight}
+            aria-label="Scroll banner products right"
+            className="mobile-carousel-arrow mobile-carousel-arrow-right"
+            style={{
+              width: '32px',
+              height: '32px',
+              minWidth: '32px',
+              minHeight: '32px',
+              borderRadius: '50%',
+              backgroundColor: 'transparent',
+              border: 'none',
+              boxShadow: 'none',
+              color: canScrollRight ? '#FFFFFF' : 'rgba(255, 255, 255, 0.28)',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: canScrollRight ? 'pointer' : 'default',
+              padding: 0,
+              filter: canScrollRight ? 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.85))' : 'none',
+              transition: 'all 200ms ease',
+              pointerEvents: canScrollRight ? 'auto' : 'none',
+            }}
+          >
+            <ChevronRight size={22} strokeWidth={2.2} />
+          </button>
+        </div>
+      )}
+
       {/* Horizontal Scroll Track Container */}
       <div
         className="banner-product-scroll-container"
@@ -239,81 +314,7 @@ export const BannerProductCarousel: React.FC<BannerProductCarouselProps> = ({
           width: '100%',
         }}
       >
-        {/* Mobile View Navigation Controls (Near Heading) */}
-        {isScrollable && (
-          <div
-            className="mobile-carousel-arrows-container"
-            style={{
-              position: 'absolute',
-              top: '28px',
-              right: '28px',
-              display: 'flex',
-              gap: '6px',
-              zIndex: 25,
-            }}
-          >
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleScroll('left');
-              }}
-              disabled={!canScrollLeft}
-              aria-label="Scroll banner products left"
-              className="mobile-carousel-arrow mobile-carousel-arrow-left"
-              style={{
-                width: '32px',
-                height: '32px',
-                minWidth: '32px',
-                minHeight: '32px',
-                borderRadius: '50%',
-                backgroundColor: 'transparent',
-                border: 'none',
-                boxShadow: 'none',
-                color: canScrollLeft ? '#FFFFFF' : 'rgba(255, 255, 255, 0.28)',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: canScrollLeft ? 'pointer' : 'default',
-                padding: 0,
-                filter: canScrollLeft ? 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.85))' : 'none',
-                transition: 'all 200ms ease',
-                pointerEvents: canScrollLeft ? 'auto' : 'none',
-              }}
-            >
-              <ChevronLeft size={22} strokeWidth={2.2} />
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleScroll('right');
-              }}
-              disabled={!canScrollRight}
-              aria-label="Scroll banner products right"
-              className="mobile-carousel-arrow mobile-carousel-arrow-right"
-              style={{
-                width: '32px',
-                height: '32px',
-                minWidth: '32px',
-                minHeight: '32px',
-                borderRadius: '50%',
-                backgroundColor: 'transparent',
-                border: 'none',
-                boxShadow: 'none',
-                color: canScrollRight ? '#FFFFFF' : 'rgba(255, 255, 255, 0.28)',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: canScrollRight ? 'pointer' : 'default',
-                padding: 0,
-                filter: canScrollRight ? 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.85))' : 'none',
-                transition: 'all 200ms ease',
-                pointerEvents: canScrollRight ? 'auto' : 'none',
-              }}
-            >
-              <ChevronRight size={22} strokeWidth={2.2} />
-            </button>
-          </div>
-        )}
+
 
         {/* Horizontal Scroll Track */}
         <div
@@ -328,7 +329,7 @@ export const BannerProductCarousel: React.FC<BannerProductCarouselProps> = ({
             scrollbarWidth: 'none',
             paddingBottom: '8px',
             paddingLeft: '4px',
-            paddingRight: '16px',
+            paddingRight: '4px',
           }}
         >
           {products.map((product) => (
