@@ -3,12 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { getProducts } from '@/lib/mockApi';
+import { getProducts, adminDeleteProduct } from '@/lib/mockApi';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { Package, Search, Plus, Sparkles, Filter, ChevronDown, Check } from 'lucide-react';
+import { Package, Search, Plus, Sparkles, Filter, ChevronDown, Check, Edit2, Trash2 } from 'lucide-react';
 
 function AdminProductsPageContent() {
   const searchParams = useSearchParams();
@@ -57,6 +57,22 @@ function AdminProductsPageContent() {
   useEffect(() => {
     setCurrentPage(1);
   }, [search, filterValue]);
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this silhouette?')) {
+      try {
+        const success = await adminDeleteProduct(id);
+        if (success) {
+          setProducts((prev) => prev.filter((p) => p.id !== id));
+          alert('Silhouette deleted temporarily.');
+        } else {
+          alert('Failed to delete silhouette.');
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
 
   if (loading) {
     return <div style={{ padding: '40px', color: 'var(--admin-text-primary)' }}>Loading Atelier Silhouettes...</div>;
@@ -143,14 +159,14 @@ function AdminProductsPageContent() {
             variant="outline" 
             size="sm" 
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            style={{ height: '40px', display: 'flex', alignItems: 'center' }}
+            style={{ height: '40px' }}
+            leftIcon={<Filter size={16} />}
+            rightIcon={<ChevronDown size={16} style={{ opacity: 0.7 }} />}
           >
-            <Filter size={16} style={{ marginRight: '8px' }} />
             {filterValue === 'all' ? 'Filter' : 
              ['in_stock', 'low_stock', 'out_of_stock'].includes(filterValue) ? 
              filterValue === 'in_stock' ? 'In Stock' : filterValue === 'low_stock' ? 'Low Stock' : 'Depleted'
              : filterValue.replace('cat_', '').charAt(0).toUpperCase() + filterValue.replace('cat_', '').slice(1)}
-            <ChevronDown size={16} style={{ marginLeft: '8px', opacity: 0.7 }} />
           </Button>
           
           {isFilterOpen && (
@@ -338,10 +354,11 @@ function AdminProductsPageContent() {
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
             <thead>
               <tr className="admin-table-header">
-                <th style={{ padding: '14px 16px', width: '40%' }}>Garment</th>
-                <th style={{ padding: '14px 16px', width: '20%' }}>Atelier Price</th>
+                <th style={{ padding: '14px 16px', width: '35%' }}>Garment</th>
+                <th style={{ padding: '14px 16px', width: '15%' }}>Atelier Price</th>
                 <th style={{ padding: '14px 16px', width: '20%' }}>Variants & Stock</th>
-                <th style={{ padding: '14px 16px', width: '20%' }}>Reserve Status</th>
+                <th style={{ padding: '14px 16px', width: '15%' }}>Reserve Status</th>
+                <th style={{ padding: '14px 16px', width: '15%', textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -362,7 +379,7 @@ function AdminProductsPageContent() {
                           border: '1px solid var(--admin-border)',
                         }}
                       >
-                        <Image src={p.images[0]} alt={p.name} fill sizes="48px" style={{ objectFit: 'cover' }} />
+                        <Image src={p.images[0] || '/images/hero/hero-refined.webp'} alt={p.name} fill sizes="48px" style={{ objectFit: 'cover' }} unoptimized />
                       </div>
                       <div>
                         <span style={{ fontWeight: 600, color: 'var(--admin-text-primary)', display: 'block' }}>{p.name}</span>
@@ -383,12 +400,32 @@ function AdminProductsPageContent() {
                       {p.availability === 'low_stock' && <Badge variant="warning">Low Stock</Badge>}
                       {p.availability === 'out_of_stock' && <Badge variant="danger">Depleted</Badge>}
                     </td>
+                    <td style={{ padding: '16px', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => router.push(`/admin/products/${p.id}/edit`)}
+                          style={{ width: '32px', height: '32px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--admin-text-secondary)' }}
+                        >
+                          <Edit2 size={16} />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDelete(p.id)}
+                          style={{ width: '32px', height: '32px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-error)' }}
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      </div>
+                    </td>
                   </tr>
                 );
               })}
               {paginatedProducts.length === 0 && (
                 <tr>
-                  <td colSpan={4} style={{ padding: '40px', textAlign: 'center', color: 'var(--admin-text-secondary)' }}>
+                  <td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: 'var(--admin-text-secondary)' }}>
                     No silhouettes found matching your criteria.
                   </td>
                 </tr>

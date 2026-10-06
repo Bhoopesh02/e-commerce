@@ -307,11 +307,11 @@ export default function AdminDashboardPage() {
               variant="outline" 
               size="sm" 
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              style={{ height: '40px', display: 'flex', alignItems: 'center' }}
+              style={{ height: '40px' }}
+              leftIcon={<Filter size={16} />}
+              rightIcon={<ChevronDown size={16} style={{ opacity: 0.7 }} />}
             >
-              <Filter size={16} style={{ marginRight: '8px' }} />
               {filterStatus === 'All' ? 'All Statuses' : filterStatus}
-              <ChevronDown size={16} style={{ marginLeft: '8px', opacity: 0.7 }} />
             </Button>
             
             {isFilterOpen && (

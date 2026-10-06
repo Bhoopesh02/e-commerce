@@ -242,6 +242,48 @@ export async function getTrendingProducts(storefront?: StorefrontId): Promise<Pr
   return list;
 }
 
+export async function createProduct(productData: Partial<Product> & { name: string; price: number; categoryId: string; images: string[] }): Promise<Product> {
+  await delay();
+  ensureClientState();
+  const id = `prod_${Date.now()}`;
+  const slug = (productData.name || 'silhouette')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+  const newProduct: Product = {
+    id,
+    slug: `${slug}-${id.slice(-4)}`,
+    name: productData.name,
+    subtitle: productData.subtitle || `${productData.name} Silhouette`,
+    description: productData.description || 'Architectural couture silhouette tailored for the seasonal collection.',
+    categoryId: productData.categoryId,
+    price: Number(productData.price),
+    compareAtPrice: productData.compareAtPrice,
+    images: productData.images,
+    variants: productData.variants && productData.variants.length > 0 ? productData.variants : [
+      { sku: `${id.toUpperCase()}-STD`, size: 'Standard', color: 'Noir', stock: 12 },
+      { sku: `${id.toUpperCase()}-38`, size: '38 FR', color: 'Noir', stock: 6 },
+      { sku: `${id.toUpperCase()}-40`, size: '40 FR', color: 'Noir', stock: 8 },
+    ],
+    availability: productData.availability || 'in_stock',
+    rating: productData.rating || { average: 5.0, count: 1 },
+    featured: productData.featured ?? true,
+    tags: productData.tags || ['Atelier', 'New Arrival', 'Silhouette'],
+    storefronts: productData.storefronts || ['a'],
+    isNewArrival: true,
+    isTrending: false,
+    details: productData.details || ['Hand-finished edge tailoring', 'Signature Atelier silhouette construction'],
+    materials: productData.materials || ['100% Virgin Wool / Silk'],
+    careGuide: productData.careGuide || ['Specialist dry clean only'],
+  };
+
+  productsState = [newProduct, ...productsState];
+  saveData('products', productsState);
+  return newProduct;
+}
+
 // ----------------------------------------------------------------------
 // CATEGORIES API
 // ----------------------------------------------------------------------
@@ -886,6 +928,30 @@ export async function adminExportReport(
   }
 
   return csvContent;
+}
+
+export async function adminUpdateProduct(id: string, updates: Partial<Product>): Promise<Product> {
+  await delay(200);
+  ensureClientState();
+  const index = productsState.findIndex((p) => p.id === id);
+  if (index === -1) throw new Error('Product not found');
+
+  const updatedProduct = { ...productsState[index], ...updates };
+  productsState[index] = updatedProduct;
+  saveData('products', productsState);
+  return updatedProduct;
+}
+
+export async function adminDeleteProduct(id: string): Promise<boolean> {
+  await delay(200);
+  ensureClientState();
+  const initialLength = productsState.length;
+  productsState = productsState.filter((p) => p.id !== id);
+  const deleted = productsState.length < initialLength;
+  if (deleted) {
+    saveData('products', productsState);
+  }
+  return deleted;
 }
 
 /**
