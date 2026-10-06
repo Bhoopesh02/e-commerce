@@ -11,6 +11,9 @@ import { useWishlistStore } from '@/store/useWishlistStore';
 import { useCartStore } from '@/store/useCartStore';
 import { RatingStars } from '@/components/ui/RatingStars';
 import { Badge } from '@/components/ui/Badge';
+import { Skeleton } from '@/components/ui/Skeleton';
+
+export { ProductCardSkeleton, ProductGridSkeleton } from './ProductCardSkeleton';
 
 export interface ProductCardProps {
   product: Product;
@@ -30,6 +33,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const shouldReduceMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const heartControls = useAnimationControls();
   const { isInWishlist, toggleItem } = useWishlistStore();
   const { addItem } = useCartStore();
@@ -95,6 +99,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           display: 'block',
         }}
       >
+        {/* Skeleton Shimmer While Product Image is Loading */}
+        {!isImageLoaded && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              zIndex: 1,
+              pointerEvents: 'none',
+            }}
+          >
+            <Skeleton
+              width="100%"
+              height="100%"
+              borderRadius={variant === 'grid' ? '8px' : 'var(--radius-sm)'}
+            />
+          </div>
+        )}
+
         {/* Primary Product Image */}
         <Image
           src={product.images[0]}
@@ -104,14 +126,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           height={variant === 'grid' ? 800 : undefined}
           quality={60}
           sizes={sizes}
+          onLoad={() => setIsImageLoaded(true)}
+          onError={() => setIsImageLoaded(true)}
           className={variant === 'grid' ? 'product-image-primary w-full h-auto object-cover rounded-lg md:rounded-none md:absolute md:h-full md:inset-0' : 'product-image-primary'}
           style={variant === 'grid' ? {
+            opacity: isImageLoaded ? 1 : 0,
             transform: isHovered && !shouldReduceMotion ? 'scale(1.15)' : 'scale(1)',
-            transition: 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            transition: 'opacity 350ms ease, transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
           } : {
             objectFit: 'cover',
+            opacity: isImageLoaded ? 1 : 0,
             transform: isHovered && !shouldReduceMotion ? 'scale(1.15)' : 'scale(1)',
-            transition: 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            transition: 'opacity 350ms ease, transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
           }}
         />
 

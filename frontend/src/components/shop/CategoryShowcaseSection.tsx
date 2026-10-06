@@ -5,7 +5,107 @@ import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Product, ShowcaseBannerConfig } from '@/types';
 import { BannerProductCarousel } from './BannerProductCarousel';
-import { ProductCard } from '@/components/product/ProductCard';
+import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCard';
+import { Skeleton } from '@/components/ui/Skeleton';
+
+export interface CategoryShowcaseSectionSkeletonProps {
+  sectionId?: string;
+  headline?: string;
+}
+
+export const CategoryShowcaseSectionSkeleton: React.FC<CategoryShowcaseSectionSkeletonProps> = ({
+  sectionId,
+  headline,
+}) => {
+  return (
+    <section
+      id={sectionId}
+      className="category-showcase-section category-showcase-section-skeleton"
+      style={{
+        marginBottom: '96px',
+        scrollMarginTop: '140px',
+      }}
+      aria-hidden="true"
+    >
+      {/* 1. Cinematic Hero Banner Skeleton */}
+      <div
+        className="category-hero-banner"
+        style={{
+          position: 'relative',
+          borderRadius: '24px',
+          overflow: 'hidden',
+          marginBottom: '48px',
+          backgroundColor: '#0c0a14',
+          boxShadow: '0 24px 56px -12px rgba(10, 8, 18, 0.45)',
+          border: '1px solid rgba(255, 255, 255, 0.14)',
+          minHeight: '480px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div
+          className="category-hero-banner-content"
+          style={{
+            position: 'relative',
+            zIndex: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            height: '100%',
+            padding: 'clamp(28px, 4vw, 44px)',
+            gap: '24px',
+          }}
+        >
+          {/* Banner Editorial Header Skeleton */}
+          <div className="category-hero-banner-header" style={{ maxWidth: '780px' }}>
+            {headline ? (
+              <h2
+                className="category-hero-banner-title"
+                style={{
+                  fontSize: 'clamp(1.25rem, 3.5vw, 2.7rem)',
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: 400,
+                  color: '#FFFFFF',
+                  lineHeight: 1.18,
+                  marginBottom: '12px',
+                  letterSpacing: '-0.01em',
+                }}
+              >
+                {headline}
+              </h2>
+            ) : (
+              <Skeleton width="clamp(220px, 45%, 380px)" height="42px" borderRadius="8px" style={{ marginBottom: '12px' }} />
+            )}
+            <Skeleton width="clamp(260px, 65%, 520px)" height="18px" borderRadius="4px" />
+          </div>
+
+          {/* Embedded Horizontal Scrollable Products Carousel Skeleton */}
+          <BannerProductCarousel isLoading={true} products={[]} />
+        </div>
+      </div>
+
+      {/* 2. All Products Catalog Below the Banner Skeleton */}
+      <div className="section-catalog-below">
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '24px',
+            paddingBottom: '14px',
+            borderBottom: '1px solid var(--border-color)',
+          }}
+        >
+          <Skeleton width="180px" height="24px" borderRadius="4px" />
+        </div>
+
+        {/* Responsive Product Grid Skeleton */}
+        <ProductGridSkeleton count={4} />
+      </div>
+    </section>
+  );
+};
 
 interface CategoryShowcaseSectionProps {
   sectionId: string;
@@ -13,6 +113,7 @@ interface CategoryShowcaseSectionProps {
   featuredProducts: Product[];
   catalogProducts: Product[];
   categoryName: string;
+  isLoading?: boolean;
 }
 
 export const CategoryShowcaseSection: React.FC<CategoryShowcaseSectionProps> = ({
@@ -21,9 +122,15 @@ export const CategoryShowcaseSection: React.FC<CategoryShowcaseSectionProps> = (
   featuredProducts,
   catalogProducts,
   categoryName,
+  isLoading = false,
 }) => {
   const shouldReduceMotion = useReducedMotion();
   const [imgSrc, setImgSrc] = useState(config.image4k || config.fallbackImage);
+  const [isBannerLoaded, setIsBannerLoaded] = useState(false);
+
+  if (isLoading) {
+    return <CategoryShowcaseSectionSkeleton sectionId={sectionId} headline={config.headline} />;
+  }
 
   return (
     <section
@@ -59,6 +166,19 @@ export const CategoryShowcaseSection: React.FC<CategoryShowcaseSectionProps> = (
             zIndex: 1,
           }}
         >
+          {!isBannerLoaded && (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                zIndex: 0,
+                pointerEvents: 'none',
+              }}
+            >
+              <Skeleton width="100%" height="100%" borderRadius="24px" />
+            </div>
+          )}
+
           <Image
             src={imgSrc}
             alt={`${config.headline} - 4K High Clarity Banner`}
@@ -66,7 +186,9 @@ export const CategoryShowcaseSection: React.FC<CategoryShowcaseSectionProps> = (
             sizes="(max-width: 1280px) 100vw, 1440px"
             quality={90}
             priority={sectionId.includes('new-arrivals')}
+            onLoad={() => setIsBannerLoaded(true)}
             onError={() => {
+              setIsBannerLoaded(true);
               if (imgSrc !== config.fallbackImage) {
                 setImgSrc(config.fallbackImage);
               }
@@ -74,6 +196,8 @@ export const CategoryShowcaseSection: React.FC<CategoryShowcaseSectionProps> = (
             style={{
               objectFit: 'cover',
               objectPosition: 'center center',
+              opacity: isBannerLoaded ? 1 : 0,
+              transition: 'opacity 500ms ease',
             }}
           />
 

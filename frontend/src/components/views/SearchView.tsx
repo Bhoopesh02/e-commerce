@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo, Suspense, useRef } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { getProducts, getCategories } from '@/lib/mockApi';
 import { Product, Category } from '@/types';
-import { ProductCard } from '@/components/product/ProductCard';
+import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Search, Plus, X, ChevronDown, Check } from 'lucide-react';
 
@@ -651,17 +651,7 @@ function SearchContent() {
             </div>
 
             {loading ? (
-              <div className="max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}>
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i}>
-                    <Skeleton height="380px" borderRadius="var(--radius-sm)" />
-                    <div style={{ marginTop: '12px' }}>
-                      <Skeleton height="20px" width="70%" />
-                      <Skeleton height="16px" width="40%" style={{ marginTop: '6px' }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <ProductGridSkeleton count={4} />
             ) : filteredProducts.length > 0 ? (
               <div className="max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}>
                 {filteredProducts.map(product => (

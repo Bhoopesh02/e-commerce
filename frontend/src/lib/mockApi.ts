@@ -75,7 +75,7 @@ let wishlistsState: Record<string, string[]> = (wishlistsData as { userId: strin
 );
 
 // Catalog version tag to invalidate stale client localStorage when products.json updates
-const CATALOG_VERSION = '2026.09.22.v7'; // Bump this string to force a cache reset across clients-side state on first mount (runs only once per session)
+const CATALOG_VERSION = '2026.10.06.v8'; // Bump this string to force a cache reset across clients-side state on first mount (runs only once per session)
 let isClientStateInitialized = false;
 
 function ensureClientState() {

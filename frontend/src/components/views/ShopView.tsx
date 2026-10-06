@@ -8,7 +8,7 @@ import { Product, Category } from '@/types';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
-import { CategorySection, SectionAnimationVariant } from '@/components/shop/CategorySection';
+import { CategorySection, CategorySectionSkeleton, SectionAnimationVariant } from '@/components/shop/CategorySection';
 import { RangeSlider } from '@/components/ui/RangeSlider';
 import { ProductCard } from '@/components/product/ProductCard';
 import { CollectionNewArrivals } from '@/components/sections/CollectionNewArrivals';
@@ -16,6 +16,38 @@ import { CollectionsBannerCarousel } from '@/components/sections/CollectionsBann
 import { AnimatePresence, motion } from 'framer-motion';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { SlidersHorizontal, X, RotateCcw, ArrowUp, CloudRain, Scissors, Sparkles, Shirt, ShoppingBag, Footprints, Gem, FlaskConical, Check } from 'lucide-react';
+
+export const ShopViewSkeleton: React.FC = () => {
+  return (
+    <div style={{ minHeight: '100vh', paddingBottom: '96px', paddingTop: '100px' }} aria-busy="true">
+      {/* Sticky Bar Skeleton */}
+      <div
+        style={{
+          borderBottom: '1px solid var(--border-color)',
+          backgroundColor: 'var(--bg-primary)',
+          padding: '16px 0',
+          marginBottom: '36px',
+        }}
+      >
+        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+          <div style={{ display: 'flex', gap: '10px', overflowX: 'hidden' }}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} width="110px" height="38px" borderRadius="999px" />
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <Skeleton width="130px" height="38px" borderRadius="8px" />
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Container Skeleton */}
+      <div className="container">
+        <CategorySectionSkeleton categoryName="Atelier Collections" />
+      </div>
+    </div>
+  );
+};
 
 
 
@@ -480,29 +512,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
       <div className="container" style={{ marginTop: '36px' }}>
         {/* Distinct Category Sections */}
         {loading ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '64px' }}>
-            {Array.from({ length: 3 }).map((_, secIdx) => (
-              <div key={secIdx}>
-                <Skeleton height="280px" borderRadius="20px" style={{ marginBottom: '32px' }} />
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                    gap: '32px',
-                  }}
-                >
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i}>
-                      <Skeleton height="380px" borderRadius="var(--radius-sm)" />
-                      <div style={{ marginTop: '12px' }}>
-                        <Skeleton height="20px" width="70%" />
-                        <Skeleton height="16px" width="40%" style={{ marginTop: '6px' }} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+          <div className="category-sections-container">
+            <CategorySectionSkeleton
+              categoryName={categories.find((c) => c.slug === activeCategory)?.name || 'Outerwear'}
+            />
           </div>
         ) : filteredProducts.length > 0 ? (
           <div className="category-sections-container">

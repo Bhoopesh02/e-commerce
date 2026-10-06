@@ -4,9 +4,10 @@ import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Category, Product, CategoryShowcaseConfig } from '@/types';
 import { SectionBanner } from './SectionBanner';
-import { CategoryShowcaseSection } from './CategoryShowcaseSection';
+import { CategoryShowcaseSection, CategoryShowcaseSectionSkeleton } from './CategoryShowcaseSection';
 import { CATEGORY_SHOWCASE_CONFIG } from '@/data/categoryBanners';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export type SectionAnimationVariant =
   | 'fade-up'
@@ -14,6 +15,59 @@ export type SectionAnimationVariant =
   | 'scale-reveal'
   | 'subtle-float'
   | 'default';
+
+export interface CategorySectionSkeletonProps {
+  categoryName?: string;
+}
+
+export const CategorySectionSkeleton: React.FC<CategorySectionSkeletonProps> = ({
+  categoryName,
+}) => {
+  return (
+    <div
+      className="category-section-skeleton"
+      style={{
+        marginBottom: '96px',
+        scrollMarginTop: '130px',
+      }}
+      aria-hidden="true"
+    >
+      {/* Category Main Banner Skeleton */}
+      <div
+        style={{
+          height: '240px',
+          borderRadius: 'var(--radius-lg, 20px)',
+          overflow: 'hidden',
+          marginBottom: '32px',
+        }}
+      >
+        <Skeleton width="100%" height="100%" borderRadius="20px" />
+      </div>
+
+      {/* Subnav Pills Skeleton */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          marginBottom: '36px',
+          paddingBottom: '16px',
+          borderBottom: '1px solid var(--border-color)',
+        }}
+      >
+        <Skeleton width="100px" height="32px" borderRadius="999px" />
+        <Skeleton width="110px" height="32px" borderRadius="999px" />
+        <Skeleton width="90px" height="32px" borderRadius="999px" />
+        <Skeleton width="140px" height="32px" borderRadius="999px" />
+      </div>
+
+      {/* Category Showcase Section Skeletons */}
+      <CategoryShowcaseSectionSkeleton headline={categoryName ? `${categoryName} New Arrivals` : undefined} />
+      <CategoryShowcaseSectionSkeleton headline={categoryName ? `${categoryName} Top Picks` : undefined} />
+      <CategoryShowcaseSectionSkeleton headline={categoryName ? `Recommended ${categoryName}` : undefined} />
+    </div>
+  );
+};
 
 interface CategorySectionProps {
   category: Category;
@@ -23,6 +77,7 @@ interface CategorySectionProps {
   onPrev?: () => void;
   hasNext?: boolean;
   hasPrev?: boolean;
+  isLoading?: boolean;
 }
 
 export const CategorySection: React.FC<CategorySectionProps> = ({
@@ -32,8 +87,13 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
   onPrev,
   hasNext,
   hasPrev,
+  isLoading = false,
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'all' | 'new-arrivals' | 'top-picks' | 'recommended'>('all');
+
+  if (isLoading) {
+    return <CategorySectionSkeleton categoryName={category?.name} />;
+  }
 
   // Category Banner Configuration with safe fallback
   const showcaseConfig: CategoryShowcaseConfig = useMemo(() => {

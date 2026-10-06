@@ -18,6 +18,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { ReviewList } from '@/components/product/ReviewList';
 import { ProductCard } from '@/components/product/ProductCard';
 import { RecommendedProducts } from '@/components/product/RecommendedProducts';
+import { ProductImageLightbox } from '@/components/product/ProductImageLightbox';
 import {
   Heart,
   ShoppingBag,
@@ -30,6 +31,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ArrowRight,
+  Maximize2,
 } from 'lucide-react';
 
 interface ProductDetailViewProps {
@@ -65,6 +67,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
 
   // Modals
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const { addItem, setBuyNowItem } = useCartStore();
@@ -221,6 +224,17 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {/* Primary Main Image */}
             <div
+              role="button"
+              tabIndex={0}
+              aria-label={`View ${product.name} in full screen`}
+              onClick={() => setIsLightboxOpen(true)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setIsLightboxOpen(true);
+                }
+              }}
+              className="pdp-main-image-container"
               style={{
                 position: 'relative',
                 width: '100%',
@@ -229,6 +243,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 overflow: 'hidden',
                 backgroundColor: 'var(--bg-surface)',
                 boxShadow: 'var(--shadow-editorial)',
+                cursor: 'zoom-in',
               }}
             >
               <Image
@@ -237,14 +252,46 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                style={{ objectFit: 'cover' }}
+                style={{
+                  objectFit: 'cover',
+                  transition: 'transform var(--duration-normal) var(--ease-editorial)',
+                }}
               />
 
               {product.availability === 'low_stock' && (
-                <div style={{ position: 'absolute', top: '16px', left: '16px' }}>
+                <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 2 }}>
                   <Badge variant="warning">Low Atelier Reserve</Badge>
                 </div>
               )}
+
+              {/* Floating Full Screen Trigger Pill */}
+              <div
+                className="pdp-fullscreen-badge"
+                style={{
+                  position: 'absolute',
+                  bottom: '14px',
+                  right: '14px',
+                  zIndex: 2,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 12px',
+                  backgroundColor: 'rgba(20, 20, 20, 0.72)',
+                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(10px)',
+                  color: '#FFFFFF',
+                  borderRadius: 'var(--radius-pill)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  fontSize: '0.74rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.04em',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)',
+                  pointerEvents: 'none',
+                }}
+              >
+                <Maximize2 size={13} style={{ color: 'var(--color-golden)' }} />
+                <span>Full Screen</span>
+              </div>
             </div>
 
             {/* Thumbnail Rail */}
@@ -307,11 +354,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 <span style={{ fontSize: '1.6rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                   {formatPrice(product.price)}
                 </span>
-                {product.compareAtPrice && (
-                  <span style={{ fontSize: '1.05rem', color: 'var(--text-muted)', textDecoration: 'line-through' }}>
-                    {formatPrice(product.compareAtPrice)}
-                  </span>
-                )}
+                {/* Strikethrough compare price removed as requested */}
                 <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                   Inclusive of all luxury taxes & duties
                 </span>
@@ -732,6 +775,16 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
           </p>
         </div>
       </Modal>
+
+      {/* Full-Screen Product Image Lightbox */}
+      <ProductImageLightbox
+        isOpen={isLightboxOpen}
+        onClose={() => setIsLightboxOpen(false)}
+        images={product.images}
+        productName={product.name}
+        initialIndex={activeImageIndex}
+        onIndexChange={(newIdx) => setActiveImageIndex(newIdx)}
+      />
     </div>
   );
 };

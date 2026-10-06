@@ -76,13 +76,13 @@ export const CATEGORY_SHOWCASE_CONFIG: Record<string, CategoryShowcaseConfig> = 
       subtitle: 'Ultra-fine Grade-A Mongolian cashmere, brushed featherweight mohair, and seamless ribbed jumpers.',
       badge: 'Pure Cashmere',
       image4k: '/images/sections/banners/knitwear-4k.webp',
-      fallbackImage: '/images/sections/banners/banner-knitwear-v2.webp',
+      fallbackImage: '/images/sections/banners/optimized/banner-knitwear-v2.webp',
     },
     topPicks: {
       headline: 'Top Picks: Heritage Cashmere & Merino',
       subtitle: 'Unrivaled 15.2-micron softness and timeless thermal layering staples that define quiet luxury knitwear.',
       badge: 'Timeless Essentials',
-      image4k: '/images/sections/banners/banner-knitwear-v2.webp',
+      image4k: '/images/sections/banners/optimized/banner-knitwear-v2.webp',
       fallbackImage: '/images/sections/banners/knitwear-4k.webp',
     },
     recommended: {
@@ -90,7 +90,7 @@ export const CATEGORY_SHOWCASE_CONFIG: Record<string, CategoryShowcaseConfig> = 
       subtitle: 'Effortless textured crewnecks and cocoon cardigans styled for sophisticated everyday warmth.',
       badge: 'Warmth & Comfort',
       image4k: '/images/sections/banners/knitwear-4k.webp',
-      fallbackImage: '/images/sections/banners/banner-knitwear-v2.webp',
+      fallbackImage: '/images/sections/banners/optimized/banner-knitwear-v2.webp',
     },
   },
   'leather-goods': {

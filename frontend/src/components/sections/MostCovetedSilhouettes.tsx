@@ -5,12 +5,13 @@ import Link from 'next/link';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { Product } from '@/types';
-import { ProductCard } from '@/components/product/ProductCard';
+import { ProductCard, ProductCardSkeleton } from '@/components/product/ProductCard';
 
 interface MostCovetedSilhouettesProps {
   products: Product[];
   title?: string;
   subtitle?: string;
+  isLoading?: boolean;
   onExploreClick?: () => void;
 }
 
@@ -20,6 +21,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   products,
   title = 'Most Coveted Silhouettes',
   subtitle = 'House Signatures',
+  isLoading = false,
   onExploreClick,
 }) => {
   const shouldReduceMotion = useReducedMotion();
@@ -316,38 +318,65 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
         onMouseEnter={() => setIsCarouselHovered(true)}
         onMouseLeave={() => setIsCarouselHovered(false)}
       >
-        <motion.div
-          initial="hidden"
-          animate={isSectionInView ? 'visible' : 'hidden'}
-          variants={containerVariants}
-          ref={trackRef}
-          style={{
-            display: 'flex',
-            gap: '16px',
-            width: 'max-content',
-            willChange: 'transform',
-            paddingLeft: 'max(24px, calc((100vw - 1440px) / 2 + 24px))',
-            paddingRight: 'max(24px, calc((100vw - 1440px) / 2 + 24px))',
-          }}
-        >
-          {items.map((product, index) => (
-            <motion.div
-              key={`${product.id}-${index}`}
-              variants={cardVariants}
-              style={{
-                width: 'clamp(280px, 28vw, 420px)',
-                flexShrink: 0,
-              }}
-            >
-              <ProductCard 
-                product={product} 
-                variant="overlay" 
-                aspectRatio="3 / 4"
-                sizes="(max-width: 768px) 320px, (max-width: 1440px) 28vw, 420px" 
-              />
-            </motion.div>
-          ))}
-        </motion.div>
+        {isLoading || products.length === 0 ? (
+          <div
+            style={{
+              display: 'flex',
+              gap: '16px',
+              width: 'max-content',
+              paddingLeft: 'max(24px, calc((100vw - 1440px) / 2 + 24px))',
+              paddingRight: 'max(24px, calc((100vw - 1440px) / 2 + 24px))',
+            }}
+          >
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                style={{
+                  width: 'clamp(280px, 28vw, 420px)',
+                  flexShrink: 0,
+                }}
+              >
+                <ProductCardSkeleton
+                  variant="overlay"
+                  aspectRatio="3 / 4"
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <motion.div
+            initial="hidden"
+            animate={isSectionInView ? 'visible' : 'hidden'}
+            variants={containerVariants}
+            ref={trackRef}
+            style={{
+              display: 'flex',
+              gap: '16px',
+              width: 'max-content',
+              willChange: 'transform',
+              paddingLeft: 'max(24px, calc((100vw - 1440px) / 2 + 24px))',
+              paddingRight: 'max(24px, calc((100vw - 1440px) / 2 + 24px))',
+            }}
+          >
+            {items.map((product, index) => (
+              <motion.div
+                key={`${product.id}-${index}`}
+                variants={cardVariants}
+                style={{
+                  width: 'clamp(280px, 28vw, 420px)',
+                  flexShrink: 0,
+                }}
+              >
+                <ProductCard 
+                  product={product} 
+                  variant="overlay" 
+                  aspectRatio="3 / 4"
+                  sizes="(max-width: 768px) 320px, (max-width: 1440px) 28vw, 420px" 
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
     </section>
   );

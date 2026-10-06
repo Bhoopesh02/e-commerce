@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { ShopView } from '@/components/views/ShopView';
+import { ShopView, ShopViewSkeleton } from '@/components/views/ShopView';
 import {
   getInitialProducts,
   getInitialCategories,
@@ -10,7 +10,7 @@ export default function ShopPage() {
   const initialCategories = getInitialCategories();
 
   return (
-    <Suspense fallback={<div style={{ paddingTop: '140px', textAlign: 'center' }}>Loading Catalog...</div>}>
+    <Suspense fallback={<ShopViewSkeleton />}>
       <ShopView
         initialProducts={initialProducts}
         initialCategories={initialCategories}

@@ -42,7 +42,7 @@ export const StorefrontLayoutWrapper: React.FC<StorefrontLayoutWrapperProps> = (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
       <div style={{ flex: 1 }}>{children}</div>
-      {pathname === '/' && <Footer />}
+      {(pathname === '/' || pathname === '/shop') && <Footer />}
 
       {/* Global Interactive Overlays */}
       <CartDrawer />

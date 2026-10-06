@@ -7,7 +7,7 @@ import { ExpandingCarousel } from '@/components/sections/ExpandingCarousel';
 import { CategoryShowcase } from '@/components/sections/CategoryShowcase';
 import { EditorialCampaign } from '@/components/sections/EditorialCampaign';
 import { MostCovetedSilhouettes } from '@/components/sections/MostCovetedSilhouettes';
-import { ProductCard } from '@/components/product/ProductCard';
+import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 import {
   getProducts,
@@ -198,14 +198,16 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </div>
               </ScrollReveal>
 
-              <div
-                className="new-arrivals-grid"
-              >
-                {newArrivals.slice(0, 4).map((product, idx) => (
-                  <ScrollReveal key={product.id} delay={idx * 0.08} duration={0.5}>
-                    <ProductCard product={product} />
-                  </ScrollReveal>
-                ))}
+              <div className="new-arrivals-grid">
+                {loading || newArrivals.length === 0 ? (
+                  <ProductGridSkeleton count={4} />
+                ) : (
+                  newArrivals.slice(0, 4).map((product, idx) => (
+                    <ScrollReveal key={product.id} delay={idx * 0.08} duration={0.5}>
+                      <ProductCard product={product} />
+                    </ScrollReveal>
+                  ))
+                )}
               </div>
             </div>
           </section>
@@ -215,7 +217,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         return <EditorialCampaign key={id} />;
 
       case 'trending_products':
-        return <MostCovetedSilhouettes key={id} products={trending} />;
+        return <MostCovetedSilhouettes key={id} products={trending} isLoading={loading} />;
 
       case 'brand_story':
         return (

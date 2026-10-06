@@ -273,7 +273,6 @@ export const Footer: React.FC = () => {
 
             {/* Atelier Headquarters & Concierge Inquiries */}
             <div
-              className="hidden-mobile"
               style={{
                 paddingTop: '16px',
                 borderTop: '1px solid rgba(224, 224, 224, 0.12)',

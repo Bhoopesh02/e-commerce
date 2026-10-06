@@ -9,6 +9,57 @@ import { Product } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
 import { useWishlistStore } from '@/store/useWishlistStore';
 import { useCartStore } from '@/store/useCartStore';
+import { Skeleton } from '@/components/ui/Skeleton';
+
+export const BannerProductCardSkeleton: React.FC = () => {
+  return (
+    <div
+      className="banner-product-card-skeleton"
+      style={{
+        flexShrink: 0,
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        borderRadius: '12px',
+        background: 'rgba(12, 10, 22, 0.78)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        border: '1px solid rgba(255, 255, 255, 0.16)',
+        boxShadow: '0 12px 28px -6px rgba(0, 0, 0, 0.55)',
+        padding: '7px',
+        width: '100%',
+      }}
+      aria-hidden="true"
+    >
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          aspectRatio: '3 / 4',
+          borderRadius: '9px',
+          overflow: 'hidden',
+          backgroundColor: 'rgba(25, 20, 36, 0.8)',
+        }}
+      >
+        <Skeleton width="100%" height="100%" borderRadius="9px" />
+      </div>
+
+      <div
+        style={{
+          padding: '6px 2px 2px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '4px',
+        }}
+      >
+        <Skeleton width="80%" height="13px" borderRadius="3px" style={{ marginTop: '4px' }} />
+        <Skeleton width="50%" height="10px" borderRadius="3px" />
+        <Skeleton width="40%" height="12px" borderRadius="3px" style={{ marginTop: '4px' }} />
+        <Skeleton width="100%" height="28px" borderRadius="6px" style={{ marginTop: '6px' }} />
+      </div>
+    </div>
+  );
+};
 
 interface BannerProductCardProps {
   product: Product;
@@ -20,6 +71,7 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
   const shouldReduceMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const heartControls = useAnimationControls();
   const { isInWishlist, toggleItem } = useWishlistStore();
   const { addItem } = useCartStore();
@@ -92,16 +144,33 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
           display: 'block',
         }}
       >
+        {/* Skeleton Shimmer While Product Image is Loading */}
+        {!isImageLoaded && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              zIndex: 1,
+              pointerEvents: 'none',
+            }}
+          >
+            <Skeleton width="100%" height="100%" borderRadius="9px" />
+          </div>
+        )}
+
         <Image
           src={imageSrc}
           alt={product.name}
           fill
           sizes="(max-width: 768px) 150px, 180px"
           quality={75}
+          onLoad={() => setIsImageLoaded(true)}
+          onError={() => setIsImageLoaded(true)}
           style={{
             objectFit: 'cover',
+            opacity: isImageLoaded ? 1 : 0,
             transform: isHovered && !shouldReduceMotion ? 'scale(1.08)' : 'scale(1)',
-            transition: 'transform 550ms cubic-bezier(0.25, 1, 0.5, 1)',
+            transition: 'opacity 350ms ease, transform 550ms cubic-bezier(0.25, 1, 0.5, 1)',
           }}
         />
 

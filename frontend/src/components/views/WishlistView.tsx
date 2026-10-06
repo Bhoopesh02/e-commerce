@@ -7,7 +7,7 @@ import { useCartStore } from '@/store/useCartStore';
 import { useToastStore } from '@/store/useToastStore';
 import { getProducts } from '@/lib/mockApi';
 import { Product } from '@/types';
-import { ProductCard } from '@/components/product/ProductCard';
+import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCard';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Heart, ShoppingBag, ArrowRight } from 'lucide-react';
@@ -55,15 +55,7 @@ export const WishlistView: React.FC = () => {
     return (
       <div style={{ paddingTop: '110px', paddingBottom: '96px' }} className="container">
         <Skeleton height="40px" width="300px" style={{ marginBottom: '32px' }} />
-        <div 
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}
-          className="product-grid"
-        >
-          <Skeleton height="380px" />
-          <Skeleton height="380px" />
-          <Skeleton height="380px" />
-          <Skeleton height="380px" className="max-md:block hidden" />
-        </div>
+        <ProductGridSkeleton count={4} />
       </div>
     );
   }
