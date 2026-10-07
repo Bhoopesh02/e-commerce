@@ -17,7 +17,9 @@ export const HeroSection: React.FC = () => {
     <section
       style={{
         position: 'relative',
+        height: '100dvh',
         minHeight: '100vh',
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
