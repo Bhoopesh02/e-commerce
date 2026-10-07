@@ -460,7 +460,7 @@ button.filter-btn:focus-visible,
 
 .quick-add-btn:hover {
   transform: translateY(-2px) !important;
-  background-color: rgba(36, 75, 87, 0.95) !important;
+  background-color: rgba(20, 20, 20, 0.86) !important;
   border-color: rgba(224, 224, 224, 0.6) !important;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), 0 0 14px rgba(202, 212, 214, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
 }
