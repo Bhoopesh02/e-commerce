@@ -14,17 +14,12 @@ export const HeroSection: React.FC = () => {
 
   return (
     <section
+      className="hero-section"
       style={{
         position: 'relative',
-        height: '100dvh',
-        minHeight: '100vh',
         width: '100%',
         display: 'flex',
-        alignItems: 'flex-end',
-        justifyContent: 'flex-start',
         overflow: 'hidden',
-        paddingTop: '88px',
-        paddingBottom: '48px',
         backgroundColor: 'var(--color-black-tie)',
       }}
     >
@@ -50,36 +45,32 @@ export const HeroSection: React.FC = () => {
           priority
           quality={100}
           sizes="100vw"
-          className="animate-hero-scale"
+          className="animate-hero-scale hero-image"
           style={{
             objectFit: 'cover',
-            objectPosition: 'center 20%',
           }}
         />
 
         {/* Editorial Dramatic Gradients */}
         <div
+          className={`hero-gradient ${isEditorial ? 'gradient-editorial' : 'gradient-refined'}`}
           style={{
             position: 'absolute',
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            background: isEditorial
-              ? 'linear-gradient(90deg, rgba(16, 33, 39, 0.7) 0%, rgba(16, 33, 39, 0) 50%)' // Darker left side for text readability
-              : 'linear-gradient(180deg, rgba(16, 33, 39, 0.35) 0%, rgba(16, 33, 39, 0.75) 100%)',
           }}
         />
       </div>
 
       {/* Hero Content Container */}
       <div
-        className="container"
+        className={`container hero-content-container ${isEditorial ? 'editorial-layout' : 'refined-layout'}`}
         style={{
           position: 'relative',
           zIndex: 2,
           color: 'var(--bg-subtle)',
-          textAlign: isEditorial ? 'left' : 'center',
           maxWidth: isEditorial ? '1200px' : '900px',
           width: '100%',
         }}
@@ -138,14 +129,7 @@ export const HeroSection: React.FC = () => {
           </div>
         ) : (
           /* Refined Shopping Mode Layout */
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              margin: '0 auto',
-            }}
-          >
+          <div className="refined-mode-inner">
             <span
               style={{
                 fontSize: '0.8rem',
@@ -201,6 +185,69 @@ export const HeroSection: React.FC = () => {
       </div>
 
 
+      <style jsx global>{`
+        .hero-section {
+          height: 100dvh;
+          min-height: unset;
+          max-height: 100dvh;
+          align-items: flex-end;
+          justify-content: flex-start;
+          padding-top: 88px;
+          padding-bottom: 48px;
+        }
+
+        .hero-image {
+          object-position: center 20% !important;
+        }
+
+        .gradient-editorial {
+          background: linear-gradient(90deg, rgba(16, 33, 39, 0.7) 0%, rgba(16, 33, 39, 0) 50%);
+        }
+
+        .gradient-refined {
+          background: linear-gradient(180deg, rgba(16, 33, 39, 0.35) 0%, rgba(16, 33, 39, 0.75) 100%);
+        }
+
+        .editorial-layout {
+          text-align: left;
+        }
+
+        .refined-layout {
+          text-align: center;
+        }
+
+        .refined-mode-inner {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+          .hero-section {
+            height: 100dvh;
+            min-height: unset;
+            align-items: center;
+          }
+          
+          .hero-image {
+            object-position: right center !important;
+          }
+
+          .gradient-editorial {
+            background: linear-gradient(90deg, rgba(16, 33, 39, 0.9) 0%, rgba(16, 33, 39, 0.6) 80%, rgba(16, 33, 39, 0) 100%);
+          }
+
+          .hero-content-container.refined-layout {
+            text-align: left;
+          }
+
+          .refined-mode-inner {
+            align-items: flex-start;
+            margin: 0;
+          }
+        }
+      `}</style>
     </section>
   );
 };
