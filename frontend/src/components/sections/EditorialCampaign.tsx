@@ -20,7 +20,7 @@ export const EditorialCampaign: React.FC = () => {
     >
       <style>{`
         .editorial-section {
-          padding: 100px 0;
+          padding: 40px 0;
         }
         .editorial-grid {
           display: grid;
@@ -35,8 +35,8 @@ export const EditorialCampaign: React.FC = () => {
         }
         .editorial-image {
           position: absolute;
-          top: -100px;
-          bottom: -100px;
+          top: -40px;
+          bottom: -40px;
           right: 0;
           width: calc(50vw - 32px);
           overflow: hidden;

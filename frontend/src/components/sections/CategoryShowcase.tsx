@@ -101,13 +101,12 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
             <ScrollReveal key={cat.id} delay={idx * 0.1} duration={0.6}>
               <div 
                 onClick={() => router.push(`/shop?categorySlug=${cat.slug}`)}
-                className="category-card"
+                className="category-card group"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '16px',
-                  cursor: 'pointer',
-                  group: 'true'
+                  cursor: 'pointer'
                 }}
               >
                 <div 
