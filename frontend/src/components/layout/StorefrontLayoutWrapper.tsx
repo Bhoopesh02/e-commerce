@@ -39,7 +39,7 @@ export const StorefrontLayoutWrapper: React.FC<StorefrontLayoutWrapperProps> = (
   }, [storefrontId, setStorefront, initStorefront]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', overflowX: 'clip' }}>
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
       <div style={{ flex: 1 }}>{children}</div>
       {(pathname === '/' || pathname === '/shop') && <Footer />}

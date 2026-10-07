@@ -778,6 +778,7 @@ button.filter-btn:focus-visible,
   min-height: 100vh;
   background-color: var(--admin-canvas);
   color: var(--admin-text-primary);
+  overflow-x: clip;
 }
 
 .admin-sidebar {
