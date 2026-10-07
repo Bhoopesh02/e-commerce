@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { getProducts, getCategories } from '@/lib/mockApi';
 import { Product, Category } from '@/types';
@@ -10,9 +9,6 @@ import { Button } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
 import { CategorySection, CategorySectionSkeleton, SectionAnimationVariant } from '@/components/shop/CategorySection';
 import { RangeSlider } from '@/components/ui/RangeSlider';
-import { ProductCard } from '@/components/product/ProductCard';
-import { CollectionNewArrivals } from '@/components/sections/CollectionNewArrivals';
-import { CollectionsBannerCarousel } from '@/components/sections/CollectionsBannerCarousel';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { SlidersHorizontal, X, RotateCcw, ArrowUp, CloudRain, Scissors, Sparkles, Shirt, ShoppingBag, Footprints, Gem, FlaskConical, Check } from 'lucide-react';
@@ -238,9 +234,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
     return list;
   }, [products, searchParams, appliedPriceRange, appliedAvailability, selectedSort]);
 
-  const newArrivals = useMemo(() => {
-    return products.filter((p) => p.isNewArrival);
-  }, [products]);
 
   // Handle category selection
   const handleCategorySelect = useCallback((slug: string) => {
@@ -310,25 +303,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
   return (
     <div style={{ paddingTop: '76px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      <CollectionsBannerCarousel />
-
-      <div className="container">
-        {newArrivals.length > 0 && (
-          <CollectionNewArrivals
-            products={newArrivals}
-            title="New Arrivals"
-            subtitle="Latest Discoveries"
-            onExploreClick={() => {
-              if (stickyBarRef.current) {
-                const navHeight = typeof window !== 'undefined' && window.innerWidth <= 767 ? 64 : 76;
-                const offset = stickyBarRef.current.offsetTop - navHeight;
-                window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
-              }
-            }}
-          />
-        )}
-      </div>
-
       {/* Sticky Category Navigation Bar & Global Controls (Fixed Nav Bar on Collection Page) */}
       <div
         ref={stickyBarRef}
@@ -527,7 +501,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
         ) : filteredProducts.length > 0 ? (
           <div className="category-sections-container">
             <AnimatePresence mode="wait">
-              {categories.map((category, index) => {
+              {categories.map((category) => {
                 if (category.slug !== activeCategory) return null;
                 const categoryProducts = filteredProducts.filter((p) => p.categoryId === category.id);
                 return (
