@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Search, Heart, ShoppingBag, User, Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '@/store/useCartStore';
 import { useWishlistStore } from '@/store/useWishlistStore';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
@@ -365,90 +366,110 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         </div>
 
         {/* Mobile Flyout Navigation */}
-        {mobileMenuOpen && (
-          <div
-            style={{
-              padding: '24px',
-              backgroundColor: 'var(--bg-surface)',
-              borderBottom: '1px solid var(--border-color)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              color: 'var(--text-primary)',
-            }}
-          >
-            <Link
-              href="/"
-              onClick={() => setMobileMenuOpen(false)}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
               style={{
-                fontSize: '1rem',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                minHeight: '44px',
-                display: 'flex',
-                alignItems: 'center',
+                overflow: 'hidden',
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                width: 'fit-content',
+                minWidth: '240px',
+                backgroundColor: 'var(--bg-surface)',
+                borderBottom: '1px solid var(--border-color)',
+                borderRight: '1px solid var(--border-color)',
+                borderBottomRightRadius: '12px',
+                boxShadow: '4px 8px 24px rgba(0,0,0,0.12)',
               }}
             >
-              Home
-            </Link>
-            <Link
-              href={newArrivalsHref}
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                fontSize: '1rem',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                minHeight: '44px',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              Collections
-            </Link>
-            <Link
-              href="/offers"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                fontSize: '1rem',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                minHeight: '44px',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              Private Client Offers
-            </Link>
-            <Link
-              href="/wishlist"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                fontSize: '1rem',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                minHeight: '44px',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
-            </Link>
-            <Link
-              href={accountHref}
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                fontSize: '1rem',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                minHeight: '44px',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              {user?.role === 'admin' ? 'Admin Portal' : 'My Account'}
-            </Link>
-          </div>
-        )}
+              <div
+                style={{
+                  padding: '24px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  color: 'var(--text-primary)',
+                }}
+              >
+                <Link
+                  href="/"
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.08em',
+                    minHeight: '44px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  Home
+                </Link>
+                <Link
+                  href={newArrivalsHref}
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.08em',
+                    minHeight: '44px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  Collections
+                </Link>
+                <Link
+                  href="/offers"
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.08em',
+                    minHeight: '44px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  Private Client Offers
+                </Link>
+                <Link
+                  href="/wishlist"
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.08em',
+                    minHeight: '44px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
+                </Link>
+                <Link
+                  href={accountHref}
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.08em',
+                    minHeight: '44px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  {user?.role === 'admin' ? 'Admin Portal' : 'My Account'}
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Style block for responsive navigation layout & touch target sizing */}
