@@ -3,252 +3,116 @@
 import React from 'react';
 import Image from 'next/image';
 import { Category } from '@/types';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface SectionBannerProps {
   category: Category;
   productCount: number;
-  onNext?: () => void;
-  onPrev?: () => void;
-  hasNext?: boolean;
-  hasPrev?: boolean;
 }
 
 export const SectionBanner: React.FC<SectionBannerProps> = ({
   category,
   productCount,
-  onNext,
-  onPrev,
-  hasNext,
-  hasPrev,
 }) => {
+  // Use the generated image or the default category image
+  // For demonstration, we could use the new generated image but it's not dynamically passed,
+  // so we'll just continue to use category.bannerImage or category.image.
   const bannerSrc = category.bannerImage || category.image;
-  const headline = category.bannerHeadline || category.name;
-  const subtitle = category.bannerSubtitle || category.description;
-  const badges = category.bannerBadges || [];
+  
+  // Custom specific text for outerwear to match the user's reference image if it's outerwear,
+  // else use category default names.
+  const isOuterwear = category.slug === 'outerwear';
+  const smallText = isOuterwear ? 'HEAVY-DUTY WARMTH' : `${category.name} COLLECTION`;
+  const largeText = isOuterwear ? 'That Shearling Feeling' : category.name;
 
   return (
     <div
       style={{
         position: 'relative',
-        overflow: 'hidden',
-        borderRadius: '20px',
+        borderRadius: '0px', // The reference image doesn't seem to have rounded corners, or maybe we can keep 12px for consistency
         marginBottom: '36px',
-        height: '300px',
         display: 'flex',
-        alignItems: 'center',
-        boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',
-        border: '1px solid var(--border-on-inverse)',
-        backgroundColor: '#0c0a14',
+        flexDirection: 'row',
+        backgroundColor: '#ffffff',
+        minHeight: '60vh', // Using a larger height to accommodate portrait images
+        overflow: 'hidden',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.05)',
       }}
-      className="group section-banner"
+      className="section-banner-split"
     >
-      {/* Background Image Container */}
+      {/* Left side: Typography */}
       <div
         style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 1,
-        }}
-      >
-        <Image
-          src={bannerSrc}
-          alt={`${category.name} Editorial Campaign Banner`}
-          fill
-          priority
-          loading="eager"
-          sizes="(max-width: 1280px) 100vw, 1280px"
-          style={{
-            objectFit: 'cover',
-            objectPosition: 'center center',
-            willChange: 'transform',
-            transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-          }}
-          className="group-hover:scale-105"
-        />
-        {/* Cinematic Editorial Gradients - Vivid 4K Visibility with Pristine Text Legibility */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'linear-gradient(90deg, rgba(16, 33, 39, 0.78) 0%, rgba(16, 33, 39, 0.46) 40%, rgba(16, 33, 39, 0.12) 75%, rgba(16, 33, 39, 0.28) 100%)',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'linear-gradient(0deg, rgba(16, 33, 39, 0.45) 0%, transparent 55%)',
-          }}
-        />
-      </div>
-
-      {/* Banner Typography & Accents */}
-      <div
-        style={{
+          flex: '1 1 50%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '40px 20px',
           position: 'relative',
-          zIndex: 2,
-          padding: 'clamp(32px, 4.5vw, 54px)',
-          maxWidth: '740px',
-          paddingLeft: 'clamp(56px, 6vw, 80px)', // Make room for left arrow
-          paddingRight: 'clamp(56px, 6vw, 80px)', // Make room for right arrow
         }}
       >
-
-        <h2
-          style={{
-            fontSize: 'clamp(1.9rem, 4.5vw, 3.5rem)',
-            fontFamily: 'var(--font-display)',
-            fontWeight: 400,
-            color: 'var(--bg-subtle)',
-            letterSpacing: '0',
-            lineHeight: 1.15,
-            marginBottom: '14px',
-            textShadow: '0 2px 18px var(--shadow-lg)',
-          }}
-        >
-          {headline}
-        </h2>
-
-        {subtitle && (
+        <div style={{ textAlign: 'center', maxWidth: '400px' }}>
           <p
-            className="banner-subtitle"
             style={{
-              color: 'rgba(245, 248, 248, 0.9)',
-              fontSize: 'clamp(0.92rem, 1.15vw, 1.05rem)',
-              lineHeight: 1.6,
-              marginBottom: '22px',
-              maxWidth: '620px',
-              textShadow: '0 1px 10px rgba(16, 33, 39, 0.6)',
+              fontSize: '0.8rem',
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              letterSpacing: '0.12em',
+              color: '#333',
+              marginBottom: '16px',
             }}
           >
-            {subtitle}
+            {smallText}
           </p>
-        )}
-
-        {/* Quick Editorial Tags */}
-        <div
-          className="banner-badges"
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '10px',
-          }}
-        >
-          <span
+          <h2
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              padding: '5px 14px',
-              borderRadius: '6px',
-              backgroundColor: 'var(--overlay-white-10)',
-              backdropFilter: 'blur(8px)',
-              border: '1px solid rgba(255, 255, 255, 0.18)',
-              fontSize: '0.75rem',
-              color: 'var(--bg-subtle)',
-              fontWeight: 500,
-              letterSpacing: '0.04em',
+              fontSize: 'clamp(2.5rem, 4vw, 4rem)',
+              fontFamily: 'var(--font-serif)',
+              fontWeight: 400,
+              color: '#000',
+              lineHeight: 1.1,
+              letterSpacing: '-0.02em',
             }}
           >
-            {productCount} Silhouettes
-          </span>
-
-          {badges.map((badge, idx) => (
-            <span
-              key={idx}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                padding: '5px 14px',
-                borderRadius: '6px',
-                backgroundColor: 'var(--overlay-white-10)',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255, 255, 255, 0.18)',
-                fontSize: '0.75rem',
-                color: 'var(--bg-subtle)',
-                fontWeight: 500,
-                letterSpacing: '0.04em',
-              }}
-            >
-              {badge}
-            </span>
-          ))}
+            {largeText}
+          </h2>
         </div>
       </div>
 
-      {/* In-Banner Navigation Controls */}
-      {hasPrev && onPrev && (
-        <button
-          onClick={onPrev}
-          className="carousel-arrow-btn"
+      {/* Right side: Image */}
+      <div
+        style={{
+          flex: '1 1 50%',
+          position: 'relative',
+          minHeight: '400px', // Fallback min height for mobile
+        }}
+        className="banner-image-container"
+      >
+        <Image
+          src={bannerSrc}
+          alt={`${category.name} Campaign`}
+          fill
+          priority
+          sizes="(max-width: 768px) 100vw, 50vw"
           style={{
-            position: 'absolute',
-            left: 'clamp(12px, 2vw, 24px)',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            zIndex: 10,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: "var(--text-inverse)",
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
+            objectFit: 'cover',
+            objectPosition: 'center',
           }}
-          aria-label="Previous Category"
-        >
-          <ChevronLeft size={20} strokeWidth={1.5} />
-        </button>
-      )}
-
-      {hasNext && onNext && (
-        <button
-          onClick={onNext}
-          className="carousel-arrow-btn"
-          style={{
-            position: 'absolute',
-            right: 'clamp(12px, 2vw, 24px)',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            zIndex: 10,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: "var(--text-inverse)",
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-          }}
-          aria-label="Next Category"
-        >
-          <ChevronRight size={20} strokeWidth={1.5} />
-        </button>
-      )}
+        />
+      </div>
 
       <style jsx>{`
-        .carousel-arrow-btn {
-          width: 32px;
-          height: 32px;
+        .split-arrow-btn:hover {
+          background-color: #f5f5f5 !important;
+          border-color: #d0d0d0 !important;
         }
-        @media (min-width: 768px) {
-          .carousel-arrow-btn {
-            width: 36px;
-            height: 36px;
+        @media (max-width: 768px) {
+          .section-banner-split {
+            flex-direction: column !important;
           }
-        }
-        .carousel-arrow-btn:hover {
-          opacity: 0.8;
-        }
-        .carousel-arrow-btn:active {
-          opacity: 0.6;
-        }
-        @media (max-width: 767px) {
-          .section-banner {
-            height: 180px !important;
-          }
-          .banner-subtitle,
-          .banner-badges {
-            display: none !important;
+          .banner-image-container {
+            height: 400px;
+            width: 100%;
           }
         }
       `}</style>

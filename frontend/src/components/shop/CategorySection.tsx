@@ -193,10 +193,10 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
       id={`section-${category.slug}`}
       data-category-section={category.slug}
       className={`category-section section-${category.slug}`}
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+      initial={{ opacity: 0, y: 30, filter: 'blur(4px)' }}
+      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      exit={{ opacity: 0, y: -30, filter: 'blur(4px)' }}
+      transition={{ duration: 0.5, ease: [0.25, 0.8, 0.25, 1] }}
       style={{
         marginBottom: '96px',
         scrollMarginTop: '130px',
@@ -206,10 +206,6 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
       <SectionBanner
         category={category}
         productCount={products.length}
-        onNext={onNext}
-        onPrev={onPrev}
-        hasNext={hasNext}
-        hasPrev={hasPrev}
       />
 
       {/* Category Header Controls & Sub-Section Anchors */}
@@ -316,52 +312,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
           </button>
         </div>
 
-        {/* Right: Category Next / Prev Switches */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto' }}>
-          {hasPrev && onPrev && (
-            <button
-              onClick={onPrev}
-              aria-label="Previous Category"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '6px 12px',
-                borderRadius: '8px',
-                border: '1px solid var(--border-color)',
-                backgroundColor: 'var(--bg-surface)',
-                color: 'var(--text-primary)',
-                fontSize: '0.78rem',
-                cursor: 'pointer',
-              }}
-            >
-              <ChevronLeft size={14} />
-              <span className="hidden sm:inline">Prev Category</span>
-            </button>
-          )}
 
-          {hasNext && onNext && (
-            <button
-              onClick={onNext}
-              aria-label="Next Category"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '6px 12px',
-                borderRadius: '8px',
-                border: '1px solid var(--border-color)',
-                backgroundColor: 'var(--bg-surface)',
-                color: 'var(--text-primary)',
-                fontSize: '0.78rem',
-                cursor: 'pointer',
-              }}
-            >
-              <span className="hidden sm:inline">Next Category</span>
-              <ChevronRight size={14} />
-            </button>
-          )}
-        </div>
       </div>
 
       {/* SECTION 1: New Arrivals Showcase */}
