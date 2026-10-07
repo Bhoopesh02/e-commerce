@@ -50,7 +50,7 @@ export const CategoryShowcaseSkeleton: React.FC<CategoryShowcaseSkeletonProps> =
           )}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
+        <div className="category-grid">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div style={{ aspectRatio: '1/1', backgroundColor: '#f4f5f7', borderRadius: '12px' }}>
@@ -91,12 +91,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
           </div>
         </ScrollReveal>
 
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', 
-          gap: '24px',
-          justifyContent: 'center'
-        }}>
+        <div className="category-grid">
           {categories.map((cat, idx) => (
             <ScrollReveal key={cat.id} delay={idx * 0.1} duration={0.6}>
               <div 
@@ -158,6 +153,20 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
       </div>
 
       <style jsx global>{`
+        .category-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 16px;
+          justify-content: center;
+        }
+        
+        @media (min-width: 768px) {
+          .category-grid {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+          }
+        }
+
         .category-card:hover .category-card-image {
           transform: scale(1.05);
         }
