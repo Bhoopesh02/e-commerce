@@ -32,4 +32,4 @@ export const SUPPORTED_NOTIFICATION_CHANNELS = ['email'] as const;
 /**
  * Standard simulated network latency in milliseconds
  */
-export const MOCK_API_DELAY_MS = 200;
+export const MOCK_API_DELAY_MS = 0;

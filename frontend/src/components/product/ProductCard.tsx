@@ -21,6 +21,7 @@ export interface ProductCardProps {
   variant?: 'standard' | 'overlay' | 'grid';
   sizes?: string;
   onClick?: () => void;
+  priority?: boolean;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -29,6 +30,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   variant = 'standard',
   sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 420px',
   onClick,
+  priority = false,
 }) => {
   const shouldReduceMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
@@ -126,6 +128,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           height={variant === 'grid' ? 800 : undefined}
           quality={60}
           sizes={sizes}
+          priority={priority}
           onLoad={() => setIsImageLoaded(true)}
           onError={() => setIsImageLoaded(true)}
           className={variant === 'grid' ? 'product-image-primary w-full h-auto object-cover rounded-lg md:rounded-none md:absolute md:h-full md:inset-0' : 'product-image-primary'}

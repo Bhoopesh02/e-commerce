@@ -7,6 +7,7 @@ import { ExpandingCarousel } from '@/components/sections/ExpandingCarousel';
 import { CategoryShowcase } from '@/components/sections/CategoryShowcase';
 import { EditorialCampaign } from '@/components/sections/EditorialCampaign';
 import { MostCovetedSilhouettes } from '@/components/sections/MostCovetedSilhouettes';
+import { NewArrivalsCarousel } from '@/components/sections/NewArrivalsCarousel';
 import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 import {
@@ -151,67 +152,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         return <ExpandingCarousel key={id} products={products} />;
 
       case 'new_arrivals':
-        return (
-          <section key={id} className="new-arrivals-section" style={{ padding: '40px 0 80px', backgroundColor: 'var(--bg-primary)' }}>
-            <div className="container">
-              <ScrollReveal duration={0.5}>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'baseline',
-                    justifyContent: 'space-between',
-                    marginBottom: '40px',
-                    gap: '16px',
-                  }}
-                >
-                  <div>
-                    <span
-                      style={{
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        letterSpacing: '0.14em',
-                        textTransform: 'uppercase',
-                        color: 'var(--brand-primary)',
-                        display: 'block',
-                        marginBottom: '6px',
-                      }}
-                    >
-                      Runway Dispatches
-                    </span>
-                    <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.5rem)' }}>New Arrivals</h2>
-                  </div>
-                  <Link
-                    href="/shop?tag=new-arrival"
-                    className="editorial-arrow-link"
-                    style={{
-                      fontSize: '0.85rem',
-                      fontWeight: 600,
-                    }}
-                  >
-                    <span className="editorial-arrow-link-text">
-                      <span className="desktop-only">View All New Editions</span>
-                      <span className="mobile-only">View All</span>
-                    </span>
-                    <ArrowRight size={15} className="editorial-arrow-icon editorial-arrow-forward" />
-                  </Link>
-                </div>
-              </ScrollReveal>
-
-              <div className="new-arrivals-grid">
-                {loading || newArrivals.length === 0 ? (
-                  <ProductGridSkeleton count={4} />
-                ) : (
-                  newArrivals.slice(0, 4).map((product, idx) => (
-                    <ScrollReveal key={product.id} delay={idx * 0.08} duration={0.5}>
-                      <ProductCard product={product} />
-                    </ScrollReveal>
-                  ))
-                )}
-              </div>
-            </div>
-          </section>
-        );
+        return <NewArrivalsCarousel key={id} products={newArrivals} loading={loading} />;
 
       case 'editorial_campaign':
         return <EditorialCampaign key={id} />;
