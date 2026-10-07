@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 import { getProducts, adminDeleteProduct } from '@/lib/mockApi';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
@@ -169,103 +170,89 @@ function AdminProductsPageContent() {
              : filterValue.replace('cat_', '').charAt(0).toUpperCase() + filterValue.replace('cat_', '').slice(1)}
           </Button>
           
-          {isFilterOpen && (
-            <div style={{ 
-              position: 'absolute', 
-              top: '100%', 
-              right: 0, 
-              marginTop: '8px',
-              backgroundColor: 'var(--admin-surface)',
-              border: '1px solid var(--admin-border)',
-              borderRadius: 'var(--radius-md)',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
-              width: '280px',
-              zIndex: 50,
-              overflow: 'hidden'
-            }}>
-              <div style={{ display: 'flex', borderBottom: '1px solid var(--admin-border)' }}>
-                <button 
-                  onClick={() => setFilterTab('categories')}
-                  style={{ 
-                    flex: 1, 
-                    padding: '12px 10px', 
-                    background: filterTab === 'categories' ? 'var(--admin-background)' : 'transparent', 
-                    border: 'none', 
-                    borderBottom: filterTab === 'categories' ? '2px solid var(--color-sapphire)' : '2px solid transparent', 
-                    color: filterTab === 'categories' ? 'var(--color-sapphire)' : 'var(--admin-text-secondary)', 
-                    fontWeight: 600, 
-                    cursor: 'pointer', 
-                    fontSize: '0.85rem',
-                    transition: 'all 0.2s'
-                  }}
-                >
-                  Categories
-                </button>
-                <button 
-                  onClick={() => setFilterTab('statuses')}
-                  style={{ 
-                    flex: 1, 
-                    padding: '12px 10px', 
-                    background: filterTab === 'statuses' ? 'var(--admin-background)' : 'transparent', 
-                    border: 'none', 
-                    borderBottom: filterTab === 'statuses' ? '2px solid var(--color-sapphire)' : '2px solid transparent', 
-                    color: filterTab === 'statuses' ? 'var(--color-sapphire)' : 'var(--admin-text-secondary)', 
-                    fontWeight: 600, 
-                    cursor: 'pointer', 
-                    fontSize: '0.85rem',
-                    transition: 'all 0.2s'
-                  }}
-                >
-                  Statuses
-                </button>
-              </div>
-              
-              <div style={{ padding: '12px', backgroundColor: 'var(--admin-surface)' }}>
-                {filterTab === 'categories' && (
-                  <>
-                    <div style={{ marginBottom: '12px', position: 'relative' }}>
-                      <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--admin-text-secondary)' }} />
-                      <input 
-                        type="text" 
-                        placeholder="Search categories..." 
-                        value={categorySearch}
-                        onChange={e => setCategorySearch(e.target.value)}
-                        style={{ 
-                          width: '100%', 
-                          padding: '8px 10px 8px 32px', 
-                          fontSize: '0.85rem', 
-                          borderRadius: 'var(--radius-sm)', 
-                          border: '1px solid var(--admin-border)', 
-                          backgroundColor: 'var(--admin-background)', 
-                          color: 'var(--admin-text-primary)', 
-                          outline: 'none' 
-                        }}
-                      />
-                    </div>
-                    <div style={{ maxHeight: '220px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                      <button
-                        onClick={() => { setFilterValue('all'); setIsFilterOpen(false); }}
-                        style={{ 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          justifyContent: 'space-between', 
-                          padding: '10px 12px', 
-                          borderRadius: 'var(--radius-sm)', 
-                          border: 'none', 
-                          backgroundColor: filterValue === 'all' ? 'var(--admin-background)' : 'transparent', 
-                          color: 'var(--admin-text-primary)', 
-                          cursor: 'pointer', 
-                          textAlign: 'left', 
-                          fontSize: '0.85rem' 
-                        }}
-                      >
-                        All Categories
-                        {filterValue === 'all' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
-                      </button>
-                      {categories.filter(c => c.toLowerCase().includes(categorySearch.toLowerCase())).map(cat => (
+          <AnimatePresence>
+            {isFilterOpen && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                exit={{ opacity: 0, y: -10, height: 0 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                style={{ 
+                  position: 'absolute', 
+                  top: '100%', 
+                  right: 0, 
+                  marginTop: '8px',
+                  backgroundColor: 'var(--admin-surface)',
+                  border: '1px solid var(--admin-border)',
+                  borderRadius: 'var(--radius-md)',
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+                  width: '280px',
+                  zIndex: 50,
+                  overflow: 'hidden'
+                }}
+              >
+                <div style={{ display: 'flex', borderBottom: '1px solid var(--admin-border)' }}>
+                  <button 
+                    onClick={() => setFilterTab('categories')}
+                    style={{ 
+                      flex: 1, 
+                      padding: '12px 10px', 
+                      background: filterTab === 'categories' ? 'var(--admin-background)' : 'transparent', 
+                      border: 'none', 
+                      borderBottom: filterTab === 'categories' ? '2px solid var(--color-sapphire)' : '2px solid transparent', 
+                      color: filterTab === 'categories' ? 'var(--color-sapphire)' : 'var(--admin-text-secondary)', 
+                      fontWeight: 600, 
+                      cursor: 'pointer', 
+                      fontSize: '0.85rem',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    Categories
+                  </button>
+                  <button 
+                    onClick={() => setFilterTab('statuses')}
+                    style={{ 
+                      flex: 1, 
+                      padding: '12px 10px', 
+                      background: filterTab === 'statuses' ? 'var(--admin-background)' : 'transparent', 
+                      border: 'none', 
+                      borderBottom: filterTab === 'statuses' ? '2px solid var(--color-sapphire)' : '2px solid transparent', 
+                      color: filterTab === 'statuses' ? 'var(--color-sapphire)' : 'var(--admin-text-secondary)', 
+                      fontWeight: 600, 
+                      cursor: 'pointer', 
+                      fontSize: '0.85rem',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    Statuses
+                  </button>
+                </div>
+                
+                <div style={{ padding: '12px', backgroundColor: 'var(--admin-surface)' }}>
+                  {filterTab === 'categories' && (
+                    <>
+                      <div style={{ marginBottom: '12px', position: 'relative' }}>
+                        <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--admin-text-secondary)' }} />
+                        <input 
+                          type="text" 
+                          placeholder="Search categories..." 
+                          value={categorySearch}
+                          onChange={e => setCategorySearch(e.target.value)}
+                          style={{ 
+                            width: '100%', 
+                            padding: '8px 10px 8px 32px', 
+                            fontSize: '0.85rem', 
+                            borderRadius: 'var(--radius-sm)', 
+                            border: '1px solid var(--admin-border)', 
+                            backgroundColor: 'var(--admin-background)', 
+                            color: 'var(--admin-text-primary)', 
+                            outline: 'none' 
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '220px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         <button
-                          key={cat}
-                          onClick={() => { setFilterValue(cat); setIsFilterOpen(false); }}
+                          onClick={() => { setFilterValue('all'); setIsFilterOpen(false); }}
                           style={{ 
                             display: 'flex', 
                             alignItems: 'center', 
@@ -273,78 +260,100 @@ function AdminProductsPageContent() {
                             padding: '10px 12px', 
                             borderRadius: 'var(--radius-sm)', 
                             border: 'none', 
-                            backgroundColor: filterValue === cat ? 'var(--admin-background)' : 'transparent', 
+                            backgroundColor: filterValue === 'all' ? 'var(--admin-background)' : 'transparent', 
                             color: 'var(--admin-text-primary)', 
                             cursor: 'pointer', 
                             textAlign: 'left', 
                             fontSize: '0.85rem' 
                           }}
                         >
-                          {cat.replace('cat_', '').charAt(0).toUpperCase() + cat.replace('cat_', '').slice(1)}
-                          {filterValue === cat && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                          All Categories
+                          {filterValue === 'all' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                        </button>
+                        {categories.filter(c => c.toLowerCase().includes(categorySearch.toLowerCase())).map(cat => (
+                          <button
+                            key={cat}
+                            onClick={() => { setFilterValue(cat); setIsFilterOpen(false); }}
+                            style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'space-between', 
+                              padding: '10px 12px', 
+                              borderRadius: 'var(--radius-sm)', 
+                              border: 'none', 
+                              backgroundColor: filterValue === cat ? 'var(--admin-background)' : 'transparent', 
+                              color: 'var(--admin-text-primary)', 
+                              cursor: 'pointer', 
+                              textAlign: 'left', 
+                              fontSize: '0.85rem' 
+                            }}
+                          >
+                            {cat.replace('cat_', '').charAt(0).toUpperCase() + cat.replace('cat_', '').slice(1)}
+                            {filterValue === cat && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                          </button>
+                        ))}
+                        {categories.filter(c => c.toLowerCase().includes(categorySearch.toLowerCase())).length === 0 && (
+                          <div style={{ padding: '20px 10px', textAlign: 'center', color: 'var(--admin-text-secondary)', fontSize: '0.85rem' }}>
+                            No categories found.
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+                  
+                  {filterTab === 'statuses' && (
+                    <div style={{ maxHeight: '220px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                       <button
+                          onClick={() => { setFilterValue('all'); setIsFilterOpen(false); }}
+                          style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'space-between', 
+                            padding: '10px 12px', 
+                            borderRadius: 'var(--radius-sm)', 
+                            border: 'none', 
+                            backgroundColor: filterValue === 'all' ? 'var(--admin-background)' : 'transparent', 
+                            color: 'var(--admin-text-primary)', 
+                            cursor: 'pointer', 
+                            textAlign: 'left', 
+                            fontSize: '0.85rem' 
+                          }}
+                        >
+                          All Statuses
+                          {filterValue === 'all' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                        </button>
+                      {[
+                        { id: 'in_stock', label: 'In Stock' },
+                        { id: 'low_stock', label: 'Low Stock' },
+                        { id: 'out_of_stock', label: 'Depleted' }
+                      ].map(status => (
+                        <button
+                          key={status.id}
+                          onClick={() => { setFilterValue(status.id); setIsFilterOpen(false); }}
+                          style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'space-between', 
+                            padding: '10px 12px', 
+                            borderRadius: 'var(--radius-sm)', 
+                            border: 'none', 
+                            backgroundColor: filterValue === status.id ? 'var(--admin-background)' : 'transparent', 
+                            color: 'var(--admin-text-primary)', 
+                            cursor: 'pointer', 
+                            textAlign: 'left', 
+                            fontSize: '0.85rem' 
+                          }}
+                        >
+                          {status.label}
+                          {filterValue === status.id && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
                         </button>
                       ))}
-                      {categories.filter(c => c.toLowerCase().includes(categorySearch.toLowerCase())).length === 0 && (
-                        <div style={{ padding: '20px 10px', textAlign: 'center', color: 'var(--admin-text-secondary)', fontSize: '0.85rem' }}>
-                          No categories found.
-                        </div>
-                      )}
                     </div>
-                  </>
-                )}
-                
-                {filterTab === 'statuses' && (
-                  <div style={{ maxHeight: '220px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                     <button
-                        onClick={() => { setFilterValue('all'); setIsFilterOpen(false); }}
-                        style={{ 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          justifyContent: 'space-between', 
-                          padding: '10px 12px', 
-                          borderRadius: 'var(--radius-sm)', 
-                          border: 'none', 
-                          backgroundColor: filterValue === 'all' ? 'var(--admin-background)' : 'transparent', 
-                          color: 'var(--admin-text-primary)', 
-                          cursor: 'pointer', 
-                          textAlign: 'left', 
-                          fontSize: '0.85rem' 
-                        }}
-                      >
-                        All Statuses
-                        {filterValue === 'all' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
-                      </button>
-                    {[
-                      { id: 'in_stock', label: 'In Stock' },
-                      { id: 'low_stock', label: 'Low Stock' },
-                      { id: 'out_of_stock', label: 'Depleted' }
-                    ].map(status => (
-                      <button
-                        key={status.id}
-                        onClick={() => { setFilterValue(status.id); setIsFilterOpen(false); }}
-                        style={{ 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          justifyContent: 'space-between', 
-                          padding: '10px 12px', 
-                          borderRadius: 'var(--radius-sm)', 
-                          border: 'none', 
-                          backgroundColor: filterValue === status.id ? 'var(--admin-background)' : 'transparent', 
-                          color: 'var(--admin-text-primary)', 
-                          cursor: 'pointer', 
-                          textAlign: 'left', 
-                          fontSize: '0.85rem' 
-                        }}
-                      >
-                        {status.label}
-                        {filterValue === status.id && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 

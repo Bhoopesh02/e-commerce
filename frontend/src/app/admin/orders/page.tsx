@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { getOrders, adminUpdateOrderStatus } from '@/lib/mockApi';
 import { Order, OrderStatus } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
@@ -153,66 +154,75 @@ export default function AdminOrdersPage() {
             {filterStatus === 'all' ? 'All Commissions' : filterStatus}
           </Button>
           
-          {isFilterOpen && (
-            <div style={{ 
-              position: 'absolute', 
-              top: '100%', 
-              right: 0, 
-              marginTop: '8px',
-              backgroundColor: 'var(--admin-surface)',
-              border: '1px solid var(--admin-border)',
-              borderRadius: 'var(--radius-md)',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
-              width: '240px',
-              zIndex: 50,
-              overflow: 'hidden',
-              padding: '12px'
-            }}>
-              <div style={{ maxHeight: '280px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <button
-                  onClick={() => { setFilterStatus('all'); setIsFilterOpen(false); }}
-                  style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'space-between', 
-                    padding: '10px 12px', 
-                    borderRadius: 'var(--radius-sm)', 
-                    border: 'none', 
-                    backgroundColor: filterStatus === 'all' ? 'var(--admin-background)' : 'transparent', 
-                    color: 'var(--admin-text-primary)', 
-                    cursor: 'pointer', 
-                    textAlign: 'left', 
-                    fontSize: '0.85rem' 
-                  }}
-                >
-                  All Commissions
-                  {filterStatus === 'all' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
-                </button>
-                {['Placed', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'].map(status => (
-                  <button
-                    key={status}
-                    onClick={() => { setFilterStatus(status); setIsFilterOpen(false); }}
-                    style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'space-between', 
-                      padding: '10px 12px', 
-                      borderRadius: 'var(--radius-sm)', 
-                      border: 'none', 
-                      backgroundColor: filterStatus === status ? 'var(--admin-background)' : 'transparent', 
-                      color: 'var(--admin-text-primary)', 
-                      cursor: 'pointer', 
-                      textAlign: 'left', 
-                      fontSize: '0.85rem' 
-                    }}
-                  >
-                    {status}
-                    {filterStatus === status && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+          <AnimatePresence>
+            {isFilterOpen && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                exit={{ opacity: 0, y: -10, height: 0 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                style={{ 
+                  position: 'absolute', 
+                  top: '100%', 
+                  right: 0, 
+                  marginTop: '8px',
+                  backgroundColor: 'var(--admin-surface)',
+                  border: '1px solid var(--admin-border)',
+                  borderRadius: 'var(--radius-md)',
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+                  width: '240px',
+                  zIndex: 50,
+                  overflow: 'hidden'
+                }}
+              >
+                <div style={{ padding: '12px' }}>
+                  <div style={{ maxHeight: '280px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <button
+                      onClick={() => { setFilterStatus('all'); setIsFilterOpen(false); }}
+                      style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'space-between', 
+                        padding: '10px 12px', 
+                        borderRadius: 'var(--radius-sm)', 
+                        border: 'none', 
+                        backgroundColor: filterStatus === 'all' ? 'var(--admin-background)' : 'transparent', 
+                        color: 'var(--admin-text-primary)', 
+                        cursor: 'pointer', 
+                        textAlign: 'left', 
+                        fontSize: '0.85rem' 
+                      }}
+                    >
+                      All Commissions
+                      {filterStatus === 'all' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                    </button>
+                    {['Placed', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'].map(status => (
+                      <button
+                        key={status}
+                        onClick={() => { setFilterStatus(status); setIsFilterOpen(false); }}
+                        style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'space-between', 
+                          padding: '10px 12px', 
+                          borderRadius: 'var(--radius-sm)', 
+                          border: 'none', 
+                          backgroundColor: filterStatus === status ? 'var(--admin-background)' : 'transparent', 
+                          color: 'var(--admin-text-primary)', 
+                          cursor: 'pointer', 
+                          textAlign: 'left', 
+                          fontSize: '0.85rem' 
+                        }}
+                      >
+                        {status}
+                        {filterStatus === status && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
