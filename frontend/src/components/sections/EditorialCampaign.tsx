@@ -13,7 +13,7 @@ export const EditorialCampaign: React.FC = () => {
       className="editorial-section"
       style={{
         backgroundColor: 'var(--color-black-tie)',
-        color: '#FFF8F5',
+        color: 'var(--bg-subtle)',
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -99,7 +99,7 @@ export const EditorialCampaign: React.FC = () => {
                   right: 0,
                   bottom: 0,
                   background:
-                    'linear-gradient(180deg, rgba(20, 20, 20, 0.1) 0%, rgba(20, 20, 20, 0.6) 100%)',
+                    'linear-gradient(180deg, var(--overlay-black-10) 0%, var(--overlay-scrim) 100%)',
                 }}
               />
               {/* Tag Overlay */}
@@ -120,12 +120,12 @@ export const EditorialCampaign: React.FC = () => {
                     fontSize: '0.72rem',
                     textTransform: 'uppercase',
                     letterSpacing: '0.12em',
-                    color: 'var(--color-golden)',
+                    color: 'var(--brand-accent)',
                   }}
                 >
                   Look 04 · Florence Salon
                 </span>
-                <p style={{ fontSize: '0.92rem', fontWeight: 600, color: '#FFF8F5', marginTop: '2px' }}>
+                <p style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--bg-subtle)', marginTop: '2px' }}>
                   Belted Cashmere Wrap Overcoat & Tuscan Boots
                 </p>
               </div>
@@ -142,7 +142,7 @@ export const EditorialCampaign: React.FC = () => {
                   fontSize: 'clamp(2.2rem, 4vw, 3.4rem)',
                   lineHeight: 1.1,
                   marginBottom: '24px',
-                  color: '#FFF8F5',
+                  color: 'var(--bg-subtle)',
                 }}
               >
                 Precision In Drapery,{' '}
@@ -155,7 +155,7 @@ export const EditorialCampaign: React.FC = () => {
               <p
                 style={{
                   fontSize: '1.05rem',
-                  color: 'var(--color-silver)',
+                  color: 'var(--border-color)',
                   lineHeight: 1.7,
                   marginBottom: '20px',
                 }}

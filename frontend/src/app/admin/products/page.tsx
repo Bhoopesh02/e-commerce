@@ -107,7 +107,7 @@ function AdminProductsPageContent() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
+          <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
             Inventory & Catalog
           </span>
           <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: 'var(--admin-text-primary)', marginTop: '4px' }}>
@@ -132,7 +132,7 @@ function AdminProductsPageContent() {
             padding: '10px 18px',
             borderRadius: 'var(--radius-sm)',
             border: '1px solid var(--admin-border)',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+            boxShadow: '0 1px 3px var(--overlay-black-5)',
             flex: 1,
             maxWidth: '420px',
           }}
@@ -185,7 +185,7 @@ function AdminProductsPageContent() {
                   backgroundColor: 'var(--admin-surface)',
                   border: '1px solid var(--admin-border)',
                   borderRadius: 'var(--radius-md)',
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+                  boxShadow: '0 4px 20px var(--overlay-black-15)',
                   width: '280px',
                   zIndex: 50,
                   overflow: 'hidden'
@@ -199,8 +199,8 @@ function AdminProductsPageContent() {
                       padding: '12px 10px', 
                       background: filterTab === 'categories' ? 'var(--admin-background)' : 'transparent', 
                       border: 'none', 
-                      borderBottom: filterTab === 'categories' ? '2px solid var(--color-sapphire)' : '2px solid transparent', 
-                      color: filterTab === 'categories' ? 'var(--color-sapphire)' : 'var(--admin-text-secondary)', 
+                      borderBottom: filterTab === 'categories' ? '2px solid var(--brand-primary)' : '2px solid transparent', 
+                      color: filterTab === 'categories' ? 'var(--brand-primary)' : 'var(--admin-text-secondary)', 
                       fontWeight: 600, 
                       cursor: 'pointer', 
                       fontSize: '0.85rem',
@@ -216,8 +216,8 @@ function AdminProductsPageContent() {
                       padding: '12px 10px', 
                       background: filterTab === 'statuses' ? 'var(--admin-background)' : 'transparent', 
                       border: 'none', 
-                      borderBottom: filterTab === 'statuses' ? '2px solid var(--color-sapphire)' : '2px solid transparent', 
-                      color: filterTab === 'statuses' ? 'var(--color-sapphire)' : 'var(--admin-text-secondary)', 
+                      borderBottom: filterTab === 'statuses' ? '2px solid var(--brand-primary)' : '2px solid transparent', 
+                      color: filterTab === 'statuses' ? 'var(--brand-primary)' : 'var(--admin-text-secondary)', 
                       fontWeight: 600, 
                       cursor: 'pointer', 
                       fontSize: '0.85rem',
@@ -268,7 +268,7 @@ function AdminProductsPageContent() {
                           }}
                         >
                           All Categories
-                          {filterValue === 'all' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                          {filterValue === 'all' && <Check size={16} style={{ color: 'var(--brand-primary)' }} />}
                         </button>
                         {categories.filter(c => c.toLowerCase().includes(categorySearch.toLowerCase())).map(cat => (
                           <button
@@ -289,7 +289,7 @@ function AdminProductsPageContent() {
                             }}
                           >
                             {cat.replace('cat_', '').charAt(0).toUpperCase() + cat.replace('cat_', '').slice(1)}
-                            {filterValue === cat && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                            {filterValue === cat && <Check size={16} style={{ color: 'var(--brand-primary)' }} />}
                           </button>
                         ))}
                         {categories.filter(c => c.toLowerCase().includes(categorySearch.toLowerCase())).length === 0 && (
@@ -320,7 +320,7 @@ function AdminProductsPageContent() {
                           }}
                         >
                           All Statuses
-                          {filterValue === 'all' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                          {filterValue === 'all' && <Check size={16} style={{ color: 'var(--brand-primary)' }} />}
                         </button>
                       {[
                         { id: 'in_stock', label: 'In Stock' },
@@ -345,7 +345,7 @@ function AdminProductsPageContent() {
                           }}
                         >
                           {status.label}
-                          {filterValue === status.id && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                          {filterValue === status.id && <Check size={16} style={{ color: 'var(--brand-primary)' }} />}
                         </button>
                       ))}
                     </div>

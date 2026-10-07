@@ -1,0 +1,483 @@
+/* ==========================================================================
+   AURELIA — EDITORIAL & MODERN LUXURY TYPOGRAPHY SYSTEM
+
+   Font Families:
+   - Cormorant Garamond → Editorial / Display
+   - Plus Jakarta Sans  → Body / UI
+   - Cinzel             → Luxury Accents
+
+   Components should use semantic typography classes/tokens.
+   Avoid hardcoded font-family, font-size, font-weight, line-height,
+   and letter-spacing values inside components.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. FONT IMPORTS
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap');
+
+
+/* ==========================================================================
+   2. FONT FAMILIES
+   ========================================================================== */
+
+:root {
+
+  --font-display:
+    'Cormorant Garamond',
+    Garamond,
+    Baskerville,
+    Didot,
+    Georgia,
+    serif;
+
+  --font-body:
+    'Plus Jakarta Sans',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+
+  --font-accent:
+    'Cinzel',
+    'Trajan Pro',
+    Garamond,
+    Georgia,
+    serif;
+
+
+  /* ========================================================================
+     3. FONT WEIGHTS
+     ======================================================================== */
+
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+
+  /* ========================================================================
+     4. FLUID FONT SIZES
+     ======================================================================== */
+
+  --text-hero:
+    clamp(3rem, 6vw + 1rem, 5.5rem);
+
+  --text-display:
+    clamp(2.25rem, 4vw + 0.8rem, 4rem);
+
+  --text-h1:
+    clamp(2rem, 3.2vw + 0.5rem, 3.25rem);
+
+  --text-h2:
+    clamp(1.625rem, 2.2vw + 0.4rem, 2.375rem);
+
+  --text-h3:
+    clamp(1.35rem, 1.5vw + 0.3rem, 1.75rem);
+
+  --text-h4:
+    clamp(1.15rem, 1vw + 0.2rem, 1.35rem);
+
+  --text-lead:
+    clamp(1.05rem, 0.5vw + 0.85rem, 1.25rem);
+
+  --text-body: 1rem;
+  --text-sm: 0.875rem;
+  --text-xs: 0.75rem;
+  --text-xxs: 0.6875rem;
+
+
+  /* ========================================================================
+     5. LINE HEIGHTS
+     ======================================================================== */
+
+  --leading-none: 1;
+
+  --leading-display: 1.08;
+
+  --leading-heading: 1.18;
+
+  --leading-subheading: 1.32;
+
+  --leading-ui: 1.4;
+
+  --leading-body: 1.6;
+
+  --leading-relaxed: 1.75;
+
+
+  /* ========================================================================
+     6. LETTER SPACING
+     ======================================================================== */
+
+  --tracking-display: -0.025em;
+
+  --tracking-heading: -0.015em;
+
+  --tracking-normal: 0;
+
+  --tracking-subtle: 0.015em;
+
+  --tracking-caps: 0.08em;
+
+  --tracking-luxury: 0.18em;
+
+
+  /* ========================================================================
+     7. SEMANTIC TYPOGRAPHY TOKENS
+     ======================================================================== */
+
+  /* ------------------------------------------------------------------------
+     Display
+     ------------------------------------------------------------------------ */
+
+  --type-hero-family: var(--font-display);
+  --type-hero-size: var(--text-hero);
+  --type-hero-weight: var(--weight-medium);
+  --type-hero-leading: var(--leading-display);
+  --type-hero-tracking: var(--tracking-display);
+
+
+  --type-display-family: var(--font-display);
+  --type-display-size: var(--text-display);
+  --type-display-weight: var(--weight-medium);
+  --type-display-leading: var(--leading-display);
+  --type-display-tracking: var(--tracking-display);
+
+
+  /* ------------------------------------------------------------------------
+     Headings
+     ------------------------------------------------------------------------ */
+
+  --type-h1-family: var(--font-display);
+  --type-h1-size: var(--text-h1);
+  --type-h1-weight: var(--weight-semibold);
+  --type-h1-leading: var(--leading-heading);
+  --type-h1-tracking: var(--tracking-heading);
+
+
+  --type-h2-family: var(--font-display);
+  --type-h2-size: var(--text-h2);
+  --type-h2-weight: var(--weight-medium);
+  --type-h2-leading: var(--leading-heading);
+  --type-h2-tracking: var(--tracking-heading);
+
+
+  --type-h3-family: var(--font-display);
+  --type-h3-size: var(--text-h3);
+  --type-h3-weight: var(--weight-semibold);
+  --type-h3-leading: var(--leading-subheading);
+  --type-h3-tracking: var(--tracking-heading);
+
+
+  --type-h4-family: var(--font-display);
+  --type-h4-size: var(--text-h4);
+  --type-h4-weight: var(--weight-semibold);
+  --type-h4-leading: var(--leading-subheading);
+  --type-h4-tracking: var(--tracking-normal);
+
+
+  /* ------------------------------------------------------------------------
+     Body
+     ------------------------------------------------------------------------ */
+
+  --type-body-family: var(--font-body);
+  --type-body-size: var(--text-body);
+  --type-body-weight: var(--weight-regular);
+  --type-body-leading: var(--leading-body);
+  --type-body-tracking: var(--tracking-normal);
+
+
+  --type-lead-family: var(--font-body);
+  --type-lead-size: var(--text-lead);
+  --type-lead-weight: var(--weight-light);
+  --type-lead-leading: var(--leading-relaxed);
+  --type-lead-tracking: var(--tracking-normal);
+
+
+  --type-caption-family: var(--font-body);
+  --type-caption-size: var(--text-sm);
+  --type-caption-weight: var(--weight-regular);
+  --type-caption-leading: var(--leading-ui);
+  --type-caption-tracking: var(--tracking-subtle);
+
+
+  /* ------------------------------------------------------------------------
+     UI
+     ------------------------------------------------------------------------ */
+
+  --type-nav-family: var(--font-body);
+  --type-nav-size: var(--text-sm);
+  --type-nav-weight: var(--weight-medium);
+  --type-nav-leading: var(--leading-none);
+  --type-nav-tracking: var(--tracking-caps);
+
+
+  --type-button-family: var(--font-body);
+  --type-button-size: var(--text-xs);
+  --type-button-weight: var(--weight-semibold);
+  --type-button-leading: var(--leading-none);
+  --type-button-tracking: var(--tracking-caps);
+
+
+  /* ------------------------------------------------------------------------
+     Accent
+     ------------------------------------------------------------------------ */
+
+  --type-eyebrow-family: var(--font-accent);
+  --type-eyebrow-size: var(--text-xs);
+  --type-eyebrow-weight: var(--weight-semibold);
+  --type-eyebrow-leading: var(--leading-ui);
+  --type-eyebrow-tracking: var(--tracking-luxury);
+
+
+  --type-badge-family: var(--font-accent);
+  --type-badge-size: var(--text-xxs);
+  --type-badge-weight: var(--weight-bold);
+  --type-badge-leading: var(--leading-none);
+  --type-badge-tracking: var(--tracking-caps);
+
+
+  /* ------------------------------------------------------------------------
+     Numeric / Price
+     ------------------------------------------------------------------------ */
+
+  --type-price-family: var(--font-body);
+  --type-price-weight: var(--weight-semibold);
+  --type-price-tracking: var(--tracking-normal);
+
+}
+
+
+/* ==========================================================================
+   8. GLOBAL TYPOGRAPHY
+   ========================================================================== */
+
+html {
+  font-size: 100%;
+}
+
+body {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-leading);
+  letter-spacing: var(--type-body-tracking);
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+
+/* ==========================================================================
+   9. DISPLAY
+   ========================================================================== */
+
+.font-hero,
+.type-hero {
+  font-family: var(--type-hero-family);
+  font-size: var(--type-hero-size);
+  font-weight: var(--type-hero-weight);
+  line-height: var(--type-hero-leading);
+  letter-spacing: var(--type-hero-tracking);
+  text-wrap: balance;
+}
+
+
+.font-display,
+.type-display {
+  font-family: var(--type-display-family);
+  font-size: var(--type-display-size);
+  font-weight: var(--type-display-weight);
+  line-height: var(--type-display-leading);
+  letter-spacing: var(--type-display-tracking);
+  text-wrap: balance;
+}
+
+
+/* ==========================================================================
+   10. HEADINGS
+   ========================================================================== */
+
+h1,
+.font-h1,
+.type-h1 {
+  font-family: var(--type-h1-family);
+  font-size: var(--type-h1-size);
+  font-weight: var(--type-h1-weight);
+  line-height: var(--type-h1-leading);
+  letter-spacing: var(--type-h1-tracking);
+  text-wrap: balance;
+}
+
+
+h2,
+.font-h2,
+.type-h2 {
+  font-family: var(--type-h2-family);
+  font-size: var(--type-h2-size);
+  font-weight: var(--type-h2-weight);
+  line-height: var(--type-h2-leading);
+  letter-spacing: var(--type-h2-tracking);
+  text-wrap: balance;
+}
+
+
+h3,
+.font-h3,
+.type-h3 {
+  font-family: var(--type-h3-family);
+  font-size: var(--type-h3-size);
+  font-weight: var(--type-h3-weight);
+  line-height: var(--type-h3-leading);
+  letter-spacing: var(--type-h3-tracking);
+}
+
+
+h4,
+.font-h4,
+.type-h4 {
+  font-family: var(--type-h4-family);
+  font-size: var(--type-h4-size);
+  font-weight: var(--type-h4-weight);
+  line-height: var(--type-h4-leading);
+  letter-spacing: var(--type-h4-tracking);
+}
+
+
+/* ==========================================================================
+   11. BODY & EDITORIAL COPY
+   ========================================================================== */
+
+.font-body,
+.type-body {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-leading);
+  letter-spacing: var(--type-body-tracking);
+}
+
+
+.font-lead,
+.type-lead {
+  font-family: var(--type-lead-family);
+  font-size: var(--type-lead-size);
+  font-weight: var(--type-lead-weight);
+  line-height: var(--type-lead-leading);
+  letter-spacing: var(--type-lead-tracking);
+}
+
+
+.font-caption,
+.type-caption {
+  font-family: var(--type-caption-family);
+  font-size: var(--type-caption-size);
+  font-weight: var(--type-caption-weight);
+  line-height: var(--type-caption-leading);
+  letter-spacing: var(--type-caption-tracking);
+}
+
+
+/* ==========================================================================
+   12. UI TYPOGRAPHY
+   ========================================================================== */
+
+.font-nav,
+.type-nav {
+  font-family: var(--type-nav-family);
+  font-size: var(--type-nav-size);
+  font-weight: var(--type-nav-weight);
+  line-height: var(--type-nav-leading);
+  letter-spacing: var(--type-nav-tracking);
+  text-transform: uppercase;
+}
+
+
+.font-button,
+.type-button {
+  font-family: var(--type-button-family);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-leading);
+  letter-spacing: var(--type-button-tracking);
+  text-transform: uppercase;
+}
+
+
+/* ==========================================================================
+   13. LUXURY ACCENTS
+   ========================================================================== */
+
+.font-eyebrow,
+.font-overline,
+.type-eyebrow {
+  font-family: var(--type-eyebrow-family);
+  font-size: var(--type-eyebrow-size);
+  font-weight: var(--type-eyebrow-weight);
+  line-height: var(--type-eyebrow-leading);
+  letter-spacing: var(--type-eyebrow-tracking);
+  text-transform: uppercase;
+}
+
+
+.font-badge,
+.type-badge {
+  font-family: var(--type-badge-family);
+  font-size: var(--type-badge-size);
+  font-weight: var(--type-badge-weight);
+  line-height: var(--type-badge-leading);
+  letter-spacing: var(--type-badge-tracking);
+  text-transform: uppercase;
+}
+
+
+/* ==========================================================================
+   14. NUMBERS / PRICES
+   ========================================================================== */
+
+.font-price,
+.font-numeric,
+.type-price,
+.type-numeric {
+  font-family: var(--type-price-family);
+  font-weight: var(--type-price-weight);
+  letter-spacing: var(--type-price-tracking);
+
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings:
+    'tnum' 1,
+    'lnum' 1;
+}
+
+
+/* ==========================================================================
+   15. EDITORIAL READING WIDTH
+   ========================================================================== */
+
+.type-editorial {
+  max-width: 65ch;
+}
+
+
+/* ==========================================================================
+   16. RESET / INHERIT RULES
+   ========================================================================== */
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+strong,
+b {
+  font-weight: var(--weight-semibold);
+}

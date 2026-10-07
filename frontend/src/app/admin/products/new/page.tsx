@@ -210,7 +210,7 @@ export default function NewProductPage() {
             borderRadius: '50%',
             backgroundColor: 'var(--admin-surface)',
             color: 'var(--admin-text-primary)',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+            boxShadow: '0 1px 3px var(--overlay-black-5)',
           }}
         >
           <ArrowLeft size={18} />
@@ -222,7 +222,7 @@ export default function NewProductPage() {
               fontWeight: 600,
               letterSpacing: '0.14em',
               textTransform: 'uppercase',
-              color: 'var(--color-sapphire)',
+              color: 'var(--brand-primary)',
             }}
           >
             Inventory & Catalog Management
@@ -251,7 +251,7 @@ export default function NewProductPage() {
           padding: '32px',
           borderRadius: 'var(--radius-md)',
           border: '1px solid var(--admin-border)',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+          boxShadow: '0 2px 8px var(--overlay-black-5)',
         }}
       >
         <Input
@@ -332,11 +332,11 @@ export default function NewProductPage() {
                 style={{
                   fontSize: '0.72rem',
                   fontWeight: 700,
-                  color: 'var(--color-golden)',
-                  backgroundColor: 'rgba(194, 155, 76, 0.12)',
+                  color: 'var(--brand-accent)',
+                  backgroundColor: 'var(--overlay-golden-10)',
                   padding: '2px 8px',
                   borderRadius: '4px',
-                  border: '1px solid rgba(194, 155, 76, 0.3)',
+                  border: '1px solid var(--overlay-golden-35)',
                 }}
               >
                 4:3 Ratio Locked
@@ -361,7 +361,7 @@ export default function NewProductPage() {
               color: 'var(--text-secondary)',
             }}
           >
-            <ShieldCheck size={16} color="var(--color-sapphire)" style={{ flexShrink: 0 }} />
+            <ShieldCheck size={16} color="var(--brand-primary)" style={{ flexShrink: 0 }} />
             <span>
               <strong>Atelier Visual Standard:</strong> All uploaded images must be cropped to a strict{' '}
               <strong>4:3 aspect ratio</strong>. The interactive cropper will open automatically upon upload.
@@ -388,7 +388,7 @@ export default function NewProductPage() {
                     overflow: 'hidden',
                     display: 'flex',
                     flexDirection: 'column',
-                    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)',
+                    boxShadow: '0 2px 6px var(--overlay-black-5)',
                     position: 'relative',
                   }}
                 >
@@ -399,7 +399,7 @@ export default function NewProductPage() {
                       width: '100%',
                       aspectRatio: '4 / 3',
                       overflow: 'hidden',
-                      backgroundColor: '#141416',
+                      backgroundColor: 'var(--text-primary)',
                     }}
                   >
                     <img
@@ -420,8 +420,8 @@ export default function NewProductPage() {
                           position: 'absolute',
                           top: '6px',
                           left: '6px',
-                          backgroundColor: 'var(--color-sapphire)',
-                          color: '#FFF',
+                          backgroundColor: 'var(--brand-primary)',
+                          color: "var(--text-inverse)",
                           fontSize: '0.65rem',
                           fontWeight: 700,
                           padding: '2px 6px',
@@ -443,8 +443,8 @@ export default function NewProductPage() {
                         position: 'absolute',
                         top: '6px',
                         right: '6px',
-                        background: 'rgba(0, 0, 0, 0.7)',
-                        color: '#FFF',
+                        background: 'var(--overlay-black-70)',
+                        color: "var(--text-inverse)",
                         border: 'none',
                         borderRadius: '50%',
                         width: '24px',
@@ -480,7 +480,7 @@ export default function NewProductPage() {
                     >
                       <span
                         style={{
-                          color: '#247A4D',
+                          color: 'var(--color-success)',
                           fontWeight: 700,
                           display: 'flex',
                           alignItems: 'center',
@@ -505,7 +505,7 @@ export default function NewProductPage() {
                         gap: '6px',
                         padding: '6px 8px',
                         borderRadius: 'var(--radius-sm)',
-                        backgroundColor: 'var(--bg-background, #F5F5F7)',
+                        backgroundColor: 'var(--bg-background, var(--bg-subtle))',
                         border: '1px solid var(--border-color)',
                         color: 'var(--text-primary)',
                         fontSize: '0.75rem',
@@ -532,7 +532,7 @@ export default function NewProductPage() {
               onClick={() => fileInputRef.current?.click()}
               style={{
                 border: isDraggingOver
-                  ? '2px dashed var(--color-sapphire)'
+                  ? '2px dashed var(--brand-primary)'
                   : '2px dashed var(--border-color)',
                 borderRadius: 'var(--radius-md)',
                 padding: '36px 20px',
@@ -564,7 +564,7 @@ export default function NewProductPage() {
                   height: '48px',
                   borderRadius: '50%',
                   backgroundColor: 'rgba(36, 75, 87, 0.08)',
-                  color: 'var(--color-sapphire)',
+                  color: 'var(--brand-primary)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -600,7 +600,7 @@ export default function NewProductPage() {
                 style={{
                   fontSize: '0.72rem',
                   color: 'var(--text-muted)',
-                  backgroundColor: 'var(--bg-background, #F5F5F7)',
+                  backgroundColor: 'var(--bg-background, var(--bg-subtle))',
                   padding: '3px 10px',
                   borderRadius: '12px',
                   border: '1px solid var(--border-color)',
@@ -661,7 +661,7 @@ export default function NewProductPage() {
               <span
                 style={{
                   fontSize: '0.82rem',
-                  color: '#247A4D',
+                  color: 'var(--color-success)',
                   fontWeight: 600,
                   display: 'flex',
                   alignItems: 'center',

@@ -118,7 +118,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
             alignItems: 'center',
             gap: '8px',
             fontSize: '0.85rem',
-            color: 'var(--color-sapphire)',
+            color: 'var(--brand-primary)',
             marginBottom: '24px',
             fontWeight: 500,
           }}
@@ -150,7 +150,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
             }}
           >
             <div>
-              <span style={{ display: 'block', marginBottom: '8px', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
+              <span style={{ display: 'block', marginBottom: '8px', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
                 Official Atelier Commission
               </span>
               <h1 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', marginTop: '4px' }}>
@@ -188,8 +188,8 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
           {order.trackingInfo && order.status !== 'Cancelled' && (
             <div
               style={{
-                backgroundColor: 'rgba(194, 155, 76, 0.08)',
-                border: '1px solid rgba(194, 155, 76, 0.25)',
+                backgroundColor: 'var(--overlay-golden-10)',
+                border: '1px solid var(--overlay-golden-35)',
                 borderRadius: 'var(--radius-sm)',
                 padding: '16px 20px',
                 display: 'flex',
@@ -200,7 +200,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <Truck size={20} style={{ color: 'var(--color-sapphire)' }} />
+                <Truck size={20} style={{ color: 'var(--brand-primary)' }} />
                 <div>
                   <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>
                     {order.trackingInfo.carrier} · Waybill #{order.trackingInfo.trackingId}
@@ -221,7 +221,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
                     alignItems: 'center',
                     gap: '4px',
                     fontSize: '0.82rem',
-                    color: 'var(--color-sapphire)',
+                    color: 'var(--brand-primary)',
                     fontWeight: 600,
                   }}
                 >
@@ -304,7 +304,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
                   Inclusive of all taxes
                 </div>
               </div>
-              <span style={{ color: 'var(--color-sapphire)' }}>{formatPrice(order.totals.total)}</span>
+              <span style={{ color: 'var(--brand-primary)' }}>{formatPrice(order.totals.total)}</span>
             </div>
           </div>
         </div>
@@ -320,7 +320,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-              <MapPin size={18} style={{ color: 'var(--color-sapphire)' }} />
+              <MapPin size={18} style={{ color: 'var(--brand-primary)' }} />
               <h3 style={{ fontSize: '0.95rem', fontWeight: 600 }}>Delivery Residence</h3>
             </div>
             <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
@@ -341,7 +341,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-              <CreditCard size={18} style={{ color: 'var(--color-sapphire)' }} />
+              <CreditCard size={18} style={{ color: 'var(--brand-primary)' }} />
               <h3 style={{ fontSize: '0.95rem', fontWeight: 600 }}>Payment Method</h3>
             </div>
             <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>

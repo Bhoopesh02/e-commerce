@@ -1,24 +1,6 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Inter, Geist } from 'next/font/google';
 import '@/styles/globals.css';
 import { BRAND_NAME, BRAND_TAGLINE } from '@/lib/constants';
-import { cn } from "@/lib/utils";
-
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-display-next',
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-body-next',
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
-});
 
 export const metadata: Metadata = {
   title: `${BRAND_NAME} Atelier | Luxury Haute Couture & Ready-to-Wear`,
@@ -54,7 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn(playfair.variable, inter.variable, "font-sans", geist.variable)}
+      className="font-sans"
       data-storefront="a"
       data-theme="light"
       data-scroll-behavior="smooth"

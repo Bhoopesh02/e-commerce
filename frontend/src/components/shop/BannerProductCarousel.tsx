@@ -159,7 +159,7 @@ export const BannerProductCarousel: React.FC<BannerProductCarouselProps> = ({
               fontWeight: 600,
               letterSpacing: '0.1em',
               textTransform: 'uppercase',
-              color: 'rgba(255, 248, 245, 0.85)',
+              color: 'var(--text-inverse)',
             }}
           >
             Featured Silhouettes ({products.length})
@@ -189,14 +189,14 @@ export const BannerProductCarousel: React.FC<BannerProductCarouselProps> = ({
                 backgroundColor: 'transparent',
                 border: 'none',
                 boxShadow: 'none',
-                color: canScrollLeft ? '#FFFFFF' : 'rgba(255, 255, 255, 0.35)',
+                color: canScrollLeft ? 'var(--color-diamond)' : 'rgba(255, 255, 255, 0.35)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: canScrollLeft ? 'pointer' : 'default',
                 transition: 'all 200ms ease',
                 padding: 0,
-                filter: canScrollLeft ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6))' : 'none',
+                filter: canScrollLeft ? 'drop-shadow(0 2px 4px rgba(16, 33, 39, 0.6))' : 'none',
               }}
             >
               <ChevronLeft size={20} strokeWidth={2} />
@@ -215,14 +215,14 @@ export const BannerProductCarousel: React.FC<BannerProductCarouselProps> = ({
                 backgroundColor: 'transparent',
                 border: 'none',
                 boxShadow: 'none',
-                color: canScrollRight ? '#FFFFFF' : 'rgba(255, 255, 255, 0.35)',
+                color: canScrollRight ? 'var(--color-diamond)' : 'rgba(255, 255, 255, 0.35)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: canScrollRight ? 'pointer' : 'default',
                 transition: 'all 200ms ease',
                 padding: 0,
-                filter: canScrollRight ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6))' : 'none',
+                filter: canScrollRight ? 'drop-shadow(0 2px 4px rgba(16, 33, 39, 0.6))' : 'none',
               }}
             >
               <ChevronRight size={20} strokeWidth={2} />
@@ -261,12 +261,12 @@ export const BannerProductCarousel: React.FC<BannerProductCarouselProps> = ({
               backgroundColor: 'transparent',
               border: 'none',
               boxShadow: 'none',
-              color: canScrollLeft ? '#FFFFFF' : 'rgba(255, 255, 255, 0.28)',
+              color: canScrollLeft ? 'var(--color-diamond)' : 'rgba(255, 255, 255, 0.28)',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: canScrollLeft ? 'pointer' : 'default',
               padding: 0,
-              filter: canScrollLeft ? 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.85))' : 'none',
+              filter: canScrollLeft ? 'drop-shadow(0 2px 6px rgba(16, 33, 39, 0.85))' : 'none',
               transition: 'all 200ms ease',
               pointerEvents: canScrollLeft ? 'auto' : 'none',
             }}
@@ -291,12 +291,12 @@ export const BannerProductCarousel: React.FC<BannerProductCarouselProps> = ({
               backgroundColor: 'transparent',
               border: 'none',
               boxShadow: 'none',
-              color: canScrollRight ? '#FFFFFF' : 'rgba(255, 255, 255, 0.28)',
+              color: canScrollRight ? 'var(--color-diamond)' : 'rgba(255, 255, 255, 0.28)',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: canScrollRight ? 'pointer' : 'default',
               padding: 0,
-              filter: canScrollRight ? 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.85))' : 'none',
+              filter: canScrollRight ? 'drop-shadow(0 2px 6px rgba(16, 33, 39, 0.85))' : 'none',
               transition: 'all 200ms ease',
               pointerEvents: canScrollRight ? 'auto' : 'none',
             }}

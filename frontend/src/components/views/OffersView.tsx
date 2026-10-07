@@ -60,7 +60,7 @@ export const OffersView: React.FC = () => {
               fontWeight: 600,
               letterSpacing: '0.14em',
               textTransform: 'uppercase',
-              color: 'var(--color-sapphire)',
+              color: 'var(--brand-primary)',
               marginBottom: '10px',
             }}
           >
@@ -100,10 +100,10 @@ export const OffersView: React.FC = () => {
                     alignItems: 'center',
                     gap: '6px',
                     padding: '6px 14px',
-                    backgroundColor: 'rgba(194, 155, 76, 0.15)',
+                    backgroundColor: 'var(--color-golden-100)',
                     borderRadius: 'var(--radius-pill)',
-                    border: '1px solid rgba(194, 155, 76, 0.3)',
-                    color: 'var(--color-sapphire)',
+                    border: '1px solid var(--overlay-golden-35)',
+                    color: 'var(--brand-primary)',
                     fontWeight: 700,
                     letterSpacing: '0.08em',
                     fontSize: '0.85rem',

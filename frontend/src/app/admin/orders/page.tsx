@@ -87,7 +87,7 @@ export default function AdminOrdersPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
       <div>
-        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
+        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
           Fulfillment Desk
         </span>
         <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: 'var(--admin-text-primary)', marginTop: '4px' }}>
@@ -106,9 +106,9 @@ export default function AdminOrdersPage() {
             borderRadius: 'var(--radius-sm)',
             fontSize: '0.85rem',
             fontWeight: 600,
-            backgroundColor: 'rgba(194, 155, 76, 0.15)',
-            color: 'var(--color-sapphire)',
-            border: '1px solid rgba(194, 155, 76, 0.3)',
+            backgroundColor: 'var(--overlay-golden-10)',
+            color: 'var(--brand-primary)',
+            border: '1px solid var(--overlay-golden-35)',
           }}
         >
           <ShoppingCart size={16} /> Commissions & Dispatch ({orders.length})
@@ -169,7 +169,7 @@ export default function AdminOrdersPage() {
                   backgroundColor: 'var(--admin-surface)',
                   border: '1px solid var(--admin-border)',
                   borderRadius: 'var(--radius-md)',
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+                  boxShadow: '0 4px 20px var(--overlay-black-15)',
                   width: '240px',
                   zIndex: 50,
                   overflow: 'hidden'
@@ -194,7 +194,7 @@ export default function AdminOrdersPage() {
                       }}
                     >
                       All Commissions
-                      {filterStatus === 'all' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                      {filterStatus === 'all' && <Check size={16} style={{ color: 'var(--brand-primary)' }} />}
                     </button>
                     {['Placed', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'].map(status => (
                       <button
@@ -215,7 +215,7 @@ export default function AdminOrdersPage() {
                         }}
                       >
                         {status}
-                        {filterStatus === status && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                        {filterStatus === status && <Check size={16} style={{ color: 'var(--brand-primary)' }} />}
                       </button>
                     ))}
                   </div>
@@ -261,7 +261,7 @@ export default function AdminOrdersPage() {
                         <span style={{ fontSize: '0.82rem', color: 'var(--admin-text-primary)', display: 'block' }}>
                           {o.trackingInfo.carrier}
                         </span>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--color-sapphire)', fontFamily: 'var(--font-mono)' }}>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--brand-primary)', fontFamily: 'var(--font-mono)' }}>
                           {o.trackingInfo.trackingId}
                         </span>
                       </div>
@@ -332,7 +332,7 @@ export default function AdminOrdersPage() {
                           color: 'var(--color-success)',
                           borderRadius: 'var(--radius-pill)',
                           backgroundColor: 'var(--color-success-bg)',
-                          border: '1px solid rgba(30, 111, 92, 0.25)',
+                          border: '1px solid var(--color-success-bg)',
                           boxSizing: 'border-box',
                         }}
                       >

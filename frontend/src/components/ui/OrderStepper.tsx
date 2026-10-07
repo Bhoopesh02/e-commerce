@@ -44,7 +44,7 @@ export const OrderStepper: React.FC<OrderStepperProps> = ({
       <div className="relative flex justify-between items-start w-full">
         
         {/* Background inactive line */}
-        <div className="absolute top-[20px] left-[10%] right-[10%] h-[2px] bg-[#E5E2DC] z-0" />
+        <div className="absolute top-[20px] left-[10%] right-[10%] h-[2px] bg-[var(--border-color)] z-0" />
 
         {steps.map((step, index) => {
           const isCompleted = index <= currentStepIndex;
@@ -94,11 +94,11 @@ export const OrderStepper: React.FC<OrderStepperProps> = ({
                   className="flex items-center justify-center w-[40px] h-[40px] rounded-full z-20 relative"
                   initial={{ 
                     scale: 0.8,
-                    backgroundColor: '#E5E2DC'
+                    backgroundColor: 'var(--border-color)'
                   }}
                   animate={{
                     scale: isCompleted ? [0.8, 1.1, 1.0] : 1,
-                    backgroundColor: isCompleted ? '#E88D4D' : '#E5E2DC',
+                    backgroundColor: isCompleted ? '#E88D4D' : 'var(--border-color)',
                   }}
                   transition={{
                     duration: 0.6,

@@ -549,8 +549,8 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
         .crop-action-btn:hover {
           background-color: #32323D !important;
           border-color: #4E4E5C !important;
-          color: #FFFFFF !important;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+          color: var(--text-inverse) !important;
+          box-shadow: 0 2px 8px var(--overlay-black-20) !important;
         }
         .crop-action-btn:active {
           transform: scale(0.96) !important;
@@ -568,7 +568,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
           maxHeight: '92vh',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 24px 60px rgba(0, 0, 0, 0.5)',
+          boxShadow: '0 24px 60px var(--overlay-black-50)',
           overflow: 'hidden',
           color: 'var(--admin-text-primary, #F0F0F3)',
         }}
@@ -592,8 +592,8 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                 width: 38,
                 height: 38,
                 borderRadius: '8px',
-                backgroundColor: 'rgba(194, 155, 76, 0.15)',
-                color: 'var(--color-golden, #C29B4C)',
+                backgroundColor: 'var(--overlay-golden-10)',
+                color: 'var(--color-golden, var(--brand-accent))',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -773,8 +773,8 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                       top: cropBox.y,
                       width: cropBox.width,
                       height: cropBox.height,
-                      border: '2px solid #C29B4C',
-                      boxShadow: '0 0 0 1px rgba(0,0,0,0.8), 0 8px 24px rgba(0,0,0,0.6)',
+                      border: '2px solid var(--brand-accent)',
+                      boxShadow: '0 0 0 1px rgba(0,0,0,0.8), 0 8px 24px var(--overlay-black-70)',
                       cursor: isDragging ? 'grabbing' : 'move',
                       zIndex: 20,
                       transition: isDragging ? 'none' : 'all 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
@@ -833,14 +833,14 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                         top: 6,
                         left: 6,
                         backgroundColor: 'rgba(0, 0, 0, 0.65)',
-                        color: '#C29B4C',
+                        color: 'var(--brand-accent)',
                         fontSize: '0.65rem',
                         fontWeight: 700,
                         letterSpacing: '0.08em',
                         padding: '2px 6px',
                         borderRadius: '3px',
                         pointerEvents: 'none',
-                        border: '1px solid rgba(194, 155, 76, 0.3)',
+                        border: '1px solid var(--overlay-golden-35)',
                       }}
                     >
                       4:3
@@ -856,12 +856,12 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                         top: -7,
                         width: 15,
                         height: 15,
-                        backgroundColor: '#FFFFFF',
-                        border: '2px solid #C29B4C',
+                        backgroundColor: 'var(--color-diamond)',
+                        border: '2px solid var(--brand-accent)',
                         borderRadius: '50%',
                         cursor: 'nwse-resize',
                         zIndex: 30,
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.5)',
+                        boxShadow: '0 2px 4px var(--overlay-black-50)',
                       }}
                     />
                     {/* Top-Right */}
@@ -873,12 +873,12 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                         top: -7,
                         width: 15,
                         height: 15,
-                        backgroundColor: '#FFFFFF',
-                        border: '2px solid #C29B4C',
+                        backgroundColor: 'var(--color-diamond)',
+                        border: '2px solid var(--brand-accent)',
                         borderRadius: '50%',
                         cursor: 'nesw-resize',
                         zIndex: 30,
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.5)',
+                        boxShadow: '0 2px 4px var(--overlay-black-50)',
                       }}
                     />
                     {/* Bottom-Right */}
@@ -890,12 +890,12 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                         bottom: -7,
                         width: 15,
                         height: 15,
-                        backgroundColor: '#FFFFFF',
-                        border: '2px solid #C29B4C',
+                        backgroundColor: 'var(--color-diamond)',
+                        border: '2px solid var(--brand-accent)',
                         borderRadius: '50%',
                         cursor: 'nwse-resize',
                         zIndex: 30,
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.5)',
+                        boxShadow: '0 2px 4px var(--overlay-black-50)',
                       }}
                     />
                     {/* Bottom-Left */}
@@ -907,12 +907,12 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                         bottom: -7,
                         width: 15,
                         height: 15,
-                        backgroundColor: '#FFFFFF',
-                        border: '2px solid #C29B4C',
+                        backgroundColor: 'var(--color-diamond)',
+                        border: '2px solid var(--brand-accent)',
                         borderRadius: '50%',
                         cursor: 'nesw-resize',
                         zIndex: 30,
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.5)',
+                        boxShadow: '0 2px 4px var(--overlay-black-50)',
                       }}
                     />
                   </div>
@@ -946,7 +946,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                 <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--admin-text-secondary, #9E9EA7)' }}>
                   Stored Output Preview
                 </span>
-                <span style={{ fontSize: '0.7rem', color: '#C29B4C', fontWeight: 600 }}>
+                <span style={{ fontSize: '0.7rem', color: 'var(--brand-accent)', fontWeight: 600 }}>
                   4:3 Ratio
                 </span>
               </div>
@@ -979,11 +979,11 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
               <div style={{ fontSize: '0.75rem', color: '#A0A0AB', lineHeight: 1.4 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
                   <span>Ratio format:</span>
-                  <strong style={{ color: '#FFF' }}>4:3 (1.33:1)</strong>
+                  <strong style={{ color: "var(--text-inverse)" }}>4:3 (1.33:1)</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
                   <span>Export dimensions:</span>
-                  <strong style={{ color: '#FFF' }}>1200 × 900 px</strong>
+                  <strong style={{ color: "var(--text-inverse)" }}>1200 × 900 px</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
                   <span>Storage rule:</span>
@@ -1034,7 +1034,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                     fontWeight: 600,
                   }}
                 >
-                  <ZoomIn size={14} style={{ color: '#C29B4C' }} /> Zoom Box
+                  <ZoomIn size={14} style={{ color: 'var(--brand-accent)' }} /> Zoom Box
                 </button>
                 <button
                   type="button"
@@ -1089,7 +1089,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                   fontWeight: 600,
                 }}
               >
-                <Maximize2 size={14} style={{ color: '#C29B4C' }} /> Reset & Center 4:3 Box
+                <Maximize2 size={14} style={{ color: 'var(--brand-accent)' }} /> Reset & Center 4:3 Box
               </button>
             </div>
 

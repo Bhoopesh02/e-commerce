@@ -249,7 +249,7 @@ export const ProductImageLightbox: React.FC<ProductImageLightboxProps> = ({
         position: 'fixed',
         inset: 0,
         zIndex: 99999,
-        backgroundColor: 'rgba(8, 8, 8, 0.97)',
+        backgroundColor: 'var(--overlay-lightbox)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         display: 'flex',
@@ -257,7 +257,7 @@ export const ProductImageLightbox: React.FC<ProductImageLightboxProps> = ({
         justifyContent: 'space-between',
         userSelect: 'none',
         overflow: 'hidden',
-        color: '#FFFFFF',
+        color: "var(--text-inverse)",
       }}
       onClick={(e) => {
         if (zoom > 1) {
@@ -285,7 +285,7 @@ export const ProductImageLightbox: React.FC<ProductImageLightboxProps> = ({
           backdropFilter: 'blur(10px)',
           WebkitBackdropFilter: 'blur(10px)',
           border: '1px solid rgba(255, 255, 255, 0.22)',
-          color: '#FFFFFF',
+          color: "var(--text-inverse)",
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
@@ -344,8 +344,8 @@ export const ProductImageLightbox: React.FC<ProductImageLightboxProps> = ({
               height: 'clamp(44px, 5vw, 56px)',
               borderRadius: '50%',
               backgroundColor: 'rgba(10, 10, 10, 0.65)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              color: '#FFFFFF',
+              border: '1px solid var(--overlay-white-20)',
+              color: "var(--text-inverse)",
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -377,8 +377,8 @@ export const ProductImageLightbox: React.FC<ProductImageLightboxProps> = ({
               height: 'clamp(44px, 5vw, 56px)',
               borderRadius: '50%',
               backgroundColor: 'rgba(10, 10, 10, 0.65)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              color: '#FFFFFF',
+              border: '1px solid var(--overlay-white-20)',
+              color: "var(--text-inverse)",
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -444,7 +444,7 @@ export const ProductImageLightbox: React.FC<ProductImageLightboxProps> = ({
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 100%)',
+            background: 'linear-gradient(0deg, var(--overlay-black-85) 0%, rgba(0, 0, 0, 0) 100%)',
             zIndex: 10,
             flexShrink: 0,
           }}
@@ -482,8 +482,8 @@ export const ProductImageLightbox: React.FC<ProductImageLightboxProps> = ({
                     flexShrink: 0,
                     cursor: 'pointer',
                     border: isActive
-                      ? '2px solid var(--color-golden, #C29B4C)'
-                      : '1px solid rgba(255, 255, 255, 0.2)',
+                      ? '2px solid var(--color-golden, var(--color-golden-500))'
+                      : '1px solid var(--overlay-white-20)',
                     boxShadow: isActive ? '0 0 12px rgba(194, 155, 76, 0.5)' : 'none',
                     transform: isActive ? 'scale(1.05)' : 'scale(1)',
                     transition: 'all 0.2s ease',

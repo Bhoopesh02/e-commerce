@@ -70,13 +70,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           background: isScrolled
             ? 'var(--nav-backdrop)'
             : isHomePage
-              ? 'linear-gradient(180deg, rgba(15, 12, 26, 0.85) 0%, rgba(15, 12, 26, 0.4) 60%, transparent 100%)'
+              ? 'linear-gradient(180deg, var(--overlay-black-50) 0%, var(--overlay-black-30) 60%, transparent 100%)'
               : 'transparent',
           backdropFilter: isScrolled ? 'blur(16px)' : 'blur(0px)',
           WebkitBackdropFilter: isScrolled ? 'blur(16px)' : 'blur(0px)',
           borderBottom: 'none',
           boxShadow: 'none',
-          color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
+          color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
         }}
       >
         <div
@@ -108,12 +108,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 minWidth: '48px',
                 minHeight: '48px',
                 padding: 0,
-                color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
+                color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
                 borderRadius: 'var(--radius-pill)',
-                filter: isLightNav ? 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7))' : 'none',
+                filter: isLightNav ? 'drop-shadow(0 2px 6px var(--overlay-black-70))' : 'none',
                 transition: 'filter 350ms var(--ease-luxury), color 350ms var(--ease-luxury)',
               }}
               aria-label="Toggle Navigation Menu"
@@ -142,8 +142,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   minHeight: '44px',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
-                  textShadow: isLightNav ? '0 1px 8px rgba(0, 0, 0, 0.7)' : 'none',
+                  color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
+                  textShadow: isLightNav ? '0 1px 8px var(--overlay-black-70)' : 'none',
                   transition: 'color 350ms var(--ease-luxury), text-shadow 350ms var(--ease-luxury)',
                 }}
               >
@@ -160,8 +160,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   minHeight: '44px',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
-                  textShadow: isLightNav ? '0 1px 8px rgba(0, 0, 0, 0.7)' : 'none',
+                  color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
+                  textShadow: isLightNav ? '0 1px 8px var(--overlay-black-70)' : 'none',
                   transition: 'color 350ms var(--ease-luxury), text-shadow 350ms var(--ease-luxury)',
                 }}
               >
@@ -192,14 +192,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   fontSize: '1.75rem',
                   fontWeight: 600,
                   letterSpacing: '0.22em',
-                  color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
+                  color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
                   display: 'inline-block',
                   transform: isScrolled ? 'scale(0.92)' : 'scale(0.92)',
                   transition: 'transform 350ms var(--ease-luxury), color 350ms var(--ease-luxury), text-shadow 350ms var(--ease-luxury)',
                   willChange: 'transform, color',
                   textTransform: 'uppercase',
                   whiteSpace: 'nowrap',
-                  textShadow: isLightNav ? '0 2px 14px rgba(0, 0, 0, 0.8)' : 'none',
+                  textShadow: isLightNav ? '0 2px 14px var(--overlay-black-70)' : 'none',
                 }}
               >
                 {BRAND_NAME}
@@ -215,7 +215,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               display: 'flex',
               alignItems: 'center',
               gap: '12px',
-              filter: isLightNav ? 'drop-shadow(0 1px 6px rgba(0, 0, 0, 0.7))' : 'none',
+              filter: isLightNav ? 'drop-shadow(0 1px 6px var(--overlay-black-70))' : 'none',
               transition: 'filter 350ms var(--ease-luxury)',
             }}
           >
@@ -233,7 +233,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 minWidth: '48px',
                 minHeight: '48px',
                 padding: 0,
-                color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
+                color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
@@ -260,7 +260,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 minWidth: '48px',
                 minHeight: '48px',
                 padding: 0,
-                color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
+                color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
                 borderRadius: 'var(--radius-pill)',
                 touchAction: 'manipulation',
                 transition: 'color 350ms var(--ease-luxury)',
@@ -274,8 +274,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     position: 'absolute',
                     top: '6px',
                     right: '6px',
-                    backgroundColor: 'var(--color-sapphire)',
-                    color: '#FFF',
+                    backgroundColor: 'var(--brand-primary)',
+                    color: "var(--text-inverse)",
                     fontSize: '0.65rem',
                     fontWeight: 700,
                     width: '16px',
@@ -305,7 +305,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 minWidth: '48px',
                 minHeight: '48px',
                 padding: 0,
-                color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
+                color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
                 borderRadius: 'var(--radius-pill)',
                 touchAction: 'manipulation',
                 transition: 'color 350ms var(--ease-luxury)',
@@ -329,7 +329,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 minWidth: '48px',
                 minHeight: '48px',
                 padding: 0,
-                color: isLightNav ? '#FFF8F5' : 'var(--text-primary)',
+                color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
@@ -479,7 +479,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           box-shadow: none !important;
         }
         .navbar-action-btn:hover {
-          background-color: var(--bg-surface-hover, rgba(255, 255, 255, 0.06));
+          background-color: var(--bg-surface-hover, var(--overlay-white-5));
         }
         @media (min-width: 768px) {
           .mobile-nav-toggle {

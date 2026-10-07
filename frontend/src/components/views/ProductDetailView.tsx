@@ -268,20 +268,20 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                   alignItems: 'center',
                   gap: '6px',
                   padding: '6px 12px',
-                  backgroundColor: 'rgba(20, 20, 20, 0.72)',
+                  backgroundColor: 'var(--overlay-black-70)',
                   backdropFilter: 'blur(10px)',
                   WebkitBackdropFilter: 'blur(10px)',
-                  color: '#FFFFFF',
+                  color: "var(--text-inverse)",
                   borderRadius: 'var(--radius-pill)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  border: '1px solid var(--overlay-white-20)',
                   fontSize: '0.74rem',
                   fontWeight: 600,
                   letterSpacing: '0.04em',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)',
+                  boxShadow: '0 4px 12px var(--shadow-sm)',
                   pointerEvents: 'none',
                 }}
               >
-                <Maximize2 size={13} style={{ color: 'var(--color-golden)' }} />
+                <Maximize2 size={13} style={{ color: 'var(--brand-accent)' }} />
                 <span>Full Screen</span>
               </div>
             </div>
@@ -300,7 +300,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                       borderRadius: 'var(--radius-sm)',
                       overflow: 'hidden',
                       flexShrink: 0,
-                      border: activeImageIndex === idx ? '2px solid var(--color-sapphire)' : '1px solid var(--border-color)',
+                      border: activeImageIndex === idx ? '2px solid var(--brand-primary)' : '1px solid var(--border-color)',
                       cursor: 'pointer',
                       transition: 'border-color var(--duration-fast)',
                     }}
@@ -322,7 +322,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     fontWeight: 600,
                     letterSpacing: '0.14em',
                     textTransform: 'uppercase',
-                    color: 'var(--color-sapphire)',
+                    color: 'var(--brand-primary)',
                   }}
                 >
                   {product.subtitle || 'Atelier Master Edition'}
@@ -371,7 +371,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     alignItems: 'center',
                     gap: '4px',
                     fontSize: '0.8rem',
-                    color: 'var(--color-sapphire)',
+                    color: 'var(--brand-primary)',
                     textDecoration: 'underline',
                     cursor: 'pointer',
                   }}
@@ -402,12 +402,12 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                         '--fill-bg': isSelected
                           ? 'var(--color-black-tie)'
                           : isVariantOutOfStock
-                          ? 'rgba(0,0,0,0.03)'
+                          ? 'var(--border-color)'
                           : 'var(--bg-surface)',
                         '--fill-hover': 'var(--color-black-tie)',
-                        '--text-hover': '#FFF',
+                        '--text-hover': 'var(--color-diamond)',
                         color: isSelected
-                          ? '#FFF'
+                          ? 'var(--color-diamond)'
                           : isVariantOutOfStock
                           ? 'var(--text-muted)'
                           : 'var(--text-primary)',
@@ -516,12 +516,12 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     borderRadius: 'var(--radius-pill)',
                     border: '1px solid var(--border-color)',
                     '--fill-bg': 'var(--bg-surface)',
-                    '--fill-hover': 'var(--color-sapphire)',
-                    '--text-hover': '#FFF',
+                    '--fill-hover': 'var(--brand-primary)',
+                    '--text-hover': 'var(--color-diamond)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: isFavorited ? 'var(--color-sapphire)' : 'var(--text-primary)',
+                    color: isFavorited ? 'var(--brand-primary)' : 'var(--text-primary)',
                     cursor: 'pointer',
                     flexShrink: 0,
                   } as React.CSSProperties}
@@ -535,17 +535,17 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
             {/* Atelier Guarantees Pill */}
             <div className="pdp-guarantees">
               <div>
-                <Truck size={16} style={{ color: 'var(--color-sapphire)', margin: '0 auto 4px' }} />
+                <Truck size={16} style={{ color: 'var(--brand-primary)', margin: '0 auto 4px' }} />
                 <span style={{ fontSize: '0.72rem', display: 'block', fontWeight: 600 }}>Complimentary</span>
                 <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>White-Glove Courier</span>
               </div>
               <div>
-                <RotateCcw size={16} style={{ color: 'var(--color-sapphire)', margin: '0 auto 4px' }} />
+                <RotateCcw size={16} style={{ color: 'var(--brand-primary)', margin: '0 auto 4px' }} />
                 <span style={{ fontSize: '0.72rem', display: 'block', fontWeight: 600 }}>7-Day Returns</span>
                 <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>From Delivery Date</span>
               </div>
               <div>
-                <ShieldCheck size={16} style={{ color: 'var(--color-sapphire)', margin: '0 auto 4px' }} />
+                <ShieldCheck size={16} style={{ color: 'var(--brand-primary)', margin: '0 auto 4px' }} />
                 <span style={{ fontSize: '0.72rem', display: 'block', fontWeight: 600 }}>Authentic Heirloom</span>
                 <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>100% Traceable</span>
               </div>
@@ -680,7 +680,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
         <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '64px', marginBottom: '80px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '32px' }}>
             <div>
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
                 Client Impressions
               </span>
               <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)' }}>Reflections & Fit Notes</h2>

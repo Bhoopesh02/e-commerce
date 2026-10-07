@@ -36,7 +36,7 @@ export const CategoryShowcaseSectionSkeleton: React.FC<CategoryShowcaseSectionSk
           overflow: 'hidden',
           marginBottom: '48px',
           backgroundColor: '#0c0a14',
-          boxShadow: '0 24px 56px -12px rgba(10, 8, 18, 0.45)',
+          boxShadow: '0 24px 56px -12px rgba(16, 33, 39, 0.45)',
           border: '1px solid rgba(255, 255, 255, 0.14)',
           minHeight: '480px',
           display: 'flex',
@@ -66,7 +66,7 @@ export const CategoryShowcaseSectionSkeleton: React.FC<CategoryShowcaseSectionSk
                   fontSize: 'clamp(1.25rem, 3.5vw, 2.7rem)',
                   fontFamily: 'var(--font-display)',
                   fontWeight: 400,
-                  color: '#FFFFFF',
+                  color: "var(--text-inverse)",
                   lineHeight: 1.18,
                   marginBottom: '12px',
                   letterSpacing: '-0.01em',
@@ -150,7 +150,7 @@ export const CategoryShowcaseSection: React.FC<CategoryShowcaseSectionProps> = (
           overflow: 'hidden',
           marginBottom: '48px',
           backgroundColor: '#0c0a14',
-          boxShadow: '0 24px 56px -12px rgba(10, 8, 18, 0.45)',
+          boxShadow: '0 24px 56px -12px rgba(16, 33, 39, 0.45)',
           border: '1px solid rgba(255, 255, 255, 0.14)',
           minHeight: '480px',
           display: 'flex',
@@ -207,7 +207,7 @@ export const CategoryShowcaseSection: React.FC<CategoryShowcaseSectionProps> = (
               position: 'absolute',
               inset: 0,
               background:
-                'linear-gradient(90deg, rgba(10, 8, 18, 0.92) 0%, rgba(10, 8, 18, 0.72) 45%, rgba(10, 8, 18, 0.42) 80%, rgba(10, 8, 18, 0.6) 100%)',
+                'linear-gradient(90deg, var(--overlay-scrim-strong) 0%, rgba(16, 33, 39, 0.72) 45%, rgba(16, 33, 39, 0.42) 80%, rgba(16, 33, 39, 0.6) 100%)',
             }}
           />
           <div
@@ -215,7 +215,7 @@ export const CategoryShowcaseSection: React.FC<CategoryShowcaseSectionProps> = (
               position: 'absolute',
               inset: 0,
               background:
-                'linear-gradient(0deg, rgba(10, 8, 18, 0.85) 0%, rgba(10, 8, 18, 0.3) 50%, rgba(10, 8, 18, 0.6) 100%)',
+                'linear-gradient(0deg, rgba(16, 33, 39, 0.85) 0%, rgba(16, 33, 39, 0.3) 50%, rgba(16, 33, 39, 0.6) 100%)',
             }}
           />
         </div>
@@ -242,7 +242,7 @@ export const CategoryShowcaseSection: React.FC<CategoryShowcaseSectionProps> = (
                 fontSize: 'clamp(1.25rem, 3.5vw, 2.7rem)',
                 fontFamily: 'var(--font-display)',
                 fontWeight: 400,
-                color: '#FFFFFF',
+                color: "var(--text-inverse)",
                 lineHeight: 1.18,
                 marginBottom: '12px',
                 letterSpacing: '-0.01em',
@@ -256,12 +256,12 @@ export const CategoryShowcaseSection: React.FC<CategoryShowcaseSectionProps> = (
               <p
                 className="category-hero-banner-description"
                 style={{
-                  color: 'rgba(255, 248, 245, 0.88)',
+                  color: 'rgba(245, 248, 248, 0.88)',
                   fontSize: 'clamp(0.88rem, 1.1vw, 1rem)',
                   lineHeight: 1.6,
                   margin: 0,
                   maxWidth: '640px',
-                  textShadow: '0 1px 8px rgba(0,0,0,0.5)',
+                  textShadow: '0 1px 8px var(--overlay-black-50)',
                 }}
               >
                 {config.subtitle}

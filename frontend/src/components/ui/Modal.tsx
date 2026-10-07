@@ -55,7 +55,7 @@ export const Modal: React.FC<ModalProps> = ({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(20, 20, 20, 0.65)',
+        backgroundColor: 'var(--overlay-black-70)',
         backdropFilter: 'blur(8px)',
         display: 'flex',
         alignItems: 'center',

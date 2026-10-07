@@ -58,11 +58,11 @@ export const AdminSidebar: React.FC = () => {
             width: 32,
             height: 32,
             borderRadius: 'var(--radius-sm)',
-            backgroundColor: 'var(--color-sapphire)',
+            backgroundColor: 'var(--brand-primary)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#FFF',
+            color: "var(--text-inverse)",
           }}
         >
           <Shield size={18} />
@@ -71,7 +71,7 @@ export const AdminSidebar: React.FC = () => {
           <span style={{ fontSize: '1.05rem', fontWeight: 600, letterSpacing: '0.12em', fontFamily: 'var(--font-display)', display: 'block' }}>
             {BRAND_NAME}
           </span>
-          <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-silver)' }}>
+          <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--border-color)' }}>
             Atelier Operations
           </span>
         </div>
@@ -91,7 +91,7 @@ export const AdminSidebar: React.FC = () => {
                   style={{ width: '100%', justifyContent: 'space-between', border: 'none', background: 'transparent', cursor: 'pointer' }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span style={{ color: isActive ? 'var(--color-silver)' : 'inherit', display: 'flex', alignItems: 'center' }}>
+                    <span style={{ color: isActive ? 'var(--border-color)' : 'inherit', display: 'flex', alignItems: 'center' }}>
                       {item.icon}
                     </span>
                     <span>{item.label}</span>
@@ -112,10 +112,10 @@ export const AdminSidebar: React.FC = () => {
                           style={{
                             padding: '6px 12px',
                             fontSize: '0.85rem',
-                            color: isDivActive ? 'var(--color-silver)' : 'var(--color-diamond)',
+                            color: isDivActive ? 'var(--border-color)' : 'var(--color-diamond)',
                             textDecoration: 'none',
                             borderRadius: '4px',
-                            backgroundColor: isDivActive ? 'rgba(255,255,255,0.05)' : 'transparent',
+                            backgroundColor: isDivActive ? 'var(--overlay-white-5)' : 'transparent',
                             transition: 'all 0.2s ease'
                           }}
                         >
@@ -135,7 +135,7 @@ export const AdminSidebar: React.FC = () => {
               href={item.href}
               className={`admin-nav-link ${isActive ? 'admin-nav-link-active' : ''}`}
             >
-              <span style={{ color: isActive ? 'var(--color-silver)' : 'inherit', display: 'flex', alignItems: 'center' }}>
+              <span style={{ color: isActive ? 'var(--border-color)' : 'inherit', display: 'flex', alignItems: 'center' }}>
                 {item.icon}
               </span>
               <span>{item.label}</span>
@@ -154,7 +154,7 @@ export const AdminSidebar: React.FC = () => {
             justifyContent: 'center',
             backgroundColor: 'rgba(255, 255, 255, 0.06)',
             border: '1px solid rgba(255, 255, 255, 0.12)',
-            color: '#CBD5E1',
+            color: 'var(--border-color)',
             fontSize: '0.82rem',
           }}
         >

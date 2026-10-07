@@ -274,9 +274,9 @@ function SearchContent() {
           gap: '8px',
           padding: '8px 16px',
           borderRadius: '6px',
-          border: `1px solid ${hasActive ? 'var(--color-sapphire)' : 'var(--border-color)'}`,
+          border: `1px solid ${hasActive ? 'var(--brand-primary)' : 'var(--border-color)'}`,
           backgroundColor: hasActive ? 'var(--bg-secondary)' : 'transparent',
-          color: hasActive ? 'var(--color-sapphire)' : 'var(--text-primary)',
+          color: hasActive ? 'var(--brand-primary)' : 'var(--text-primary)',
           fontSize: '0.85rem',
           fontWeight: 500,
           cursor: 'pointer',
@@ -306,7 +306,7 @@ function SearchContent() {
             left: 0, 
             zIndex: 50,
             minWidth: '240px',
-            backgroundColor: '#ffffff',
+            backgroundColor: 'var(--bg-primary)',
             border: '1px solid var(--border-light)',
             boxShadow: 'var(--shadow-editorial)',
             borderRadius: '8px',
@@ -323,7 +323,7 @@ function SearchContent() {
                     type="checkbox" 
                     checked={activeCategories.includes(c.slug)}
                     onChange={() => toggleFilter('category', c.slug)}
-                    style={{ accentColor: 'var(--color-sapphire)' }}
+                    style={{ accentColor: 'var(--brand-primary)' }}
                   />
                   {c.name}
                 </label>
@@ -340,7 +340,7 @@ function SearchContent() {
                     type="checkbox" 
                     checked={activeCollections.includes(c.id)}
                     onChange={() => toggleFilter('collection', c.id)}
-                    style={{ accentColor: 'var(--color-sapphire)' }}
+                    style={{ accentColor: 'var(--brand-primary)' }}
                   />
                   {c.label}
                 </label>
@@ -359,9 +359,9 @@ function SearchContent() {
                     style={{
                       padding: '6px 12px',
                       borderRadius: '4px',
-                      border: `1px solid ${activeSizes.includes(s) ? 'var(--color-sapphire)' : 'var(--border-color)'}`,
-                      backgroundColor: activeSizes.includes(s) ? 'var(--color-sapphire)' : '#fff',
-                      color: activeSizes.includes(s) ? '#fff' : 'var(--text-primary)',
+                      border: `1px solid ${activeSizes.includes(s) ? 'var(--brand-primary)' : 'var(--border-color)'}`,
+                      backgroundColor: activeSizes.includes(s) ? 'var(--brand-primary)' : 'var(--color-diamond)',
+                      color: activeSizes.includes(s) ? 'var(--color-diamond)' : 'var(--text-primary)',
                       fontSize: '0.85rem',
                       cursor: 'pointer',
                       transition: 'all 200ms'
@@ -382,9 +382,9 @@ function SearchContent() {
                   <label key={g.name} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-primary)' }}>
                     <div style={{ 
                       width: '18px', height: '18px', borderRadius: '50%', backgroundColor: g.hex, 
-                      border: '1px solid rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' 
+                      border: '1px solid var(--shadow-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' 
                     }}>
-                      {activeColors.includes(g.name) && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: g.hex === '#F8F5F0' ? '#000' : '#fff' }} />}
+                      {activeColors.includes(g.name) && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: g.hex === '#F8F5F0' ? '#000' : 'var(--color-diamond)' }} />}
                     </div>
                     <span style={{ fontWeight: activeColors.includes(g.name) ? 600 : 400 }}>{g.name}</span>
                     <input 
@@ -410,7 +410,7 @@ function SearchContent() {
                     onChange={() => {
                       updateUrl({ price: activePriceRange === p.id ? null : p.id });
                     }}
-                    style={{ accentColor: 'var(--color-sapphire)' }}
+                    style={{ accentColor: 'var(--brand-primary)' }}
                   />
                   {p.label}
                 </label>
@@ -442,7 +442,7 @@ function SearchContent() {
         
         {/* Search Header */}
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <h1 style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-sapphire)', fontWeight: 600, marginBottom: '16px' }}>SEARCH</h1>
+          <h1 style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--brand-primary)', fontWeight: 600, marginBottom: '16px' }}>SEARCH</h1>
           {initialQuery && (
             <>
               <h2 style={{ fontSize: '14px', fontFamily: 'var(--font-serif)', color: 'var(--text-primary)', fontWeight: 400, marginBottom: '16px' }}>
@@ -472,7 +472,7 @@ function SearchContent() {
                 color: 'var(--text-primary)',
                 transition: 'border-color 200ms ease'
               }}
-              onFocus={(e) => e.target.style.borderColor = 'var(--color-sapphire)'}
+              onFocus={(e) => e.target.style.borderColor = 'var(--brand-primary)'}
               onBlur={(e) => e.target.style.borderColor = 'var(--border-color)'}
             />
           </form>
@@ -486,7 +486,7 @@ function SearchContent() {
                 textTransform: 'uppercase',
                 fontWeight: 'bold',
                 letterSpacing: '0.1em',
-                color: 'var(--color-sapphire)',
+                color: 'var(--brand-primary)',
                 marginBottom: '12px',
               }}
             >
@@ -507,20 +507,20 @@ function SearchContent() {
                     padding: '6px 16px',
                     borderRadius: '9999px',
                     border: '1px solid var(--border-color)',
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: 'var(--bg-primary)',
                     color: 'var(--text-secondary)',
                     cursor: 'pointer',
                     transition: 'all 200ms',
                   }}
                   onMouseOver={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--color-sapphire)';
-                    e.currentTarget.style.color = 'var(--color-sapphire)';
+                    e.currentTarget.style.borderColor = 'var(--brand-primary)';
+                    e.currentTarget.style.color = 'var(--brand-primary)';
                     e.currentTarget.style.backgroundColor = 'var(--bg-surface)';
                   }}
                   onMouseOut={(e) => {
                     e.currentTarget.style.borderColor = 'var(--border-color)';
                     e.currentTarget.style.color = 'var(--text-secondary)';
-                    e.currentTarget.style.backgroundColor = '#FFFFFF';
+                    e.currentTarget.style.backgroundColor = 'var(--color-diamond)';
                   }}
                 >
                   {tag}
@@ -582,7 +582,7 @@ function SearchContent() {
                     {openPopover === 'sort' && (
                       <div style={{ 
                         position: 'absolute', top: 'calc(100% + 8px)', right: 0, zIndex: 50,
-                        minWidth: '200px', backgroundColor: '#ffffff', border: '1px solid var(--border-light)',
+                        minWidth: '200px', backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border-light)',
                         boxShadow: 'var(--shadow-editorial)', borderRadius: '8px', padding: '8px 0',
                         animation: 'fadeInUp 200ms ease forwards'
                       }}>
@@ -593,7 +593,7 @@ function SearchContent() {
                             style={{
                               display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
                               padding: '10px 16px', border: 'none', background: 'transparent', cursor: 'pointer',
-                              color: selectedSort === opt.id ? 'var(--color-sapphire)' : 'var(--text-primary)',
+                              color: selectedSort === opt.id ? 'var(--brand-primary)' : 'var(--text-primary)',
                               fontSize: '0.85rem', fontWeight: selectedSort === opt.id ? 600 : 400,
                               textAlign: 'left'
                             }}
@@ -624,8 +624,8 @@ function SearchContent() {
                       style={{
                         display: 'inline-flex', alignItems: 'center', gap: '6px',
                         padding: '4px 12px', borderRadius: '4px',
-                        backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--color-silver)',
-                        color: 'var(--color-sapphire)', fontSize: '0.8rem', fontWeight: 500,
+                        backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+                        color: 'var(--brand-primary)', fontSize: '0.8rem', fontWeight: 500,
                         cursor: 'pointer', transition: 'all 200ms ease'
                       }}
                     >
@@ -665,7 +665,7 @@ function SearchContent() {
                   We couldn&apos;t find anything matching your filters.<br/>
                   Try adjusting your selections or explore our collections.
                 </p>
-                <button onClick={clearAllFilters} style={{ display: 'inline-flex', padding: '12px 28px', backgroundColor: '#7c1d35', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', transition: 'background-color 200ms ease', border: 'none', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-sapphire)'} onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#7c1d35'}>
+                <button onClick={clearAllFilters} style={{ display: 'inline-flex', padding: '12px 28px', backgroundColor: 'var(--text-secondary)', color: "var(--text-inverse)", borderRadius: '8px', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', transition: 'background-color 200ms ease', border: 'none', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--brand-primary)'} onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#7c1d35'}>
                   Clear All Filters
                 </button>
               </div>

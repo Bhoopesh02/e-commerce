@@ -30,7 +30,7 @@ export default function SignOutPage() {
         paddingTop: '120px',
         paddingBottom: '96px',
         minHeight: '100vh',
-        background: 'radial-gradient(ellipse at 50% 20%, #FFF5F7 0%, var(--bg-secondary) 50%, #F9E2E8 100%)',
+        background: 'radial-gradient(ellipse at 50% 20%, var(--bg-subtle) 0%, var(--bg-secondary) 50%, var(--bg-muted) 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -46,9 +46,9 @@ export default function SignOutPage() {
       >
         <div
           style={{
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--bg-primary)',
             borderRadius: '24px',
-            border: '1px solid rgba(202, 212, 214, 0.55)',
+            border: '1px solid var(--border-color)',
             padding: '48px 40px',
             boxShadow: '0 24px 60px -12px rgba(186, 75, 102, 0.14), 0 4px 16px rgba(0, 0, 0, 0.03)',
             textAlign: 'center',
@@ -61,12 +61,12 @@ export default function SignOutPage() {
               height: '64px',
               margin: '0 auto 24px auto',
               borderRadius: '50%',
-              backgroundColor: '#FFF0F3',
-              border: '1px solid rgba(202, 212, 214, 0.7)',
+              backgroundColor: 'var(--bg-subtle)',
+              border: '1px solid var(--border-color)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: 'var(--color-sapphire)',
+              color: 'var(--brand-primary)',
             }}
           >
             <ShieldCheck size={32} strokeWidth={1.5} />
@@ -89,7 +89,7 @@ export default function SignOutPage() {
           <span
             style={{
               fontSize: '0.75rem',
-              color: '#8A6D73',
+              color: 'var(--text-muted)',
               textTransform: 'uppercase',
               letterSpacing: '0.12em',
               display: 'block',
@@ -104,7 +104,7 @@ export default function SignOutPage() {
               fontFamily: 'var(--font-display)',
               fontSize: '1.75rem',
               fontWeight: 500,
-              color: '#1E1517',
+              color: 'var(--text-primary)',
               marginBottom: '14px',
               lineHeight: 1.3,
             }}
@@ -132,9 +132,9 @@ export default function SignOutPage() {
                 fullWidth
                 rightIcon={<ArrowRight size={16} />}
                 style={{
-                  backgroundColor: 'var(--color-sapphire)',
-                  borderColor: 'var(--color-sapphire)',
-                  color: '#FFFFFF',
+                  backgroundColor: 'var(--brand-primary)',
+                  borderColor: 'var(--brand-primary)',
+                  color: "var(--text-inverse)",
                 }}
               >
                 Sign Back In
@@ -148,7 +148,7 @@ export default function SignOutPage() {
                 fullWidth
                 leftIcon={<ShoppingBag size={16} />}
                 style={{
-                  borderColor: 'rgba(202, 212, 214, 0.8)',
+                  borderColor: 'var(--border-color)',
                   color: '#4A3338',
                   backgroundColor: '#FFF8FA',
                 }}
@@ -165,14 +165,14 @@ export default function SignOutPage() {
               paddingTop: '20px',
               borderTop: '1px solid rgba(240, 210, 218, 0.6)',
               fontSize: '0.8rem',
-              color: '#8A6D73',
+              color: 'var(--text-muted)',
             }}
           >
             Need assistance? Reach our concierge at{' '}
             <Link
               href="/account/support"
               style={{
-                color: 'var(--color-sapphire)',
+                color: 'var(--brand-primary)',
                 fontWeight: 600,
                 textDecoration: 'underline',
               }}

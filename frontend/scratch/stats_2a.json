@@ -1,0 +1,503 @@
+{
+  "replacementsByFile": {
+    "src\\app\\(storefront)\\account\\addresses\\page.tsx": 1,
+    "src\\app\\(storefront)\\signout\\page.tsx": 10,
+    "src\\components\\sections\\CollectionsBannerCarousel.tsx": 8,
+    "src\\components\\sections\\HeroSection.tsx": 5,
+    "src\\components\\shop\\BannerProductCard.tsx": 3,
+    "src\\components\\shop\\BannerProductCarousel.tsx": 4,
+    "src\\components\\shop\\CategoryShowcaseSection.tsx": 9,
+    "src\\components\\shop\\SectionBanner.tsx": 7,
+    "src\\components\\views\\SearchView.tsx": 3,
+    "src\\components\\views\\ShopView.tsx": 1
+  },
+  "ruleCChanges": [],
+  "unmapped": [
+    {
+      "file": "src\\app\\(storefront)\\signout\\page.tsx",
+      "line": 53,
+      "value": "rgba(186, 75, 102, 0.14)",
+      "role": "boxShadow: '0 24px 60px -12px rgba(186, 75, 102, 0.14), 0 4px 16px rgba(0, 0, 0, 0.03)',"
+    },
+    {
+      "file": "src\\app\\(storefront)\\signout\\page.tsx",
+      "line": 53,
+      "value": "rgba(0, 0, 0, 0.03)",
+      "role": "boxShadow: '0 24px 60px -12px rgba(186, 75, 102, 0.14), 0 4px 16px rgba(0, 0, 0, 0.03)',"
+    },
+    {
+      "file": "src\\app\\(storefront)\\signout\\page.tsx",
+      "line": 152,
+      "value": "#4A3338",
+      "role": "color: '#4A3338',"
+    },
+    {
+      "file": "src\\app\\(storefront)\\signout\\page.tsx",
+      "line": 153,
+      "value": "#FFF8FA",
+      "role": "backgroundColor: '#FFF8FA',"
+    },
+    {
+      "file": "src\\app\\(storefront)\\signout\\page.tsx",
+      "line": 166,
+      "value": "rgba(240, 210, 218, 0.6)",
+      "role": "borderTop: '1px solid rgba(240, 210, 218, 0.6)',"
+    },
+    {
+      "file": "src\\app\\(storefront)\\stepper-test\\page.tsx",
+      "line": 33,
+      "value": "#E88D4D",
+      "role": "className=\"px-4 py-2 bg-[#E88D4D] text-white rounded-md hover:bg-[#d67b3b]\""
+    },
+    {
+      "file": "src\\app\\(storefront)\\stepper-test\\page.tsx",
+      "line": 33,
+      "value": "#d67b3b",
+      "role": "className=\"px-4 py-2 bg-[#E88D4D] text-white rounded-md hover:bg-[#d67b3b]\""
+    },
+    {
+      "file": "src\\components\\sections\\CategoryShowcase.tsx",
+      "line": 67,
+      "value": "rgba(0,0,0,0.2)",
+      "role": "boxShadow: isActive ? '0 24px 50px rgba(0,0,0,0.2)' : 'none',"
+    },
+    {
+      "file": "src\\components\\sections\\CategoryShowcase.tsx",
+      "line": 489,
+      "value": "rgba(0,0,0,0.2)",
+      "role": "boxShadow: isActive ? '0 24px 50px rgba(0,0,0,0.2)' : 'none',"
+    },
+    {
+      "file": "src\\components\\sections\\CategoryShowcase.tsx",
+      "line": 584,
+      "value": "rgba(0,0,0,0.5)",
+      "role": "filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 125,
+      "value": "rgba(12, 10, 20, 0.35)",
+      "role": "boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 126,
+      "value": "#0c0a14",
+      "role": "backgroundColor: '#0c0a14',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 178,
+      "value": "rgba(12, 10, 20, 0.8)",
+      "role": "'linear-gradient(90deg, rgba(12, 10, 20, 0.8) 0%, rgba(12, 10, 20, 0.6) 42%, rgba(12, 10, 20, 0.2) 75%, rgba(12, 10, 20, 0.4) 100%)',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 178,
+      "value": "rgba(12, 10, 20, 0.6)",
+      "role": "'linear-gradient(90deg, rgba(12, 10, 20, 0.8) 0%, rgba(12, 10, 20, 0.6) 42%, rgba(12, 10, 20, 0.2) 75%, rgba(12, 10, 20, 0.4) 100%)',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 178,
+      "value": "rgba(12, 10, 20, 0.2)",
+      "role": "'linear-gradient(90deg, rgba(12, 10, 20, 0.8) 0%, rgba(12, 10, 20, 0.6) 42%, rgba(12, 10, 20, 0.2) 75%, rgba(12, 10, 20, 0.4) 100%)',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 178,
+      "value": "rgba(12, 10, 20, 0.4)",
+      "role": "'linear-gradient(90deg, rgba(12, 10, 20, 0.8) 0%, rgba(12, 10, 20, 0.6) 42%, rgba(12, 10, 20, 0.2) 75%, rgba(12, 10, 20, 0.4) 100%)',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 186,
+      "value": "rgba(12, 10, 20, 0.7)",
+      "role": "'linear-gradient(0deg, rgba(12, 10, 20, 0.7) 0%, transparent 65%)',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 242,
+      "value": "rgba(245, 248, 248, 0.9)",
+      "role": "color: 'rgba(245, 248, 248, 0.9)',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 316,
+      "value": "rgba(245, 248, 248, 0.4)",
+      "role": "backgroundColor: activeIndex === i ? 'var(--bg-subtle)' : 'rgba(245, 248, 248, 0.4)',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 341,
+      "value": "rgba(12, 10, 20, 0.35)",
+      "role": "boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 342,
+      "value": "#0c0a14",
+      "role": "backgroundColor: '#0c0a14',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 371,
+      "value": "rgba(12, 10, 20, 0.8)",
+      "role": "'linear-gradient(90deg, rgba(12, 10, 20, 0.8) 0%, rgba(12, 10, 20, 0.6) 42%, rgba(12, 10, 20, 0.2) 75%, rgba(12, 10, 20, 0.4) 100%)',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 371,
+      "value": "rgba(12, 10, 20, 0.6)",
+      "role": "'linear-gradient(90deg, rgba(12, 10, 20, 0.8) 0%, rgba(12, 10, 20, 0.6) 42%, rgba(12, 10, 20, 0.2) 75%, rgba(12, 10, 20, 0.4) 100%)',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 371,
+      "value": "rgba(12, 10, 20, 0.2)",
+      "role": "'linear-gradient(90deg, rgba(12, 10, 20, 0.8) 0%, rgba(12, 10, 20, 0.6) 42%, rgba(12, 10, 20, 0.2) 75%, rgba(12, 10, 20, 0.4) 100%)',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 371,
+      "value": "rgba(12, 10, 20, 0.4)",
+      "role": "'linear-gradient(90deg, rgba(12, 10, 20, 0.8) 0%, rgba(12, 10, 20, 0.6) 42%, rgba(12, 10, 20, 0.2) 75%, rgba(12, 10, 20, 0.4) 100%)',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 379,
+      "value": "rgba(12, 10, 20, 0.7)",
+      "role": "'linear-gradient(0deg, rgba(12, 10, 20, 0.7) 0%, transparent 65%)',"
+    },
+    {
+      "file": "src\\components\\sections\\CollectionsBannerCarousel.tsx",
+      "line": 408,
+      "value": "rgba(245, 248, 248, 0.9)",
+      "role": "color: 'rgba(245, 248, 248, 0.9)',"
+    },
+    {
+      "file": "src\\components\\sections\\EditorialCampaign.tsx",
+      "line": 115,
+      "value": "rgba(224, 224, 224, 0.25)",
+      "role": "border: '1px solid rgba(224, 224, 224, 0.25)',"
+    },
+    {
+      "file": "src\\components\\sections\\EditorialCampaign.tsx",
+      "line": 171,
+      "value": "rgba(224, 224, 224, 0.7)",
+      "role": "color: 'rgba(224, 224, 224, 0.7)',"
+    },
+    {
+      "file": "src\\components\\sections\\NewsletterSection.tsx",
+      "line": 90,
+      "value": "rgba(224, 224, 224, 0.3)",
+      "role": "border: '1px solid rgba(224, 224, 224, 0.3)',"
+    },
+    {
+      "file": "src\\components\\sections\\NewsletterSection.tsx",
+      "line": 121,
+      "value": "rgba(224, 224, 224, 0.35)",
+      "role": "border: '1px solid rgba(224, 224, 224, 0.35)',"
+    },
+    {
+      "file": "src\\components\\shop\\BannerProductCard.tsx",
+      "line": 207,
+      "value": "rgba(15, 12, 24, 0.85)",
+      "role": "backgroundColor: 'rgba(15, 12, 24, 0.85)',"
+    },
+    {
+      "file": "src\\components\\shop\\BannerProductCard.tsx",
+      "line": 210,
+      "value": "#FFE28A",
+      "role": "color: '#FFE28A',"
+    },
+    {
+      "file": "src\\components\\shop\\BannerProductCard.tsx",
+      "line": 215,
+      "value": "#FFE28A",
+      "role": "<Star size={10} fill=\"#FFE28A\" />"
+    },
+    {
+      "file": "src\\components\\shop\\BannerProductCard.tsx",
+      "line": 247,
+      "value": "#121624",
+      "role": "backgroundColor: isFavorited ? '#121624' : 'rgba(15, 12, 24, 0.72)',"
+    },
+    {
+      "file": "src\\components\\shop\\BannerProductCard.tsx",
+      "line": 247,
+      "value": "rgba(15, 12, 24, 0.72)",
+      "role": "backgroundColor: isFavorited ? '#121624' : 'rgba(15, 12, 24, 0.72)',"
+    },
+    {
+      "file": "src\\components\\shop\\BannerProductCard.tsx",
+      "line": 253,
+      "value": "#FFE28A",
+      "role": "color: isFavorited ? '#FFE28A' : '#FFFFFF',"
+    },
+    {
+      "file": "src\\components\\shop\\BannerProductCard.tsx",
+      "line": 303,
+      "value": "rgba(245, 248, 248, 0.7)",
+      "role": "color: 'rgba(245, 248, 248, 0.7)',"
+    },
+    {
+      "file": "src\\components\\shop\\BannerProductCard.tsx",
+      "line": 348,
+      "value": "rgba(74, 222, 128, 0.5)",
+      "role": "border: isAdding ? '1px solid rgba(74, 222, 128, 0.5)' : '1px solid rgba(255, 255, 255, 0.2)',"
+    },
+    {
+      "file": "src\\components\\shop\\CategoryShowcaseSection.tsx",
+      "line": 38,
+      "value": "#0c0a14",
+      "role": "backgroundColor: '#0c0a14',"
+    },
+    {
+      "file": "src\\components\\shop\\CategoryShowcaseSection.tsx",
+      "line": 152,
+      "value": "#0c0a14",
+      "role": "backgroundColor: '#0c0a14',"
+    },
+    {
+      "file": "src\\components\\shop\\CategoryShowcaseSection.tsx",
+      "line": 249,
+      "value": "rgba(0,0,0,0.6)",
+      "role": "textShadow: '0 2px 16px rgba(0,0,0,0.6)',"
+    },
+    {
+      "file": "src\\components\\shop\\CategoryShowcaseSection.tsx",
+      "line": 259,
+      "value": "rgba(245, 248, 248, 0.88)",
+      "role": "color: 'rgba(245, 248, 248, 0.88)',"
+    },
+    {
+      "file": "src\\components\\shop\\CategoryShowcaseSection.tsx",
+      "line": 264,
+      "value": "rgba(0,0,0,0.5)",
+      "role": "textShadow: '0 1px 8px rgba(0,0,0,0.5)',"
+    },
+    {
+      "file": "src\\components\\shop\\SectionBanner.tsx",
+      "line": 40,
+      "value": "rgba(12, 10, 20, 0.35)",
+      "role": "boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',"
+    },
+    {
+      "file": "src\\components\\shop\\SectionBanner.tsx",
+      "line": 42,
+      "value": "#0c0a14",
+      "role": "backgroundColor: '#0c0a14',"
+    },
+    {
+      "file": "src\\components\\shop\\SectionBanner.tsx",
+      "line": 119,
+      "value": "rgba(245, 248, 248, 0.9)",
+      "role": "color: 'rgba(245, 248, 248, 0.9)',"
+    },
+    {
+      "file": "src\\components\\views\\ProductDetailView.tsx",
+      "line": 280,
+      "value": "rgba(0, 0, 0, 0.25)",
+      "role": "boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)',"
+    },
+    {
+      "file": "src\\components\\views\\ProductDetailView.tsx",
+      "line": 405,
+      "value": "rgba(0,0,0,0.03)",
+      "role": "? 'rgba(0,0,0,0.03)'"
+    },
+    {
+      "file": "src\\components\\views\\SearchView.tsx",
+      "line": 13,
+      "value": "#1A1A1A",
+      "role": "{ name: 'Black', hex: '#1A1A1A', matches: ['Black', 'Noir', 'Abyss', 'Nocturne'] },"
+    },
+    {
+      "file": "src\\components\\views\\SearchView.tsx",
+      "line": 14,
+      "value": "#1B2431",
+      "role": "{ name: 'Navy', hex: '#1B2431', matches: ['Navy'] },"
+    },
+    {
+      "file": "src\\components\\views\\SearchView.tsx",
+      "line": 15,
+      "value": "#4A1C20",
+      "role": "{ name: 'Burgundy', hex: '#4A1C20', matches: ['Burgundy', 'Aubergine'] },"
+    },
+    {
+      "file": "src\\components\\views\\SearchView.tsx",
+      "line": 16,
+      "value": "#4A3728",
+      "role": "{ name: 'Brown', hex: '#4A3728', matches: ['Brown', 'Cognac', 'Espresso', 'Chocolate', 'Havana'] },"
+    },
+    {
+      "file": "src\\components\\views\\SearchView.tsx",
+      "line": 17,
+      "value": "#C19A6B",
+      "role": "{ name: 'Camel / Beige', hex: '#C19A6B', matches: ['Camel', 'Sand', 'Tan', 'Khaki', 'Oatmeal', 'Vicuna', 'Taupe'] },"
+    },
+    {
+      "file": "src\\components\\views\\SearchView.tsx",
+      "line": 18,
+      "value": "#F8F5F0",
+      "role": "{ name: 'Ivory / White', hex: '#F8F5F0', matches: ['Ivory', 'Ecru', 'Alabaster', 'Milk', 'Pearl', 'White'] },"
+    },
+    {
+      "file": "src\\components\\views\\SearchView.tsx",
+      "line": 19,
+      "value": "#2E4C38",
+      "role": "{ name: 'Green', hex: '#2E4C38', matches: ['Emerald', 'Forest', 'Sage'] },"
+    },
+    {
+      "file": "src\\components\\views\\SearchView.tsx",
+      "line": 20,
+      "value": "#4B4B4B",
+      "role": "{ name: 'Grey', hex: '#4B4B4B', matches: ['Charcoal'] },"
+    },
+    {
+      "file": "src\\components\\views\\SearchView.tsx",
+      "line": 21,
+      "value": "#D4AF37",
+      "role": "{ name: 'Gold', hex: '#D4AF37', matches: ['Gold', 'Bronze'] }"
+    },
+    {
+      "file": "src\\components\\views\\SearchView.tsx",
+      "line": 387,
+      "value": "#F8F5F0",
+      "role": "{activeColors.includes(g.name) && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: g.hex === '#F8F5F0' ? '#000' : '#fff' }} />}"
+    },
+    {
+      "file": "src\\components\\views\\SearchView.tsx",
+      "line": 668,
+      "value": "#7c1d35",
+      "role": "<button onClick={clearAllFilters} style={{ display: 'inline-flex', padding: '12px 28px', backgroundColor: '#7c1d35', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', transition: 'background-color 200ms ease', border: 'none', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-sapphire)'} onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#7c1d35'}>"
+    },
+    {
+      "file": "src\\components\\views\\SearchView.tsx",
+      "line": 668,
+      "value": "#7c1d35",
+      "role": "<button onClick={clearAllFilters} style={{ display: 'inline-flex', padding: '12px 28px', backgroundColor: '#7c1d35', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', transition: 'background-color 200ms ease', border: 'none', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-sapphire)'} onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#7c1d35'}>"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 406,
+      "value": "#121624",
+      "role": "backgroundColor: '#121624',"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 437,
+      "value": "rgba(0,0,0,0.04)",
+      "role": "boxShadow: '0 2px 8px rgba(0,0,0,0.04)',"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 606,
+      "value": "#F8F5F0",
+      "role": "contentStyle={{ backgroundColor: '#F8F5F0' }}"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 608,
+      "value": "rgba(0,0,0,0.06)",
+      "role": "borderBottom: '1px solid rgba(0,0,0,0.06)',"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 615,
+      "value": "#1a1a1a",
+      "role": "color: '#1a1a1a',"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 621,
+      "value": "#1a1a1a",
+      "role": "<h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: '#1a1a1a', textTransform: 'uppercase' }}>"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 649,
+      "value": "#555",
+      "role": "<span style={{ color: isActive ? 'var(--text-accent)' : '#555', display: 'flex', alignItems: 'center' }}>"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 664,
+      "value": "#1a1a1a",
+      "role": "<h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: '#1a1a1a', textTransform: 'uppercase' }}>"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 686,
+      "value": "rgba(0,0,0,0.03)",
+      "role": "boxShadow: isChecked && p.id !== 'all' ? '0 2px 8px rgba(0,0,0,0.03)' : 'none',"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 687,
+      "value": "rgba(0,0,0,0.04)",
+      "role": "border: isChecked && p.id !== 'all' ? '1px solid rgba(0,0,0,0.04)' : '1px solid transparent',"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 712,
+      "value": "#1a1a1a",
+      "role": "<span style={{ color: '#1a1a1a' }}>{p.label}</span>"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 739,
+      "value": "#1a1a1a",
+      "role": "<h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: '#1a1a1a', textTransform: 'uppercase' }}>"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 742,
+      "value": "#1a1a1a",
+      "role": "<label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1rem', cursor: 'pointer', color: '#1a1a1a', marginLeft: '-2px' }}>"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 775,
+      "value": "#F8F5F0",
+      "role": "background: 'linear-gradient(to top, #F8F5F0 70%, rgba(248, 245, 240, 0) 100%)',"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 775,
+      "value": "rgba(248, 245, 240, 0)",
+      "role": "background: 'linear-gradient(to top, #F8F5F0 70%, rgba(248, 245, 240, 0) 100%)',"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 787,
+      "value": "#1a1a1a",
+      "role": "color: '#1a1a1a',"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 813,
+      "value": "rgba(209, 150, 98, 0.25)",
+      "role": "boxShadow: '0 8px 16px rgba(209, 150, 98, 0.25)',"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 865,
+      "value": "#737373",
+      "role": "color: #737373;"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 870,
+      "value": "#121624",
+      "role": "color: #121624;"
+    },
+    {
+      "file": "src\\components\\views\\ShopView.tsx",
+      "line": 882,
+      "value": "#a3a3a3",
+      "role": "background-color: #a3a3a3;"
+    }
+  ]
+}

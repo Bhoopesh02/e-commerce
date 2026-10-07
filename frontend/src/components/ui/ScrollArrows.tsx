@@ -117,7 +117,7 @@ export const ScrollArrows: React.FC<ScrollArrowsProps> = ({
           border-radius: 50%;
           background-color: transparent;
           border: 1px solid var(--color-black-tie);
-          color: var(--color-black-tie);
+          color: var(--text-primary);
           cursor: pointer;
           transition: all 0.2s ease;
           outline: none;
@@ -131,13 +131,13 @@ export const ScrollArrows: React.FC<ScrollArrowsProps> = ({
         }
 
         .scroll-arrow-btn:hover:not(:disabled) {
-          background-color: rgba(69, 25, 82, 0.08); /* Light sapphire tint */
-          border-color: var(--color-sapphire); /* Accent color */
-          color: var(--color-sapphire);
+          background-color: var(--bg-muted); /* Light sapphire tint */
+          border-color: var(--brand-primary); /* Accent color */
+          color: var(--brand-primary);
         }
 
         .scroll-arrow-btn:focus-visible {
-          box-shadow: 0 0 0 2px var(--bg-primary), 0 0 0 4px var(--color-sapphire);
+          box-shadow: 0 0 0 2px var(--bg-primary), 0 0 0 4px var(--brand-primary);
         }
 
         .scroll-arrow-btn:disabled {

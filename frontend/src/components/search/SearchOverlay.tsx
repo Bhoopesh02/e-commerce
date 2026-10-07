@@ -193,7 +193,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
               <Search
                 size={16}
                 style={{
-                  color: 'var(--color-sapphire)',
+                  color: 'var(--brand-primary)',
                   position: 'absolute',
                   left: '12px',
                   top: '50%',
@@ -218,7 +218,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                 style={{
                   width: '100%',
                   padding: '8px 32px',
-                  backgroundColor: '#FFFFFF',
+                  backgroundColor: 'var(--bg-primary)',
                   color: 'var(--text-primary)',
                   fontSize: '0.875rem',
                   borderRadius: '8px',
@@ -227,12 +227,12 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                   transition: 'border-color 200ms, background-color 200ms',
                 }}
                 onFocus={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--color-sapphire)';
-                  e.currentTarget.style.backgroundColor = '#FFFFFF';
+                  e.currentTarget.style.borderColor = 'var(--brand-primary)';
+                  e.currentTarget.style.backgroundColor = 'var(--color-diamond)';
                 }}
                 onBlur={(e) => {
                   e.currentTarget.style.borderColor = 'var(--border-color)';
-                  e.currentTarget.style.backgroundColor = '#FFFFFF';
+                  e.currentTarget.style.backgroundColor = 'var(--color-diamond)';
                 }}
               />
               {query && (
@@ -266,7 +266,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                 textTransform: 'uppercase',
                 fontWeight: 'bold',
                 letterSpacing: '0.1em',
-                color: 'var(--color-sapphire)',
+                color: 'var(--brand-primary)',
                 marginBottom: '8px',
               }}
             >
@@ -288,20 +288,20 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                     padding: '4px 12px',
                     borderRadius: '9999px',
                     border: '1px solid var(--border-color)',
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: 'var(--bg-primary)',
                     color: 'var(--text-secondary)',
                     cursor: 'pointer',
                     transition: 'all 200ms',
                   }}
                   onMouseOver={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--color-sapphire)';
-                    e.currentTarget.style.color = 'var(--color-sapphire)';
+                    e.currentTarget.style.borderColor = 'var(--brand-primary)';
+                    e.currentTarget.style.color = 'var(--brand-primary)';
                     e.currentTarget.style.backgroundColor = 'var(--bg-primary)';
                   }}
                   onMouseOut={(e) => {
                     e.currentTarget.style.borderColor = 'var(--border-color)';
                     e.currentTarget.style.color = 'var(--text-secondary)';
-                    e.currentTarget.style.backgroundColor = '#FFFFFF';
+                    e.currentTarget.style.backgroundColor = 'var(--color-diamond)';
                   }}
                 >
                   {tag}
@@ -324,14 +324,14 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                     height="26"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="var(--color-sapphire)"
+                    stroke="var(--brand-primary)"
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >
                     <path d="M4.5 8l-1.5 12A1.5 1.5 0 0 0 4.5 21.5h15a1.5 1.5 0 0 0 1.5-1.5L19.5 8H4.5z" />
                     <path d="M8 8V5.5a4 4 0 0 1 8 0V8" />
-                    <text x="12" y="16.5" fontSize="6.5" fontWeight="900" fontFamily="system-ui, -apple-system, sans-serif" textAnchor="middle" fill="var(--color-sapphire)" stroke="none" style={{ textTransform: 'lowercase', letterSpacing: '-0.08em' }}>new</text>
+                    <text x="12" y="16.5" fontSize="6.5" fontWeight="900" fontFamily="system-ui, -apple-system, sans-serif" textAnchor="middle" fill="var(--brand-primary)" stroke="none" style={{ textTransform: 'lowercase', letterSpacing: '-0.08em' }}>new</text>
                   </svg>
                 </>
               ) : (
@@ -357,13 +357,13 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
             onClick={onClose}
             style={{
               fontSize: '12px',
-              color: 'var(--color-sapphire)',
+              color: 'var(--brand-primary)',
               textDecoration: 'underline',
               letterSpacing: '0.05em',
               fontWeight: 600
             }}
             onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-black-tie)'}
-            onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-sapphire)'}
+            onMouseOut={(e) => e.currentTarget.style.color = 'var(--brand-primary)'}
           >
             Explore Full Aurelia Catalogue →
           </Link>

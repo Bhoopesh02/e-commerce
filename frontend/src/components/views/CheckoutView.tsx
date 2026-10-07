@@ -157,7 +157,7 @@ export const CheckoutView: React.FC = () => {
           particleCount: 120,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ['var(--color-golden)', 'var(--color-golden)', 'var(--color-sapphire)', 'var(--color-silver)'],
+          colors: ['var(--brand-accent)', 'var(--brand-accent)', 'var(--brand-primary)', 'var(--border-color)'],
         });
         showToast('Order registered at Aurelia Central Atelier.', 'success');
       } else {
@@ -191,7 +191,7 @@ export const CheckoutView: React.FC = () => {
             <CheckCircle2 size={36} />
           </div>
 
-          <span style={{ fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
+          <span style={{ fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
             Atelier Order Confirmed
           </span>
 
@@ -208,9 +208,9 @@ export const CheckoutView: React.FC = () => {
           <div
             style={{
               padding: '16px 20px',
-              backgroundColor: 'rgba(194, 155, 76, 0.12)',
+              backgroundColor: 'var(--overlay-golden-10)',
               borderRadius: 'var(--radius-sm)',
-              border: '1px solid rgba(194, 155, 76, 0.3)',
+              border: '1px solid var(--overlay-golden-35)',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '12px',
@@ -218,7 +218,7 @@ export const CheckoutView: React.FC = () => {
               textAlign: 'left',
             }}
           >
-            <Mail size={20} style={{ color: 'var(--color-sapphire)', flexShrink: 0 }} />
+            <Mail size={20} style={{ color: 'var(--brand-primary)', flexShrink: 0 }} />
             <span style={{ fontSize: '0.88rem', color: 'var(--text-primary)' }}>
               A full physical atelier dossier and tax invoice has been dispatched to{' '}
               <strong>{confirmedOrder.customerEmail}</strong>. (Notifications are strictly email-only).
@@ -246,7 +246,7 @@ export const CheckoutView: React.FC = () => {
               </div>
               <div style={{ textAlign: 'right' }}>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Waybill Tracking</span>
-                <p style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--color-sapphire)' }}>
+                <p style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--brand-primary)' }}>
                   {confirmedOrder.trackingInfo?.trackingId}
                 </p>
               </div>
@@ -265,7 +265,7 @@ export const CheckoutView: React.FC = () => {
 
             <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', fontSize: '1.15rem', fontWeight: 600 }}>
               <span>Total Paid ({confirmedOrder.payment.method})</span>
-              <span style={{ color: 'var(--color-sapphire)' }}>{formatPrice(confirmedOrder.totals.total)}</span>
+              <span style={{ color: 'var(--brand-primary)' }}>{formatPrice(confirmedOrder.totals.total)}</span>
             </div>
           </div>
 
@@ -309,19 +309,19 @@ export const CheckoutView: React.FC = () => {
             Atelier Checkout
           </h1>
           <div className="checkout-step-container" style={{ display: 'flex', justifyContent: 'center', fontSize: '0.85rem' }}>
-            <span style={{ color: step >= 1 ? 'var(--color-sapphire)' : 'var(--text-muted)', fontWeight: step === 1 ? 700 : 500, textAlign: 'center' }}>
+            <span style={{ color: step >= 1 ? 'var(--brand-primary)' : 'var(--text-muted)', fontWeight: step === 1 ? 700 : 500, textAlign: 'center' }}>
               <span className="step-num">1. </span><span className="step-text">Contact</span>
             </span>
             <span className="step-arrow">→</span>
-            <span style={{ color: step >= 2 ? 'var(--color-sapphire)' : 'var(--text-muted)', fontWeight: step === 2 ? 700 : 500, textAlign: 'center' }}>
+            <span style={{ color: step >= 2 ? 'var(--brand-primary)' : 'var(--text-muted)', fontWeight: step === 2 ? 700 : 500, textAlign: 'center' }}>
               <span className="step-num">2. </span><span className="step-text">Shipping</span>
             </span>
             <span className="step-arrow">→</span>
-            <span style={{ color: step >= 3 ? 'var(--color-sapphire)' : 'var(--text-muted)', fontWeight: step === 3 ? 700 : 500, textAlign: 'center' }}>
+            <span style={{ color: step >= 3 ? 'var(--brand-primary)' : 'var(--text-muted)', fontWeight: step === 3 ? 700 : 500, textAlign: 'center' }}>
               <span className="step-num">3. </span><span className="step-text">Delivery</span>
             </span>
             <span className="step-arrow">→</span>
-            <span style={{ color: step >= 4 ? 'var(--color-sapphire)' : 'var(--text-muted)', fontWeight: step === 4 ? 700 : 500, textAlign: 'center' }}>
+            <span style={{ color: step >= 4 ? 'var(--brand-primary)' : 'var(--text-muted)', fontWeight: step === 4 ? 700 : 500, textAlign: 'center' }}>
               <span className="step-num">4. </span><span className="step-text">Payment</span>
             </span>
           </div>
@@ -402,7 +402,7 @@ export const CheckoutView: React.FC = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>Shipping Address</h3>
-                  <button onClick={() => setStep(1)} style={{ fontSize: '0.8rem', color: 'var(--color-sapphire)' }}>
+                  <button onClick={() => setStep(1)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
                     ← Edit Contact
                   </button>
                 </div>
@@ -433,7 +433,7 @@ export const CheckoutView: React.FC = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>Delivery Method</h3>
-                  <button onClick={() => setStep(2)} style={{ fontSize: '0.8rem', color: 'var(--color-sapphire)' }}>
+                  <button onClick={() => setStep(2)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
                     ← Edit Address
                   </button>
                 </div>
@@ -442,8 +442,8 @@ export const CheckoutView: React.FC = () => {
                   style={{
                     padding: '20px',
                     borderRadius: 'var(--radius-sm)',
-                    border: '2px solid var(--color-sapphire)',
-                    backgroundColor: 'rgba(194, 155, 76, 0.08)',
+                    border: '2px solid var(--brand-primary)',
+                    backgroundColor: 'var(--overlay-golden-10)',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '12px',
@@ -464,7 +464,7 @@ export const CheckoutView: React.FC = () => {
                   </div>
 
                   <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                    <Truck size={22} style={{ color: 'var(--color-sapphire)', marginTop: '2px', flexShrink: 0 }} />
+                    <Truck size={22} style={{ color: 'var(--brand-primary)', marginTop: '2px', flexShrink: 0 }} />
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                       <span style={{ fontSize: '0.95rem', fontWeight: 600, display: 'block', color: 'var(--text-primary)' }}>
                         White-Glove Insured Courier
@@ -487,7 +487,7 @@ export const CheckoutView: React.FC = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>Select Payment Method</h3>
-                  <button onClick={() => setStep(3)} style={{ fontSize: '0.8rem', color: 'var(--color-sapphire)' }}>
+                  <button onClick={() => setStep(3)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
                     ← Edit Delivery
                   </button>
                 </div>
@@ -579,7 +579,7 @@ export const CheckoutView: React.FC = () => {
                     Inclusive of all taxes
                   </div>
                 </div>
-                <span style={{ color: 'var(--color-sapphire)' }}>{formatPrice(total)}</span>
+                <span style={{ color: 'var(--brand-primary)' }}>{formatPrice(total)}</span>
               </div>
             </div>
           </div>

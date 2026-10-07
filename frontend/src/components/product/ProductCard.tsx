@@ -185,18 +185,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Wishlist Button (♡/♥) with restrained spring pop */}
         <motion.button
-          className={`hover-fill-btn ${variant === 'grid' ? 'absolute top-2 right-2 z-10 flex shrink-0 items-center justify-center rounded-full bg-white/90 shadow-sm w-8 h-8 min-w-[32px] min-h-[32px] md:top-[12px] md:right-[12px] md:w-[36px] md:h-[36px]' : ''}`}
+          className={`hover-fill-btn ${variant === 'grid' ? 'absolute top-2 right-2 z-10 flex shrink-0 items-center justify-center rounded-full bg-[var(--bg-primary)]/90 shadow-sm w-8 h-8 min-w-[32px] min-h-[32px] md:top-[12px] md:right-[12px] md:w-[36px] md:h-[36px]' : ''}`}
           onClick={handleWishlistToggle}
           aria-label={isFavorited ? 'Remove from wishlist' : 'Add to wishlist'}
           animate={heartControls}
           whileTap={shouldReduceMotion ? undefined : { scale: 0.92 }}
           style={variant === 'grid' ? {
-            '--fill-bg': 'rgba(255, 255, 255, 0.85)',
-            '--fill-hover': 'var(--color-sapphire)',
-            '--text-hover': '#FFF',
+            '--fill-bg': 'var(--overlay-white-85)',
+            '--fill-hover': 'var(--brand-primary)',
+            '--text-hover': 'var(--color-diamond)',
             backdropFilter: 'blur(4px)',
             border: 'none',
-            color: isFavorited ? 'var(--color-sapphire)' : 'var(--color-black-tie)',
+            color: isFavorited ? 'var(--brand-primary)' : 'var(--color-black-tie)',
             cursor: 'pointer',
           } as React.CSSProperties : {
             position: 'absolute',
@@ -205,15 +205,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             width: '36px',
             height: '36px',
             borderRadius: 'var(--radius-pill)',
-            '--fill-bg': 'rgba(255, 255, 255, 0.85)',
-            '--fill-hover': 'var(--color-sapphire)',
-            '--text-hover': '#FFF',
+            '--fill-bg': 'var(--overlay-white-85)',
+            '--fill-hover': 'var(--brand-primary)',
+            '--text-hover': 'var(--color-diamond)',
             backdropFilter: 'blur(4px)',
             border: 'none',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: isFavorited ? 'var(--color-sapphire)' : 'var(--color-black-tie)',
+            color: isFavorited ? 'var(--brand-primary)' : 'var(--color-black-tie)',
             cursor: 'pointer',
             zIndex: 3,
           } as React.CSSProperties}
@@ -291,23 +291,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   style={{
                     fontSize: '1.05rem',
                     fontWeight: 500,
-                    color: '#FFFFFF',
+                    color: "var(--text-inverse)",
                     lineHeight: 1.2,
                     fontFamily: 'var(--font-display)',
                     marginBottom: '2px',
-                    textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                    textShadow: '0 1px 3px var(--overlay-black-30)',
                   }}
                 >
                   {product.name}
                 </h3>
                 {product.subtitle && (
-                  <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.85)' }}>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--overlay-white-85)' }}>
                     {product.subtitle}
                   </span>
                 )}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                <span style={{ fontSize: '1rem', fontWeight: 600, color: '#FFFFFF', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
+                <span style={{ fontSize: '1rem', fontWeight: 600, color: "var(--text-inverse)", textShadow: '0 1px 3px var(--overlay-black-30)' }}>
                   {formatPrice(product.price)}
                 </span>
               </div>
@@ -364,7 +364,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1 }}>
                 {product.rating.average.toFixed(1)}
               </span>
-              <Star size={13} fill="var(--color-golden)" stroke="var(--color-golden)" strokeWidth={1.5} />
+              <Star size={13} fill="var(--brand-accent)" stroke="var(--brand-accent)" strokeWidth={1.5} />
             </div>
           </div>
         </div>

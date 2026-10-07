@@ -63,7 +63,7 @@ export const Drawer: React.FC<DrawerProps> = ({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(20, 20, 20, 0.55)',
+        backgroundColor: 'var(--overlay-black-50)',
         backdropFilter: 'blur(6px)',
         zIndex: 9998,
         display: 'flex',
@@ -122,8 +122,8 @@ export const Drawer: React.FC<DrawerProps> = ({
             whileHover={{ 
               rotate: 90, 
               scale: 1.05,
-              backgroundColor: '#EDE7DE',
-              borderColor: 'rgba(0, 0, 0, 0.35)'
+              backgroundColor: 'var(--bg-muted)',
+              borderColor: 'var(--overlay-black-30)'
             }}
             whileTap={{ scale: 0.92 }}
             transition={{ 
@@ -133,7 +133,7 @@ export const Drawer: React.FC<DrawerProps> = ({
             }}
             style={{
               marginLeft: 'auto',
-              color: '#1F1F1F',
+              color: 'var(--text-primary)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -142,10 +142,10 @@ export const Drawer: React.FC<DrawerProps> = ({
               minWidth: 40,
               minHeight: 40,
               borderRadius: '50%',
-              border: '1.5px solid rgba(0, 0, 0, 0.15)',
+              border: '1.5px solid var(--overlay-black-15)',
               boxShadow: '0 2px 6px rgba(0, 0, 0, 0.06)',
               cursor: 'pointer',
-              background: '#FFFFFF',
+              background: 'var(--color-diamond)',
               outline: 'none',
             }}
           >

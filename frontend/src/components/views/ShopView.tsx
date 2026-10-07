@@ -403,7 +403,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           left: 0,
                           width: '100%',
                           height: '2px',
-                          backgroundColor: '#121624',
+                          backgroundColor: 'var(--text-primary)',
                           pointerEvents: 'none',
                           originX: navigationDirection > 0 ? 0 : 1,
                         }}
@@ -434,7 +434,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   color: hasActiveFilters ? 'var(--bg-primary)' : 'var(--text-primary)',
                   cursor: 'pointer',
                   outline: 'none',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                  boxShadow: '0 2px 8px var(--overlay-black-5)',
                 }}
               >
                 <SlidersHorizontal size={14} />
@@ -448,7 +448,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       width: '6px',
                       height: '6px',
                       borderRadius: '50%',
-                      backgroundColor: 'var(--color-terracotta, #D19662)',
+                      backgroundColor: 'var(--color-terracotta, var(--color-golden-500))',
                       marginLeft: '2px',
                     }}
                   />
@@ -504,7 +504,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   background: 'none',
                   border: 'none',
                   fontSize: '0.78rem',
-                  color: 'var(--color-sapphire)',
+                  color: 'var(--brand-primary)',
                   cursor: 'pointer',
                   marginLeft: '4px',
                 }}
@@ -603,22 +603,22 @@ export const ShopView: React.FC<ShopViewProps> = ({
         }}
         title="REFINE COLLECTION"
         position="right"
-        contentStyle={{ backgroundColor: '#F8F5F0' }}
+        contentStyle={{ backgroundColor: 'var(--bg-surface)' }}
         headerStyle={{
-          borderBottom: '1px solid rgba(0,0,0,0.06)',
+          borderBottom: '1px solid var(--overlay-black-5)',
           padding: '24px 32px 16px',
         }}
         titleStyle={{
           fontFamily: 'var(--font-serif)',
           fontSize: '1.4rem',
           letterSpacing: '0.02em',
-          color: '#1a1a1a',
+          color: 'var(--text-primary)',
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '16px 8px 120px' }}>
           {/* Jump to Category */}
           <div>
-            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: '#1a1a1a', textTransform: 'uppercase' }}>
+            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
               Categories
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -634,7 +634,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     style={{
                       textAlign: 'left',
                       padding: '8px 12px',
-                      color: isActive ? '#A37C63' : '#333',
+                      color: isActive ? 'var(--text-accent)' : 'var(--text-primary)',
                       border: 'none',
                       backgroundColor: 'transparent',
                       fontSize: '1.05rem',
@@ -646,11 +646,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    <span style={{ color: isActive ? '#A37C63' : '#555', display: 'flex', alignItems: 'center' }}>
+                    <span style={{ color: isActive ? 'var(--text-accent)' : 'var(--text-muted)', display: 'flex', alignItems: 'center' }}>
                       {getCategoryIcon(c.slug)}
                     </span>
                     <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
-                      {isActive && <span style={{ position: 'absolute', left: '-12px', width: '6px', height: '6px', backgroundColor: '#A37C63', borderRadius: '50%' }} />}
+                      {isActive && <span style={{ position: 'absolute', left: '-12px', width: '6px', height: '6px', backgroundColor: 'var(--text-accent)', borderRadius: '50%' }} />}
                       {c.name}
                     </div>
                   </button>
@@ -661,7 +661,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
           {/* Price Range */}
           <div>
-            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: '#1a1a1a', textTransform: 'uppercase' }}>
+            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
               Price Tier
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
@@ -681,10 +681,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       fontSize: '1rem',
                       cursor: 'pointer',
                       padding: '10px 14px',
-                      backgroundColor: isChecked && p.id !== 'all' ? '#FFFFFF' : 'transparent',
+                      backgroundColor: isChecked && p.id !== 'all' ? 'var(--color-diamond)' : 'transparent',
                       borderRadius: '12px',
-                      boxShadow: isChecked && p.id !== 'all' ? '0 2px 8px rgba(0,0,0,0.03)' : 'none',
-                      border: isChecked && p.id !== 'all' ? '1px solid rgba(0,0,0,0.04)' : '1px solid transparent',
+                      boxShadow: isChecked && p.id !== 'all' ? '0 2px 8px var(--overlay-black-5)' : 'none',
+                      border: isChecked && p.id !== 'all' ? '1px solid var(--overlay-black-5)' : '1px solid transparent',
                       transition: 'all 0.2s ease',
                       marginLeft: '-14px',
                       whiteSpace: 'nowrap'
@@ -693,14 +693,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         width: '16px',
                         height: '16px',
                         borderRadius: '50%',
-                        border: '1px solid #758b85',
+                        border: '1px solid var(--color-icy-lake-600)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
-                        backgroundColor: isChecked ? '#758b85' : 'transparent'
+                        backgroundColor: isChecked ? 'var(--color-icy-lake-600)' : 'transparent'
                       }}>
-                        {isChecked && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#fff' }} />}
+                        {isChecked && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--color-diamond)' }} />}
                       </div>
                       <input
                         type="radio"
@@ -709,7 +709,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         onChange={() => setPriceRange(p.range as [number, number])}
                         style={{ display: 'none' }}
                       />
-                      <span style={{ color: '#1a1a1a' }}>{p.label}</span>
+                      <span style={{ color: 'var(--text-primary)' }}>{p.label}</span>
                     </label>
                   );
                 })}
@@ -736,21 +736,21 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
           {/* Availability */}
           <div>
-            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: '#1a1a1a', textTransform: 'uppercase' }}>
+            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
               Availability
             </h4>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1rem', cursor: 'pointer', color: '#1a1a1a', marginLeft: '-2px' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1rem', cursor: 'pointer', color: 'var(--text-primary)', marginLeft: '-2px' }}>
               <div style={{
                 width: '16px',
                 height: '16px',
                 borderRadius: '4px',
-                border: '1px solid #758b85',
+                border: '1px solid var(--color-icy-lake-600)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: selectedAvailability === 'in_stock' ? '#758b85' : 'transparent',
+                backgroundColor: selectedAvailability === 'in_stock' ? 'var(--color-icy-lake-600)' : 'transparent',
               }}>
-                {selectedAvailability === 'in_stock' && <Check size={12} color="#fff" strokeWidth={3} />}
+                {selectedAvailability === 'in_stock' && <Check size={12} color="var(--color-diamond)" strokeWidth={3} />}
               </div>
               <input
                 type="checkbox"
@@ -772,7 +772,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           padding: '24px 32px 32px',
           display: 'flex',
           gap: '16px',
-          background: 'linear-gradient(to top, #F8F5F0 70%, rgba(248, 245, 240, 0) 100%)',
+          background: 'linear-gradient(to top, var(--bg-surface) 70%, transparent 100%)',
           borderTop: 'none',
           pointerEvents: 'none',
         }}>
@@ -783,8 +783,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
               onClick={resetFilters}
               style={{
                 borderRadius: '30px',
-                borderColor: '#A37C63',
-                color: '#1a1a1a',
+                borderColor: 'var(--text-accent)',
+                color: 'var(--text-primary)',
                 textTransform: 'uppercase',
                 letterSpacing: '0.04em',
                 fontWeight: 600,
@@ -804,13 +804,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
               }}
               style={{
                 borderRadius: '30px',
-                backgroundColor: '#D19662',
-                color: '#fff',
+                backgroundColor: 'var(--text-accent)',
+                color: "var(--text-inverse)",
                 textTransform: 'uppercase',
                 letterSpacing: '0.04em',
                 fontWeight: 600,
                 height: '48px',
-                boxShadow: '0 8px 16px rgba(209, 150, 98, 0.25)',
+                boxShadow: '0 8px 16px var(--overlay-golden-35)',
                 border: 'none'
               }}
             >
@@ -836,7 +836,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
             scroll-padding-inline: 16px !important;
           }
           .nav-btn-custom.active-mobile-tab {
-            border-bottom: 2px solid var(--color-sapphire);
+            border-bottom: 2px solid var(--brand-primary);
           }
           .mobile-hide-underline {
             display: none !important;
@@ -862,12 +862,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
           letter-spacing: 0.18em;
           text-transform: uppercase;
           transition: color 0.2s ease;
-          color: #737373;
+          color: var(--text-muted);
           font-weight: 400;
           font-family: inherit;
         }
         .nav-label-custom.active {
-          color: #121624;
+          color: var(--text-primary);
           font-weight: 600;
         }
         .nav-btn-custom:hover .nav-label-custom:not(.active) {
@@ -879,7 +879,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           left: 0;
           width: 100%;
           height: 1.5px;
-          background-color: #a3a3a3;
+          background-color: var(--text-disabled);
           display: block;
           transform-origin: left;
           transform: scaleX(0);

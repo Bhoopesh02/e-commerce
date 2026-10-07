@@ -127,13 +127,13 @@ export default function EditProductPage() {
             borderRadius: '50%',
             backgroundColor: 'var(--admin-surface)',
             color: 'var(--admin-text-primary)',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+            boxShadow: '0 1px 3px var(--overlay-black-5)',
           }}
         >
           <ArrowLeft size={18} />
         </button>
         <div>
-          <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
+          <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
             Inventory & Catalog
           </span>
           <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: 'var(--admin-text-primary)', marginTop: '4px' }}>
@@ -142,7 +142,7 @@ export default function EditProductPage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px', backgroundColor: 'var(--admin-surface)', padding: '32px', borderRadius: 'var(--radius-md)', border: '1px solid var(--admin-border)', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px', backgroundColor: 'var(--admin-surface)', padding: '32px', borderRadius: 'var(--radius-md)', border: '1px solid var(--admin-border)', boxShadow: '0 2px 8px var(--overlay-black-5)' }}>
         <Input
           label="Silhouette Name"
           name="name"
@@ -250,7 +250,7 @@ export default function EditProductPage() {
                         position: 'absolute',
                         top: '4px',
                         right: '4px',
-                        background: 'rgba(0,0,0,0.6)',
+                        background: 'var(--overlay-black-70)',
                         color: 'white',
                         border: 'none',
                         borderRadius: '50%',

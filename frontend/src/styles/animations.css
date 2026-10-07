@@ -56,11 +56,11 @@
 
 .typography-shimmer {
   background: linear-gradient(105deg,
-      var(--color-golden) 0%,
-      var(--color-golden) 35%,
+      var(--brand-accent) 0%,
+      var(--brand-accent) 35%,
       #FFF9F6 50%,
-      var(--color-golden) 65%,
-      var(--color-golden) 100%);
+      var(--brand-accent) 65%,
+      var(--brand-accent) 100%);
   background-size: 200% auto;
   color: transparent !important;
   -webkit-background-clip: text;
@@ -105,7 +105,7 @@
 .skeleton-shimmer {
   background: linear-gradient(90deg,
       rgba(224, 224, 224, 0.15) 0%,
-      rgba(194, 155, 76, 0.25) 50%,
+      var(--color-golden-200) 50%,
       rgba(224, 224, 224, 0.15) 100%);
   background-size: 200% 100%;
   animation: shimmer 1.8s infinite;
@@ -128,8 +128,8 @@
   .typography-shimmer {
     animation: none !important;
     background: none !important;
-    color: var(--color-golden) !important;
-    -webkit-text-fill-color: var(--color-golden) !important;
+    color: var(--brand-accent) !important;
+    -webkit-text-fill-color: var(--brand-accent) !important;
   }
 
   .animate-infinite-scroll {
@@ -262,7 +262,7 @@
 :root {
   --editorial-link-duration: 600ms;
   --editorial-link-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --editorial-link-color: var(--color-sapphire, var(--color-sapphire));
+  --editorial-link-color: var(--color-sapphire, var(--brand-primary));
 }
 
 .editorial-arrow-link {
@@ -358,7 +358,7 @@
   height: 300%;
   background: linear-gradient(90deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.45) 50%,
+      var(--overlay-white-45) 50%,
       transparent 100%);
   transform: translateX(-150%) rotate(25deg);
   pointer-events: none;
@@ -371,7 +371,7 @@
 .luxury-btn-outline::after {
   background: linear-gradient(90deg,
       transparent 0%,
-      rgba(194, 155, 76, 0.4) 50%,
+      var(--color-golden-200) 50%,
       transparent 100%);
 }
 
@@ -381,19 +381,19 @@
 }
 
 .luxury-btn-outline:hover:not(:disabled) {
-  border-color: var(--color-golden) !important;
-  color: var(--color-sapphire) !important;
+  border-color: var(--brand-accent) !important;
+  color: var(--brand-primary) !important;
   background-color: rgba(194, 155, 76, 0.08) !important;
 }
 
 [data-theme="dark"] .luxury-btn-outline {
   border-color: rgba(224, 224, 224, 0.35);
-  color: #FFF8F5;
+  color: var(--bg-subtle);
 }
 
 [data-theme="dark"] .luxury-btn-outline:hover:not(:disabled) {
-  border-color: var(--color-golden) !important;
-  color: var(--color-golden) !important;
+  border-color: var(--brand-accent) !important;
+  color: var(--brand-accent) !important;
   background-color: rgba(194, 155, 76, 0.15) !important;
 }
 
@@ -408,21 +408,21 @@ a:focus-visible .luxury-btn-white:not(:disabled),
 [data-theme="dark"] .luxury-btn-white:hover:not(:disabled),
 [data-theme="dark"] .luxury-btn-white:focus-visible:not(:disabled),
 [data-theme="dark"] a:hover .luxury-btn-white:not(:disabled) {
-  background-color: #FFFFFF !important;
-  background: #FFFFFF !important;
-  color: var(--color-black-tie) !important;
-  border-color: #FFFFFF !important;
+  background-color: var(--bg-primary) !important;
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--text-inverse) !important;
 }
 
 .luxury-btn-white:hover:not(:disabled),
 a:hover .luxury-btn-white:not(:disabled) {
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.25), var(--shadow-md) !important;
+  box-shadow: 0 4px 20px rgba(16, 33, 39, 0.08), var(--shadow-md) !important;
 }
 
 .luxury-btn-white::after {
   background: linear-gradient(90deg,
       transparent 0%,
-      rgba(194, 155, 76, 0.25) 50%,
+      var(--color-golden-200) 50%,
       transparent 100%);
 }
 
@@ -497,7 +497,7 @@ a:focus-visible .luxury-btn:not(:disabled)>span:last-child svg {
   background-color: rgba(20, 20, 20, 0.82);
   backdrop-filter: blur(8px) saturate(120%);
   -webkit-backdrop-filter: blur(8px) saturate(120%);
-  color: #FFF;
+  color: var(--text-inverse);
   border: 1px solid rgba(224, 224, 224, 0.28);
   border-radius: var(--radius-pill);
   font-size: 0.78rem;

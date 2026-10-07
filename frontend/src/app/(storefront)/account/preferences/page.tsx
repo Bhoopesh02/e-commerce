@@ -71,11 +71,11 @@ export default function PreferencesPage() {
           justify-content: space-between;
           align-items: center;
           padding: 32px 0;
-          border-bottom: 1px solid rgba(20, 20, 20, 0.1);
+          border-bottom: 1px solid var(--overlay-black-10);
         }
         
         .toggle-row:first-child {
-          border-top: 1px solid rgba(20, 20, 20, 0.1);
+          border-top: 1px solid var(--overlay-black-10);
         }
         
         .toggle-info {
@@ -86,13 +86,13 @@ export default function PreferencesPage() {
         
         .toggle-title {
           font-weight: 500;
-          color: var(--color-black-tie);
+          color: var(--text-primary);
           font-size: 1.05rem;
         }
         
         .toggle-desc {
           font-size: 0.9rem;
-          color: rgba(20, 20, 20, 0.6);
+          color: var(--overlay-black-70);
         }
 
         /* Toggle Switch Styles */
@@ -116,7 +116,7 @@ export default function PreferencesPage() {
           left: 0;
           right: 0;
           bottom: 0;
-          background-color: rgba(20, 20, 20, 0.2);
+          background-color: var(--overlay-black-20);
           transition: .3s;
         }
 
@@ -132,7 +132,7 @@ export default function PreferencesPage() {
         }
 
         input:checked + .slider {
-          background-color: var(--color-black-tie);
+          background-color: var(--text-primary);
         }
 
         input:focus + .slider {
@@ -152,8 +152,8 @@ export default function PreferencesPage() {
         }
 
         .btn-primary {
-          background-color: var(--color-black-tie);
-          color: #fff;
+          background-color: var(--text-primary);
+          color: var(--text-inverse);
           border: none;
           padding: 12px 24px;
           font-size: 0.9rem;

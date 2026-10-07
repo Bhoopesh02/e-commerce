@@ -27,10 +27,10 @@ export default function AdminReportsPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', maxWidth: '800px' }}>
       <div>
-        <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#C0703B' }}>
+        <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-warning)' }}>
           Analytics & Data Export
         </span>
-        <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: '#0F2042', marginTop: '4px' }}>
+        <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--surface-brand-dark)', marginTop: '4px' }}>
           Atelier Reports & CSV Export
         </h1>
       </div>
@@ -47,7 +47,7 @@ export default function AdminReportsPage() {
         }}
       >
         <div>
-          <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#FFF', marginBottom: '12px' }}>
+          <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: "var(--text-inverse)", marginBottom: '12px' }}>
             Select Dataset to Export
           </label>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px' }}>
@@ -63,9 +63,9 @@ export default function AdminReportsPage() {
                 style={{
                   padding: '16px',
                   borderRadius: 'var(--radius-sm)',
-                  backgroundColor: reportType === item.id ? 'rgba(194, 155, 76, 0.18)' : 'rgba(255, 255, 255, 0.04)',
-                  border: reportType === item.id ? '2px solid var(--color-golden)' : '1px solid rgba(224, 224, 224, 0.15)',
-                  color: reportType === item.id ? '#FFF' : 'rgba(224, 224, 224, 0.75)',
+                  backgroundColor: reportType === item.id ? 'var(--overlay-golden-35)' : 'rgba(255, 255, 255, 0.04)',
+                  border: reportType === item.id ? '2px solid var(--brand-accent)' : '1px solid rgba(224, 224, 224, 0.15)',
+                  color: reportType === item.id ? 'var(--color-diamond)' : 'rgba(224, 224, 224, 0.75)',
                   textAlign: 'left',
                   fontSize: '0.88rem',
                   fontWeight: 600,
@@ -75,7 +75,7 @@ export default function AdminReportsPage() {
                   gap: '10px',
                 }}
               >
-                <FileSpreadsheet size={18} style={{ color: reportType === item.id ? 'var(--color-golden)' : 'inherit' }} />
+                <FileSpreadsheet size={18} style={{ color: reportType === item.id ? 'var(--brand-accent)' : 'inherit' }} />
                 <span>{item.label}</span>
               </button>
             ))}

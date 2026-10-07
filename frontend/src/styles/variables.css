@@ -1,15 +1,35 @@
 /* Luxury Fashion Design Tokens - Unified Brand: AURELIA */
 :root {
-  /* Brand */
+  /* ===== Primitive Palette ===== */
+  /* Neutrals */
   --color-diamond: #FFFFFF;
-  --color-silver: #E0E0E0;
-  --color-icy-lake: #CAD4D6;
-  --color-golden: #C29B4C;
-  --color-sapphire: #244B57;
   --color-black-tie: #141414;
+  --color-neutral-50: #F9F9F9;
+  --color-neutral-200: #E0E0E0;
+  --color-neutral-400: #9e9e9e;
+  --color-neutral-500: #757575;
+  --color-neutral-800: #212121;
+  
+  /* Sapphire */
+  --color-sapphire-50: #F4F7F8;
+  --color-sapphire-300: #7DA1AB;
+  --color-sapphire-700: #244B57;
+  --color-sapphire-800: #1B3740;
+  --color-sapphire-900: #102127;
 
-  /* Neutrals & Semantics */
-  --color-white: #FFFFFF;
+  /* Golden */
+  --color-golden-50: #FBF8F1;
+  --color-golden-300: #E4C888;
+  --color-golden-500: #C29B4C;
+  --color-golden-600: #A8823B;
+  --color-golden-800: #7A5B22;
+
+  /* Icy Lake */
+  --color-icy-lake-50: #F5F8F8;
+  --color-icy-lake-200: #DFE7E9;
+  --color-icy-lake-300: #CAD4D6;
+  
+  /* Semantic Core Colors */
   --color-success: #1E6F5C;
   --color-success-bg: #E8F5E9;
   --color-error: #B00020;
@@ -19,12 +39,91 @@
   --color-info: #315F70;
   --color-info-bg: #E7EFF1;
 
-  /* Typography */
-  --font-body: var(--font-body-next, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
-  --font-display: var(--font-display-next, 'Playfair Display', Georgia, 'Times New Roman', serif);
+  /* ===== Opacity / Overlay System ===== */
+  --overlay-black-5: rgb(20 20 20 / 5%);
+  --overlay-black-10: rgb(20 20 20 / 10%);
+  --overlay-black-15: rgb(20 20 20 / 15%);
+  --overlay-black-20: rgb(20 20 20 / 20%);
+  --overlay-black-30: rgb(20 20 20 / 30%);
+  --overlay-black-50: rgb(20 20 20 / 50%);
+  --overlay-black-70: rgb(20 20 20 / 70%);
+  --overlay-black-85: rgb(20 20 20 / 85%);
+
+  --overlay-white-5: rgb(255 255 255 / 5%);
+  --overlay-white-10: rgb(255 255 255 / 10%);
+  --overlay-white-20: rgb(255 255 255 / 20%);
+  --overlay-white-45: rgb(255 255 255 / 45%);
+  --overlay-white-85: rgb(255 255 255 / 85%);
+
+  --overlay-sapphire-10: rgb(36 75 87 / 10%);
+  --overlay-golden-10: rgb(194 155 76 / 10%);
+  --overlay-golden-35: rgb(194 155 76 / 35%);
+
+  /* ===== Text ===== */
+  --text-primary: var(--color-black-tie);
+  --text-secondary: var(--color-sapphire-700);
+  --text-muted: var(--color-neutral-500);
+  --text-disabled: var(--color-neutral-400);
+  --text-inverse: var(--color-diamond);
+
+  /* ===== Backgrounds ===== */
+  --bg-primary: var(--color-diamond);
+  --bg-surface: var(--color-neutral-50);
+  --bg-subtle: var(--color-sapphire-50);
+  --bg-accent: var(--color-golden-50);
+  --bg-muted: var(--color-icy-lake-50);
+
+  /* ===== Brand ===== */
+  --brand-primary: var(--color-sapphire-700);
+  --brand-primary-hover: var(--color-sapphire-800);
+  --brand-primary-active: var(--color-sapphire-900);
+  --brand-accent: var(--color-golden-500);
+  --brand-accent-hover: var(--color-golden-600);
+
+  /* ===== Borders ===== */
+  --border-color: var(--color-neutral-200);
+  --border-light: var(--color-icy-lake-200);
+  --border-brand: var(--color-sapphire-300);
+  --border-accent: var(--color-golden-300);
+
+  /* ===== Interactive (CTA) ===== */
+  --cta-primary: var(--color-sapphire-700);
+  --cta-primary-hover: var(--color-sapphire-800);
+  --cta-secondary: var(--color-golden-500);
+  --cta-secondary-hover: var(--color-golden-600);
+  --cta-text: var(--text-inverse);
+
+  /* ===== Surfaces ===== */
+  --surface-brand: var(--color-sapphire-50);
+  --surface-brand-dark: var(--color-sapphire-900);
+  --surface-accent: var(--color-golden-50);
+
+  /* ===== Admin Panel Tokens ===== */
+  --admin-canvas: var(--bg-primary);
+  --admin-surface: var(--bg-surface);
+  --admin-border: var(--border-color);
+  --admin-border-light: var(--border-light);
+  --admin-text-primary: var(--text-primary);
+  --admin-text-secondary: var(--text-secondary);
+  --admin-accent: var(--brand-primary);
+  --admin-accent-hover: var(--brand-primary-hover);
+  --admin-accent-text: var(--text-inverse);
+
+  /* ===== Temporary Legacy Mappings (To prevent immediate breakage) ===== */
+  --color-silver: var(--color-neutral-200);
+  --color-sapphire: var(--color-sapphire-700);
+  --color-golden: var(--color-golden-500);
+  --color-icy-lake: var(--color-icy-lake-300);
+  --color-white: var(--color-diamond);
+  --bg-secondary: var(--bg-muted);
+  --bg-surface-elevated: var(--bg-surface);
+  --nav-backdrop: var(--overlay-white-85);
+
+  /* ===== Typography ===== */
+  /* Moved to typography.css */
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  /* Spacing Scale */
+  /* ===== Spacing Scale ===== */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -36,13 +135,13 @@
   --space-24: 96px;
   --space-36: 144px;
 
-  /* Border Radius */
+  /* ===== Border Radius ===== */
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 32px;
   --radius-pill: 999px;
 
-  /* Transitions & Animation Timing */
+  /* ===== Transitions & Animation Timing ===== */
   --duration-fast: 180ms;
   --duration-normal: 350ms;
   --duration-medium: 500ms;
@@ -50,66 +149,21 @@
   --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Elevation Shadows */
-  --shadow-sm: 0 2px 8px rgba(20, 20, 20, 0.04);
-  --shadow-md: 0 8px 24px rgba(20, 20, 20, 0.08);
-  --shadow-lg: 0 16px 40px rgba(20, 20, 20, 0.12);
+  /* ===== Elevation Shadows ===== */
+  --shadow-sm: 0 2px 8px var(--overlay-black-5);
+  --shadow-md: 0 8px 24px var(--overlay-black-10);
+  --shadow-lg: 0 16px 40px var(--overlay-black-15);
   --shadow-editorial: 0 24px 60px rgba(69, 25, 82, 0.16);
 
-  /* Luxury Signature Gradient (Hero, Campaigns, Newsletter, Footer) */
-  --gradient-aurelia: linear-gradient(180deg, var(--color-golden) 0%, var(--color-sapphire) 50%, var(--color-black-tie) 100%);
-  --gradient-aurelia-subtle: linear-gradient(135deg, rgba(194, 155, 76, 0.12) 0%, rgba(36, 75, 87, 0.08) 50%, rgba(20, 20, 20, 0.04) 100%);
-
-  /* Backgrounds */
-  --bg-primary: var(--color-diamond);
-  --bg-surface: var(--color-diamond);
-  --bg-surface-elevated: var(--color-diamond);
-  --bg-secondary: var(--color-icy-lake);
-  --bg-surface-translucent: rgba(255, 255, 255, 0.85);
-
-  /* Text */
-  --text-primary: var(--color-black-tie);
-  --text-secondary: var(--color-sapphire);
-  --text-muted: #667276;
-  --text-inverse: var(--color-diamond);
-
-  /* Brand roles */
-  --brand-primary: var(--color-sapphire);
-  --brand-accent: var(--color-golden);
-
-  /* Borders */
-  --border-color: var(--color-silver);
-  --border-light: rgba(224, 224, 224, 0.65);
-
-  /* CTA */
-  --cta-primary: var(--color-golden);
-  --cta-primary-hover: #A9853F;
-  --cta-text: var(--color-black-tie);
-
-  /* Brand panels */
-  --surface-brand-dark: var(--color-black-tie);
-  --surface-brand-sapphire: var(--color-sapphire);
-  
-  --nav-backdrop: rgba(255, 255, 255, 0.88);
-
-  /* Admin Panel Tokens */
-  --admin-canvas: var(--color-diamond);
-  --admin-surface: var(--color-diamond);
-  --admin-border: var(--border-color);
-  --admin-border-light: var(--border-light);
-  --admin-text-primary: var(--color-black-tie);
-  --admin-text-secondary: var(--color-sapphire);
-  --admin-accent: var(--color-sapphire);
-  --admin-accent-hover: #1A3740;
-  --admin-accent-text: var(--color-diamond);
-  --admin-surface-glass: rgba(255, 255, 255, 0.78);
-  --admin-border-glass: rgba(255, 255, 255, 0.85);
+  /* ===== Gradients ===== */
+  --gradient-aurelia: linear-gradient(180deg, var(--color-golden-500) 0%, var(--color-sapphire-700) 50%, var(--color-black-tie) 100%);
+  --gradient-aurelia-subtle: linear-gradient(135deg, var(--overlay-golden-10) 0%, var(--overlay-sapphire-10) 50%, var(--overlay-black-5) 100%);
 }
 
-/* Storefront A: Editorial Mode Overrides (Dramatic, Expressive, Rich Fashion Magazine) */
+/* Storefront A: Editorial Mode Overrides */
 [data-storefront="a"] {
   --storefront-mode: 'editorial';
-  --editorial-accent: var(--color-sapphire);
+  --editorial-accent: var(--brand-primary);
   --carousel-card-ratio: 1.4;
   --hero-min-height: 100vh;
   --hero-min-height: 100dvh;

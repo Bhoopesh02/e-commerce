@@ -39,7 +39,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
       style={{
         padding: '80px 0',
         background: 'var(--gradient-aurelia)',
-        color: '#FFF8F5',
+        color: 'var(--bg-subtle)',
         position: 'relative',
       }}
     >
@@ -50,7 +50,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
             fontWeight: 600,
             letterSpacing: '0.16em',
             textTransform: 'uppercase',
-            color: 'var(--color-silver)',
+            color: 'var(--border-color)',
             display: 'block',
             marginBottom: '12px',
           }}
@@ -62,7 +62,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
           style={{
             fontFamily: 'var(--font-display)',
             fontSize: 'clamp(2rem, 3.5vw, 2.8rem)',
-            color: '#FFF8F5',
+            color: 'var(--bg-subtle)',
             marginBottom: '16px',
           }}
         >
@@ -72,7 +72,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
         <p
           style={{
             fontSize: '1rem',
-            color: 'var(--color-silver)',
+            color: 'var(--border-color)',
             lineHeight: 1.6,
             marginBottom: '32px',
           }}
@@ -93,7 +93,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
               gap: '12px',
             }}
           >
-            <CheckCircle2 size={22} style={{ color: '#FFF' }} />
+            <CheckCircle2 size={22} style={{ color: "var(--text-inverse)" }} />
             <span style={{ fontSize: '0.95rem', fontWeight: 500 }}>
               Your email ({email}) is inscribed. We honor your privacy with email-only correspondence.
             </span>
@@ -121,7 +121,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
                 border: '1px solid rgba(224, 224, 224, 0.35)',
               }}
             >
-              <Mail size={18} style={{ color: 'var(--color-silver)', marginRight: '10px', flexShrink: 0 }} />
+              <Mail size={18} style={{ color: 'var(--border-color)', marginRight: '10px', flexShrink: 0 }} />
               <input
                 type="email"
                 required
@@ -130,7 +130,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
                 onChange={(e) => setEmail(e.target.value)}
                 style={{
                   width: '100%',
-                  color: '#FFF',
+                  color: "var(--text-inverse)",
                   fontSize: '0.92rem',
                 }}
               />

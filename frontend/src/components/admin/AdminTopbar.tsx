@@ -9,7 +9,7 @@ export const AdminTopbar: React.FC = () => {
   return (
     <header className="admin-topbar">
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <h2 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#FFF8F5', margin: 0 }}>
+        <h2 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--bg-surface)', margin: 0 }}>
           Aurelia Central Control Console
         </h2>
       </div>
@@ -22,8 +22,8 @@ export const AdminTopbar: React.FC = () => {
               width: 32,
               height: 32,
               borderRadius: 'var(--radius-pill)',
-              backgroundColor: 'var(--color-sapphire)',
-              color: '#FFF',
+              backgroundColor: 'var(--brand-primary)',
+              color: "var(--text-inverse)",
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -37,7 +37,7 @@ export const AdminTopbar: React.FC = () => {
             <span style={{ fontSize: '0.82rem', fontWeight: 600, display: 'block' }}>
               Marcus Vance
             </span>
-            <span style={{ fontSize: '0.7rem', color: 'var(--color-golden)' }}>
+            <span style={{ fontSize: '0.7rem', color: 'var(--brand-accent)' }}>
               Head of Atelier Logistics
             </span>
           </div>

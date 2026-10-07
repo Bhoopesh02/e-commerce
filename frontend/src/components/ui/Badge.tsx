@@ -36,15 +36,15 @@ export const Badge: React.FC<BadgeProps> = ({
   switch (variant) {
     case 'default':
       variantStyle = {
-        backgroundColor: 'rgba(102, 37, 73, 0.1)',
-        color: 'var(--color-sapphire)',
+        backgroundColor: 'var(--bg-subtle)',
+        color: 'var(--brand-primary)',
       };
       break;
     case 'gold':
       variantStyle = {
-        backgroundColor: 'rgba(194, 155, 76, 0.2)',
-        color: '#B2621C',
-        border: '1px solid rgba(194, 155, 76, 0.4)',
+        backgroundColor: 'var(--border-accent)',
+        color: 'var(--brand-accent-hover)',
+        border: '1px solid var(--border-accent)',
       };
       break;
     case 'outline':

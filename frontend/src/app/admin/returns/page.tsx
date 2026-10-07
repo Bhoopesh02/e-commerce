@@ -111,7 +111,7 @@ export default function AdminReturnsPage() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
       {/* Header */}
       <div>
-        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
+        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
           Atelier Operations · Returns Management
         </span>
         <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: 'var(--admin-text-primary)', marginTop: '4px' }}>
@@ -149,9 +149,9 @@ export default function AdminReturnsPage() {
             borderRadius: 'var(--radius-sm)',
             fontSize: '0.85rem',
             fontWeight: 600,
-            backgroundColor: 'rgba(194, 155, 76, 0.15)',
-            color: 'var(--color-sapphire)',
-            border: '1px solid rgba(194, 155, 76, 0.3)',
+            backgroundColor: 'var(--overlay-golden-10)',
+            color: 'var(--brand-primary)',
+            border: '1px solid var(--overlay-golden-35)',
           }}
         >
           <RotateCcw size={16} /> Returns & Authorizations ({returns.length})
@@ -161,16 +161,16 @@ export default function AdminReturnsPage() {
       {/* Metric Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
         <div className="admin-glass-card" style={{ padding: '20px' }}>
-          <span style={{ fontSize: '0.75rem', color: '#595F69', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Total Return Requests
           </span>
-          <h3 style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '8px' }}>
+          <h3 style={{ fontSize: '1.8rem', fontWeight: 700, color: "var(--text-primary)", marginTop: '8px' }}>
             {returns.length}
           </h3>
         </div>
 
         <div className="admin-glass-card" style={{ padding: '20px' }}>
-          <span style={{ fontSize: '0.75rem', color: '#595F69', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Pending Authorization
           </span>
           <h3 style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--color-warning)', marginTop: '8px' }}>
@@ -179,7 +179,7 @@ export default function AdminReturnsPage() {
         </div>
 
         <div className="admin-glass-card" style={{ padding: '20px' }}>
-          <span style={{ fontSize: '0.75rem', color: '#595F69', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Approved & Settled
           </span>
           <h3 style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--color-success)', marginTop: '8px' }}>
@@ -188,10 +188,10 @@ export default function AdminReturnsPage() {
         </div>
 
         <div className="admin-glass-card" style={{ padding: '20px' }}>
-          <span style={{ fontSize: '0.75rem', color: '#595F69', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Rejected
           </span>
-          <h3 style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--color-golden)', marginTop: '8px' }}>
+          <h3 style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--brand-accent)', marginTop: '8px' }}>
             {rejectedCount}
           </h3>
         </div>
@@ -235,7 +235,7 @@ export default function AdminReturnsPage() {
                   backgroundColor: 'var(--admin-surface)',
                   border: '1px solid var(--admin-border)',
                   borderRadius: 'var(--radius-md)',
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+                  boxShadow: '0 4px 20px var(--overlay-black-15)',
                   width: '220px',
                   zIndex: 50,
                   padding: '8px',
@@ -265,7 +265,7 @@ export default function AdminReturnsPage() {
                     }}
                   >
                     {status === 'all' ? 'All Returns' : status}
-                    {filterStatus === status && <Check size={14} style={{ color: 'var(--color-sapphire)' }} />}
+                    {filterStatus === status && <Check size={14} style={{ color: 'var(--brand-primary)' }} />}
                   </button>
                 ))}
               </motion.div>
@@ -304,7 +304,7 @@ export default function AdminReturnsPage() {
                   return (
                     <tr key={ret.id} className="admin-table-row">
                       {/* Prominent Return ID */}
-                      <td style={{ padding: '14px', fontWeight: 600, color: 'var(--color-sapphire)', fontFamily: 'var(--font-mono)' }}>
+                      <td style={{ padding: '14px', fontWeight: 600, color: 'var(--brand-primary)', fontFamily: 'var(--font-mono)' }}>
                         #{ret.id}
                       </td>
 
@@ -346,7 +346,7 @@ export default function AdminReturnsPage() {
                             "{ret.comments}"
                           </span>
                         )}
-                        <span style={{ fontSize: '0.72rem', color: '#8C92A0', display: 'block', marginTop: '4px' }}>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginTop: '4px' }}>
                           Requested: {new Date(ret.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </span>
                       </td>
@@ -358,7 +358,7 @@ export default function AdminReturnsPage() {
                             fontSize: '0.78rem',
                             textTransform: 'capitalize',
                             fontWeight: 600,
-                            color: ret.refundStatus === 'completed' ? 'var(--color-success)' : ret.refundStatus === 'failed' ? 'var(--color-golden)' : 'var(--color-warning)',
+                            color: ret.refundStatus === 'completed' ? 'var(--color-success)' : ret.refundStatus === 'failed' ? 'var(--brand-accent)' : 'var(--color-warning)',
                           }}
                         >
                           {ret.refundStatus}

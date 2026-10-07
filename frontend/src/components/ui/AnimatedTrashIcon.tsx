@@ -21,7 +21,7 @@ export const AnimatedTrashIcon: React.FC<AnimatedTrashIconProps> = ({ size = 24,
         
         button:hover .animated-trash-icon,
         .animated-trash-icon:hover {
-          color: var(--color-error, #B00020) !important;
+          color: var(--color-error, var(--color-error)) !important;
         }
         
         button:hover .animated-trash-lid,

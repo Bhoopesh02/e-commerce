@@ -77,7 +77,7 @@ export default function OrdersPage() {
           display: flex;
           gap: 24px;
           margin-bottom: 32px;
-          border-bottom: 1px solid rgba(20, 20, 20, 0.1);
+          border-bottom: 1px solid var(--overlay-black-10);
         }
         
         .filter-btn {
@@ -87,18 +87,18 @@ export default function OrdersPage() {
           font-size: 0.8rem;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: rgba(20, 20, 20, 0.5);
+          color: var(--overlay-black-50);
           cursor: pointer;
           position: relative;
           transition: color 0.2s ease;
         }
         
         .filter-btn:hover {
-          color: var(--color-black-tie);
+          color: var(--text-primary);
         }
         
         .filter-btn.active {
-          color: var(--color-black-tie);
+          color: var(--text-primary);
           font-weight: 500;
         }
         
@@ -109,7 +109,7 @@ export default function OrdersPage() {
           left: 0;
           width: 100%;
           height: 1px;
-          background-color: var(--color-black-tie);
+          background-color: var(--text-primary);
         }
         
         .list-container {

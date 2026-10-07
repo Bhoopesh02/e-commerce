@@ -1,8 +1,8 @@
 .peek-rating {
-  --pr-active: var(--color-golden, var(--color-golden));
-  --pr-idle: var(--border-color, var(--color-silver));
+  --pr-active: var(--color-golden, var(--brand-accent));
+  --pr-idle: var(--border-color, var(--border-color));
   --pr-tip: var(--color-black-tie, var(--color-black-tie));
-  --pr-tip-text: #FFF8F5;
+  --pr-tip-text: var(--bg-subtle);
   --pr-size: 22px;
   --pr-gap: 6px;
   --pr-room: 28px;

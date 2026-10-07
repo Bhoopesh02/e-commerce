@@ -101,7 +101,7 @@ export default function AdminDashboardPage() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
       {/* Header */}
       <div>
-        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
+        <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
           Executive Dashboard
         </span>
         <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', color: 'var(--admin-text-primary)', marginTop: '4px' }}>
@@ -120,7 +120,7 @@ export default function AdminDashboardPage() {
             left: '3%',
             width: '380px',
             height: '180px',
-            background: 'radial-gradient(ellipse at center, rgba(224, 224, 224, 0.6) 0%, rgba(194, 155, 76, 0.35) 45%, transparent 70%)',
+            background: 'radial-gradient(ellipse at center, rgba(224, 224, 224, 0.6) 0%, var(--overlay-golden-35) 45%, transparent 70%)',
             filter: 'blur(36px)',
             pointerEvents: 'none',
             zIndex: 0,
@@ -160,7 +160,7 @@ export default function AdminDashboardPage() {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <span style={{ fontSize: '0.78rem', color: '#595F69', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
                 Gross Commission Revenue
               </span>
               <div className="admin-glass-pill">
@@ -168,7 +168,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: "var(--text-primary)", marginTop: '12px' }}>
                 {formatPrice(stats?.grossRevenue)}
               </h3>
               <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', marginTop: '4px', display: 'block', fontWeight: 600 }}>
@@ -187,7 +187,7 @@ export default function AdminDashboardPage() {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <span style={{ fontSize: '0.78rem', color: '#595F69', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
                 Total Commissions
               </span>
               <div className="admin-glass-pill">
@@ -195,10 +195,10 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: "var(--text-primary)", marginTop: '12px' }}>
                 {stats?.totalOrders}
               </h3>
-              <span style={{ fontSize: '0.75rem', color: '#595F69', marginTop: '4px', display: 'block' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '4px', display: 'block' }}>
                 Dispatched across India
               </span>
             </div>
@@ -214,7 +214,7 @@ export default function AdminDashboardPage() {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <span style={{ fontSize: '0.78rem', color: '#595F69', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
                 Average Commission Value
               </span>
               <div className="admin-glass-pill">
@@ -222,7 +222,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: "var(--text-primary)", marginTop: '12px' }}>
                 {formatPrice(stats?.averageOrderValue)}
               </h3>
               <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', marginTop: '4px', display: 'block', fontWeight: 600 }}>
@@ -241,7 +241,7 @@ export default function AdminDashboardPage() {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <span style={{ fontSize: '0.78rem', color: '#595F69', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
                 Low Reserve Alerts
               </span>
               <div className="admin-glass-pill">
@@ -249,7 +249,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--color-black-tie)', marginTop: '12px' }}>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: "var(--text-primary)", marginTop: '12px' }}>
                 {stats?.lowStockItemsCount} Silhouettes
               </h3>
               <span style={{ fontSize: '0.75rem', color: 'var(--color-warning)', marginTop: '4px', display: 'block', fontWeight: 600 }}>
@@ -270,7 +270,7 @@ export default function AdminDashboardPage() {
             href="/admin/orders"
             style={{
               fontSize: '0.82rem',
-              color: 'var(--color-sapphire)',
+              color: 'var(--brand-primary)',
               fontWeight: 600,
               display: 'inline-flex',
               alignItems: 'center',
@@ -283,7 +283,7 @@ export default function AdminDashboardPage() {
 
         <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ position: 'relative', flex: 1, minWidth: '250px', maxWidth: '400px' }}>
-            <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#595F69' }}>
+            <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }}>
               <Search size={16} />
             </div>
             <input
@@ -294,7 +294,7 @@ export default function AdminDashboardPage() {
               style={{
                 width: '100%',
                 padding: '10px 10px 10px 38px',
-                border: '1px solid rgba(20, 20, 20, 0.1)',
+                border: '1px solid var(--overlay-black-10)',
                 borderRadius: '8px',
                 fontSize: '0.88rem',
                 outline: 'none',
@@ -323,7 +323,7 @@ export default function AdminDashboardPage() {
                 backgroundColor: 'var(--admin-surface)',
                 border: '1px solid var(--admin-border)',
                 borderRadius: 'var(--radius-md)',
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+                boxShadow: '0 4px 20px var(--overlay-black-15)',
                 width: '240px',
                 zIndex: 50,
                 overflow: 'hidden',
@@ -347,7 +347,7 @@ export default function AdminDashboardPage() {
                     }}
                   >
                     All Statuses
-                    {filterStatus === 'All' && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                    {filterStatus === 'All' && <Check size={16} style={{ color: 'var(--brand-primary)' }} />}
                   </button>
                   {['Placed', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'].map(status => (
                     <button
@@ -368,7 +368,7 @@ export default function AdminDashboardPage() {
                       }}
                     >
                       {status}
-                      {filterStatus === status && <Check size={16} style={{ color: 'var(--color-sapphire)' }} />}
+                      {filterStatus === status && <Check size={16} style={{ color: 'var(--brand-primary)' }} />}
                     </button>
                   ))}
                 </div>
@@ -469,7 +469,7 @@ export default function AdminDashboardPage() {
                           color: 'var(--color-success)',
                           borderRadius: 'var(--radius-pill)',
                           backgroundColor: 'var(--color-success-bg)',
-                          border: '1px solid rgba(30, 111, 92, 0.25)',
+                          border: '1px solid var(--color-success-bg)',
                           boxSizing: 'border-box',
                         }}
                       >

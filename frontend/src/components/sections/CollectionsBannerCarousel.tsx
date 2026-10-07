@@ -211,11 +211,11 @@ export function CollectionsBannerCarousel() {
                       fontSize: 'clamp(2.25rem, 5.5vw, 4rem)',
                       fontFamily: 'var(--font-display)',
                       fontWeight: 400,
-                      color: '#fff8f5',
+                      color: 'var(--bg-subtle)',
                       letterSpacing: '0',
                       lineHeight: 1.15,
                       marginBottom: '14px',
-                      textShadow: '0 2px 18px rgba(0,0,0,0.5)',
+                      textShadow: '0 2px 18px rgba(16, 33, 39, 0.5)',
                     }}
                   >
                     {slide.heading}
@@ -226,11 +226,11 @@ export function CollectionsBannerCarousel() {
                       fontSize: 'clamp(2.25rem, 5.5vw, 4rem)',
                       fontFamily: 'var(--font-display)',
                       fontWeight: 400,
-                      color: '#fff8f5',
+                      color: 'var(--bg-subtle)',
                       letterSpacing: '0',
                       lineHeight: 1.15,
                       marginBottom: '14px',
-                      textShadow: '0 2px 18px rgba(0,0,0,0.5)',
+                      textShadow: '0 2px 18px rgba(16, 33, 39, 0.5)',
                     }}
                   >
                     {slide.heading}
@@ -239,12 +239,12 @@ export function CollectionsBannerCarousel() {
 
                 <p
                   style={{
-                    color: 'rgba(255, 248, 245, 0.9)',
+                    color: 'rgba(245, 248, 248, 0.9)',
                     fontSize: 'clamp(0.95rem, 1.2vw, 1.1rem)',
                     lineHeight: 1.65,
                     marginBottom: '22px',
                     maxWidth: '620px',
-                    textShadow: '0 1px 10px rgba(0,0,0,0.6)',
+                    textShadow: '0 1px 10px rgba(16, 33, 39, 0.6)',
                   }}
                 >
                   {slide.description}
@@ -265,11 +265,11 @@ export function CollectionsBannerCarousel() {
                         alignItems: 'center',
                         padding: '5px 14px',
                         borderRadius: '6px',
-                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        backgroundColor: 'var(--overlay-white-10)',
                         backdropFilter: 'blur(8px)',
                         border: '1px solid rgba(255, 255, 255, 0.18)',
                         fontSize: '0.75rem',
-                        color: '#fff8f5',
+                        color: 'var(--bg-subtle)',
                         fontWeight: 500,
                         letterSpacing: '0.04em',
                       }}
@@ -313,7 +313,7 @@ export function CollectionsBannerCarousel() {
                 width: activeIndex === i ? '24px' : '8px',
                 height: '4px',
                 borderRadius: '4px',
-                backgroundColor: activeIndex === i ? '#fff8f5' : 'rgba(255, 248, 245, 0.4)',
+                backgroundColor: activeIndex === i ? 'var(--bg-subtle)' : 'rgba(245, 248, 248, 0.4)',
                 border: 'none',
                 padding: 0,
                 cursor: 'pointer',
@@ -393,11 +393,11 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
               fontSize: 'clamp(2.25rem, 5.5vw, 4rem)',
               fontFamily: 'var(--font-display)',
               fontWeight: 400,
-              color: '#fff8f5',
+              color: 'var(--bg-subtle)',
               letterSpacing: '0',
               lineHeight: 1.15,
               marginBottom: '14px',
-              textShadow: '0 2px 18px rgba(0,0,0,0.5)',
+              textShadow: '0 2px 18px rgba(16, 33, 39, 0.5)',
             }}
           >
             {banner.heading}
@@ -405,12 +405,12 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
 
           <p
             style={{
-              color: 'rgba(255, 248, 245, 0.9)',
+              color: 'rgba(245, 248, 248, 0.9)',
               fontSize: 'clamp(0.95rem, 1.2vw, 1.1rem)',
               lineHeight: 1.65,
               marginBottom: '22px',
               maxWidth: '620px',
-              textShadow: '0 1px 10px rgba(0,0,0,0.6)',
+              textShadow: '0 1px 10px rgba(16, 33, 39, 0.6)',
             }}
           >
             {banner.description}
@@ -431,11 +431,11 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
                   alignItems: 'center',
                   padding: '5px 14px',
                   borderRadius: '6px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  backgroundColor: 'var(--overlay-white-10)',
                   backdropFilter: 'blur(8px)',
                   border: '1px solid rgba(255, 255, 255, 0.18)',
                   fontSize: '0.75rem',
-                  color: '#fff8f5',
+                  color: 'var(--bg-subtle)',
                   fontWeight: 500,
                   letterSpacing: '0.04em',
                 }}

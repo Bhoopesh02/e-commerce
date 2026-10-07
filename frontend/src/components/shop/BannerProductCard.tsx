@@ -21,11 +21,11 @@ export const BannerProductCardSkeleton: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         borderRadius: '12px',
-        background: 'rgba(12, 10, 22, 0.78)',
+        background: 'var(--overlay-scrim-strong)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
-        border: '1px solid rgba(255, 255, 255, 0.16)',
-        boxShadow: '0 12px 28px -6px rgba(0, 0, 0, 0.55)',
+        border: '1px solid var(--border-on-inverse)',
+        boxShadow: '0 12px 28px -6px var(--shadow-lg)',
         padding: '7px',
         width: '100%',
       }}
@@ -38,7 +38,7 @@ export const BannerProductCardSkeleton: React.FC = () => {
           aspectRatio: '3 / 4',
           borderRadius: '9px',
           overflow: 'hidden',
-          backgroundColor: 'rgba(25, 20, 36, 0.8)',
+          backgroundColor: 'var(--bg-inverse-glass)',
         }}
       >
         <Skeleton width="100%" height="100%" borderRadius="9px" />
@@ -119,11 +119,11 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
         display: 'flex',
         flexDirection: 'column',
         borderRadius: '12px',
-        background: 'rgba(12, 10, 22, 0.78)',
+        background: 'var(--overlay-scrim-strong)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
-        border: '1px solid rgba(255, 255, 255, 0.16)',
-        boxShadow: '0 12px 28px -6px rgba(0, 0, 0, 0.55)',
+        border: '1px solid var(--border-on-inverse)',
+        boxShadow: '0 12px 28px -6px var(--shadow-lg)',
         padding: '7px',
         transition: 'border-color 300ms ease, box-shadow 300ms ease, transform 300ms ease',
       }}
@@ -140,7 +140,7 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
           aspectRatio: '3 / 4',
           borderRadius: '9px',
           overflow: 'hidden',
-          backgroundColor: 'rgba(25, 20, 36, 0.8)',
+          backgroundColor: 'var(--bg-inverse-glass)',
           display: 'block',
         }}
       >
@@ -179,7 +179,7 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, transparent 60%, rgba(0,0,0,0.4) 100%)',
+            background: 'linear-gradient(180deg, var(--shadow-sm) 0%, transparent 60%, rgba(16, 33, 39, 0.4) 100%)',
             pointerEvents: 'none',
           }}
         />
@@ -206,7 +206,7 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
                 borderRadius: '999px',
                 backgroundColor: 'rgba(15, 12, 24, 0.85)',
                 backdropFilter: 'blur(6px)',
-                border: '1px solid rgba(255, 255, 255, 0.16)',
+                border: '1px solid var(--border-on-inverse)',
                 color: '#FFE28A',
                 fontSize: '0.68rem',
                 fontWeight: 600,
@@ -250,8 +250,8 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: isFavorited ? '#FFE28A' : '#FFFFFF',
-              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.4)',
+              color: isFavorited ? '#FFE28A' : 'var(--color-diamond)',
+              boxShadow: '0 4px 10px rgba(16, 33, 39, 0.4)',
             }}
           >
             <Heart
@@ -281,7 +281,7 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
             style={{
               fontSize: '0.78rem',
               fontWeight: 500,
-              color: '#FFFFFF',
+              color: "var(--text-inverse)",
               lineHeight: 1.25,
               fontFamily: 'var(--font-display)',
               margin: 0,
@@ -300,7 +300,7 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
           <span
             style={{
               fontSize: '0.66rem',
-              color: 'rgba(255, 248, 245, 0.7)',
+              color: 'rgba(245, 248, 248, 0.7)',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -324,7 +324,7 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
               style={{
                 fontSize: '0.8rem',
                 fontWeight: 600,
-                color: '#FFF8F5',
+                color: 'var(--bg-subtle)',
                 letterSpacing: '0.02em',
               }}
             >
@@ -344,9 +344,9 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
             minHeight: '28px',
             padding: '4px 8px',
             borderRadius: '6px',
-            backgroundColor: isAdding ? 'rgba(74, 222, 128, 0.2)' : 'rgba(255, 255, 255, 0.12)',
-            border: isAdding ? '1px solid rgba(74, 222, 128, 0.5)' : '1px solid rgba(255, 255, 255, 0.2)',
-            color: isAdding ? '#4ade80' : '#FFFFFF',
+            backgroundColor: isAdding ? 'var(--success-on-inverse-bg)' : 'rgba(255, 255, 255, 0.12)',
+            border: isAdding ? '1px solid rgba(74, 222, 128, 0.5)' : '1px solid var(--overlay-white-20)',
+            color: isAdding ? 'var(--color-success-on-inverse)' : 'var(--color-diamond)',
             fontSize: '0.68rem',
             fontWeight: 500,
             letterSpacing: '0.03em',

@@ -232,8 +232,8 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
           transform: translate(-50%, -50%);
           width: 24px;
           height: 24px;
-          background-color: #FFFFFF;
-          border: 2px solid #244B57;
+          background-color: var(--bg-primary);
+          border: 2px solid var(--color-sapphire-700);
           border-radius: 50%;
           box-shadow: 0 2px 6px rgba(20, 20, 20, 0.25);
           touch-action: none;
@@ -251,7 +251,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
           border-radius: 50%;
         }
         .range-thumb:focus-visible {
-          outline: 2px solid #C29B4C;
+          outline: 2px solid var(--color-golden-500);
           outline-offset: 2px;
         }
         .range-thumb.is-active, .range-thumb:hover {
@@ -259,21 +259,21 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
         }
         .range-thumb.is-active {
           transform: translate(-50%, -50%) scale(1.1);
-          border-color: #C29B4C;
+          border-color: var(--color-golden-500);
         }
         .range-tooltip {
           position: absolute;
           bottom: calc(100% + 10px);
           transform: translateX(-50%);
-          background-color: #141414;
-          color: #FFFFFF;
+          background-color: var(--text-primary);
+          color: var(--text-inverse);
           padding: 4px 10px;
           border-radius: 6px;
           font-size: 0.8rem;
           font-weight: 600;
           white-space: nowrap;
           pointer-events: none;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          box-shadow: 0 4px 12px var(--overlay-black-15);
           opacity: 0;
           visibility: hidden;
           transition: opacity 0.15s ease, visibility 0.15s ease;
@@ -291,13 +291,13 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
           height: 0;
           border-left: 4px solid transparent;
           border-right: 4px solid transparent;
-          border-top: 4px solid #141414;
+          border-top: 4px solid var(--color-black-tie);
         }
         .price-input-wrapper {
           display: flex;
           align-items: center;
-          background-color: #fff;
-          border: 1px solid #e0ddd8;
+          background-color: var(--bg-primary);
+          border: 1px solid var(--border-color);
           border-radius: 24px;
           padding: 10px 12px;
           gap: 4px;
@@ -307,7 +307,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
         }
         .price-input-wrapper span {
           font-size: 0.85rem;
-          color: #8a8782;
+          color: var(--text-placeholder);
           font-weight: 500;
           white-space: nowrap;
         }
@@ -317,13 +317,13 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
           width: 100%;
           min-width: 0;
           font-size: 0.95rem;
-          color: #1a1a1a;
+          color: var(--text-primary);
           font-weight: 600;
           background: transparent;
           padding: 0;
         }
         .price-input-wrapper:focus-within {
-          border-color: #C29B4C;
+          border-color: var(--color-golden-500);
         }
       `}</style>
 
@@ -333,7 +333,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
           ref={trackRef} 
           style={{ 
             height: '4px', 
-            backgroundColor: '#E0E0E0', 
+            backgroundColor: 'var(--border-color)', 
             borderRadius: '2px', 
             position: 'relative',
             width: '100%',
@@ -349,7 +349,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
               bottom: 0,
               left: `${leftPct}%`,
               right: `${100 - rightPct}%`,
-              backgroundColor: '#244B57', // Sapphire
+              backgroundColor: 'var(--color-sapphire-700)', // Sapphire
               borderRadius: '2px',
             }}
           />

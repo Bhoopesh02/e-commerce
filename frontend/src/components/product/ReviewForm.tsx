@@ -125,10 +125,10 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewAdded
             size={22}
             labels={['Poor', 'Fair', 'Good', 'Great', 'Exceptional']}
             allowClear={false}
-            activeColor="var(--color-golden)"
+            activeColor="var(--brand-accent)"
             idleColor="var(--border-color)"
             tipColor="var(--color-black-tie)"
-            tipTextColor="#FFF8F5"
+            tipTextColor="var(--bg-subtle)"
           />
           {rating > 0 ? (
             <span

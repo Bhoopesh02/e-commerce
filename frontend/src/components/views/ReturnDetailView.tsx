@@ -52,7 +52,7 @@ export const ReturnDetailView: React.FC<ReturnDetailViewProps> = ({ returnId }) 
             alignItems: 'center',
             gap: '8px',
             fontSize: '0.85rem',
-            color: 'var(--color-sapphire)',
+            color: 'var(--brand-primary)',
             marginBottom: '24px',
             fontWeight: 500,
           }}
@@ -71,7 +71,7 @@ export const ReturnDetailView: React.FC<ReturnDetailViewProps> = ({ returnId }) 
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-light)', paddingBottom: '20px', marginBottom: '24px' }}>
             <div>
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-sapphire)' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
                 Return Authorization Dossier
               </span>
               <h1 style={{ fontSize: '1.8rem', marginTop: '4px' }}>Return Request Details</h1>
@@ -97,7 +97,7 @@ export const ReturnDetailView: React.FC<ReturnDetailViewProps> = ({ returnId }) 
 
             <div>
               <span style={{ color: 'var(--text-muted)', display: 'block', fontSize: '0.8rem' }}>Refund Settlement Status</span>
-              <p style={{ fontWeight: 600, color: 'var(--color-sapphire)', marginTop: '2px', textTransform: 'capitalize' }}>
+              <p style={{ fontWeight: 600, color: 'var(--brand-primary)', marginTop: '2px', textTransform: 'capitalize' }}>
                 {returnReq.refundStatus} (Credited to original Adyen payment method upon physical inspection)
               </p>
             </div>

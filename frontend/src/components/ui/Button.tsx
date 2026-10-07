@@ -88,8 +88,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         break;
       case 'secondary':
         variantStyle = {
-          backgroundColor: 'var(--color-black-tie)',
-          color: 'var(--color-white)',
+          backgroundColor: 'var(--surface-brand-dark)',
+          color: 'var(--text-inverse)',
           borderColor: 'transparent',
         };
         break;
@@ -116,9 +116,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         break;
       case 'white':
         variantStyle = {
-          backgroundColor: '#FFFFFF',
-          color: 'var(--color-black-tie)',
-          borderColor: '#FFFFFF',
+          backgroundColor: 'var(--bg-primary)',
+          color: "var(--text-primary)",
+          borderColor: 'var(--color-diamond)',
           boxShadow: 'var(--shadow-sm)',
         };
         break;

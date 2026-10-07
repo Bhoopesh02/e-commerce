@@ -103,7 +103,7 @@ export const CollectionNewArrivals: React.FC<CollectionNewArrivalsProps> = ({
                 fontWeight: 600,
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: 'var(--color-sapphire)',
+                color: 'var(--brand-primary)',
                 display: 'block',
                 marginBottom: '6px',
               }}

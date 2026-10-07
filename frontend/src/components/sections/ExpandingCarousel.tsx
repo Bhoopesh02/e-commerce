@@ -125,8 +125,8 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                     right: 0,
                     bottom: 0,
                     background: isActive
-                      ? 'linear-gradient(180deg, rgba(20, 20, 20, 0.1) 0%, rgba(20, 20, 20, 0.85) 100%)'
-                      : 'linear-gradient(180deg, rgba(20, 20, 20, 0.2) 0%, rgba(20, 20, 20, 0.75) 100%)',
+                      ? 'linear-gradient(180deg, var(--overlay-black-10) 0%, var(--overlay-black-85) 100%)'
+                      : 'linear-gradient(180deg, var(--overlay-black-20) 0%, rgba(20, 20, 20, 0.75) 100%)',
                     transition: 'background var(--carousel-expand-duration, 1600ms) cubic-bezier(0.25, 1, 0.5, 1)',
                   }}
                 />
@@ -139,7 +139,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                     left: 0,
                     right: 0,
                     padding: '28px',
-                    color: '#FFF8F5',
+                    color: 'var(--bg-subtle)',
                     zIndex: 2,
                     display: 'flex',
                     flexDirection: 'column',
@@ -152,7 +152,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                       fontWeight: 600,
                       letterSpacing: '0.12em',
                       textTransform: 'uppercase',
-                      color: 'var(--color-golden)',
+                      color: 'var(--brand-accent)',
                       marginBottom: '6px',
                     }}
                   >
@@ -164,7 +164,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                     style={{
                       fontSize: isActive ? '1.5rem' : '1.1rem',
                       fontFamily: 'var(--font-display)',
-                      color: '#FFF8F5',
+                      color: 'var(--bg-subtle)',
                       marginBottom: '8px',
                       whiteSpace: isActive ? 'normal' : 'nowrap',
                       overflow: 'hidden',
@@ -191,7 +191,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                     }}
                   >
                     <div className="carousel-action-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span className="carousel-price" style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--color-golden)' }}>
+                      <span className="carousel-price" style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--brand-accent)' }}>
                         {formatPrice(product.price)}
                       </span>
 
@@ -212,7 +212,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
       {/* Responsive mobile touch styling */}
       <style jsx>{`
         :global([data-theme="dark"]) .signature-icons-emblem {
-          filter: brightness(0) invert(0.96) drop-shadow(0 2px 6px rgba(194, 155, 76, 0.15)) !important;
+          filter: brightness(0) invert(0.96) drop-shadow(0 2px 6px var(--color-golden-100)) !important;
         }
 
         @media (max-width: 768px) {

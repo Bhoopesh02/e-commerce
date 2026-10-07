@@ -38,7 +38,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
         display: 'flex',
         alignItems: 'center',
         boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',
-        border: '1px solid rgba(224, 224, 224, 0.22)',
+        border: '1px solid var(--border-on-inverse)',
         backgroundColor: '#0c0a14',
       }}
       className="group section-banner"
@@ -72,7 +72,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(90deg, rgba(10, 8, 18, 0.78) 0%, rgba(10, 8, 18, 0.46) 40%, rgba(10, 8, 18, 0.12) 75%, rgba(10, 8, 18, 0.28) 100%)',
+              'linear-gradient(90deg, rgba(16, 33, 39, 0.78) 0%, rgba(16, 33, 39, 0.46) 40%, rgba(16, 33, 39, 0.12) 75%, rgba(16, 33, 39, 0.28) 100%)',
           }}
         />
         <div
@@ -80,7 +80,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(0deg, rgba(10, 8, 18, 0.45) 0%, transparent 55%)',
+              'linear-gradient(0deg, rgba(16, 33, 39, 0.45) 0%, transparent 55%)',
           }}
         />
       </div>
@@ -102,11 +102,11 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
             fontSize: 'clamp(1.9rem, 4.5vw, 3.5rem)',
             fontFamily: 'var(--font-display)',
             fontWeight: 400,
-            color: '#fff8f5',
+            color: 'var(--bg-subtle)',
             letterSpacing: '0',
             lineHeight: 1.15,
             marginBottom: '14px',
-            textShadow: '0 2px 18px rgba(0,0,0,0.55)',
+            textShadow: '0 2px 18px var(--shadow-lg)',
           }}
         >
           {headline}
@@ -116,12 +116,12 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
           <p
             className="banner-subtitle"
             style={{
-              color: 'rgba(255, 248, 245, 0.9)',
+              color: 'rgba(245, 248, 248, 0.9)',
               fontSize: 'clamp(0.92rem, 1.15vw, 1.05rem)',
               lineHeight: 1.6,
               marginBottom: '22px',
               maxWidth: '620px',
-              textShadow: '0 1px 10px rgba(0,0,0,0.6)',
+              textShadow: '0 1px 10px rgba(16, 33, 39, 0.6)',
             }}
           >
             {subtitle}
@@ -143,11 +143,11 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
               alignItems: 'center',
               padding: '5px 14px',
               borderRadius: '6px',
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              backgroundColor: 'var(--overlay-white-10)',
               backdropFilter: 'blur(8px)',
               border: '1px solid rgba(255, 255, 255, 0.18)',
               fontSize: '0.75rem',
-              color: '#fff8f5',
+              color: 'var(--bg-subtle)',
               fontWeight: 500,
               letterSpacing: '0.04em',
             }}
@@ -163,11 +163,11 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
                 alignItems: 'center',
                 padding: '5px 14px',
                 borderRadius: '6px',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                backgroundColor: 'var(--overlay-white-10)',
                 backdropFilter: 'blur(8px)',
                 border: '1px solid rgba(255, 255, 255, 0.18)',
                 fontSize: '0.75rem',
-                color: '#fff8f5',
+                color: 'var(--bg-subtle)',
                 fontWeight: 500,
                 letterSpacing: '0.04em',
               }}
@@ -192,7 +192,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#fff',
+            color: "var(--text-inverse)",
             cursor: 'pointer',
             transition: 'all 0.2s ease',
           }}
@@ -215,7 +215,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#fff',
+            color: "var(--text-inverse)",
             cursor: 'pointer',
             transition: 'all 0.2s ease',
           }}

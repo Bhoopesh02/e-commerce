@@ -5,15 +5,69 @@
     "mode": "Editorial",
     "tagline": "A cinematic high-fashion journal presenting autumnal silhouettes and architectural couture.",
     "sections": [
-      { "id": "sec_hero", "type": "hero", "title": "The Autumn Atelier", "subtitle": "Vol. IV — Nocturnal Silhouettes", "visible": true },
-      { "id": "sec_brand_intro", "type": "brand_intro", "title": "The House Philosophy", "subtitle": "Quiet Grandeur & Sculptural Precision", "visible": true },
-      { "id": "sec_category_showcase", "type": "category_showcase", "title": "Curated Dimensions", "subtitle": "Explore by Discipline", "visible": true },
-      { "id": "sec_expanding_carousel", "type": "expanding_carousel", "title": "Signature Icons", "subtitle": "Touch to Expand & Reveal", "visible": true },
-      { "id": "sec_new_arrivals", "type": "new_arrivals", "title": "Fresh from the Milan Atelier", "subtitle": "Limited First Editions", "visible": true },
-      { "id": "sec_editorial_campaign", "type": "editorial_campaign", "title": "Midnight in Florence", "subtitle": "A Visual Study in Hand-Finished Nappa and Liquid Silk", "visible": true },
-      { "id": "sec_trending", "type": "trending_products", "title": "House Favorites", "subtitle": "Coveted Pieces of the Season", "visible": true },
-      { "id": "sec_story", "type": "brand_story", "title": "Craftsmanship Without Compromise", "subtitle": "100% Traceable European Materials", "visible": true },
-      { "id": "sec_newsletter", "type": "newsletter", "title": "The Private Ledger", "subtitle": "Receive invitations to private salon previews and new editions.", "visible": false }
+      {
+        "id": "sec_hero",
+        "type": "hero",
+        "title": "The Autumn Atelier",
+        "subtitle": "Vol. IV — Nocturnal Silhouettes",
+        "visible": true
+      },
+      {
+        "id": "sec_brand_intro",
+        "type": "brand_intro",
+        "title": "The House Philosophy",
+        "subtitle": "Quiet Grandeur & Sculptural Precision",
+        "visible": true
+      },
+      {
+        "id": "sec_category_showcase",
+        "type": "category_showcase",
+        "title": "Curated Dimension",
+        "subtitle": "Explore by Discipline",
+        "visible": true
+      },
+      {
+        "id": "sec_expanding_carousel",
+        "type": "expanding_carousel",
+        "title": "Signature Icons",
+        "subtitle": "Touch to Expand & Reveal",
+        "visible": true
+      },
+      {
+        "id": "sec_new_arrivals",
+        "type": "new_arrivals",
+        "title": "Fresh from the Milan Atelier",
+        "subtitle": "Limited First Editions",
+        "visible": true
+      },
+      {
+        "id": "sec_editorial_campaign",
+        "type": "editorial_campaign",
+        "title": "Midnight in Florence",
+        "subtitle": "A Visual Study in Hand-Finished Nappa and Liquid Silk",
+        "visible": true
+      },
+      {
+        "id": "sec_trending",
+        "type": "trending_products",
+        "title": "House Favorites",
+        "subtitle": "Coveted Pieces of the Season",
+        "visible": true
+      },
+      {
+        "id": "sec_story",
+        "type": "brand_story",
+        "title": "Craftsmanship Without Compromise",
+        "subtitle": "100% Traceable European Materials",
+        "visible": true
+      },
+      {
+        "id": "sec_newsletter",
+        "type": "newsletter",
+        "title": "The Private Ledger",
+        "subtitle": "Receive invitations to private salon previews and new editions.",
+        "visible": false
+      }
     ]
   },
   "b": {
@@ -22,13 +76,55 @@
     "mode": "Refined",
     "tagline": "A minimalist, product-first salon focused on wardrobe foundations and direct discovery.",
     "sections": [
-      { "id": "sec_hero", "type": "hero", "title": "The Permanent Wardrobe", "subtitle": "Modern Essentials & Hand-Finished Pieces", "visible": true },
-      { "id": "sec_category_showcase", "type": "category_showcase", "title": "Shop by Category", "subtitle": "Tailoring, Cashmere & Leather Goods", "visible": true },
-      { "id": "sec_new_arrivals", "type": "new_arrivals", "title": "New Additions", "subtitle": "Autumn / Winter Wardrobe", "visible": true },
-      { "id": "sec_trending", "type": "trending_products", "title": "Most Considered", "subtitle": "Essential House Silhouettes", "visible": true },
-      { "id": "sec_expanding_carousel", "type": "expanding_carousel", "title": "Curated Highlights", "subtitle": "Explore Selected Pieces", "visible": true },
-      { "id": "sec_story", "type": "brand_story", "title": "Artisanal Integrity", "subtitle": "Every garment tailored with longevity in mind.", "visible": true },
-      { "id": "sec_newsletter", "type": "newsletter", "title": "Atelier Correspondence", "subtitle": "Subscribed clients receive private styling consultations.", "visible": false }
+      {
+        "id": "sec_hero",
+        "type": "hero",
+        "title": "The Permanent Wardrobe",
+        "subtitle": "Modern Essentials & Hand-Finished Pieces",
+        "visible": true
+      },
+      {
+        "id": "sec_category_showcase",
+        "type": "category_showcase",
+        "title": "Shop by Category",
+        "subtitle": "Tailoring, Cashmere & Leather Goods",
+        "visible": true
+      },
+      {
+        "id": "sec_new_arrivals",
+        "type": "new_arrivals",
+        "title": "New Additions",
+        "subtitle": "Autumn / Winter Wardrobe",
+        "visible": true
+      },
+      {
+        "id": "sec_trending",
+        "type": "trending_products",
+        "title": "Most Considered",
+        "subtitle": "Essential House Silhouettes",
+        "visible": true
+      },
+      {
+        "id": "sec_expanding_carousel",
+        "type": "expanding_carousel",
+        "title": "Curated Highlights",
+        "subtitle": "Explore Selected Pieces",
+        "visible": true
+      },
+      {
+        "id": "sec_story",
+        "type": "brand_story",
+        "title": "Artisanal Integrity",
+        "subtitle": "Every garment tailored with longevity in mind.",
+        "visible": true
+      },
+      {
+        "id": "sec_newsletter",
+        "type": "newsletter",
+        "title": "Atelier Correspondence",
+        "subtitle": "Subscribed clients receive private styling consultations.",
+        "visible": false
+      }
     ]
   }
 }

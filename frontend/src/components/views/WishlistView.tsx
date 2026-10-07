@@ -83,7 +83,7 @@ export const WishlistView: React.FC = () => {
                 fontWeight: 600,
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: 'var(--color-sapphire)',
+                color: 'var(--brand-primary)',
                 marginBottom: '8px',
               }}
             >

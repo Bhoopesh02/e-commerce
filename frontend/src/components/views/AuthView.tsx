@@ -55,7 +55,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
         paddingTop: '120px',
         paddingBottom: '96px',
         minHeight: '100vh',
-        background: 'radial-gradient(ellipse at 50% 15%, #FFF5F7 0%, var(--bg-secondary) 50%, #F9E2E8 100%)',
+        background: 'radial-gradient(ellipse at 50% 15%, var(--bg-subtle) 0%, var(--bg-secondary) 50%, #F9E2E8 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -71,7 +71,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
       >
         <div
           style={{
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--color-diamond)',
             borderRadius: '24px',
             border: '1px solid rgba(202, 212, 214, 0.55)',
             padding: '44px 38px',
@@ -99,7 +99,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
               fontSize: '1.6rem',
               fontFamily: 'var(--font-display)',
               fontWeight: 500,
-              color: '#1E1517',
+              color: 'var(--text-primary)',
               marginBottom: '8px',
               textAlign: 'center',
             }}
@@ -163,7 +163,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
                   onClick={() => setMode('forgot-password')}
                   style={{
                     fontSize: '0.8rem',
-                    color: 'var(--color-sapphire)',
+                    color: 'var(--brand-primary)',
                     textDecoration: 'underline',
                     background: 'none',
                     border: 'none',
@@ -183,9 +183,9 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
               fullWidth
               isLoading={isLoading}
               style={{
-                backgroundColor: 'var(--color-sapphire)',
-                borderColor: 'var(--color-sapphire)',
-                color: '#FFFFFF',
+                backgroundColor: 'var(--brand-primary)',
+                borderColor: 'var(--brand-primary)',
+                color: "var(--text-inverse)",
               }}
             >
               {mode === 'login' && 'Sign In'}
@@ -207,7 +207,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
                     setMode('register');
                     window.history.pushState({}, '', '/signup');
                   }}
-                  style={{ color: 'var(--color-sapphire)', fontWeight: 600, textDecoration: 'underline' }}
+                  style={{ color: 'var(--brand-primary)', fontWeight: 600, textDecoration: 'underline' }}
                 >
                   Sign Up
                 </Link>
@@ -222,7 +222,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
                     setMode('login');
                     window.history.pushState({}, '', '/signin');
                   }}
-                  style={{ color: 'var(--color-sapphire)', fontWeight: 600, textDecoration: 'underline' }}
+                  style={{ color: 'var(--brand-primary)', fontWeight: 600, textDecoration: 'underline' }}
                 >
                   Sign In
                 </Link>

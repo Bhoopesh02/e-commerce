@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { Button } from '@/components/ui/Button';
 import { ArrowRight } from 'lucide-react';
-import { TextLoop } from '@/components/ui/TextLoop';
 
 export const HeroSection: React.FC = () => {
   const { storefront } = useStorefrontStore();
@@ -21,8 +20,8 @@ export const HeroSection: React.FC = () => {
         minHeight: '100vh',
         width: '100%',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: 'flex-end',
+        justifyContent: 'flex-start',
         overflow: 'hidden',
         paddingTop: '88px',
         paddingBottom: '48px',
@@ -43,7 +42,7 @@ export const HeroSection: React.FC = () => {
         <Image
           src={
             isEditorial
-              ? '/images/hero/Gemini_Generated_Image_62wq5062wq5062wq.png'
+              ? '/images/hero/homepage_banner_split.jpg'
               : '/images/hero/hero-refined.webp'
           }
           alt="Aurelia Luxury Campaign"
@@ -67,8 +66,8 @@ export const HeroSection: React.FC = () => {
             right: 0,
             bottom: 0,
             background: isEditorial
-              ? 'linear-gradient(180deg, rgba(20, 20, 20, 0.4) 0%, rgba(69, 25, 82, 0.6) 50%, rgba(20, 20, 20, 0.9) 100%)'
-              : 'linear-gradient(180deg, rgba(20, 20, 20, 0.35) 0%, rgba(20, 20, 20, 0.75) 100%)',
+              ? 'linear-gradient(90deg, rgba(16, 33, 39, 0.7) 0%, rgba(16, 33, 39, 0) 50%)' // Darker left side for text readability
+              : 'linear-gradient(180deg, rgba(16, 33, 39, 0.35) 0%, rgba(16, 33, 39, 0.75) 100%)',
           }}
         />
       </div>
@@ -79,51 +78,60 @@ export const HeroSection: React.FC = () => {
         style={{
           position: 'relative',
           zIndex: 2,
-          color: '#FFF8F5',
+          color: 'var(--bg-subtle)',
           textAlign: isEditorial ? 'left' : 'center',
           maxWidth: isEditorial ? '1200px' : '900px',
+          width: '100%',
         }}
       >
         {isEditorial ? (
           /* Editorial Experience Layout */
-          <div style={{ maxWidth: '720px' }}>
-
+          <div style={{ maxWidth: '600px' }}>
+            <span
+              style={{
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                color: 'var(--bg-subtle)',
+                marginBottom: '16px',
+                display: 'block',
+              }}
+            >
+              EXCLUSIVE: AURELIA ATELIER
+            </span>
 
             <h1
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(2.8rem, 6vw, 5rem)',
+                fontSize: 'clamp(2.4rem, 4vw, 4rem)',
                 lineHeight: 1.05,
                 fontWeight: 500,
                 letterSpacing: '-0.02em',
-                marginBottom: '20px',
-                color: '#FFF8F5',
+                marginBottom: '16px',
+                color: 'var(--bg-subtle)',
+                textTransform: 'uppercase',
               }}
             >
-              Nocturnal <span className="text-editorial typography-shimmer">Silhouettes</span> & Sculptural Wool
+              NOCTURNAL SILHOUETTES
             </h1>
 
             <p
               style={{
-                fontSize: 'clamp(0.875rem, 1.2vw, 1rem)',
-                color: 'var(--color-silver)',
+                fontSize: 'clamp(1rem, 1.2vw, 1.125rem)',
+                color: 'var(--bg-subtle)',
                 lineHeight: 1.6,
                 maxWidth: '560px',
                 marginBottom: '36px',
               }}
             >
-              An editorial study in hand-finished Italian nappa leather, double-faced cashmere, and bias-cut mulberry silk gowns.
+              The new collection arrives at Aurelia. Hand-finished Italian nappa leather, double-faced cashmere, and bias-cut mulberry silk.
             </p>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
               <Link href="/shop?categorySlug=outerwear">
-                <Button variant="primary" size="md" rightIcon={<ArrowRight size={16} />}>
-                  Discover Collection
-                </Button>
-              </Link>
-              <Link href="/shop?tag=new-arrival">
-                <Button variant="white" size="md">
-                  View Runway Arrivals
+                <Button variant="white" size="lg" style={{ minWidth: '180px', borderRadius: '0' }}>
+                  Discover more
                 </Button>
               </Link>
             </div>
@@ -144,7 +152,7 @@ export const HeroSection: React.FC = () => {
                 fontWeight: 600,
                 letterSpacing: '0.18em',
                 textTransform: 'uppercase',
-                color: 'var(--color-golden)',
+                color: 'var(--brand-accent)',
                 marginBottom: '16px',
               }}
             >
@@ -158,7 +166,7 @@ export const HeroSection: React.FC = () => {
                 lineHeight: 1.1,
                 fontWeight: 500,
                 marginBottom: '20px',
-                color: '#FFF8F5',
+                color: 'var(--bg-subtle)',
               }}
             >
               The Permanent Collection
@@ -167,7 +175,7 @@ export const HeroSection: React.FC = () => {
             <p
               style={{
                 fontSize: '1.1rem',
-                color: 'var(--color-silver)',
+                color: 'var(--border-color)',
                 lineHeight: 1.6,
                 maxWidth: '620px',
                 marginBottom: '32px',
@@ -192,35 +200,7 @@ export const HeroSection: React.FC = () => {
         )}
       </div>
 
-      {/* Bottom Edge Attached Infinite Text Loop Ribbon */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          width: '100%',
-          zIndex: 10,
-          borderTop: '1px solid rgba(194, 155, 76, 0.18)',
-        }}
-      >
-        <TextLoop
-          text="AUTUMN / WINTER 2026 EDITION • PURE VIRGIN CASHMERE • HAND-FINISHED IN BIELLA & COMO • NUMBERED ATELIER RUNS • ARCHIVAL SILHOUETTES"
-          shape="line"
-          speed={42}
-          direction="forward"
-          separator="✦"
-          fontSize={12.5}
-          fontWeight={500}
-          letterSpacing={2.5}
-          uppercase={true}
-          color="var(--color-golden, var(--color-golden))"
-          ribbon={true}
-          ribbonColor="var(--color-black-tie, var(--color-black-tie))"
-          ribbonWidth={40}
-          pauseOnHover={false}
-        />
-      </div>
+
     </section>
   );
 };
