@@ -124,7 +124,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
   if (loading) {
     return (
       <div style={{ paddingTop: '110px', paddingBottom: '96px' }} className="container">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '48px' }}>
+        <div className="pdp-split-layout">
           <Skeleton height="620px" borderRadius="var(--radius-sm)" />
           <div>
             <Skeleton height="40px" width="80%" />
@@ -211,15 +211,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
         </button>
 
         {/* Top Split: Gallery & Product Info */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-            gap: '56px',
-            alignItems: 'flex-start',
-            marginBottom: '80px',
-          }}
-        >
+        <div className="pdp-split-layout">
           {/* Left: Multi-Image Gallery */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {/* Primary Main Image */}
@@ -453,7 +445,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
 
             {/* Quantity and Actions */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingTop: '8px' }}>
-              <div className="pdp-action-row" style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
+              <div className="pdp-action-row">
                 <div
                   style={{
                     display: 'inline-flex',
@@ -499,7 +491,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 </div>
               </div>
 
-              <div className="pdp-action-row" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <div className="pdp-action-row" style={{ flexDirection: 'row' }}>
                 <div style={{ flex: 1 }}>
                   <Button
                     variant="primary"
@@ -541,19 +533,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
             </div>
 
             {/* Atelier Guarantees Pill */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: '12px',
-                padding: '16px',
-                borderRadius: 'var(--radius-sm)',
-                backgroundColor: 'var(--bg-surface)',
-                border: '1px solid var(--border-light)',
-                marginTop: '12px',
-                textAlign: 'center',
-              }}
-            >
+            <div className="pdp-guarantees">
               <div>
                 <Truck size={16} style={{ color: 'var(--color-sapphire)', margin: '0 auto 4px' }} />
                 <span style={{ fontSize: '0.72rem', display: 'block', fontWeight: 600 }}>Complimentary</span>
