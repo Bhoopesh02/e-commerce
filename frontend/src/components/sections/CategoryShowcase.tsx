@@ -128,6 +128,8 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                     alt={cat.name}
                     fill
                     quality={80}
+                    priority
+                    loading="eager"
                     sizes="(max-width: 768px) 50vw, 25vw"
                     style={{
                       objectFit: 'cover',

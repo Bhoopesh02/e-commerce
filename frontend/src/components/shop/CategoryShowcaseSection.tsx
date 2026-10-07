@@ -186,6 +186,7 @@ export const CategoryShowcaseSection: React.FC<CategoryShowcaseSectionProps> = (
             sizes="(max-width: 1280px) 100vw, 1440px"
             quality={90}
             priority={sectionId.includes('new-arrivals')}
+            loading="eager"
             onLoad={() => setIsBannerLoaded(true)}
             onError={() => {
               setIsBannerLoaded(true);
