@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Category } from '@/types';
 import { ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
@@ -307,6 +308,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   const [isMobile, setIsMobile] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState<Record<string, boolean>>({});
   const containerRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   // Auto-scroll logic
   useEffect(() => {
@@ -462,9 +464,13 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                   <div
                     key={`${cat.id}-${idx}`}
                     onClick={() => {
-                      setEnableTransition(true);
-                      setActiveIndex(idx);
-                      setHasMoved(true);
+                      if (isActive) {
+                        router.push(`/shop?categorySlug=${cat.slug}`);
+                      } else {
+                        setEnableTransition(true);
+                        setActiveIndex(idx);
+                        setHasMoved(true);
+                      }
                     }}
                     className="category-slider-card"
                     style={{
