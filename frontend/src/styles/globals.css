@@ -1011,7 +1011,7 @@ button.filter-btn:focus-visible,
 /* --- Product Detail Page --- */
 .pdp-split-layout {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 40px;
   align-items: flex-start;
   margin-bottom: 64px;
@@ -1019,7 +1019,7 @@ button.filter-btn:focus-visible,
 
 @media (min-width: 768px) {
   .pdp-split-layout {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 56px;
     margin-bottom: 80px;
   }
@@ -1055,5 +1055,11 @@ button.filter-btn:focus-visible,
     flex-direction: row;
     align-items: center;
   }
+}
+
+
+/* Grid Blowout Fix for PDP */
+.pdp-split-layout > div {
+  min-width: 0;
 }
 

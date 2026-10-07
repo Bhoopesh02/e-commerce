@@ -491,7 +491,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 </div>
               </div>
 
-              <div className="pdp-action-row" style={{ flexDirection: 'row' }}>
+              <div className="pdp-action-row">
                 <div style={{ flex: 1 }}>
                   <Button
                     variant="primary"
