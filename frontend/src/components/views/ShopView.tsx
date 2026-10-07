@@ -154,8 +154,15 @@ export const ShopView: React.FC<ShopViewProps> = ({
     };
 
     updateScroll();
-    window.addEventListener('resize', updateScroll);
-    return () => window.removeEventListener('resize', updateScroll);
+    let lastWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
+    const handleResize = () => {
+      if (window.innerWidth !== lastWidth) {
+        lastWidth = window.innerWidth;
+        updateScroll();
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [activeCategory]);
 
   // Server pre-fetched for storefront 'a' — skip redundant first-mount fetch
@@ -891,3 +898,4 @@ export const ShopView: React.FC<ShopViewProps> = ({
     </div>
   );
 };
+
