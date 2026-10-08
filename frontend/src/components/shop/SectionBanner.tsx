@@ -13,10 +13,14 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
   category,
   productCount,
 }) => {
-  // Use the generated image or the default category image
-  // For demonstration, we could use the new generated image but it's not dynamically passed,
-  // so we'll just continue to use category.bannerImage or category.image.
-  const bannerSrc = category.bannerImage || category.image;
+  const generatedCategories = [
+    'outerwear', 'tailoring', 'eveningwear', 'knitwear', 
+    'leather-goods', 'footwear', 'fine-jewelry', 'fragrances'
+  ];
+
+  const bannerSrc = generatedCategories.includes(category.slug)
+    ? `/images/banners/gen/${category.slug}.jpg`
+    : category.bannerImage || category.image;
   
   // Custom specific text for outerwear to match the user's reference image if it's outerwear,
   // else use category default names.
