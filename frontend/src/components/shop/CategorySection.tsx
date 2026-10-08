@@ -44,22 +44,7 @@ export const CategorySectionSkeleton: React.FC<CategorySectionSkeletonProps> = (
         <Skeleton width="100%" height="100%" borderRadius="20px" />
       </div>
 
-      {/* Subnav Pills Skeleton */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          marginBottom: '36px',
-          paddingBottom: '16px',
-          borderBottom: '1px solid var(--border-color)',
-        }}
-      >
-        <Skeleton width="100px" height="32px" borderRadius="999px" />
-        <Skeleton width="110px" height="32px" borderRadius="999px" />
-        <Skeleton width="90px" height="32px" borderRadius="999px" />
-        <Skeleton width="140px" height="32px" borderRadius="999px" />
-      </div>
+
 
       {/* Category Showcase Section Skeletons */}
       <CategoryShowcaseSectionSkeleton headline={categoryName ? `${categoryName} Top Picks` : undefined} />
@@ -207,92 +192,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
         productCount={products.length}
       />
 
-      {/* Category Header Controls & Sub-Section Anchors */}
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '16px',
-          marginBottom: '36px',
-          paddingBottom: '16px',
-          borderBottom: '1px solid var(--border-color)',
-        }}
-      >
-        {/* Left: Section Jump Anchor Pills */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            overflowX: 'auto',
-            scrollbarWidth: 'none',
-            maxWidth: '100%',
-          }}
-          className="category-subnav-pills"
-        >
-          <button
-            onClick={() => scrollToSubSection(`section-${category.slug}`, 'all')}
-            style={{
-              padding: '6px 14px',
-              borderRadius: '999px',
-              fontSize: '0.8rem',
-              fontWeight: 500,
-              backgroundColor: activeSubTab === 'all' ? 'var(--text-primary)' : 'var(--bg-surface)',
-              color: activeSubTab === 'all' ? 'var(--bg-primary)' : 'var(--text-secondary)',
-              border: '1px solid var(--border-color)',
-              cursor: 'pointer',
-              transition: 'all 200ms ease',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            All Sections
-          </button>
 
-          <button
-            onClick={() =>
-              scrollToSubSection(`sec-${category.slug}-top-picks`, 'top-picks')
-            }
-            style={{
-              padding: '6px 14px',
-              borderRadius: '999px',
-              fontSize: '0.8rem',
-              fontWeight: 500,
-              backgroundColor: activeSubTab === 'top-picks' ? 'var(--text-primary)' : 'var(--bg-surface)',
-              color: activeSubTab === 'top-picks' ? 'var(--bg-primary)' : 'var(--text-secondary)',
-              border: '1px solid var(--border-color)',
-              cursor: 'pointer',
-              transition: 'all 200ms ease',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            Top Picks
-          </button>
-
-          <button
-            onClick={() =>
-              scrollToSubSection(`sec-${category.slug}-recommended`, 'recommended')
-            }
-            style={{
-              padding: '6px 14px',
-              borderRadius: '999px',
-              fontSize: '0.8rem',
-              fontWeight: 500,
-              backgroundColor: activeSubTab === 'recommended' ? 'var(--text-primary)' : 'var(--bg-surface)',
-              color: activeSubTab === 'recommended' ? 'var(--bg-primary)' : 'var(--text-secondary)',
-              border: '1px solid var(--border-color)',
-              cursor: 'pointer',
-              transition: 'all 200ms ease',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            Recommended For You
-          </button>
-        </div>
-
-
-      </div>
 
       {/* SECTION 2: Top Picks Showcase */}
       <CategoryShowcaseSection
