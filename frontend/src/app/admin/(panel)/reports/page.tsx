@@ -27,19 +27,19 @@ export default function AdminReportsPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', maxWidth: '800px' }}>
       <div>
-        <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-warning)' }}>
+        <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
           Analytics & Data Export
         </span>
-        <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--surface-brand-dark)', marginTop: '4px' }}>
+        <h1 style={{ fontSize: '2rem', fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--admin-text-primary)', marginTop: '4px' }}>
           Atelier Reports & CSV Export
         </h1>
       </div>
 
       <div
         style={{
-          backgroundColor: '#231F42',
+          backgroundColor: 'var(--color-diamond)',
           borderRadius: 'var(--radius-sm)',
-          border: '1px solid rgba(224, 224, 224, 0.15)',
+          border: '1px solid var(--admin-border)',
           padding: '32px',
           display: 'flex',
           flexDirection: 'column',
@@ -47,7 +47,7 @@ export default function AdminReportsPage() {
         }}
       >
         <div>
-          <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: "var(--text-inverse)", marginBottom: '12px' }}>
+          <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: "var(--admin-text-primary)", marginBottom: '12px' }}>
             Select Dataset to Export
           </label>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px' }}>
@@ -63,9 +63,9 @@ export default function AdminReportsPage() {
                 style={{
                   padding: '16px',
                   borderRadius: 'var(--radius-sm)',
-                  backgroundColor: reportType === item.id ? 'var(--overlay-golden-35)' : 'rgba(255, 255, 255, 0.04)',
-                  border: reportType === item.id ? '2px solid var(--brand-accent)' : '1px solid rgba(224, 224, 224, 0.15)',
-                  color: reportType === item.id ? 'var(--color-diamond)' : 'rgba(224, 224, 224, 0.75)',
+                  backgroundColor: reportType === item.id ? 'var(--overlay-sapphire-10)' : 'var(--admin-canvas)',
+                  border: reportType === item.id ? '2px solid var(--brand-primary)' : '1px solid var(--admin-border)',
+                  color: reportType === item.id ? 'var(--brand-primary)' : 'var(--admin-text-secondary)',
                   textAlign: 'left',
                   fontSize: '0.88rem',
                   fontWeight: 600,
@@ -75,16 +75,16 @@ export default function AdminReportsPage() {
                   gap: '10px',
                 }}
               >
-                <FileSpreadsheet size={18} style={{ color: reportType === item.id ? 'var(--brand-accent)' : 'inherit' }} />
+                <FileSpreadsheet size={18} style={{ color: reportType === item.id ? 'var(--brand-primary)' : 'inherit' }} />
                 <span>{item.label}</span>
               </button>
             ))}
           </div>
         </div>
 
-        <div style={{ borderTop: '1px solid rgba(224, 224, 224, 0.1)', paddingTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ borderTop: '1px solid var(--admin-border)', paddingTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
           <Button
-            variant="primary"
+            variant="outline"
             size="lg"
             isLoading={isExporting}
             onClick={handleExport}

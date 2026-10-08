@@ -17,7 +17,7 @@ export const CATEGORY_SHOWCASE_CONFIG: Record<string, CategoryShowcaseConfig> = 
       fallbackImage: '/images/sections/banners/outerwear-4k.webp',
     },
     recommended: {
-      headline: 'Recommended Outerwear For You',
+      headline: 'Recommended',
       subtitle: 'Hand-picked tailoring and thermal layering silhouettes curated to complement your signature wardrobe.',
       badge: 'Tailored Curation',
       image4k: '/images/sections/banners/outerwear-4k.webp',
@@ -40,7 +40,7 @@ export const CATEGORY_SHOWCASE_CONFIG: Record<string, CategoryShowcaseConfig> = 
       fallbackImage: '/images/sections/banners/tailoring-4k.webp',
     },
     recommended: {
-      headline: 'Recommended Tailoring For You',
+      headline: 'Recommended',
       subtitle: 'Precision-cut blazers and sculptural trousers calibrated for boardroom authority and evening occasions.',
       badge: 'Curated Elegance',
       image4k: '/images/sections/banners/tailoring-4k.webp',
@@ -63,7 +63,7 @@ export const CATEGORY_SHOWCASE_CONFIG: Record<string, CategoryShowcaseConfig> = 
       fallbackImage: '/images/sections/banners/eveningwear-4k.webp',
     },
     recommended: {
-      headline: 'Recommended Eveningwear For You',
+      headline: 'Recommended',
       subtitle: 'Sculptural bias-cut silk gowns and velvet drapery selected to enhance your formal evening repertoire.',
       badge: 'Private Salon Picks',
       image4k: '/images/sections/banners/eveningwear-4k.webp',
@@ -86,7 +86,7 @@ export const CATEGORY_SHOWCASE_CONFIG: Record<string, CategoryShowcaseConfig> = 
       fallbackImage: '/images/sections/banners/knitwear-4k.webp',
     },
     recommended: {
-      headline: 'Recommended Knitwear For You',
+      headline: 'Recommended',
       subtitle: 'Effortless textured crewnecks and cocoon cardigans styled for sophisticated everyday warmth.',
       badge: 'Warmth & Comfort',
       image4k: '/images/sections/banners/knitwear-4k.webp',
@@ -109,7 +109,7 @@ export const CATEGORY_SHOWCASE_CONFIG: Record<string, CategoryShowcaseConfig> = 
       fallbackImage: '/images/sections/banners/leather-goods-4k.webp',
     },
     recommended: {
-      headline: 'Recommended Leather Goods For You',
+      headline: 'Recommended',
       subtitle: 'Sculptural clutches and minimalist everyday totes tailored to your daily accessories rotation.',
       badge: 'Daily Luxury',
       image4k: '/images/sections/banners/leather-goods-4k.webp',
@@ -132,7 +132,7 @@ export const CATEGORY_SHOWCASE_CONFIG: Record<string, CategoryShowcaseConfig> = 
       fallbackImage: '/images/sections/banners/footwear-4k.webp',
     },
     recommended: {
-      headline: 'Recommended Footwear For You',
+      headline: 'Recommended',
       subtitle: 'Versatile Tuscan loafers and boot silhouettes engineered to effortlessly ground your tailored silhouettes.',
       badge: 'Curated Footwear',
       image4k: '/images/sections/banners/footwear-4k.webp',
@@ -155,7 +155,7 @@ export const CATEGORY_SHOWCASE_CONFIG: Record<string, CategoryShowcaseConfig> = 
       fallbackImage: '/images/sections/banners/fine-jewelry-4k.webp',
     },
     recommended: {
-      headline: 'Recommended Fine Jewelry For You',
+      headline: 'Recommended',
       subtitle: 'Luminous metallic accents and organic precious gems curated to subtly illuminate your neckline and wrists.',
       badge: 'Private Salon Jewels',
       image4k: '/images/sections/banners/fine-jewelry-4k.webp',
@@ -178,7 +178,7 @@ export const CATEGORY_SHOWCASE_CONFIG: Record<string, CategoryShowcaseConfig> = 
       fallbackImage: '/images/sections/banners/banner-fragrances.avif',
     },
     recommended: {
-      headline: 'Recommended Fragrances For You',
+      headline: 'Recommended',
       subtitle: 'Complex warm woods and delicate floral extraits selected to complement your personal atmosphere.',
       badge: 'Bespoke Olfactory',
       image4k: '/images/sections/banners/banner-fragrances.avif',

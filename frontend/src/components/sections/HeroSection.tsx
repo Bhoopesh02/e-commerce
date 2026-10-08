@@ -35,12 +35,8 @@ export const HeroSection: React.FC = () => {
         }}
       >
         <Image
-          src={
-            isEditorial
-              ? '/images/hero/homepage_banner_split.jpg'
-              : '/images/hero/hero-refined.webp'
-          }
-          alt="Aurelia Luxury Campaign"
+          src="/images/products/new/Gemini_Generated_Image_he79i9he79i9he79.png"
+          alt="Aurelia Luxury Campaign - The Winter Collection"
           fill
           priority
           quality={100}

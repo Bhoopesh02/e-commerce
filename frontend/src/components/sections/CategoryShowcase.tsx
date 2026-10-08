@@ -162,8 +162,14 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
         
         @media (min-width: 768px) {
           .category-grid {
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 24px;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .category-grid {
+            grid-template-columns: repeat(4, 1fr);
           }
         }
 

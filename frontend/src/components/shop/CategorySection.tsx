@@ -1,12 +1,10 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
-import { Category, Product, CategoryShowcaseConfig } from '@/types';
+import React from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { Category, Product } from '@/types';
 import { SectionBanner } from './SectionBanner';
-import { CategoryShowcaseSection, CategoryShowcaseSectionSkeleton } from './CategoryShowcaseSection';
-import { CATEGORY_SHOWCASE_CONFIG } from '@/data/categoryBanners';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 
 export type SectionAnimationVariant =
@@ -44,11 +42,22 @@ export const CategorySectionSkeleton: React.FC<CategorySectionSkeletonProps> = (
         <Skeleton width="100%" height="100%" borderRadius="20px" />
       </div>
 
-
-
-      {/* Category Showcase Section Skeletons */}
-      <CategoryShowcaseSectionSkeleton headline={categoryName ? `${categoryName} Top Picks` : undefined} />
-      <CategoryShowcaseSectionSkeleton headline={categoryName ? `Recommended ${categoryName}` : undefined} />
+      {/* All Products Grid Skeleton */}
+      <div style={{ marginTop: '48px' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '24px',
+            paddingBottom: '14px',
+            borderBottom: '1px solid var(--border-color)',
+          }}
+        >
+          <Skeleton width="220px" height="24px" borderRadius="4px" />
+        </div>
+        <ProductGridSkeleton count={8} />
+      </div>
     </div>
   );
 };
@@ -67,109 +76,13 @@ interface CategorySectionProps {
 export const CategorySection: React.FC<CategorySectionProps> = ({
   category,
   products,
-  onNext,
-  onPrev,
-  hasNext,
-  hasPrev,
   isLoading = false,
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'all' | 'new-arrivals' | 'top-picks' | 'recommended'>('all');
+  const shouldReduceMotion = useReducedMotion();
 
   if (isLoading) {
     return <CategorySectionSkeleton categoryName={category?.name} />;
   }
-
-  // Category Banner Configuration with safe fallback
-  const showcaseConfig: CategoryShowcaseConfig = useMemo(() => {
-    if (CATEGORY_SHOWCASE_CONFIG[category.slug]) {
-      return CATEGORY_SHOWCASE_CONFIG[category.slug];
-    }
-    const defaultImg = category.bannerImage || category.image || '/images/hero/hero-refined.webp';
-    return {
-      newArrivals: {
-        headline: `${category.name} New Arrivals`,
-        subtitle: `Discover the newly unveiled ${category.name.toLowerCase()} silhouettes crafted in our European ateliers.`,
-        badge: 'New Season Drop',
-        image4k: defaultImg,
-        fallbackImage: defaultImg,
-      },
-      topPicks: {
-        headline: `${category.name} Top Picks`,
-        subtitle: `Curated iconic ${category.name.toLowerCase()} pieces chosen for impeccable tailoring and material excellence.`,
-        badge: 'Atelier Icons',
-        image4k: defaultImg,
-        fallbackImage: defaultImg,
-      },
-      recommended: {
-        headline: `Recommended ${category.name}`,
-        subtitle: `Tailored silhouettes calibrated to complement your discerning aesthetic and seasonal wardrobe.`,
-        badge: 'Curated For You',
-        image4k: defaultImg,
-        fallbackImage: defaultImg,
-      },
-    };
-  }, [category]);
-
-  // Product Partitioning
-  const newArrivalsData = useMemo(() => {
-    let list = products.filter(
-      (p) => p.isNewArrival || p.tags?.includes('new-arrival')
-    );
-    if (list.length === 0) {
-      list = [...products].sort((a, b) => b.price - a.price);
-    }
-    const featured = list.slice(0, 6);
-    return { featured, catalog: list };
-  }, [products]);
-
-  const topPicksData = useMemo(() => {
-    let list = products.filter(
-      (p) =>
-        p.featured ||
-        p.isTrending ||
-        (p.rating && p.rating.average >= 4.8) ||
-        p.tags?.includes('bestseller') ||
-        p.tags?.includes('iconic') ||
-        p.tags?.includes('signature')
-    );
-    if (list.length === 0) {
-      list = [...products].sort((a, b) => (b.rating?.average || 0) - (a.rating?.average || 0));
-    }
-    const featured = list.slice(0, 6);
-    return { featured, catalog: list };
-  }, [products]);
-
-  const recommendedData = useMemo(() => {
-    // Curated recommendations prioritizing high quality ratings & diverse silhouettes
-    let list = products.filter(
-      (p) =>
-        p.tags?.some((t) => ['editorial', 'luxury', 'iconic', 'heritage', 'bestseller'].includes(t)) ||
-        p.featured
-    );
-    if (list.length === 0) {
-      list = [...products];
-    }
-    const featured = list.slice(0, 6);
-    return { featured, catalog: list };
-  }, [products]);
-
-  const scrollToSubSection = (sectionId: string, tab: 'all' | 'new-arrivals' | 'top-picks' | 'recommended') => {
-    setActiveSubTab(tab);
-    const navOffset = typeof window !== 'undefined' && window.innerWidth <= 767 ? 118 : 130;
-    if (tab === 'all') {
-      const topEl = document.getElementById(`section-${category.slug}`);
-      if (topEl) {
-        const offset = topEl.getBoundingClientRect().top + window.pageYOffset - navOffset;
-        window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
-      }
-      return;
-    }
-    const el = document.getElementById(sectionId);
-    if (el) {
-      const offset = el.getBoundingClientRect().top + window.pageYOffset - navOffset;
-      window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
-    }
-  };
 
   return (
     <motion.section
@@ -186,31 +99,86 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
         scrollMarginTop: '130px',
       }}
     >
-      {/* Existing Category Main Banner (Preserved) */}
+      {/* Category Main Banner */}
       <SectionBanner
         category={category}
         productCount={products.length}
       />
 
+      {/* All Products Grid */}
+      <div className="section-catalog-below" style={{ marginTop: '48px' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '24px',
+            paddingBottom: '14px',
+            borderBottom: '1px solid var(--border-color)',
+          }}
+        >
+          <div>
+            <h3
+              style={{
+                fontSize: '1.2rem',
+                fontFamily: 'var(--font-display)',
+                fontWeight: 500,
+                color: 'var(--text-primary)',
+                margin: 0,
+              }}
+            >
+              All {category.name}
+            </h3>
+          </div>
+          <span
+            style={{
+              fontSize: '0.82rem',
+              color: 'var(--text-muted)',
+              fontWeight: 400,
+            }}
+          >
+            {products.length} {products.length === 1 ? 'piece' : 'pieces'}
+          </span>
+        </div>
 
-
-      {/* SECTION 2: Top Picks Showcase */}
-      <CategoryShowcaseSection
-        sectionId={`sec-${category.slug}-top-picks`}
-        config={showcaseConfig.topPicks}
-        featuredProducts={topPicksData.featured}
-        catalogProducts={topPicksData.catalog}
-        categoryName={category.name}
-      />
-
-      {/* SECTION 3: Recommended For You Showcase */}
-      <CategoryShowcaseSection
-        sectionId={`sec-${category.slug}-recommended`}
-        config={showcaseConfig.recommended}
-        featuredProducts={recommendedData.featured}
-        catalogProducts={recommendedData.catalog}
-        categoryName={category.name}
-      />
+        {products.length > 0 ? (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+              gap: '32px',
+            }}
+            className="product-grid max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]"
+          >
+            {products.map((product, idx) => (
+              <motion.div
+                key={product.id}
+                className="product-card-wrapper"
+                initial={shouldReduceMotion ? undefined : { opacity: 0, y: 20 }}
+                whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-30px' }}
+                transition={shouldReduceMotion ? undefined : { duration: 0.45, delay: (idx % 4) * 0.06 }}
+              >
+                <ProductCard product={product} />
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div
+            style={{
+              textAlign: 'center',
+              padding: '40px 20px',
+              backgroundColor: 'var(--bg-surface)',
+              borderRadius: 'var(--radius-md)',
+              border: '1px dashed var(--border-color)',
+              color: 'var(--text-muted)',
+              fontSize: '0.88rem',
+            }}
+          >
+            No pieces found in this category matching the currently applied filters.
+          </div>
+        )}
+      </div>
     </motion.section>
   );
 };

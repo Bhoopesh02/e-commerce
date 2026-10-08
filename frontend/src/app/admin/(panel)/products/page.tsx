@@ -115,7 +115,7 @@ function AdminProductsPageContent() {
           </h1>
         </div>
 
-        <Button variant="primary" size="sm" leftIcon={<Plus size={15} />} onClick={() => router.push('/admin/products/new')}>
+        <Button variant="outline" size="sm" leftIcon={<Plus size={15} />} onClick={() => router.push('/admin/products/new')}>
           Draft New Silhouette
         </Button>
       </div>

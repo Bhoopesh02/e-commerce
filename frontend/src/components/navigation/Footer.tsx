@@ -420,20 +420,16 @@ export const Footer: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shop" className="footer-link">
+                  <Link href="/shop?tag=signature" className="footer-link">
                     Signature Icons
                   </Link>
                 </li>
                 <li className="hidden-mobile">
-                  <Link href="/shop?tag=trending" className="footer-link">
+                  <Link href="/shop?tag=bestseller" className="footer-link">
                     House Favorites
                   </Link>
                 </li>
-                <li className="hidden-mobile">
-                  <Link href="/admin/dashboard" className="footer-link">
-                    Admin Portal
-                  </Link>
-                </li>
+
               </ul>
 
               {/* Non-linked editorial hallmarks */}

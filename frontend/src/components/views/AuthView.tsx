@@ -8,7 +8,7 @@ import { useToastStore } from '@/store/useToastStore';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { BRAND_NAME } from '@/lib/constants';
-import { ShieldCheck, Mail, Lock, User as UserIcon, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User as UserIcon, ArrowRight } from 'lucide-react';
 
 interface AuthViewProps {
   initialMode?: 'login' | 'register' | 'forgot-password' | 'reset-password';
@@ -16,7 +16,7 @@ interface AuthViewProps {
 
 export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => {
   const router = useRouter();
-  const { loginAsCustomer, loginAsAdmin } = useAuthStore();
+  const { loginAsCustomer } = useAuthStore();
   const { showToast } = useToastStore();
 
   const [mode, setMode] = useState<'login' | 'register' | 'forgot-password' | 'reset-password'>(initialMode);
@@ -230,32 +230,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
             )}
           </div>
 
-          {/* Admin Toggle */}
-          {mode === 'login' && (
-            <div style={{ marginTop: '32px', textAlign: 'center', paddingTop: '24px', borderTop: '1px solid rgba(202, 212, 214, 0.3)' }}>
-              <button
-                type="button"
-                onClick={() => {
-                  loginAsAdmin();
-                  showToast('Admin access granted.', 'success');
-                  router.push('/admin/dashboard');
-                }}
-                style={{
-                  fontSize: '0.86rem',
-                  color: 'var(--text-muted)',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-              >
-                <ShieldCheck size={16} />
-                Access Admin Portal
-              </button>
-            </div>
-          )}
+
 
 
 

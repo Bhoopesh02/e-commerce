@@ -17,7 +17,6 @@ import {
   Filter,
   ChevronDown,
   Check,
-  ShoppingCart,
   Clock,
   ArrowUpRight,
   ShieldAlert,
@@ -122,41 +121,7 @@ export default function AdminReturnsPage() {
         </p>
       </div>
 
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid var(--admin-border)', paddingBottom: '12px' }}>
-        <Link
-          href="/admin/orders"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '8px 16px',
-            borderRadius: 'var(--radius-sm)',
-            fontSize: '0.85rem',
-            fontWeight: 500,
-            color: 'var(--admin-text-secondary)',
-            textDecoration: 'none',
-          }}
-        >
-          <ShoppingCart size={16} /> Commissions & Dispatch
-        </Link>
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '8px 16px',
-            borderRadius: 'var(--radius-sm)',
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            backgroundColor: 'var(--overlay-golden-10)',
-            color: 'var(--brand-primary)',
-            border: '1px solid var(--overlay-golden-35)',
-          }}
-        >
-          <RotateCcw size={16} /> Returns & Authorizations ({returns.length})
-        </div>
-      </div>
+
 
       {/* Metric Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>

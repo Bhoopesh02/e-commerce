@@ -3,9 +3,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
-import { ProductCard, ProductCardSkeleton } from '@/components/product/ProductCard';
+import { ProductCardSkeleton } from '@/components/product/ProductCard';
 
 interface MostCovetedSilhouettesProps {
   products: Product[];
@@ -25,8 +25,6 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   onExploreClick,
 }) => {
   const shouldReduceMotion = useReducedMotion();
-  const [isLinkHovered, setIsLinkHovered] = useState(false);
-  const [isCarouselHovered, setIsCarouselHovered] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -44,10 +42,37 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
     }
   };
 
+  const [imageHeight, setImageHeight] = useState<number>(0);
+
+  const updateImageHeight = () => {
+    if (scrollRef.current) {
+      const firstImg = scrollRef.current.querySelector('img');
+      if (firstImg && firstImg.clientHeight > 0) {
+        setImageHeight(firstImg.clientHeight);
+      }
+    }
+  };
+
   useEffect(() => {
     checkScrollability();
+    updateImageHeight();
     window.addEventListener('resize', checkScrollability);
-    return () => window.removeEventListener('resize', checkScrollability);
+    window.addEventListener('resize', updateImageHeight);
+
+    let ro: ResizeObserver | null = null;
+    if (scrollRef.current && typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => {
+        checkScrollability();
+        updateImageHeight();
+      });
+      ro.observe(scrollRef.current);
+    }
+
+    return () => {
+      window.removeEventListener('resize', checkScrollability);
+      window.removeEventListener('resize', updateImageHeight);
+      if (ro) ro.disconnect();
+    };
   }, [products, isLoading]);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -222,62 +247,90 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
 
         {/* Right Column: Carousel */}
         <div style={{ flex: '999 1 600px', minWidth: '0', position: 'relative' }}>
-          {/* Scroll Buttons - Absolute positioned */}
-          <div style={{ 
-            position: 'absolute', 
-            left: '-20px', 
-            top: '50%', 
-            transform: 'translateY(-50%)', 
-            zIndex: 10,
-            display: canScrollLeft ? 'flex' : 'none' 
-          }}>
-            <button
-              onClick={() => scroll('left')}
-              style={{
-                background: '#fff',
-                border: '1px solid #eee',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-                width: '44px',
-                height: '44px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                color: '#000'
-              }}
-              aria-label="Scroll left"
-            >
-              <ChevronLeft size={24} strokeWidth={1} />
-            </button>
-          </div>
+          {/* Scroll Buttons - Positioned vertically centered on the product images */}
+          <button
+            type="button"
+            onClick={() => scroll('left')}
+            aria-label="Scroll left"
+            style={{ 
+              position: 'absolute', 
+              left: '16px', 
+              top: imageHeight > 0 ? `${imageHeight / 2}px` : 'clamp(133px, 13.33vw, 186.5px)', 
+              transform: 'translateY(-50%)', 
+              zIndex: 10,
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(4px)',
+              border: '1px solid rgba(0, 0, 0, 0.08)',
+              boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: canScrollLeft ? 'pointer' : 'default',
+              color: 'var(--text-primary)',
+              opacity: canScrollLeft ? 1 : 0,
+              pointerEvents: canScrollLeft ? 'auto' : 'none',
+              transition: 'opacity 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              if (canScrollLeft) {
+                e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.18)';
+                e.currentTarget.style.backgroundColor = '#ffffff';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+              e.currentTarget.style.boxShadow = '0 4px 14px rgba(0, 0, 0, 0.12)';
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+            }}
+          >
+            <ChevronLeft size={22} strokeWidth={1.5} />
+          </button>
           
-          <div style={{ 
-            position: 'absolute', 
-            right: '-20px', 
-            top: '50%', 
-            transform: 'translateY(-50%)', 
-            zIndex: 10,
-            display: canScrollRight ? 'flex' : 'none' 
-          }}>
-            <button
-              onClick={() => scroll('right')}
-              style={{
-                background: '#fff',
-                border: '1px solid #eee',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-                width: '44px',
-                height: '44px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                color: '#000'
-              }}
-              aria-label="Scroll right"
-            >
-              <ChevronRight size={24} strokeWidth={1} />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => scroll('right')}
+            aria-label="Scroll right"
+            style={{ 
+              position: 'absolute', 
+              right: '16px', 
+              top: imageHeight > 0 ? `${imageHeight / 2}px` : 'clamp(133px, 13.33vw, 186.5px)', 
+              transform: 'translateY(-50%)', 
+              zIndex: 10,
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(4px)',
+              border: '1px solid rgba(0, 0, 0, 0.08)',
+              boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: canScrollRight && !isLoading && products.length > 0 ? 'pointer' : 'default',
+              color: 'var(--text-primary)',
+              opacity: canScrollRight && !isLoading && products.length > 0 ? 1 : 0,
+              pointerEvents: canScrollRight && !isLoading && products.length > 0 ? 'auto' : 'none',
+              transition: 'opacity 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              if (canScrollRight) {
+                e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.18)';
+                e.currentTarget.style.backgroundColor = '#ffffff';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+              e.currentTarget.style.boxShadow = '0 4px 14px rgba(0, 0, 0, 0.12)';
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+            }}
+          >
+            <ChevronRight size={22} strokeWidth={1.5} />
+          </button>
 
           <div 
             style={{ 
@@ -349,7 +402,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                   >
                     <div style={{ flex: 1, position: 'relative' }}>
                       <Link href={`/product/${product.slug}`} style={{ display: 'block', width: '100%', aspectRatio: '3/4', position: 'relative', overflow: 'hidden', backgroundColor: '#f5f5f5' }}>
-                         <img src={product.images[0]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                         <img src={product.images[0]} alt={product.name} onLoad={updateImageHeight} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       </Link>
                     </div>
                     <div style={{ textAlign: 'center', marginTop: '16px' }}>

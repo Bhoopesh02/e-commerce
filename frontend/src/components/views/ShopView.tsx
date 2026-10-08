@@ -9,9 +9,9 @@ import { Button } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
 import { CategorySection, CategorySectionSkeleton, SectionAnimationVariant } from '@/components/shop/CategorySection';
 import { RangeSlider } from '@/components/ui/RangeSlider';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
-import { SlidersHorizontal, X, RotateCcw, ArrowUp, CloudRain, Scissors, Sparkles, Shirt, ShoppingBag, Footprints, Gem, FlaskConical, Check } from 'lucide-react';
+import { SlidersHorizontal, X, RotateCcw, ArrowUp, Check, Search } from 'lucide-react';
 
 export const ShopViewSkeleton: React.FC = () => {
   return (
@@ -47,19 +47,6 @@ export const ShopViewSkeleton: React.FC = () => {
 
 
 
-const getCategoryIcon = (slug: string) => {
-  switch (slug) {
-    case 'outerwear': return <CloudRain size={22} strokeWidth={1.2} />;
-    case 'tailoring': return <Scissors size={22} strokeWidth={1.2} />;
-    case 'eveningwear': return <Sparkles size={22} strokeWidth={1.2} />;
-    case 'knitwear': return <Shirt size={22} strokeWidth={1.2} />;
-    case 'leather-goods': return <ShoppingBag size={22} strokeWidth={1.2} />;
-    case 'footwear': return <Footprints size={22} strokeWidth={1.2} />;
-    case 'fine-jewelry': return <Gem size={22} strokeWidth={1.2} />;
-    case 'fragrances': return <FlaskConical size={22} strokeWidth={1.2} />;
-    default: return <Shirt size={22} strokeWidth={1.2} />;
-  }
-};
 
 /**
  * Section Animation Mapping
@@ -94,7 +81,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
   // Filter & Navigation States
   const [activeCategory, setActiveCategory] = useState<string>('outerwear');
-  const [navigationDirection, setNavigationDirection] = useState<number>(1);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [appliedPriceRange, setAppliedPriceRange] = useState<[number, number]>([0, 100000]);
   const [selectedAvailability, setSelectedAvailability] = useState<string>('all');
@@ -102,6 +88,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [selectedSort, setSelectedSort] = useState<string>('popularity');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [isStuck, setIsStuck] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const stickyBarRef = useRef<HTMLDivElement>(null);
   const categoryScrollContainerRef = useRef<HTMLDivElement>(null);
@@ -203,6 +190,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
       list = list.filter((p) => p.tags.includes(urlTag));
     }
 
+    // Search query filter
+    const query = searchQuery.trim().toLowerCase();
+    if (query) {
+      list = list.filter((p) =>
+        p.name.toLowerCase().includes(query) ||
+        p.description?.toLowerCase().includes(query) ||
+        p.tags?.some((t) => t.toLowerCase().includes(query))
+      );
+    }
+
     // Price range
     list = list.filter((p) => p.price >= appliedPriceRange[0] && p.price <= appliedPriceRange[1]);
 
@@ -232,19 +229,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
     }
 
     return list;
-  }, [products, searchParams, appliedPriceRange, appliedAvailability, selectedSort]);
+  }, [products, searchParams, searchQuery, appliedPriceRange, appliedAvailability, selectedSort]);
 
 
   // Handle category selection
   const handleCategorySelect = useCallback((slug: string) => {
-    setActiveCategory((prev) => {
-      const prevIndex = categories.findIndex((c) => c.slug === prev);
-      const newIndex = categories.findIndex((c) => c.slug === slug);
-      if (prevIndex !== -1 && newIndex !== -1) {
-        setNavigationDirection(newIndex > prevIndex ? 1 : -1);
-      }
-      return slug;
-    });
+    setActiveCategory(slug);
 
     // Scroll to the sticky bar to ensure the category content is visible
     if (stickyBarRef.current) {
@@ -294,12 +284,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
     setSelectedAvailability('all');
     setAppliedAvailability('all');
     setSelectedSort('popularity');
+    setSearchQuery('');
     handleCategorySelect('outerwear');
   };
 
   const hasActiveFilters =
     appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000 ||
-    appliedAvailability !== 'all';
+    appliedAvailability !== 'all' ||
+    searchQuery.trim().length > 0;
 
   return (
     <div style={{ paddingTop: '76px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
@@ -323,8 +315,92 @@ export const ShopView: React.FC<ShopViewProps> = ({
           >
 
 
-            {/* Right: Filters Trigger Button & Product Counter */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginLeft: 'auto', flexShrink: 0 }}>
+            {/* Search Bar & Filters */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginLeft: 'auto', flexShrink: 0 }}>
+              {/* Inline Search Bar */}
+              <div
+                className="shop-search-bar"
+                style={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <Search
+                  size={15}
+                  strokeWidth={1.6}
+                  style={{
+                    position: 'absolute',
+                    left: '12px',
+                    color: 'var(--text-muted)',
+                    pointerEvents: 'none',
+                    flexShrink: 0,
+                  }}
+                />
+                <input
+                  type="text"
+                  id="shop-search-input"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products..."
+                  aria-label="Search products"
+                  style={{
+                    width: '220px',
+                    padding: '8px 32px 8px 36px',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: 'var(--radius-pill, 999px)',
+                    fontSize: '0.82rem',
+                    fontFamily: 'inherit',
+                    backgroundColor: 'var(--bg-surface, #fafafa)',
+                    color: 'var(--text-primary)',
+                    outline: 'none',
+                    transition: 'border-color 0.2s ease, box-shadow 0.2s ease, width 0.3s ease',
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--text-muted)';
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0,0,0,0.04)';
+                    e.currentTarget.style.width = '280px';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border-color)';
+                    e.currentTarget.style.boxShadow = 'none';
+                    if (!searchQuery) e.currentTarget.style.width = '220px';
+                  }}
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    aria-label="Clear search"
+                    style={{
+                      position: 'absolute',
+                      right: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '2px',
+                      borderRadius: '50%',
+                      color: 'var(--text-muted)',
+                    }}
+                  >
+                    <X size={13} />
+                  </button>
+                )}
+              </div>
+
+              {/* Divider */}
+              <div
+                style={{
+                  width: '1px',
+                  height: '20px',
+                  backgroundColor: 'var(--border-color)',
+                  flexShrink: 0,
+                }}
+              />
+
+              {/* Filters Button */}
               <button
                 onClick={() => setMobileFiltersOpen(true)}
                 className="mobile-filter-btn"
@@ -369,6 +445,23 @@ export const ShopView: React.FC<ShopViewProps> = ({
           {hasActiveFilters && (
             <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px', marginTop: '12px' }}>
               <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Active Filters:</span>
+              {searchQuery.trim() && (
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '3px 10px',
+                    backgroundColor: 'var(--bg-surface)',
+                    borderRadius: 'var(--radius-pill)',
+                    border: '1px solid var(--border-color)',
+                    fontSize: '0.78rem',
+                  }}
+                >
+                  Search: &ldquo;{searchQuery.trim()}&rdquo;
+                  <X size={12} style={{ cursor: 'pointer' }} onClick={() => setSearchQuery('')} />
+                </span>
+              )}
               {(appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000) && (
                 <span
                   style={{
