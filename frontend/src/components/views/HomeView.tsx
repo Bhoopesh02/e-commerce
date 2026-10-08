@@ -152,13 +152,43 @@ export const HomeView: React.FC<HomeViewProps> = ({
         return <ExpandingCarousel key={id} products={products} />;
 
       case 'new_arrivals':
-        return <NewArrivalsCarousel key={id} products={newArrivals} loading={loading} />;
+        const newArrivalsTargetNames = [
+          "Goodyear Welted Oxford Brogues",
+          "Shearling-Lined Winter Combat Boots",
+          "Santal Vanille Parfum",
+          "Rose Absolute Eau de Parfum",
+          "Cropped Suede Harrington Bomber",
+          "Double-Faced Wool Trench Coat",
+          "Monolithic Double-Breasted Peacoat",
+          "Quilted Silk Down Parka",
+          "Herringbone Heavy Chain Neckl",
+          "Celestial Diamond Pav",
+          "Molten Gold Drop Earrings",
+          "Baroque Freshwater Pearl Pendant",
+          "Lariat Baroque Pearl Layered",
+          "Sculptural Dome Signet Ring",
+          "Single-Button Fluid Viscose Blazer",
+          "Tailored Asymmetrical Wrap Vest"
+        ];
+        const uploadedNewArrivals = newArrivals.filter((p) => 
+          newArrivalsTargetNames.some(target => p.name.includes(target))
+        );
+        return <NewArrivalsCarousel key={id} products={uploadedNewArrivals} loading={loading} />;
 
       case 'editorial_campaign':
         return <EditorialCampaign key={id} />;
 
       case 'trending_products':
-        return <MostCovetedSilhouettes key={id} products={trending} isLoading={loading} />;
+        const targetNames = [
+          "One-Shoulder Pleated Chiffon Column",
+          "Curve Calfskin Crossbody Saddle Bag",
+          "Pointed Knee-High Suede Boots",
+          "Cropped Suede Harrington Bomber",
+          "Monolithic Double-Breasted Peacoat",
+          "Quilted Silk Down Parka"
+        ];
+        const uploadedTrending = products.filter((p) => targetNames.includes(p.name));
+        return <MostCovetedSilhouettes key={id} products={uploadedTrending} isLoading={loading} />;
 
       case 'brand_story':
         return (

@@ -62,7 +62,6 @@ export const CategorySectionSkeleton: React.FC<CategorySectionSkeletonProps> = (
       </div>
 
       {/* Category Showcase Section Skeletons */}
-      <CategoryShowcaseSectionSkeleton headline={categoryName ? `${categoryName} New Arrivals` : undefined} />
       <CategoryShowcaseSectionSkeleton headline={categoryName ? `${categoryName} Top Picks` : undefined} />
       <CategoryShowcaseSectionSkeleton headline={categoryName ? `Recommended ${categoryName}` : undefined} />
     </div>
@@ -253,26 +252,6 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
           <button
             onClick={() =>
-              scrollToSubSection(`sec-${category.slug}-new-arrivals`, 'new-arrivals')
-            }
-            style={{
-              padding: '6px 14px',
-              borderRadius: '999px',
-              fontSize: '0.8rem',
-              fontWeight: 500,
-              backgroundColor: activeSubTab === 'new-arrivals' ? 'var(--text-primary)' : 'var(--bg-surface)',
-              color: activeSubTab === 'new-arrivals' ? 'var(--bg-primary)' : 'var(--text-secondary)',
-              border: '1px solid var(--border-color)',
-              cursor: 'pointer',
-              transition: 'all 200ms ease',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            New Arrivals
-          </button>
-
-          <button
-            onClick={() =>
               scrollToSubSection(`sec-${category.slug}-top-picks`, 'top-picks')
             }
             style={{
@@ -314,15 +293,6 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
 
       </div>
-
-      {/* SECTION 1: New Arrivals Showcase */}
-      <CategoryShowcaseSection
-        sectionId={`sec-${category.slug}-new-arrivals`}
-        config={showcaseConfig.newArrivals}
-        featuredProducts={newArrivalsData.featured}
-        catalogProducts={newArrivalsData.catalog}
-        categoryName={category.name}
-      />
 
       {/* SECTION 2: Top Picks Showcase */}
       <CategoryShowcaseSection

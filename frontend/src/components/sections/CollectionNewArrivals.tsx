@@ -208,7 +208,7 @@ export const CollectionNewArrivals: React.FC<CollectionNewArrivalsProps> = ({
               key={`${product.id}-${index}`}
               variants={cardVariants}
               style={{
-                width: 'clamp(280px, 28vw, 420px)',
+                width: 'clamp(220px, 22vw, 320px)',
                 flexShrink: 0,
                 scrollSnapAlign: 'start',
               }}

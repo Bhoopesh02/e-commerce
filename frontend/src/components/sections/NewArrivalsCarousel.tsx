@@ -37,9 +37,18 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
-      const { clientWidth } = scrollContainerRef.current;
-      const scrollAmount = direction === 'left' ? -clientWidth : clientWidth;
-      scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      const container = scrollContainerRef.current;
+      const firstItem = container.firstElementChild as HTMLElement;
+      
+      if (!firstItem) return;
+      
+      // Calculate item width including gap (24px)
+      const gap = 24; 
+      const itemWidth = firstItem.offsetWidth + gap;
+      
+      const scrollAmount = direction === 'left' ? -itemWidth : itemWidth;
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      
       // update scrollability after animation
       setTimeout(checkScrollability, 350);
     }
@@ -141,7 +150,6 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
               </Link>
             </div>
           </div>
-        </ScrollReveal>
 
         <div style={{ position: 'relative', width: '100%' }}>
 
@@ -175,14 +183,13 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
             ) : (
               products.map((product, idx) => (
                 <div key={product.id} className="carousel-product-item">
-                  <ScrollReveal delay={idx * 0.08} duration={0.5}>
-                    <ProductCard product={product} priority={true} />
-                  </ScrollReveal>
+                  <ProductCard product={product} priority={idx < 8} />
                 </div>
               ))
             )}
           </div>
         </div>
+        </ScrollReveal>
       </div>
       <style dangerouslySetInnerHTML={{
         __html: `

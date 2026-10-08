@@ -308,8 +308,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
         ref={stickyBarRef}
         className={`sticky-navigation-header ${isStuck ? 'is-stuck' : ''}`}
         style={{
-          paddingTop: '12px',
-          paddingBottom: '12px',
+          paddingTop: '4px',
+          paddingBottom: '4px',
         }}
       >
         <div className="container">
@@ -321,72 +321,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
               gap: '16px',
             }}
           >
-            {/* Category Typography Navigation */}
-            <div
-              ref={categoryScrollContainerRef}
-              className="flex items-center justify-center gap-6 md:gap-10 category-pill-strip"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '32px',
-                overflowX: 'auto',
-                scrollbarWidth: 'none',
-                maxWidth: '100%',
-                padding: '4px 0',
-              }}
-            >
-              {categories.map((cat) => {
-                const isActive = activeCategory === cat.slug;
 
-                return (
-                  <button
-                    key={cat.id}
-                    ref={(el) => {
-                      categoryTabRefs.current[cat.slug] = el;
-                    }}
-                    type="button"
-                    onClick={() => handleCategorySelect(cat.slug)}
-                    className={`nav-btn-custom ${isActive ? 'active-mobile-tab' : ''}`}
-                  >
-                    {/* Category Label */}
-                    <span
-                      className={`nav-label-custom ${isActive ? 'active' : ''}`}
-                    >
-                      {cat.name}
-                    </span>
-
-                    {/* 1. Inactive Hover Underline (Left-to-Right sweep on hover) */}
-                    {!isActive && (
-                      <span className="hover-underline-custom" />
-                    )}
-
-                    {/* 2. Active Fixed Underline (Scoped to active word width) */}
-                    {isActive && (
-                      <motion.div
-                        className="mobile-hide-underline"
-                        layoutId="activeCategoryUnderline"
-                        initial={false}
-                        transition={{
-                          type: 'spring',
-                          stiffness: 400,
-                          damping: 35,
-                        }}
-                        style={{
-                          position: 'absolute',
-                          bottom: 0,
-                          left: 0,
-                          width: '100%',
-                          height: '2px',
-                          backgroundColor: 'var(--text-primary)',
-                          pointerEvents: 'none',
-                          originX: navigationDirection > 0 ? 0 : 1,
-                        }}
-                      />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
 
             {/* Right: Filters Trigger Button & Product Counter */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginLeft: 'auto', flexShrink: 0 }}>
@@ -399,16 +334,15 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
-                  padding: '7px 18px',
-                  borderRadius: 'var(--radius-pill)',
-                  border: hasActiveFilters ? '1px solid var(--text-primary)' : '1px solid var(--border-color)',
+                  padding: '7px 0px',
+                  border: 'none',
                   fontSize: '0.82rem',
                   fontWeight: 600,
-                  backgroundColor: hasActiveFilters ? 'var(--text-primary)' : 'var(--bg-surface)',
-                  color: hasActiveFilters ? 'var(--bg-primary)' : 'var(--text-primary)',
+                  backgroundColor: 'transparent',
+                  color: 'var(--text-primary)',
                   cursor: 'pointer',
                   outline: 'none',
-                  boxShadow: '0 2px 8px var(--overlay-black-5)',
+                  boxShadow: 'none',
                 }}
               >
                 <SlidersHorizontal size={14} />
@@ -590,46 +524,19 @@ export const ShopView: React.FC<ShopViewProps> = ({
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '16px 8px 120px' }}>
-          {/* Jump to Category */}
+          {/* Category Filter */}
           <div>
-            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
-              Categories
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {categories.map((c) => {
-                const isActive = activeCategory === c.slug;
-                return (
-                  <button
-                    key={c.id}
-                    onClick={() => {
-                      handleCategorySelect(c.slug);
-                      setMobileFiltersOpen(false);
-                    }}
-                    style={{
-                      textAlign: 'left',
-                      padding: '8px 12px',
-                      color: isActive ? 'var(--text-accent)' : 'var(--text-primary)',
-                      border: 'none',
-                      backgroundColor: 'transparent',
-                      fontSize: '1.05rem',
-                      fontWeight: isActive ? 500 : 400,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '16px',
-                      transition: 'all 0.2s ease',
-                    }}
-                  >
-                    <span style={{ color: isActive ? 'var(--text-accent)' : 'var(--text-muted)', display: 'flex', alignItems: 'center' }}>
-                      {getCategoryIcon(c.slug)}
-                    </span>
-                    <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
-                      {isActive && <span style={{ position: 'absolute', left: '-12px', width: '6px', height: '6px', backgroundColor: 'var(--text-accent)', borderRadius: '50%' }} />}
-                      {c.name}
-                    </div>
-                  </button>
-                );
-              })}
+            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem', letterSpacing: '0.06em', marginBottom: '20px', color: 'var(--text-primary)', textTransform: 'uppercase' }}>Category</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingLeft: '16px' }}>
+              {categories.map((cat) => (
+                <label key={cat.id} style={{ display: 'flex', alignItems: 'center', fontSize: '1.05rem', cursor: 'pointer', color: 'var(--text-primary)', position: 'relative' }}>
+                  <div style={{ position: 'absolute', left: '-16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {activeCategory === cat.slug && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#141414' }} />}
+                  </div>
+                  <input type="radio" checked={activeCategory === cat.slug} onChange={() => handleCategorySelect(cat.slug)} style={{ display: 'none' }} />
+                  <span style={{ fontWeight: activeCategory === cat.slug ? 500 : 400, opacity: activeCategory === cat.slug ? 1 : 0.8 }}>{cat.name}</span>
+                </label>
+              ))}
             </div>
           </div>
 
@@ -778,8 +685,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
               }}
               style={{
                 borderRadius: '30px',
-                backgroundColor: 'var(--text-accent)',
-                color: "var(--text-inverse)",
+                backgroundColor: 'var(--text-primary)',
+                color: 'var(--bg-primary)',
                 textTransform: 'uppercase',
                 letterSpacing: '0.04em',
                 fontWeight: 600,

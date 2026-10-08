@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
 import { ProductCard, ProductCardSkeleton } from '@/components/product/ProductCard';
 
@@ -29,143 +29,70 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   const [isCarouselHovered, setIsCarouselHovered] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeftAmount, setScrollLeftAmount] = useState(0);
 
-  // Allow up to 16 items for base loop
-  const originalItems = React.useMemo(() => products.slice(0, 16), [products]);
-  // Ensure we have enough items for smooth infinite scrolling on ultra-wide screens
-  const replicationCount = Math.max(3, Math.ceil(40 / Math.max(1, originalItems.length)));
-  
-  // Build a completely flat, cloned dataset to ensure no reference collisions or stale data issues across loops
-  const items = React.useMemo(() => {
-    return Array.from({ length: replicationCount }).flatMap(() =>
-      originalItems.map(item => ({ ...item }))
-    );
-  }, [originalItems, replicationCount]);
-
-  const currentXRef = useRef(0);
-  const isCenterPausedRef = useRef(false);
-  const pauseTimerRef = useRef(0);
-  const lastCenteredIndexRef = useRef(-1);
-  const isHoveredRef = useRef(isCarouselHovered);
-  const containerWidthCacheRef = useRef<{ center: number, totalWidth: number, cardWidth: number, firstCardLeft: number } | null>(null);
-  
-  useEffect(() => {
-    isHoveredRef.current = isCarouselHovered;
-  }, [isCarouselHovered]);
+  const checkScrollability = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  };
 
   useEffect(() => {
-    const handleResize = () => {
-      containerWidthCacheRef.current = null;
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    checkScrollability();
+    window.addEventListener('resize', checkScrollability);
+    return () => window.removeEventListener('resize', checkScrollability);
+  }, [products, isLoading]);
 
-  useEffect(() => {
-    const container = containerRef.current;
-    const track = trackRef.current;
-    if (!container || !track) return;
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const container = scrollRef.current;
+      const firstItem = container.firstElementChild as HTMLElement;
+      
+      if (!firstItem) return;
+      
+      const gap = 16; 
+      const itemWidth = firstItem.offsetWidth + gap;
+      
+      const scrollAmount = direction === 'left' ? -itemWidth : itemWidth;
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      
+      setTimeout(checkScrollability, 350);
+    }
+  };
 
-    let animationId: number;
-    let lastTime: number | null = null;
-    const SPEED = 50; // px/s (slow speed)
-    const PAUSE_DURATION = 1000; // 1 second
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setStartX(e.pageX - (scrollRef.current?.offsetLeft || 0));
+    setScrollLeftAmount(scrollRef.current?.scrollLeft || 0);
+  };
 
-    const step = (time: number) => {
-      if (lastTime === null) {
-        lastTime = time;
-      }
-      const deltaTime = Math.min(time - lastTime, 50);
-      lastTime = time;
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
 
-      if (!isHoveredRef.current && !shouldReduceMotion) {
-        if (isCenterPausedRef.current) {
-          pauseTimerRef.current += deltaTime;
-          if (pauseTimerRef.current >= PAUSE_DURATION) {
-            isCenterPausedRef.current = false;
-            pauseTimerRef.current = 0;
-          }
-        } else {
-          const moveAmount = SPEED * (deltaTime / 1000);
-          
-          if (!containerWidthCacheRef.current) {
-             const containerRect = container.getBoundingClientRect();
-             const cards = Array.from(track.children) as HTMLElement[];
-             if (cards.length > 0) {
-               const firstCard = cards[0];
-               const nextSetFirstCard = cards[originalItems.length];
-               let totalWidth = 0;
-               if (nextSetFirstCard) {
-                 totalWidth = nextSetFirstCard.getBoundingClientRect().left - firstCard.getBoundingClientRect().left;
-               } else {
-                 totalWidth = (firstCard.getBoundingClientRect().width + 16) * originalItems.length;
-               }
-               
-               const cardWidth = firstCard.getBoundingClientRect().width + 16;
-               containerWidthCacheRef.current = {
-                  center: containerRect.left + containerRect.width / 2,
-                  totalWidth: totalWidth,
-                  cardWidth: cardWidth,
-                  firstCardLeft: firstCard.getBoundingClientRect().left
-               };
-             }
-          }
-          
-          let crossedIndex = -1;
-          let snapDrift = 0;
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    checkScrollability();
+  };
 
-          if (containerWidthCacheRef.current) {
-            const cache = containerWidthCacheRef.current;
-            const containerCenter = cache.center;
-            
-            for (let i = 0; i < originalItems.length * 3; i++) {
-              const cardLeft = cache.firstCardLeft + (i * cache.cardWidth) + currentXRef.current;
-              const cardCenter = cardLeft + (cache.cardWidth - 16) / 2;
-              const nextCardCenter = cardCenter - moveAmount;
-              
-              if (cardCenter >= containerCenter - 0.1 && nextCardCenter < containerCenter - 0.1) {
-                const logicalIndex = i % originalItems.length;
-                if (lastCenteredIndexRef.current !== logicalIndex) {
-                  crossedIndex = i;
-                  snapDrift = cardCenter - containerCenter;
-                  break;
-                }
-              }
-            }
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - (scrollRef.current?.offsetLeft || 0);
+    const walk = (x - startX) * 1.5;
+    if (scrollRef.current) {
+      scrollRef.current.scrollLeft = scrollLeftAmount - walk;
+    }
+  };
 
-            if (crossedIndex !== -1) {
-              currentXRef.current -= snapDrift;
-              isCenterPausedRef.current = true;
-              lastCenteredIndexRef.current = crossedIndex % originalItems.length;
-              pauseTimerRef.current = ((moveAmount - snapDrift) / SPEED) * 1000;
-            } else {
-              currentXRef.current -= moveAmount;
-            }
-
-            if (currentXRef.current <= -cache.totalWidth) {
-               currentXRef.current += cache.totalWidth;
-            }
-          }
-
-          track.style.transform = `translateX(${currentXRef.current}px)`;
-        }
-      }
-
-      animationId = requestAnimationFrame(step);
-    };
-
-    const timeoutId = setTimeout(() => {
-      lastTime = null;
-      animationId = requestAnimationFrame(step);
-    }, 500);
-
-    return () => {
-      clearTimeout(timeoutId);
-      cancelAnimationFrame(animationId);
-    };
-  }, [originalItems.length, shouldReduceMotion, replicationCount]);
+  const items = products;
 
   // Trigger entrance when the section enters the viewport, strictly once per page load
   const isSectionInView = useInView(sectionRef, { once: true, amount: 0.1 });
@@ -215,168 +142,229 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
 
   return (
     <section ref={sectionRef} className="most-coveted-section" style={{ padding: '80px 0', backgroundColor: 'var(--bg-primary)', overflow: 'hidden' }}>
-      <div className="container">
-        {/* Section Header */}
+      <div className="container" style={{ display: 'flex', alignItems: 'center', gap: '48px', flexWrap: 'wrap' }}>
+        {/* Left Column: Text & CTA */}
         <motion.div
           initial="hidden"
           animate={isSectionInView ? 'visible' : 'hidden'}
           variants={headerVariants}
           style={{
+            flex: '1 1 300px',
+            minWidth: '280px',
+            maxWidth: '350px',
             display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'baseline',
-            justifyContent: 'space-between',
-            marginBottom: '40px',
-            gap: '16px',
+            flexDirection: 'column',
+            gap: '24px',
           }}
         >
           <div>
+            <h2 style={{ 
+              fontSize: 'clamp(2rem, 4vw, 3rem)', 
+              fontFamily: 'var(--font-display, serif)',
+              fontWeight: 400,
+              marginBottom: '16px',
+              color: 'var(--text-primary)'
+            }}>
+              {title}
+            </h2>
             <span
               style={{
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-                color: 'var(--brand-primary)',
+                fontSize: '1.05rem',
+                color: 'var(--text-primary)',
                 display: 'block',
-                marginBottom: '6px',
               }}
             >
               {subtitle}
             </span>
-            <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.5rem)' }}>{title}</h2>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+          <div style={{ marginTop: '16px' }}>
             {onExploreClick ? (
               <button
                 onClick={onExploreClick}
-                className="editorial-arrow-link"
-                onMouseEnter={() => setIsLinkHovered(true)}
-                onMouseLeave={() => setIsLinkHovered(false)}
                 style={{
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  background: 'none',
+                  backgroundColor: '#000',
+                  color: '#fff',
+                  padding: '16px 48px',
                   border: 'none',
+                  fontSize: '0.9rem',
                   cursor: 'pointer',
-                  padding: 0,
-                  color: 'inherit',
-                  fontFamily: 'inherit',
+                  fontWeight: 500,
+                  width: 'max-content',
+                  transition: 'background-color 0.2s ease',
                 }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#333'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#000'}
               >
-                <span className="editorial-arrow-link-text">Explore Complete Wardrobe</span>
-                <motion.span
-                  animate={shouldReduceMotion ? { x: 0 } : { x: isLinkHovered ? 4 : 0 }}
-                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                  style={{ display: 'inline-flex', alignItems: 'center' }}
-                >
-                  <ArrowRight size={15} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
-                </motion.span>
+                Shop now
               </button>
             ) : (
               <Link
                 href="/shop"
-                className="editorial-arrow-link"
-                onMouseEnter={() => setIsLinkHovered(true)}
-                onMouseLeave={() => setIsLinkHovered(false)}
                 style={{
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
+                  backgroundColor: '#000',
+                  color: '#fff',
+                  padding: '16px 48px',
+                  display: 'inline-block',
+                  textDecoration: 'none',
+                  fontSize: '0.9rem',
+                  fontWeight: 500,
+                  transition: 'background-color 0.2s ease',
                 }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#333'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#000'}
               >
-                <span className="editorial-arrow-link-text">Explore Complete Wardrobe</span>
-                <motion.span
-                  animate={shouldReduceMotion ? { x: 0 } : { x: isLinkHovered ? 4 : 0 }}
-                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                  style={{ display: 'inline-flex', alignItems: 'center' }}
-                >
-                  <ArrowRight size={15} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
-                </motion.span>
+                Shop now
               </Link>
             )}
-
           </div>
         </motion.div>
-      </div>
 
-      {/* Auto Scroll Track */}
-      <div 
-        ref={containerRef}
-        style={{ 
-          width: '100%', 
-          paddingBottom: '20px',
-          overflow: 'hidden',
-          touchAction: 'pan-y'
-        }}
-        onMouseEnter={() => setIsCarouselHovered(true)}
-        onMouseLeave={() => setIsCarouselHovered(false)}
-      >
-        {isLoading || products.length === 0 ? (
-          <div
-            style={{
-              display: 'flex',
-              gap: '16px',
-              width: 'max-content',
-              paddingLeft: 'max(24px, calc((100vw - 1440px) / 2 + 24px))',
-              paddingRight: 'max(24px, calc((100vw - 1440px) / 2 + 24px))',
-            }}
-          >
-            {Array.from({ length: 4 }).map((_, index) => (
-              <div
-                key={index}
-                style={{
-                  width: 'clamp(280px, 28vw, 420px)',
-                  flexShrink: 0,
-                }}
-              >
-                <ProductCardSkeleton
-                  variant="overlay"
-                  aspectRatio="3 / 4"
-                />
-              </div>
-            ))}
+        {/* Right Column: Carousel */}
+        <div style={{ flex: '999 1 600px', minWidth: '0', position: 'relative' }}>
+          {/* Scroll Buttons - Absolute positioned */}
+          <div style={{ 
+            position: 'absolute', 
+            left: '-20px', 
+            top: '50%', 
+            transform: 'translateY(-50%)', 
+            zIndex: 10,
+            display: canScrollLeft ? 'flex' : 'none' 
+          }}>
+            <button
+              onClick={() => scroll('left')}
+              style={{
+                background: '#fff',
+                border: '1px solid #eee',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+                width: '44px',
+                height: '44px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: '#000'
+              }}
+              aria-label="Scroll left"
+            >
+              <ChevronLeft size={24} strokeWidth={1} />
+            </button>
           </div>
-        ) : (
-          <motion.div
-            initial="hidden"
-            animate={isSectionInView ? 'visible' : 'hidden'}
-            variants={containerVariants}
-            ref={trackRef}
-            style={{
-              display: 'flex',
-              gap: '16px',
-              width: 'max-content',
-              willChange: 'transform',
-              paddingLeft: 'max(24px, calc((100vw - 1440px) / 2 + 24px))',
-              paddingRight: 'max(24px, calc((100vw - 1440px) / 2 + 24px))',
+          
+          <div style={{ 
+            position: 'absolute', 
+            right: '-20px', 
+            top: '50%', 
+            transform: 'translateY(-50%)', 
+            zIndex: 10,
+            display: canScrollRight ? 'flex' : 'none' 
+          }}>
+            <button
+              onClick={() => scroll('right')}
+              style={{
+                background: '#fff',
+                border: '1px solid #eee',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+                width: '44px',
+                height: '44px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: '#000'
+              }}
+              aria-label="Scroll right"
+            >
+              <ChevronRight size={24} strokeWidth={1} />
+            </button>
+          </div>
+
+          <div 
+            style={{ 
+              width: '100%', 
+              paddingBottom: '20px',
             }}
           >
-            {items.map((product, index) => (
-              <motion.div
-                key={`${product.id}-${index}`}
-                variants={cardVariants}
+            {isLoading || products.length === 0 ? (
+              <div
                 style={{
-                  width: 'clamp(280px, 28vw, 420px)',
-                  flexShrink: 0,
+                  display: 'flex',
+                  gap: '16px',
+                  width: 'max-content',
                 }}
               >
-                <ProductCard 
-                  product={product} 
-                  variant="overlay" 
-                  aspectRatio="3 / 4"
-                  sizes="(max-width: 768px) 320px, (max-width: 1440px) 28vw, 420px" 
-                />
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      width: 'clamp(200px, 20vw, 280px)',
+                      flexShrink: 0,
+                      scrollSnapAlign: 'start',
+                    }}
+                  >
+                    <ProductCardSkeleton
+                      variant="standard"
+                      aspectRatio="3 / 4"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+                <motion.div
+                initial="hidden"
+                animate={isSectionInView ? 'visible' : 'hidden'}
+                variants={containerVariants}
+                ref={scrollRef}
+                onScroll={checkScrollability}
+                onMouseDown={handleMouseDown}
+                onMouseLeave={handleMouseLeave}
+                onMouseUp={handleMouseUp}
+                onMouseMove={handleMouseMove}
+                style={{
+                  display: 'flex',
+                  gap: '16px',
+                  overflowX: 'auto',
+                  overflowY: 'hidden',
+                  scrollSnapType: isDragging ? 'none' : 'x mandatory',
+                  scrollBehavior: isDragging ? 'auto' : 'smooth',
+                  cursor: isDragging ? 'grabbing' : 'grab',
+                  overscrollBehaviorX: 'contain',
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                  paddingRight: '20px',
+                }}
+                className="hide-scrollbar"
+              >
+                {items.map((product, index) => (
+                  <motion.div
+                    key={`${product.id}-${index}`}
+                    variants={cardVariants}
+                    style={{
+                      width: 'clamp(200px, 20vw, 280px)',
+                      flexShrink: 0,
+                      scrollSnapAlign: 'start',
+                      display: 'flex',
+                      flexDirection: 'column'
+                    }}
+                  >
+                    <div style={{ flex: 1, position: 'relative' }}>
+                      <Link href={`/product/${product.slug}`} style={{ display: 'block', width: '100%', aspectRatio: '3/4', position: 'relative', overflow: 'hidden', backgroundColor: '#f5f5f5' }}>
+                         <img src={product.images[0]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </Link>
+                    </div>
+                    <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                      <Link href={`/product/${product.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                          {product.name}
+                        </span>
+                      </Link>
+                    </div>
+                  </motion.div>
+                ))}
               </motion.div>
-            ))}
-          </motion.div>
-        )}
+            )}
+          </div>
+        </div>
       </div>
     </section>
   );

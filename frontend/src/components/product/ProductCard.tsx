@@ -89,7 +89,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         onClick={onClick}
         className={variant === 'grid' ? 'relative w-full block rounded-lg md:rounded-[var(--radius-sm)] md:overflow-hidden' : ''}
         style={variant === 'grid' ? {
-          backgroundColor: 'var(--bg-surface)',
+          backgroundColor: 'var(--color-icy-lake)',
           aspectRatio,
         } : {
           position: 'relative',
@@ -97,7 +97,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           aspectRatio,
           overflow: 'hidden',
           borderRadius: 'var(--radius-sm)',
-          backgroundColor: 'var(--bg-surface)',
+          backgroundColor: 'var(--color-icy-lake)',
           display: 'block',
         }}
       >

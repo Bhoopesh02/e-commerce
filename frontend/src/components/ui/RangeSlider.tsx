@@ -438,7 +438,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
       </div>
 
       {/* Editable Inputs */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', minWidth: 0, marginTop: '8px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', minWidth: 0, marginTop: '24px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px', width: '100%', minWidth: 0 }}>
           <div className="price-input-wrapper">
              <span>Min: ₹</span>

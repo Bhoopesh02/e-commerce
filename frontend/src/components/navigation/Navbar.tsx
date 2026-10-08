@@ -18,6 +18,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const pathname = usePathname();
 
   const { getCartItemCount, openDrawer } = useCartStore();
@@ -50,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     };
   }, []);
 
-  const newArrivalsHref = '/shop?tag=new-arrival';
+  const newArrivalsHref = '/new-arrivals';
   const accountHref = !user ? '/signin' : user.role === 'admin' ? '/admin/dashboard' : '/account';
 
   const isHomePage = pathname === '/';
@@ -127,13 +128,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               style={{
                 display: 'none',
                 alignItems: 'center',
-                gap: '32px',
+                gap: '24px',
               }}
               className="desktop-nav-links"
+              onMouseLeave={() => setHoveredNav(null)}
             >
               <Link
                 href="/"
                 className="nav-link-expand"
+                onMouseEnter={() => setHoveredNav(null)}
                 style={{
                   fontSize: '0.82rem',
                   fontWeight: 500,
@@ -149,9 +152,36 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               >
                 Home
               </Link>
+              <div 
+                className="nav-link-wrapper"
+                onMouseEnter={() => setHoveredNav('collections')}
+                style={{ height: '100%', display: 'flex', alignItems: 'center' }}
+              >
+                <Link
+                  href="/shop"
+                  className="nav-link-expand"
+                  style={{
+                    fontSize: '0.82rem',
+                    fontWeight: 500,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    minHeight: '44px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
+                    textShadow: isLightNav ? '0 1px 8px var(--overlay-black-70)' : 'none',
+                    transition: 'color 350ms var(--ease-luxury), text-shadow 350ms var(--ease-luxury)',
+                    position: 'relative',
+                  }}
+                >
+                  Collections
+                </Link>
+              </div>
+
               <Link
                 href={newArrivalsHref}
                 className="nav-link-expand"
+                onMouseEnter={() => setHoveredNav(null)}
                 style={{
                   fontSize: '0.82rem',
                   fontWeight: 500,
@@ -165,7 +195,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   transition: 'color 350ms var(--ease-luxury), text-shadow 350ms var(--ease-luxury)',
                 }}
               >
-                Collections
+                New Arrivals
               </Link>
             </nav>
           </div>
@@ -411,7 +441,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   Home
                 </Link>
                 <Link
-                  href={newArrivalsHref}
+                  href="/shop"
                   onClick={() => setMobileMenuOpen(false)}
                   style={{
                     fontSize: '1rem',
@@ -423,6 +453,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   }}
                 >
                   Collections
+                </Link>
+                <Link
+                  href={newArrivalsHref}
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.08em',
+                    minHeight: '44px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  New Arrivals
                 </Link>
                 <Link
                   href="/offers"
@@ -471,6 +515,87 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           )}
         </AnimatePresence>
       </header>
+
+      {/* Desktop Mega Menu Dropdown */}
+      <AnimatePresence>
+        {hoveredNav && hoveredNav !== 'home' && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            onMouseEnter={() => setHoveredNav(hoveredNav)}
+            onMouseLeave={() => setHoveredNav(null)}
+            style={{
+              position: 'fixed',
+              top: '76px', // height of the navbar
+              left: 0,
+              right: 0,
+              backgroundColor: 'var(--bg-surface)',
+              borderBottom: '1px solid var(--border-color)',
+              zIndex: 99,
+              boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+              padding: '48px 0',
+              pointerEvents: 'auto',
+            }}
+          >
+            <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '48px' }}>
+              
+              {/* Column 1: Categories */}
+              <div>
+                <h4 style={{ fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '24px', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                  Shop by Category
+                </h4>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <Link href="/new-arrivals" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>New Arrivals</Link>
+                    <Link href="/shop?categorySlug=outerwear" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Outerwear</Link>
+                    <Link href="/shop?categorySlug=tailoring" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Tailoring</Link>
+                    <Link href="/shop?categorySlug=eveningwear" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Eveningwear</Link>
+                    <Link href="/shop?categorySlug=knitwear" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Knitwear</Link>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <Link href="/shop?categorySlug=leather-goods" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Leather Goods</Link>
+                    <Link href="/shop?categorySlug=footwear" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Footwear</Link>
+                    <Link href="/shop?categorySlug=fine-jewelry" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Fine Jewelry</Link>
+                    <Link href="/shop?categorySlug=fragrances" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Fragrances</Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Column 2: Trends/Featured */}
+              <div>
+                <h4 style={{ fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '24px', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                  Shop by Edit
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <Link href="/shop?tag=heritage" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Heritage Styles</Link>
+                  <Link href="/shop?tag=sartorial" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Sartorial Elegance</Link>
+                  <Link href="/shop?tag=monochrome" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Monochrome</Link>
+                  <Link href="/shop?tag=cashmere" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Cashmere Essentials</Link>
+                  <Link href="/shop?tag=evening" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>The Evening Edit</Link>
+                </div>
+              </div>
+
+              {/* Column 3: Featured Image */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ position: 'relative', width: '100%', paddingBottom: '120%', overflow: 'hidden', backgroundColor: 'var(--bg-subtle)' }}>
+                  {/* Since we don't have exactly the image from the user's prompt, we use an existing image */}
+                  <img 
+                    src="/images/categories/cat-tailoring.jpg" 
+                    alt="The New-Season Collections" 
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </div>
+                <Link href="/shop?tag=new-season" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--text-primary)', textDecoration: 'none' }}>
+                  The New-Season Collections
+                </Link>
+              </div>
+
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Style block for responsive navigation layout & touch target sizing */}
       <style jsx global>{`
