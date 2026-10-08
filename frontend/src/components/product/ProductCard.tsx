@@ -359,17 +359,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div className="desktop-rating">
-              <RatingStars rating={product.rating.average} size={12} totalReviews={product.rating.count} />
-            </div>
-            <div className="mobile-rating">
-              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1 }}>
-                {product.rating.average.toFixed(1)}
-              </span>
-              <Star size={13} fill="var(--brand-accent)" stroke="var(--brand-accent)" strokeWidth={1.5} />
-            </div>
-          </div>
+
         </div>
         </div>
       )}

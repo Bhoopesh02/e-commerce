@@ -84,7 +84,7 @@ export const EditorialCampaign: React.FC = () => {
           <ScrollReveal duration={0.7} yOffset={20} className="editorial-reveal">
             <div className="editorial-image">
               <Image
-                src="/images/campaign/editorial-florence.webp"
+                src="/images/categories/cat-outerwear.jpg"
                 alt="Editorial Campaign Aurelia"
                 fill
                 quality={60}

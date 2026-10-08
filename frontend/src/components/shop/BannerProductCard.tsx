@@ -196,26 +196,6 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
             zIndex: 2,
           }}
         >
-          {product.rating?.average ? (
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '3px',
-                padding: '2px 7px',
-                borderRadius: '999px',
-                backgroundColor: 'rgba(15, 12, 24, 0.85)',
-                backdropFilter: 'blur(6px)',
-                border: '1px solid var(--border-on-inverse)',
-                color: '#FFE28A',
-                fontSize: '0.68rem',
-                fontWeight: 600,
-              }}
-            >
-              <Star size={10} fill="#FFE28A" />
-              {product.rating.average.toFixed(1)}
-            </span>
-          ) : null}
         </div>
 
         {/* Wishlist Button (Compact) */}
