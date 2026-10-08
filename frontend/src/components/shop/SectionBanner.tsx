@@ -28,6 +28,11 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
     <div
       style={{
         position: 'relative',
+        width: '100vw',
+        left: '50%',
+        right: '50%',
+        marginLeft: '-50vw',
+        marginRight: '-50vw',
         borderRadius: '0px', // The reference image doesn't seem to have rounded corners, or maybe we can keep 12px for consistency
         marginBottom: '36px',
         display: 'flex',
