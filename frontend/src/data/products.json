@@ -2671,7 +2671,7 @@
         "categoryId": "cat_fragrances",
         "price": 16000,
         "images": [
-            "/images/products/prod-fragrance-2.avif"
+            "/images/products/bergamot-blanc-eau-de-parfum.png"
         ],
         "variants": [
             {
@@ -3087,7 +3087,8 @@
             "new-arrival"
         ],
         "storefronts": [
-            "a"
+            "a",
+            "b"
         ]
     },
     {
@@ -4308,38 +4309,39 @@
     },
     {
         "id": "prod_lea_011",
-        "slug": "travel-tech-and-passport-organizer",
-        "name": "Travel Tech & Passport Organizer",
-        "subtitle": "Saffiano Scratch-Resistant Leather",
-        "description": "An indispensable companion for the global traveler. Precision compartments accommodate multiple passports, boarding passes, currency notes, and SIM cards in RFID-shielded luxury.",
+        "slug": "vintage-leather-satchel-briefcase",
+        "name": "Vintage Leather Satchel Briefcase",
+        "subtitle": "Handcrafted Artisan Leather",
+        "description": "A timeless classic, this handcrafted leather satchel features a top handle, adjustable shoulder strap, and a secure brass clasp. Perfect for carrying a laptop and daily essentials in style.",
         "details": [
-            "Durable Saffiano cross-hatch calfskin leather",
-            "Integrated RFID-blocking shielding membrane",
-            "Dedicated boarding pass exterior slip and dual passport sleeves",
-            "Full wrap-around zip security"
+            "Hand-cut and sewn full-grain leather",
+            "Solid brass hardware and clasp",
+            "Spacious main compartment with internal laptop sleeve",
+            "Adjustable and removable leather shoulder strap"
         ],
         "materials": [
-            "100% Saffiano Calf Leather",
-            "Shielded ripstop nylon interior"
+            "100% Full-Grain Calf Leather",
+            "Solid Brass Hardware",
+            "Cotton Twill Lining"
         ],
         "careGuide": [
-            "Wipe clean with moist sponge",
-            "No specialized conditioning needed"
+            "Condition with leather balm twice a year",
+            "Keep away from direct heat and moisture"
         ],
         "categoryId": "cat_leather_goods",
         "price": 8499,
         "images": [
-            "/images/products/travel-tech-passport-organizer-1.webp"
+            "/images/products/vintage-leather-satchel-briefcase.png"
         ],
         "variants": [
             {
-                "sku": "TO-BRD-OS",
+                "sku": "SB-BRN-OS",
                 "size": "One Size",
-                "color": "Bordeaux Wine",
+                "color": "Vintage Brown",
                 "stock": 6
             },
             {
-                "sku": "TO-BLK-OS",
+                "sku": "SB-BLK-OS",
                 "size": "One Size",
                 "color": "Classic Black",
                 "stock": 8
@@ -4355,8 +4357,8 @@
         "isTrending": true,
         "tags": [
             "leather-goods",
-            "travel",
-            "gift",
+            "bags",
+            "work",
             "bestseller"
         ],
         "storefronts": [
@@ -4387,7 +4389,7 @@
         "categoryId": "cat_footwear",
         "price": 21999,
         "images": [
-            "/images/products/monk-strap-hand-burnished-loafers-1.webp"
+            "/images/products/monk-strap-hand-burnished-loafers.png"
         ],
         "variants": [
             {
@@ -4577,7 +4579,7 @@
         "categoryId": "cat_footwear",
         "price": 15999,
         "images": [
-            "/images/products/minimalist-leather-court-sneakers-1.webp"
+            "/images/products/minimalist-leather-low-top-court-sneakers.png"
         ],
         "variants": [
             {
@@ -4641,7 +4643,7 @@
         "categoryId": "cat_footwear",
         "price": 22999,
         "images": [
-            "/images/products/strappy-satin-evening-sandals-1.webp"
+            "/images/products/strappy-satin-evening-stiletto-sandals.png"
         ],
         "variants": [
             {
@@ -4973,7 +4975,7 @@
         "categoryId": "cat_fragrances",
         "price": 14500,
         "images": [
-            "/images/products/cuir-velours-extrait-1.avif"
+            "/images/products/cuir-velours-extrait-de-parfum.png"
         ],
         "variants": [
             {
@@ -5026,7 +5028,7 @@
         "categoryId": "cat_fragrances",
         "price": 11999,
         "images": [
-            "/images/products/neroli-blanc-eau-de-parfum-1.avif"
+            "/images/products/neroli-blanc-eau-de-parfum.png"
         ],
         "variants": [
             {
@@ -5181,7 +5183,7 @@
         "categoryId": "cat_fragrances",
         "price": 16000,
         "images": [
-            "/images/products/tabac-vanille-extrait-1.avif"
+            "/images/products/tabac-vanille-extrait-de-parfum.png"
         ],
         "variants": [
             {
