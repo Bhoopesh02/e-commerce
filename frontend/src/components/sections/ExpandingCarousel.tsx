@@ -19,8 +19,24 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
   title = 'Signature Icons',
   subtitle = 'Touch to Reveal Silhouette Architecture',
 }) => {
-  // Limit to 4 or 5 signature items for optimal expanding balance
-  const items = products.slice(0, 5);
+  // Prioritize signature icons order with Quilted Silk Down Parka replacing Italian Leather Jacket
+  const signatureOrder = [
+    'Quilted Silk Down Parka',
+    'Sculpted Double-Breasted Blazer',
+    'Silk Charmeuse Draped Evening Gown',
+    'Mongolian Cashmere Ribbed Turtleneck',
+    'Atelier Sculptural Leather Tote',
+  ];
+
+  const signatureMatches = signatureOrder
+    .map((name) => products.find((p) => p.name === name || p.name.includes(name)))
+    .filter(Boolean) as Product[];
+
+  const items =
+    signatureMatches.length >= 4
+      ? signatureMatches
+      : products.filter((p) => !p.name.toLowerCase().includes('italian leather jacket')).slice(0, 5);
+
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   return (

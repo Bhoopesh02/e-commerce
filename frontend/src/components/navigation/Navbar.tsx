@@ -527,11 +527,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   Shop by Edit
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <Link href="/shop?tag=heritage" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Heritage Styles</Link>
-                  <Link href="/shop?tag=sartorial" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Sartorial Elegance</Link>
-                  <Link href="/shop?tag=monochrome" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Monochrome</Link>
-                  <Link href="/shop?tag=cashmere" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Cashmere Essentials</Link>
-                  <Link href="/shop?tag=evening" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>The Evening Edit</Link>
+                  <Link href="/shop?categorySlug=outerwear" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Heritage Styles</Link>
+                  <Link href="/shop?categorySlug=tailoring" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Sartorial Elegance</Link>
+                  <Link href="/shop?categorySlug=leather-goods" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Monochrome</Link>
+                  <Link href="/shop?categorySlug=knitwear" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Cashmere Essentials</Link>
+                  <Link href="/shop?categorySlug=eveningwear" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>The Evening Edit</Link>
                 </div>
               </div>
 
@@ -545,7 +545,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </div>
-                <Link href="/shop?tag=new-season" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--text-primary)', textDecoration: 'none' }}>
+                <Link href="/new-arrivals" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--text-primary)', textDecoration: 'none' }}>
                   The New-Season Collections
                 </Link>
               </div>

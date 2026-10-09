@@ -33,6 +33,7 @@ export interface Product {
   featured: boolean;
   tags: string[];
   storefronts: StorefrontId[];
+  genders?: ('men' | 'women')[];
   isNewArrival?: boolean;
   isTrending?: boolean;
 }

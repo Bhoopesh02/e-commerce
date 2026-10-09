@@ -74,11 +74,14 @@ const SECTION_ANIMATIONS: Record<string, SectionAnimationVariant> = {
 interface ShopViewProps {
   initialProducts: Product[];
   initialCategories: Category[];
+  /** When set, activates gender-filtered mode for /collections/men|women */
+  gender?: 'men' | 'women';
 }
 
 export const ShopView: React.FC<ShopViewProps> = ({
   initialProducts,
   initialCategories,
+  gender,
 }) => {
   const searchParams = useSearchParams();
   const { storefront } = useStorefrontStore();
@@ -88,11 +91,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [loading, setLoading] = useState(false);
 
   // Filter & Navigation States
+  // 'all' is only a valid sentinel when gender is set; /shop always defaults to 'outerwear'
+  const defaultCategory = gender ? 'all' : 'outerwear';
   const [activeCategory, setActiveCategory] = useState<string>(
-    () => searchParams.get('categorySlug') || 'outerwear'
+    () => searchParams.get('categorySlug') || defaultCategory
   );
   const [stagedCategory, setStagedCategory] = useState<string>(
-    () => searchParams.get('categorySlug') || 'outerwear'
+    () => searchParams.get('categorySlug') || defaultCategory
   );
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [appliedPriceRange, setAppliedPriceRange] = useState<[number, number]>([0, 100000]);
@@ -104,6 +109,20 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
 
   const stickyBarRef = useRef<HTMLDivElement>(null);
+  const tabsContainerRef = useRef<HTMLDivElement>(null);
+
+  // Scroll active category tab into view
+  useEffect(() => {
+    if (tabsContainerRef.current) {
+      const activeTab = tabsContainerRef.current.querySelector<HTMLButtonElement>('.active-category-tab');
+      if (activeTab) {
+        const containerRect = tabsContainerRef.current.getBoundingClientRect();
+        const tabRect = activeTab.getBoundingClientRect();
+        const scrollAmount = tabRect.left - containerRect.left - (containerRect.width / 2) + (tabRect.width / 2);
+        tabsContainerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      }
+    }
+  }, [activeCategory]);
 
   useEffect(() => {
     let rafId: number | null = null;
@@ -159,9 +178,30 @@ export const ShopView: React.FC<ShopViewProps> = ({
     };
   }, [storefront]);
 
+  // Gender pre-filter: when gender prop is set, restrict the working set before any other filter
+  const genderProducts = useMemo(() => {
+    if (!gender) return products;
+    return products.filter((p) => p.genders?.includes(gender));
+  }, [products, gender]);
+
+  // Categories that actually have products for this gender (used to hide empty tabs)
+  const genderPopulatedCatIds = useMemo(() => {
+    if (!gender) return null; // not used in /shop mode
+    const ids = new Set<string>();
+    genderProducts.forEach((p) => ids.add(p.categoryId));
+    return ids;
+  }, [genderProducts, gender]);
+
+  // The visible category list — same as before for /shop; filtered-by-population for gender mode
+  const visibleCategories = useMemo(() => {
+    if (!gender || !genderPopulatedCatIds) return categories;
+    return categories.filter((c) => genderPopulatedCatIds.has(c.id));
+  }, [categories, gender, genderPopulatedCatIds]);
+
   // Client-side filtering and sorting across catalog
   const filteredProducts = useMemo(() => {
-    let list = [...products];
+    // Start from gender-pre-filtered list (or full list for /shop)
+    let list = [...genderProducts];
 
     // Tag filter from URL (e.g. new-arrival, trending)
     const urlTag = searchParams.get('tag');
@@ -208,11 +248,31 @@ export const ShopView: React.FC<ShopViewProps> = ({
     }
 
     return list;
-  }, [products, searchParams, searchQuery, appliedPriceRange, appliedAvailability, selectedSort]);
+  }, [genderProducts, searchParams, searchQuery, appliedPriceRange, appliedAvailability, selectedSort]);
 
+  // In gender mode with activeCategory='all', currentCategory is null (we show all categories)
   const currentCategory = useMemo(() => {
+    if (gender && activeCategory === 'all') return null;
     return categories.find((c) => c.slug === activeCategory) || categories[0];
-  }, [categories, activeCategory]);
+  }, [categories, activeCategory, gender]);
+
+  // Guard: if the active category has 0 products for this gender, fall back to 'all'
+  useEffect(() => {
+    if (!gender || activeCategory === 'all') return;
+    const cat = categories.find((c) => c.slug === activeCategory);
+    if (!cat) return;
+    const hasProducts = genderProducts.some((p) => p.categoryId === cat.id);
+    if (!hasProducts) {
+      setActiveCategory('all');
+      setStagedCategory('all');
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('categorySlug');
+        window.history.replaceState(null, '', url.pathname + url.search);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gender, activeCategory, genderProducts, categories]);
 
   const currentCategoryProducts = useMemo(() => {
     if (!currentCategory) return [];
@@ -228,9 +288,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
     prevUrlCategoryRef.current = slug;
 
     // Keep browser URL in sync without triggering full page reload
+    // In gender mode: 'all' removes the param; any specific category sets it
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
-      url.searchParams.set('categorySlug', slug);
+      if (gender && slug === 'all') {
+        url.searchParams.delete('categorySlug');
+      } else {
+        url.searchParams.set('categorySlug', slug);
+      }
       window.history.replaceState(null, '', url.pathname + url.search);
     }
 
@@ -245,36 +310,36 @@ export const ShopView: React.FC<ShopViewProps> = ({
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, []);
+  }, [gender]);
 
   const activeCategoryIndex = useMemo(() => {
-    return categories.findIndex((c) => c.slug === activeCategory);
-  }, [categories, activeCategory]);
+    return visibleCategories.findIndex((c) => c.slug === activeCategory);
+  }, [visibleCategories, activeCategory]);
 
   const handleNextCategory = useCallback(() => {
     if (activeCategoryIndex >= 0) {
-      const nextIndex = (activeCategoryIndex + 1) % categories.length;
-      handleCategorySelect(categories[nextIndex].slug);
+      const nextIndex = (activeCategoryIndex + 1) % visibleCategories.length;
+      handleCategorySelect(visibleCategories[nextIndex].slug);
     }
-  }, [activeCategoryIndex, categories, handleCategorySelect]);
+  }, [activeCategoryIndex, visibleCategories, handleCategorySelect]);
 
   const handlePrevCategory = useCallback(() => {
     if (activeCategoryIndex >= 0) {
-      const prevIndex = (activeCategoryIndex - 1 + categories.length) % categories.length;
-      handleCategorySelect(categories[prevIndex].slug);
+      const prevIndex = (activeCategoryIndex - 1 + visibleCategories.length) % visibleCategories.length;
+      handleCategorySelect(visibleCategories[prevIndex].slug);
     }
-  }, [activeCategoryIndex, categories, handleCategorySelect]);
+  }, [activeCategoryIndex, visibleCategories, handleCategorySelect]);
 
   // Sync active category only when URL changes externally (e.g. from top Navbar dropdown)
   useEffect(() => {
-    const urlCatSlug = searchParams.get('categorySlug');
-    if (urlCatSlug && urlCatSlug !== prevUrlCategoryRef.current) {
+    const urlCatSlug = searchParams.get('categorySlug') || defaultCategory;
+    if (urlCatSlug !== prevUrlCategoryRef.current) {
       prevUrlCategoryRef.current = urlCatSlug;
       setActiveCategory(urlCatSlug);
       setStagedCategory(urlCatSlug);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [searchParams]);
+  }, [searchParams, defaultCategory]);
 
   const resetFilters = () => {
     setPriceRange([0, 100000]);
@@ -283,8 +348,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
     setAppliedAvailability('all');
     setSelectedSort('popularity');
     setSearchQuery('');
-    setStagedCategory('outerwear');
-    handleCategorySelect('outerwear');
+    setStagedCategory(defaultCategory);
+    handleCategorySelect(defaultCategory);
   };
 
   const hasActiveFilters =
@@ -292,21 +357,26 @@ export const ShopView: React.FC<ShopViewProps> = ({
     appliedAvailability !== 'all' ||
     searchQuery.trim().length > 0;
 
+  // In gender mode the banner is always shown (either "all" hero or category swap)
+  const bannerKey = gender ? `${gender}-${activeCategory}` : (currentCategory?.id ?? 'none');
+
   return (
     <div style={{ paddingTop: '76px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      {/* Category Hero Banner - Placed above the category navigation bar */}
+      {/* Category Hero Banner */}
       <AnimatePresence mode="wait">
-        {currentCategory && (
+        {(gender || currentCategory) && (
           <motion.div
-            key={currentCategory.id}
+            key={bannerKey}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.25, 0.8, 0.25, 1] }}
           >
             <SectionBanner
-              category={currentCategory}
+              category={currentCategory ?? categories[0]}
               productCount={currentCategoryProducts.length}
+              gender={gender}
+              activeCategorySlug={gender ? activeCategory : undefined}
             />
           </motion.div>
         )}
@@ -322,6 +392,51 @@ export const ShopView: React.FC<ShopViewProps> = ({
         }}
       >
         <div className="container">
+          {/* HORIZONTAL CATEGORY TABS */}
+          <div
+            ref={tabsContainerRef}
+            className="category-tabs-container hide-scrollbar"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '24px',
+              overflowX: 'auto',
+              paddingBottom: '12px',
+              marginBottom: '12px',
+              borderBottom: '1px solid var(--border-color)',
+              WebkitOverflowScrolling: 'touch',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none'
+            }}
+          >
+            {(gender ? [{ id: 'all', slug: 'all', name: 'All' }, ...visibleCategories] : categories).map(cat => {
+              const isActive = activeCategory === cat.slug;
+              return (
+                <button
+                  key={cat.id}
+                  className={isActive ? 'active-category-tab' : ''}
+                  onClick={() => handleCategorySelect(cat.slug)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: '0 0 4px 0',
+                    fontSize: '0.85rem',
+                    fontWeight: isActive ? 600 : 400,
+                    color: isActive ? 'var(--text-primary)' : 'var(--text-muted)',
+                    borderBottom: isActive ? '2px solid var(--text-primary)' : '2px solid transparent',
+                    whiteSpace: 'nowrap',
+                    cursor: 'pointer',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {cat.name}
+                </button>
+              );
+            })}
+          </div>
+
           <div
             style={{
               display: 'flex',
@@ -590,22 +705,43 @@ export const ShopView: React.FC<ShopViewProps> = ({
         ) : filteredProducts.length > 0 ? (
           <div className="category-sections-container">
             <AnimatePresence mode="wait">
-              {categories.map((category) => {
-                if (category.slug !== activeCategory) return null;
-                const categoryProducts = filteredProducts.filter((p) => p.categoryId === category.id);
-                return (
-                  <CategorySection
-                    key={category.id}
-                    category={category}
-                    products={categoryProducts}
-                    animationVariant={SECTION_ANIMATIONS[category.slug] || 'fade-up'}
-                    onNext={handleNextCategory}
-                    onPrev={handlePrevCategory}
-                    hasNext={true}
-                    hasPrev={true}
-                  />
-                );
-              })}
+              {gender && activeCategory === 'all' ? (
+                // Gender mode + All tab: render all populated category sections
+                visibleCategories.map((category) => {
+                  const categoryProducts = filteredProducts.filter((p) => p.categoryId === category.id);
+                  if (categoryProducts.length === 0) return null;
+                  return (
+                    <CategorySection
+                      key={category.id}
+                      category={category}
+                      products={categoryProducts}
+                      animationVariant={SECTION_ANIMATIONS[category.slug] || 'fade-up'}
+                      onNext={handleNextCategory}
+                      onPrev={handlePrevCategory}
+                      hasNext={true}
+                      hasPrev={true}
+                    />
+                  );
+                })
+              ) : (
+                // Single category view (original /shop behaviour or gender + specific tab)
+                (gender ? visibleCategories : categories).map((category) => {
+                  if (category.slug !== activeCategory) return null;
+                  const categoryProducts = filteredProducts.filter((p) => p.categoryId === category.id);
+                  return (
+                    <CategorySection
+                      key={category.id}
+                      category={category}
+                      products={categoryProducts}
+                      animationVariant={SECTION_ANIMATIONS[category.slug] || 'fade-up'}
+                      onNext={handleNextCategory}
+                      onPrev={handlePrevCategory}
+                      hasNext={true}
+                      hasPrev={true}
+                    />
+                  );
+                })
+              )}
             </AnimatePresence>
           </div>
         ) : (
@@ -957,7 +1093,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
               variant="outline"
               fullWidth
               onClick={() => {
-                setStagedCategory('outerwear');
+                setStagedCategory(defaultCategory);
                 setPriceRange([0, 100000]);
                 setSelectedAvailability('all');
               }}
@@ -1004,6 +1140,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
       </Drawer>
 
       <style jsx global>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
         @media (max-width: 768px) {
           .silhouette-counter {
             display: none !important;

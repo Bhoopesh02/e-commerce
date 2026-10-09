@@ -149,7 +149,49 @@ export const HomeView: React.FC<HomeViewProps> = ({
         );
 
       case 'expanding_carousel':
-        return <ExpandingCarousel key={id} products={products} />;
+        const signatureTargetNames = [
+          "Quilted Silk Down Parka",
+          "Sculpted Double-Breasted Blazer",
+          "Silk Charmeuse Draped Evening Gown",
+          "Mongolian Cashmere Ribbed Turtleneck",
+          "Atelier Sculptural Leather Tote",
+        ];
+        const signatureProducts = signatureTargetNames
+          .map((name) => products.find((p) => p.name === name || p.name.includes(name)))
+          .filter(Boolean) as Product[];
+
+        return (
+          <React.Fragment key={id}>
+            <section style={{ padding: '60px 0 20px', backgroundColor: 'var(--bg-primary)' }}>
+              <div className="container">
+                <ScrollReveal duration={0.6}>
+                  <div style={{ position: 'relative', width: '100%', height: '400px', borderRadius: '16px', overflow: 'hidden' }}>
+                    <Image 
+                      src="/images/products/new/Gemini_Generated_Image_wi5d5owi5d5owi5d.png" 
+                      alt="Signature Excellence Banner"
+                      fill
+                      style={{ objectFit: 'cover', objectPosition: 'center', transform: 'scale(1.05)' }}
+                    />
+                    <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.4)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '20px' }}>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--color-golden-200)', marginBottom: '16px' }}>Our Heritage</span>
+                      <h2 style={{ color: '#fff', fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontFamily: 'var(--font-display)', marginBottom: '16px', lineHeight: 1.1 }}>
+                        The Signature of Excellence
+                      </h2>
+                      <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem', maxWidth: '600px', lineHeight: 1.6 }}>
+                        Discover the foundational pillars that define our commitment to unparalleled craftsmanship and uncompromising quality.
+                      </p>
+                    </div>
+                  </div>
+                </ScrollReveal>
+              </div>
+            </section>
+            <ExpandingCarousel
+              products={signatureProducts.length >= 4 ? signatureProducts : products}
+              title={title}
+              subtitle={subtitle}
+            />
+          </React.Fragment>
+        );
 
       case 'new_arrivals':
         const newArrivalsTargetNames = [
@@ -173,7 +215,34 @@ export const HomeView: React.FC<HomeViewProps> = ({
         const uploadedNewArrivals = newArrivals.filter((p) => 
           newArrivalsTargetNames.some(target => p.name.includes(target))
         );
-        return <NewArrivalsCarousel key={id} products={uploadedNewArrivals} loading={loading} />;
+        return (
+          <React.Fragment key={id}>
+            <section style={{ padding: '60px 0 20px', backgroundColor: 'var(--bg-primary)' }}>
+              <div className="container">
+                <ScrollReveal duration={0.6}>
+                  <div style={{ position: 'relative', width: '100%', height: '400px', borderRadius: '16px', overflow: 'hidden' }}>
+                    <Image 
+                      src="/images/products/new/Gemini_Generated_Image_8hy0gw8hy0gw8hy0.png" 
+                      alt="New Arrivals Banner"
+                      fill
+                      style={{ objectFit: 'cover', objectPosition: 'center', transform: 'scale(1.05)' }}
+                    />
+                    <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.4)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '20px' }}>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--color-golden-200)', marginBottom: '16px' }}>Just Arrived</span>
+                      <h2 style={{ color: '#fff', fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontFamily: 'var(--font-display)', marginBottom: '16px', lineHeight: 1.1 }}>
+                        The New Season Collection
+                      </h2>
+                      <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem', maxWidth: '600px', lineHeight: 1.6 }}>
+                        Discover our latest arrivals, featuring exquisite craftsmanship and unparalleled elegance for the modern connoisseur.
+                      </p>
+                    </div>
+                  </div>
+                </ScrollReveal>
+              </div>
+            </section>
+            <NewArrivalsCarousel products={uploadedNewArrivals} loading={loading} />
+          </React.Fragment>
+        );
 
       case 'editorial_campaign':
         return <EditorialCampaign key={id} />;
