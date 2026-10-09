@@ -21,6 +21,7 @@ export const NewArrivalsView: React.FC = () => {
 
   // Filters
   const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [stagedCategory, setStagedCategory] = useState<string>('all');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [appliedPriceRange, setAppliedPriceRange] = useState<[number, number]>([0, 100000]);
   const [selectedAvailability, setSelectedAvailability] = useState<string>('all');
@@ -93,6 +94,7 @@ export const NewArrivalsView: React.FC = () => {
 
   const resetFilters = () => {
     setActiveCategory('all');
+    setStagedCategory('all');
     setPriceRange([0, 100000]);
     setAppliedPriceRange([0, 100000]);
     setSelectedAvailability('all');
@@ -200,7 +202,10 @@ export const NewArrivalsView: React.FC = () => {
                       <X
                         size={12}
                         style={{ cursor: 'pointer' }}
-                        onClick={() => setActiveCategory('all')}
+                        onClick={() => {
+                          setActiveCategory('all');
+                          setStagedCategory('all');
+                        }}
                         aria-label="Remove category filter"
                       />
                     </span>
@@ -324,17 +329,15 @@ export const NewArrivalsView: React.FC = () => {
                     backgroundColor: 'var(--bg-surface, #fafafa)',
                     color: 'var(--text-primary)',
                     outline: 'none',
-                    transition: 'border-color 0.2s ease, box-shadow 0.2s ease, width 0.3s ease',
+                    transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
                   }}
                   onFocus={(e) => {
                     e.currentTarget.style.borderColor = 'var(--text-muted)';
                     e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0,0,0,0.04)';
-                    e.currentTarget.style.width = '230px';
                   }}
                   onBlur={(e) => {
                     e.currentTarget.style.borderColor = 'var(--border-color)';
                     e.currentTarget.style.boxShadow = 'none';
-                    if (!searchQuery) e.currentTarget.style.width = '180px';
                   }}
                 />
                 {searchQuery && (
@@ -372,7 +375,12 @@ export const NewArrivalsView: React.FC = () => {
 
               {/* Filters Button */}
               <button
-                onClick={() => setMobileFiltersOpen(true)}
+                onClick={() => {
+                  setStagedCategory(activeCategory);
+                  setPriceRange(appliedPriceRange);
+                  setSelectedAvailability(appliedAvailability);
+                  setMobileFiltersOpen(true);
+                }}
                 aria-label="Open Filters"
                 style={{
                   display: 'inline-flex',
@@ -440,7 +448,12 @@ export const NewArrivalsView: React.FC = () => {
 
       <Drawer
         isOpen={mobileFiltersOpen}
-        onClose={() => { setPriceRange(appliedPriceRange); setSelectedAvailability(appliedAvailability); setMobileFiltersOpen(false); }}
+        onClose={() => {
+          setStagedCategory(activeCategory);
+          setPriceRange(appliedPriceRange);
+          setSelectedAvailability(appliedAvailability);
+          setMobileFiltersOpen(false);
+        }}
         title="REFINE COLLECTION"
         position="right"
         contentStyle={{ backgroundColor: 'var(--bg-surface)' }}
@@ -473,7 +486,7 @@ export const NewArrivalsView: React.FC = () => {
                   color: 'var(--text-primary)',
                   padding: '8px 10px',
                   borderRadius: '8px',
-                  backgroundColor: activeCategory === 'all' ? 'var(--overlay-black-5)' : 'transparent',
+                  backgroundColor: stagedCategory === 'all' ? 'var(--overlay-black-5)' : 'transparent',
                   transition: 'background-color 0.2s ease, opacity 0.2s ease',
                   userSelect: 'none',
                 }}
@@ -484,18 +497,18 @@ export const NewArrivalsView: React.FC = () => {
                     height: '18px',
                     borderRadius: '50%',
                     border:
-                      activeCategory === 'all'
+                      stagedCategory === 'all'
                         ? '1.5px solid var(--color-black-tie)'
                         : '1.5px solid var(--border-color)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
-                    backgroundColor: activeCategory === 'all' ? 'var(--color-black-tie)' : 'transparent',
+                    backgroundColor: stagedCategory === 'all' ? 'var(--color-black-tie)' : 'transparent',
                     transition: 'all 0.2s ease',
                   }}
                 >
-                  {activeCategory === 'all' && (
+                  {stagedCategory === 'all' && (
                     <div
                       style={{
                         width: '6px',
@@ -508,14 +521,14 @@ export const NewArrivalsView: React.FC = () => {
                 </div>
                 <input
                   type="radio"
-                  checked={activeCategory === 'all'}
-                  onChange={() => setActiveCategory('all')}
+                  checked={stagedCategory === 'all'}
+                  onChange={() => setStagedCategory('all')}
                   style={{ display: 'none' }}
                 />
                 <span
                   style={{
-                    fontWeight: activeCategory === 'all' ? 600 : 400,
-                    opacity: activeCategory === 'all' ? 1 : 0.85,
+                    fontWeight: stagedCategory === 'all' ? 600 : 400,
+                    opacity: stagedCategory === 'all' ? 1 : 0.85,
                     letterSpacing: '0.01em',
                   }}
                 >
@@ -524,7 +537,7 @@ export const NewArrivalsView: React.FC = () => {
               </label>
 
               {categories.map((cat) => {
-                const isSelected = activeCategory === cat.slug;
+                const isSelected = stagedCategory === cat.slug;
                 return (
                   <label
                     key={cat.id}
@@ -572,7 +585,7 @@ export const NewArrivalsView: React.FC = () => {
                     <input
                       type="radio"
                       checked={isSelected}
-                      onChange={() => setActiveCategory(cat.slug)}
+                      onChange={() => setStagedCategory(cat.slug)}
                       style={{ display: 'none' }}
                     />
                     <span
@@ -630,8 +643,31 @@ export const NewArrivalsView: React.FC = () => {
         </div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '24px 32px 32px', display: 'flex', gap: '16px', background: 'linear-gradient(to top, var(--bg-surface) 70%, transparent 100%)', borderTop: 'none', pointerEvents: 'none' }}>
           <div style={{ display: 'flex', gap: '12px', width: '100%', pointerEvents: 'auto' }}>
-            <Button variant="outline" fullWidth onClick={resetFilters} style={{ borderRadius: '30px', borderColor: 'var(--text-accent)', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600, height: '48px', backgroundColor: 'transparent' }}>Reset</Button>
-            <Button variant="primary" fullWidth onClick={() => { setAppliedPriceRange(priceRange); setAppliedAvailability(selectedAvailability); setMobileFiltersOpen(false); }} style={{ borderRadius: '30px', backgroundColor: 'var(--text-primary)', color: 'var(--bg-primary)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600, height: '48px', boxShadow: '0 8px 16px var(--overlay-golden-35)', border: 'none' }}>Apply Filters</Button>
+            <Button
+              variant="outline"
+              fullWidth
+              onClick={() => {
+                setStagedCategory('all');
+                setPriceRange([0, 100000]);
+                setSelectedAvailability('all');
+              }}
+              style={{ borderRadius: '30px', borderColor: 'var(--text-accent)', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600, height: '48px', backgroundColor: 'transparent' }}
+            >
+              Reset
+            </Button>
+            <Button
+              variant="primary"
+              fullWidth
+              onClick={() => {
+                setActiveCategory(stagedCategory);
+                setAppliedPriceRange(priceRange);
+                setAppliedAvailability(selectedAvailability);
+                setMobileFiltersOpen(false);
+              }}
+              style={{ borderRadius: '30px', backgroundColor: 'var(--text-primary)', color: 'var(--bg-primary)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600, height: '48px', boxShadow: '0 8px 16px var(--overlay-golden-35)', border: 'none' }}
+            >
+              Apply Filters
+            </Button>
           </div>
         </div>
       </Drawer>

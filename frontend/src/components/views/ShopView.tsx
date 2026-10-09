@@ -91,6 +91,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [activeCategory, setActiveCategory] = useState<string>(
     () => searchParams.get('categorySlug') || 'outerwear'
   );
+  const [stagedCategory, setStagedCategory] = useState<string>(
+    () => searchParams.get('categorySlug') || 'outerwear'
+  );
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [appliedPriceRange, setAppliedPriceRange] = useState<[number, number]>([0, 100000]);
   const [selectedAvailability, setSelectedAvailability] = useState<string>('all');
@@ -221,6 +224,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
   // Handle category selection
   const handleCategorySelect = useCallback((slug: string) => {
     setActiveCategory(slug);
+    setStagedCategory(slug);
     prevUrlCategoryRef.current = slug;
 
     // Keep browser URL in sync without triggering full page reload
@@ -267,6 +271,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
     if (urlCatSlug && urlCatSlug !== prevUrlCategoryRef.current) {
       prevUrlCategoryRef.current = urlCatSlug;
       setActiveCategory(urlCatSlug);
+      setStagedCategory(urlCatSlug);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [searchParams]);
@@ -278,6 +283,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
     setAppliedAvailability('all');
     setSelectedSort('popularity');
     setSearchQuery('');
+    setStagedCategory('outerwear');
     handleCategorySelect('outerwear');
   };
 
@@ -481,17 +487,15 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     backgroundColor: 'var(--bg-surface, #fafafa)',
                     color: 'var(--text-primary)',
                     outline: 'none',
-                    transition: 'border-color 0.2s ease, box-shadow 0.2s ease, width 0.3s ease',
+                    transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
                   }}
                   onFocus={(e) => {
                     e.currentTarget.style.borderColor = 'var(--text-muted)';
                     e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0,0,0,0.04)';
-                    e.currentTarget.style.width = '280px';
                   }}
                   onBlur={(e) => {
                     e.currentTarget.style.borderColor = 'var(--border-color)';
                     e.currentTarget.style.boxShadow = 'none';
-                    if (!searchQuery) e.currentTarget.style.width = '220px';
                   }}
                 />
                 {searchQuery && (
@@ -529,7 +533,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
               {/* Filters Button */}
               <button
-                onClick={() => setMobileFiltersOpen(true)}
+                onClick={() => {
+                  setStagedCategory(activeCategory);
+                  setPriceRange(appliedPriceRange);
+                  setSelectedAvailability(appliedAvailability);
+                  setMobileFiltersOpen(true);
+                }}
                 className="mobile-filter-btn"
                 id="collection-filters-btn"
                 aria-label="Open Collection Filters"
@@ -651,6 +660,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       <Drawer
         isOpen={mobileFiltersOpen}
         onClose={() => {
+          setStagedCategory(activeCategory);
           setPriceRange(appliedPriceRange);
           setSelectedAvailability(appliedAvailability);
           setMobileFiltersOpen(false);
@@ -686,7 +696,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {categories.map((cat) => {
-                const isSelected = activeCategory === cat.slug;
+                const isSelected = stagedCategory === cat.slug;
                 return (
                   <label
                     key={cat.id}
@@ -735,7 +745,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       type="radio"
                       name="drawer-category"
                       checked={isSelected}
-                      onChange={() => handleCategorySelect(cat.slug)}
+                      onChange={() => setStagedCategory(cat.slug)}
                       style={{ display: 'none' }}
                     />
                     <span
@@ -946,7 +956,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
             <Button
               variant="outline"
               fullWidth
-              onClick={resetFilters}
+              onClick={() => {
+                setStagedCategory('outerwear');
+                setPriceRange([0, 100000]);
+                setSelectedAvailability('all');
+              }}
               style={{
                 borderRadius: '30px',
                 borderColor: 'var(--text-accent)',
@@ -964,6 +978,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
               variant="primary"
               fullWidth
               onClick={() => {
+                if (stagedCategory !== activeCategory) {
+                  handleCategorySelect(stagedCategory);
+                }
                 setAppliedPriceRange(priceRange);
                 setAppliedAvailability(selectedAvailability);
                 setMobileFiltersOpen(false);

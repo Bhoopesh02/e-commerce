@@ -87,11 +87,11 @@
   --border-accent: var(--color-golden-300);
 
   /* ===== Interactive (CTA) ===== */
-  --cta-primary: var(--color-diamond);
-  --cta-primary-hover: var(--color-neutral-200);
-  --cta-secondary: var(--color-diamond);
-  --cta-secondary-hover: var(--color-neutral-200);
-  --cta-text: var(--color-black-tie);
+  --cta-primary: var(--color-sapphire-700);
+  --cta-primary-hover: var(--color-sapphire-800);
+  --cta-secondary: var(--color-golden-500);
+  --cta-secondary-hover: var(--color-golden-600);
+  --cta-text: var(--text-inverse);
 
   /* ===== Surfaces ===== */
   --surface-brand: var(--color-sapphire-50);
@@ -105,9 +105,9 @@
   --admin-border-light: var(--border-light);
   --admin-text-primary: var(--text-primary);
   --admin-text-secondary: var(--text-secondary);
-  --admin-accent: var(--color-diamond);
-  --admin-accent-hover: var(--color-neutral-200);
-  --admin-accent-text: var(--color-black-tie);
+  --admin-accent: var(--brand-primary);
+  --admin-accent-hover: var(--brand-primary-hover);
+  --admin-accent-text: var(--text-inverse);
 
   /* ===== Temporary Legacy Mappings (To prevent immediate breakage) ===== */
   --color-silver: var(--color-neutral-200);

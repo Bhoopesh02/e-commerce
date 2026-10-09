@@ -102,6 +102,7 @@ export const CartDrawer: React.FC = () => {
               style={{
                 flex: 1,
                 overflowY: 'auto',
+                overscrollBehavior: 'contain',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '20px',

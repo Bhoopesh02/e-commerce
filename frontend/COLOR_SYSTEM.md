@@ -29,8 +29,8 @@ Defined centrally in `src/styles/variables.css`, these tokens form the foundatio
 | `--text-secondary` | `var(--color-sapphire)` | `variables.css` | Secondary Text |
 | `--text-muted` | `#667276` | `variables.css` | Muted Text |
 | `--border-color` | `var(--color-silver)` | `variables.css` | Standard Borders |
-| `--cta-primary` | `var(--color-golden)` | `variables.css` | Call to Action Background |
-| `--cta-text` | `var(--color-black-tie)` | `variables.css` | Call to Action Text |
+| `--cta-primary` | `var(--color-sapphire-700)` | `variables.css` | Call to Action Background |
+| `--cta-text` | `var(--text-inverse)` | `variables.css` | Call to Action Text |
 
 ## 2. Final Palette (Observed across all code)
 

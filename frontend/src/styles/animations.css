@@ -398,6 +398,21 @@
   background-color: rgba(194, 155, 76, 0.15) !important;
 }
 
+/* Luxury Primary Button - Brand Sapphire */
+.luxury-btn-primary {
+  background-color: var(--cta-primary) !important;
+  color: var(--cta-text) !important;
+  border-color: transparent !important;
+}
+
+.luxury-btn-primary:hover:not(:disabled),
+.luxury-btn-primary:focus-visible:not(:disabled),
+a:hover .luxury-btn-primary:not(:disabled),
+a:focus-visible .luxury-btn-primary:not(:disabled) {
+  background-color: var(--cta-primary-hover) !important;
+  color: var(--cta-text) !important;
+}
+
 /* Fixed solid white luxury button (e.g. Hero secondary pill) - locks solid white background on hover */
 .luxury-btn-white,
 .luxury-btn-white:hover:not(:disabled),
@@ -566,10 +581,6 @@ a:focus-visible .luxury-btn:not(:disabled)>span:last-child svg {
 }
 
 /* Nav Icon Animations */
-.nav-icon.search:hover {
-  transform: rotate(-10deg) scale(1.15);
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
 
 @keyframes heartbeat {
   0% { transform: scale(1); }

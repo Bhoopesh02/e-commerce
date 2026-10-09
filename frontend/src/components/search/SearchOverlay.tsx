@@ -9,6 +9,7 @@ import { getProducts, getNewArrivals } from '@/lib/mockApi';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
 import { ProductCard } from '@/components/product/ProductCard';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface SearchOverlayProps {
   isOpen: boolean;
@@ -60,20 +61,18 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
     return () => clearInterval(interval);
   }, [isOpen, query]);
 
+  useScrollLock(isOpen);
+
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      setTimeout(() => inputRef.current?.focus(), 150);
-    } else {
-      document.body.style.overflow = '';
-    }
+    if (!isOpen) return;
+
+    setTimeout(() => inputRef.current?.focus(), 150);
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.body.style.overflow = '';
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onClose]);

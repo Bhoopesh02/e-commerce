@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 export interface ProductImageLightboxProps {
   isOpen: boolean;
@@ -63,17 +64,8 @@ export const ProductImageLightbox: React.FC<ProductImageLightboxProps> = ({
     }
   }, [isOpen, initialIndex, images.length]);
 
-  // Lock body scroll while open
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    return () => {
-      document.body.style.overflow = originalOverflow;
-    };
-  }, [isOpen]);
+  // Lock body & html scroll while open
+  useScrollLock(isOpen);
 
   // Navigation handlers
   const handlePrev = useCallback(() => {

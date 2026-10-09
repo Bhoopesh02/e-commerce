@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 export interface DrawerProps {
   isOpen: boolean;
@@ -32,20 +33,17 @@ export const Drawer: React.FC<DrawerProps> = ({
   const generatedId = React.useId();
   const titleId = `drawer-title-${generatedId.replace(/:/g, '')}`;
 
+  useScrollLock(isOpen);
+
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
 
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      window.addEventListener('keydown', handleKeyDown);
-    } else {
-      document.body.style.overflow = '';
-    }
-
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.body.style.overflow = '';
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onClose]);
@@ -71,6 +69,8 @@ export const Drawer: React.FC<DrawerProps> = ({
         opacity: isOpen ? 1 : 0,
         pointerEvents: isOpen ? 'auto' : 'none',
         visibility: isOpen ? 'visible' : 'hidden',
+        overscrollBehavior: 'contain',
+        touchAction: 'none',
         transition: isOpen
           ? 'opacity 500ms var(--ease-luxury) 50ms, visibility 0s linear 0s'
           : 'opacity 500ms var(--ease-luxury), visibility 0s linear 500ms',
@@ -89,6 +89,8 @@ export const Drawer: React.FC<DrawerProps> = ({
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',
+          touchAction: 'pan-y',
+          overscrollBehavior: 'contain',
           transform: isOpen ? 'translateX(0)' : `translateX(${position === 'right' ? '100%' : '-100%'})`,
           transition: 'transform 500ms var(--ease-luxury)',
           boxSizing: 'border-box',
@@ -153,7 +155,17 @@ export const Drawer: React.FC<DrawerProps> = ({
           </motion.button>
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', overscrollBehaviorX: 'none', padding: '24px' }}>
+        <div
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            overscrollBehavior: 'contain',
+            overscrollBehaviorY: 'contain',
+            touchAction: 'pan-y',
+            padding: '24px',
+          }}
+        >
           {children}
         </div>
       </div>
