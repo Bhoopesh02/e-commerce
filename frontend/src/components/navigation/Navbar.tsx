@@ -414,6 +414,38 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   Collections
                 </Link>
                 <Link
+                  href="/collections/men"
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    fontSize: '0.95rem',
+                    fontWeight: pathname === '/collections/men' ? 600 : 400,
+                    letterSpacing: '0.04em',
+                    minHeight: '36px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    paddingLeft: '16px',
+                    color: pathname === '/collections/men' ? 'var(--brand-primary)' : 'var(--text-primary)',
+                  }}
+                >
+                  Men
+                </Link>
+                <Link
+                  href="/collections/women"
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    fontSize: '0.95rem',
+                    fontWeight: pathname === '/collections/women' ? 600 : 400,
+                    letterSpacing: '0.04em',
+                    minHeight: '36px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    paddingLeft: '16px',
+                    color: pathname === '/collections/women' ? 'var(--brand-primary)' : 'var(--text-primary)',
+                  }}
+                >
+                  Women
+                </Link>
+                <Link
                   href={newArrivalsHref}
                   onClick={() => setMobileMenuOpen(false)}
                   style={{
@@ -498,9 +530,42 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               pointerEvents: 'auto',
             }}
           >
-            <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '32px' }}>
+            <div className="container" style={{ display: 'grid', gridTemplateColumns: 'minmax(140px, 0.6fr) 1.5fr 1fr 1.3fr', gap: '32px' }}>
               
-              {/* Column 1: Categories */}
+              {/* Column 1: Shop by Department */}
+              <div>
+                <h4 style={{ fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                  Shop by Department
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <Link 
+                    href="/collections/men" 
+                    onClick={() => setHoveredNav(null)} 
+                    style={{ 
+                      fontSize: '0.95rem', 
+                      color: pathname === '/collections/men' ? 'var(--text-primary)' : 'var(--text-primary)',
+                      fontWeight: pathname === '/collections/men' ? 600 : 400,
+                      textDecoration: pathname === '/collections/men' ? 'underline' : 'none',
+                    }}
+                  >
+                    Men
+                  </Link>
+                  <Link 
+                    href="/collections/women" 
+                    onClick={() => setHoveredNav(null)} 
+                    style={{ 
+                      fontSize: '0.95rem', 
+                      color: pathname === '/collections/women' ? 'var(--text-primary)' : 'var(--text-primary)',
+                      fontWeight: pathname === '/collections/women' ? 600 : 400,
+                      textDecoration: pathname === '/collections/women' ? 'underline' : 'none',
+                    }}
+                  >
+                    Women
+                  </Link>
+                </div>
+              </div>
+
+              {/* Column 2: Categories */}
               <div>
                 <h4 style={{ fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>
                   Shop by Category
@@ -521,7 +586,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 </div>
               </div>
 
-              {/* Column 2: Trends/Featured */}
+              {/* Column 3: Trends/Featured */}
               <div>
                 <h4 style={{ fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>
                   Shop by Edit
@@ -535,7 +600,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 </div>
               </div>
 
-              {/* Column 3: Featured Image */}
+              {/* Column 4: Featured Image */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <div style={{ position: 'relative', width: '100%', paddingBottom: '80%', overflow: 'hidden', backgroundColor: 'var(--bg-subtle)' }}>
                   {/* Since we don't have exactly the image from the user's prompt, we use an existing image */}

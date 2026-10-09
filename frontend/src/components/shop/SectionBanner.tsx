@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import Image from "next/image";
@@ -26,9 +26,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
     const cfg = GENDER_COLLECTIONS[gender];
     const isAll = !activeCategorySlug || activeCategorySlug === "all";
 
-    const eyebrow = isAll
-      ? cfg.eyebrow
-      : (cfg.categories[activeCategorySlug ?? ""]?.title ?? cfg.eyebrow);
+    const eyebrow = cfg.eyebrow;
     const headline = isAll
       ? cfg.title
       : (cfg.categories[activeCategorySlug ?? ""]?.title ?? cfg.title);

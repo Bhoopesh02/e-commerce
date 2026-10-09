@@ -162,7 +162,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
         return (
           <React.Fragment key={id}>
-            <section style={{ padding: '60px 0 20px', backgroundColor: 'var(--bg-primary)' }}>
+            <section style={{ padding: '0 0 20px', backgroundColor: 'var(--bg-primary)' }}>
               <div className="container">
                 <ScrollReveal duration={0.6}>
                   <div style={{ position: 'relative', width: '100%', height: '400px', borderRadius: '16px', overflow: 'hidden' }}>

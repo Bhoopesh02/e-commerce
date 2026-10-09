@@ -1,6 +1,14 @@
-﻿export interface GenderCategoryCopy {
+export interface GenderCategoryCopy {
   title: string;
   subtitle: string;
+}
+
+export interface PromoBannerData {
+  imageSrc: string;
+  eyebrow: string;
+  headline: string;
+  quote: string;
+  cta?: string;
 }
 
 export interface GenderCollectionConfig {
@@ -8,105 +16,133 @@ export interface GenderCollectionConfig {
   title: string;
   subtitle: string;
   defaultBanner: string;
+  promoBanners: PromoBannerData[];
   categories: Record<string, GenderCategoryCopy>;
 }
 
 export const GENDER_COLLECTIONS: Record<"men" | "women", GenderCollectionConfig> = {
   men: {
     eyebrow: "AURELIA HOMME",
-    title: "The Men\u2019s Wardrobe",
+    title: "The Men’s Wardrobe",
     subtitle:
       "Architectural silhouettes, Savile Row precision, and noble natural fibers crafted for longevity.",
     defaultBanner: "/images/banners/gen/men/all.jpg",
+    promoBanners: [
+      {
+        imageSrc: "/images/banners/promo/men_banner_1.webp",
+        eyebrow: "AURELIA HOMME",
+        headline: "The Art of Ease",
+        quote: "Quiet tailoring for the unhurried hour.",
+      },
+      {
+        imageSrc: "/images/banners/promo/men_banner_2.webp",
+        eyebrow: "AURELIA HOMME",
+        headline: "Made to Be Lived In",
+        quote: "Considered fabrics and a precise cut, season after season.",
+      },
+    ],
     categories: {
       outerwear: {
-        title: "MEN\u2019S OUTERWEAR",
+        title: "Men’s Outerwear",
         subtitle:
-          "Double-faced virgin wool overcoats, distressed shearling aviators, and Milanese nappa leather jackets.",
+          "Hand-finished Milanese nappa leather jackets, Spanish merino shearling aviators, and double-breasted virgin wool peacoats.",
       },
       tailoring: {
-        title: "MEN\u2019S TAILORING",
+        title: "Men’s Tailoring",
         subtitle:
-          "Deconstructed Super 150s wool suiting, chalk-stripe double-breasted blazers, and high-rise Gurkha trousers.",
+          "Deconstructed chalk-stripe wool suiting, high-rise pleated Gurkha trousers, and cotton-silk velvet smoking jackets.",
       },
       eveningwear: {
-        title: "MEN\u2019S EVENINGWEAR",
-        subtitle:
-          "Midnight barathea tuxedo suiting, velvet-collared Chesterfields, and Marcella bib formal attire.",
+        title: "Men’s Eveningwear",
+        subtitle: "A curated selection of formal attire.",
       },
       knitwear: {
-        title: "MEN\u2019S KNITWEAR",
+        title: "Men’s Knitwear",
         subtitle:
-          "Artisanal 8-ply Mongolian cashmere cardigans, baby alpaca knit polos, and seamless thermal crewnecks.",
+          "Seamless fine-gauge cashmere crewnecks, chunky cable-knit merino cardigans, and Peruvian baby alpaca polos.",
       },
       "leather-goods": {
-        title: "MEN\u2019S LEATHER GOODS",
+        title: "Men’s Leather Goods",
         subtitle:
-          "Hand-stitched French box calfskin weekender holdalls, Florentine flap briefcases, and Saffiano folios.",
+          "Handcrafted Florentine flap briefcases, pebbled leather weekend duffles, and grained calfskin folios.",
       },
       footwear: {
-        title: "MEN\u2019S FOOTWEAR",
+        title: "Men’s Footwear",
         subtitle:
-          "Goodyear-welted Tuscan Chelsea boots, hand-burnished monk straps, and chiseled dress oxfords.",
+          "Goodyear-welted oxford brogues, hand-burnished monk strap loafers, and Italian calfskin low-top court sneakers.",
       },
       "fine-jewelry": {
-        title: "MEN\u2019S FINE JEWELRY",
+        title: "Men’s Fine Jewelry",
         subtitle:
-          "Architectural black onyx signet rings, heavy 18k vermeil curb chains, and Corinthian column cufflinks.",
+          "Architectural dome signet rings, heavy herringbone chains, and gold vermeil Corinthian column cufflinks.",
       },
       fragrances: {
-        title: "MEN\u2019S FRAGRANCES",
+        title: "Men’s Fragrances",
         subtitle:
-          "Concentrated extrait parfums of smoky Atlas cedarwood, Cambodian oud, and cured pipe tobacco.",
+          "Artisanal concentrated extracts of wild Haitian vetiver, rare Cambodian oud, and rich cured pipe tobacco.",
       },
     },
   },
   women: {
     eyebrow: "AURELIA FEMME",
-    title: "The Women\u2019s Collection",
+    title: "The Women’s Collection",
     subtitle:
       "Sculptural drapery, liquid mulberry silks, and tactile tailoring designed with quiet authority.",
     defaultBanner: "/images/banners/gen/women/all.jpg",
+    promoBanners: [
+      {
+        imageSrc: "/images/banners/promo/women_banner_1.webp",
+        eyebrow: "AURELIA FEMME",
+        headline: "Composed in Silk",
+        quote: "Fluid lines and sculpted tailoring, worn with quiet authority.",
+      },
+      {
+        imageSrc: "/images/banners/promo/women_banner_2.webp",
+        eyebrow: "AURELIA FEMME",
+        headline: "The Evening, Defined",
+        quote: "Elegance that moves with you, from day into night.",
+      },
+    ],
     categories: {
       outerwear: {
-        title: "WOMEN\u2019S OUTERWEAR",
+        title: "Women’s Outerwear",
         subtitle:
-          "Fluid cashmere wrap overcoats, sculptural capelet coats, and insulating cocoon duster silhouettes.",
+          "Fluid cashmere wrap overcoats, double-faced wool trench coats, and quilted silk down parkas.",
       },
       tailoring: {
-        title: "WOMEN\u2019S TAILORING",
+        title: "Women’s Tailoring",
         subtitle:
-          "Hourglass virgin wool blazers, architectural peplum vests, and floor-puddle pleated palazzo trousers.",
+          "Hourglass tuxedo jackets, architectural peplum waistcoats, and pleated wide-leg palazzo trousers.",
       },
       eveningwear: {
-        title: "WOMEN\u2019S EVENINGWEAR",
+        title: "Women’s Eveningwear",
         subtitle:
-          "Liquid mulberry silk charmeuse slip gowns, corseted gala ballgowns, and diaphanous organza capes.",
+          "Liquid silk charmeuse slip gowns, corseted taffeta gala ballgowns, and delicately sequined Chantilly lace sirens.",
       },
       knitwear: {
-        title: "WOMEN\u2019S KNITWEAR",
+        title: "Women’s Knitwear",
         subtitle:
-          "Grade-A Inner Mongolian ribbed turtlenecks, open-back twisted cashmeres, and brushed kid mohair.",
+          "Ribbed Mongolian cashmere turtlenecks, brushed kid mohair jumpers, and oversized Donegal wool fisherman sweaters.",
       },
       "leather-goods": {
-        title: "WOMEN\u2019S LEATHER GOODS",
+        title: "Women’s Leather Goods",
         subtitle:
-          "Sculptural origami gusset totes, French box calf top-handle bags, and hand-woven intrecciato hobos.",
+          "Architectural box calf top-handle bags, braided lambskin hobos, and sculptural folded leather clutches.",
       },
       footwear: {
-        title: "WOMEN\u2019S FOOTWEAR",
+        title: "Women’s Footwear",
         subtitle:
-          "Architectural flared kitten-heel pumps, chiseled ballerina flats, and crystal-coil evening stilettos.",
+          "Pointed knee-high suede boots, architectural square-toe slingback pumps, and strappy satin evening stilettos.",
       },
       "fine-jewelry": {
-        title: "WOMEN\u2019S FINE JEWELRY",
+        title: "Women’s Fine Jewelry",
         subtitle:
-          "Organic baroque freshwater pearl pendants, molten vermeil open torcs, and micro-pav\u00e9 diamond huggies.",
+          "Organic baroque freshwater pearl pendants, molten gold drop earrings, and micro-pavé diamond huggies.",
       },
       fragrances: {
-        title: "WOMEN\u2019S FRAGRANCES",
+        title: "Women’s Fragrances",
         subtitle:
-          "Artisanal distilled Grasse extracts of powdery Florentine orris, night-blooming jasmine, and Damask rose.",
+          "Artisanal distilled extracts of Calabrian bergamot, Moroccan orange blossom, and crimson Damask rose.",
       },
     },
   },

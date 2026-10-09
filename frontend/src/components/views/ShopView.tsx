@@ -11,6 +11,7 @@ import { CategorySection, CategorySectionSkeleton, SectionAnimationVariant } fro
 import { SectionBanner } from '@/components/shop/SectionBanner';
 import { RangeSlider } from '@/components/ui/RangeSlider';
 import { AnimatePresence, motion } from 'framer-motion';
+import { FlatProductGrid, PAGE_SIZE } from '@/components/shop/FlatProductGrid';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { SlidersHorizontal, X, RotateCcw, ArrowUp, Check, Search } from 'lucide-react';
 
@@ -107,9 +108,56 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [isStuck, setIsStuck] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const getPageFromParam = useCallback((param: string | null): number => {
+    if (!param) return 1;
+    const parsed = parseInt(param, 10);
+    return isNaN(parsed) || parsed < 1 ? 1 : parsed;
+  }, []);
+
+  const [currentPage, setCurrentPage] = useState<number>(() =>
+    getPageFromParam(searchParams.get('page'))
+  );
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setCurrentPage(newPage);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      if (newPage <= 1) {
+        url.searchParams.delete('page');
+      } else {
+        url.searchParams.set('page', String(newPage));
+      }
+      window.history.replaceState(null, '', url.pathname + url.search);
+    }
+  }, []);
+
+  // Sync state if URL searchParams change
+  useEffect(() => {
+    const urlPage = getPageFromParam(searchParams.get('page'));
+    if (urlPage !== currentPage) {
+      setCurrentPage(urlPage);
+    }
+  }, [searchParams, getPageFromParam, currentPage]);
+
+  // Reset to page 1 on active category, filter, sort, or search query change
+  useEffect(() => {
+    handlePageChange(1);
+  }, [activeCategory, appliedPriceRange, appliedAvailability, selectedSort, searchQuery, handlePageChange]);
 
   const stickyBarRef = useRef<HTMLDivElement>(null);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
+  const gridContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollToGridTop = useCallback(() => {
+    if (gridContainerRef.current) {
+      const navHeight = window.innerWidth <= 767 ? 64 : 76;
+      const rect = gridContainerRef.current.getBoundingClientRect();
+      const scrollTop = window.pageYOffset + rect.top - navHeight - 16;
+      window.scrollTo({ top: Math.max(0, scrollTop), behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
 
   // Scroll active category tab into view
   useEffect(() => {
@@ -274,6 +322,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gender, activeCategory, genderProducts, categories]);
 
+  // Fallback to page 1 if current page exceeds total pages
+  useEffect(() => {
+    if (gender && activeCategory === 'all') {
+      const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
+      if (currentPage > totalPages) {
+        handlePageChange(1);
+      }
+    }
+  }, [filteredProducts.length, currentPage, gender, activeCategory, handlePageChange]);
+
   const currentCategoryProducts = useMemo(() => {
     if (!currentCategory) return [];
     return filteredProducts.filter((p) => p.categoryId === currentCategory.id);
@@ -392,50 +450,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
         }}
       >
         <div className="container">
-          {/* HORIZONTAL CATEGORY TABS */}
-          <div
-            ref={tabsContainerRef}
-            className="category-tabs-container hide-scrollbar"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '24px',
-              overflowX: 'auto',
-              paddingBottom: '12px',
-              marginBottom: '12px',
-              borderBottom: '1px solid var(--border-color)',
-              WebkitOverflowScrolling: 'touch',
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none'
-            }}
-          >
-            {(gender ? [{ id: 'all', slug: 'all', name: 'All' }, ...visibleCategories] : categories).map(cat => {
-              const isActive = activeCategory === cat.slug;
-              return (
-                <button
-                  key={cat.id}
-                  className={isActive ? 'active-category-tab' : ''}
-                  onClick={() => handleCategorySelect(cat.slug)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    padding: '0 0 4px 0',
-                    fontSize: '0.85rem',
-                    fontWeight: isActive ? 600 : 400,
-                    color: isActive ? 'var(--text-primary)' : 'var(--text-muted)',
-                    borderBottom: isActive ? '2px solid var(--text-primary)' : '2px solid transparent',
-                    whiteSpace: 'nowrap',
-                    cursor: 'pointer',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.04em',
-                    transition: 'all 0.2s ease',
-                  }}
-                >
-                  {cat.name}
-                </button>
-              );
-            })}
-          </div>
 
           <div
             style={{
@@ -447,124 +461,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
               flexWrap: 'wrap',
             }}
           >
-            {/* Active Filters inside the Navbar */}
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                gap: '8px',
-                minWidth: 0,
-                flex: 1,
-              }}
-            >
-              {hasActiveFilters && (
-                <>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
-                    Active Filters:
-                  </span>
-                  {searchQuery.trim() && (
-                    <span
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        padding: '3px 10px',
-                        backgroundColor: 'var(--bg-surface)',
-                        borderRadius: 'var(--radius-pill)',
-                        border: '1px solid var(--border-color)',
-                        fontSize: '0.78rem',
-                        color: 'var(--text-primary)',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      <span>Search: &ldquo;{searchQuery.trim()}&rdquo;</span>
-                      <X
-                        size={12}
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => setSearchQuery('')}
-                        aria-label="Clear search filter"
-                      />
-                    </span>
-                  )}
-                  {(appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000) && (
-                    <span
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        padding: '3px 10px',
-                        backgroundColor: 'var(--bg-surface)',
-                        borderRadius: 'var(--radius-pill)',
-                        border: '1px solid var(--border-color)',
-                        fontSize: '0.78rem',
-                        color: 'var(--text-primary)',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      <span>
-                        Price: ₹{appliedPriceRange[0].toLocaleString()} - ₹{appliedPriceRange[1].toLocaleString()}
-                      </span>
-                      <X
-                        size={12}
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                          setPriceRange([0, 100000]);
-                          setAppliedPriceRange([0, 100000]);
-                        }}
-                        aria-label="Remove price filter"
-                      />
-                    </span>
-                  )}
-                  {appliedAvailability !== 'all' && (
-                    <span
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        padding: '3px 10px',
-                        backgroundColor: 'var(--bg-surface)',
-                        borderRadius: 'var(--radius-pill)',
-                        border: '1px solid var(--border-color)',
-                        fontSize: '0.78rem',
-                        color: 'var(--text-primary)',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      <span>In Stock Only</span>
-                      <X
-                        size={12}
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                          setSelectedAvailability('all');
-                          setAppliedAvailability('all');
-                        }}
-                        aria-label="Remove availability filter"
-                      />
-                    </span>
-                  )}
-                  <button
-                    onClick={resetFilters}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      background: 'none',
-                      border: 'none',
-                      fontSize: '0.78rem',
-                      color: 'var(--brand-primary)',
-                      cursor: 'pointer',
-                      marginLeft: '4px',
-                    }}
-                  >
-                    <RotateCcw size={12} /> Reset all
-                  </button>
-                </>
-              )}
-            </div>
-
             {/* Search Bar & Filters */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginLeft: 'auto', flexShrink: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0 }}>
               {/* Inline Search Bar */}
               <div
                 className="shop-search-bar"
@@ -690,11 +588,126 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 )}
               </button>
             </div>
+            {/* Active Filters inside the Navbar */}
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                gap: '8px',
+                minWidth: 0,
+                flex: 1,
+              }}
+            >
+              {hasActiveFilters && (
+                <>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                    Active Filters:
+                  </span>
+                  {searchQuery.trim() && (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '3px 10px',
+                        backgroundColor: 'var(--bg-surface)',
+                        borderRadius: 'var(--radius-pill)',
+                        border: '1px solid var(--border-color)',
+                        fontSize: '0.78rem',
+                        color: 'var(--text-primary)',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <span>Search: &ldquo;{searchQuery.trim()}&rdquo;</span>
+                      <X
+                        size={12}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => setSearchQuery('')}
+                        aria-label="Clear search filter"
+                      />
+                    </span>
+                  )}
+                  {(appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000) && (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '3px 10px',
+                        backgroundColor: 'var(--bg-surface)',
+                        borderRadius: 'var(--radius-pill)',
+                        border: '1px solid var(--border-color)',
+                        fontSize: '0.78rem',
+                        color: 'var(--text-primary)',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <span>
+                        Price: ₹{appliedPriceRange[0].toLocaleString()} - ₹{appliedPriceRange[1].toLocaleString()}
+                      </span>
+                      <X
+                        size={12}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          setPriceRange([0, 100000]);
+                          setAppliedPriceRange([0, 100000]);
+                        }}
+                        aria-label="Remove price filter"
+                      />
+                    </span>
+                  )}
+                  {appliedAvailability !== 'all' && (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '3px 10px',
+                        backgroundColor: 'var(--bg-surface)',
+                        borderRadius: 'var(--radius-pill)',
+                        border: '1px solid var(--border-color)',
+                        fontSize: '0.78rem',
+                        color: 'var(--text-primary)',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <span>In Stock Only</span>
+                      <X
+                        size={12}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          setSelectedAvailability('all');
+                          setAppliedAvailability('all');
+                        }}
+                        aria-label="Remove availability filter"
+                      />
+                    </span>
+                  )}
+                  <button
+                    onClick={resetFilters}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      background: 'none',
+                      border: 'none',
+                      fontSize: '0.78rem',
+                      color: 'var(--brand-primary)',
+                      cursor: 'pointer',
+                      marginLeft: '4px',
+                    }}
+                  >
+                    <RotateCcw size={12} /> Reset all
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="container" style={{ marginTop: '36px' }}>
+      <div ref={gridContainerRef} className="container" style={{ marginTop: '36px' }}>
         {/* Distinct Category Sections */}
         {loading ? (
           <div className="category-sections-container">
@@ -704,25 +717,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
         ) : filteredProducts.length > 0 ? (
           <div className="category-sections-container">
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
               {gender && activeCategory === 'all' ? (
-                // Gender mode + All tab: render all populated category sections
-                visibleCategories.map((category) => {
-                  const categoryProducts = filteredProducts.filter((p) => p.categoryId === category.id);
-                  if (categoryProducts.length === 0) return null;
-                  return (
-                    <CategorySection
-                      key={category.id}
-                      category={category}
-                      products={categoryProducts}
-                      animationVariant={SECTION_ANIMATIONS[category.slug] || 'fade-up'}
-                      onNext={handleNextCategory}
-                      onPrev={handlePrevCategory}
-                      hasNext={true}
-                      hasPrev={true}
-                    />
-                  );
-                })
+                // Gender mode + All tab: render flat grid
+                <FlatProductGrid 
+                  products={filteredProducts} 
+                  gender={gender} 
+                  currentPage={currentPage} 
+                />
               ) : (
                 // Single category view (original /shop behaviour or gender + specific tab)
                 (gender ? visibleCategories : categories).map((category) => {
@@ -790,6 +792,37 @@ export const ShopView: React.FC<ShopViewProps> = ({
             <span>Return to Top</span>
           </button>
         </div>
+
+        {/* Pagination Controls */}
+        {gender && activeCategory === 'all' && filteredProducts.length > PAGE_SIZE && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px', gap: '8px' }}>
+            {Array.from({ length: Math.ceil(filteredProducts.length / PAGE_SIZE) }).map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  handlePageChange(idx + 1);
+                  scrollToGridTop();
+                }}
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '0.9rem',
+                  border: currentPage === idx + 1 ? '1px solid var(--text-primary)' : '1px solid var(--border-color)',
+                  backgroundColor: currentPage === idx + 1 ? 'var(--text-primary)' : 'var(--bg-surface)',
+                  color: currentPage === idx + 1 ? 'var(--bg-primary)' : 'var(--text-primary)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                {idx + 1}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Mobile Filters Drawer / Bottom Sheet */}
