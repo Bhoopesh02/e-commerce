@@ -35,27 +35,16 @@ export const HeroSection: React.FC = () => {
         }}
       >
         <Image
-          src="/images/products/new/Gemini_Generated_Image_he79i9he79i9he79.png"
+          src="/images/banners/Gemini_Generated_Image_piepdipiepdipiep.png"
           alt="Aurelia Luxury Campaign - The Winter Collection"
           fill
           priority
           quality={100}
+          unoptimized
           sizes="100vw"
           className="animate-hero-scale hero-image"
           style={{
             objectFit: 'cover',
-          }}
-        />
-
-        {/* Editorial Dramatic Gradients */}
-        <div
-          className={`hero-gradient ${isEditorial ? 'gradient-editorial' : 'gradient-refined'}`}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
           }}
         />
       </div>
@@ -73,7 +62,7 @@ export const HeroSection: React.FC = () => {
       >
         {isEditorial ? (
           /* Editorial Experience Layout */
-          <div style={{ maxWidth: '600px' }}>
+          <div style={{ maxWidth: '600px', textShadow: '0 2px 10px rgba(0, 0, 0, 0.45)' }}>
             <span
               style={{
                 fontSize: '0.8rem',
@@ -105,11 +94,11 @@ export const HeroSection: React.FC = () => {
 
             <p
               style={{
-                fontSize: 'clamp(1rem, 1.2vw, 1.125rem)',
+                fontSize: 'clamp(0.85rem, 0.95vw, 0.95rem)',
                 color: 'var(--bg-subtle)',
                 lineHeight: 1.6,
-                maxWidth: '560px',
-                marginBottom: '36px',
+                maxWidth: '520px',
+                marginBottom: '32px',
               }}
             >
               The new collection arrives at Aurelia. Hand-finished Italian nappa leather, double-faced cashmere, and bias-cut mulberry silk.
@@ -189,19 +178,11 @@ export const HeroSection: React.FC = () => {
           align-items: flex-end;
           justify-content: flex-start;
           padding-top: 88px;
-          padding-bottom: 48px;
+          padding-bottom: clamp(96px, 13vh, 150px);
         }
 
         .hero-image {
           object-position: center 20% !important;
-        }
-
-        .gradient-editorial {
-          background: linear-gradient(90deg, rgba(16, 33, 39, 0.7) 0%, rgba(16, 33, 39, 0) 50%);
-        }
-
-        .gradient-refined {
-          background: linear-gradient(180deg, rgba(16, 33, 39, 0.35) 0%, rgba(16, 33, 39, 0.75) 100%);
         }
 
         .editorial-layout {
@@ -228,10 +209,6 @@ export const HeroSection: React.FC = () => {
           
           .hero-image {
             object-position: right center !important;
-          }
-
-          .gradient-editorial {
-            background: linear-gradient(90deg, rgba(16, 33, 39, 0.9) 0%, rgba(16, 33, 39, 0.6) 80%, rgba(16, 33, 39, 0) 100%);
           }
 
           .hero-content-container.refined-layout {
