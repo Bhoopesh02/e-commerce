@@ -3,7 +3,6 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Category, Product } from '@/types';
-import { SectionBanner } from './SectionBanner';
 import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 
@@ -30,20 +29,8 @@ export const CategorySectionSkeleton: React.FC<CategorySectionSkeletonProps> = (
       }}
       aria-hidden="true"
     >
-      {/* Category Main Banner Skeleton */}
-      <div
-        style={{
-          height: '240px',
-          borderRadius: 'var(--radius-lg, 20px)',
-          overflow: 'hidden',
-          marginBottom: '32px',
-        }}
-      >
-        <Skeleton width="100%" height="100%" borderRadius="20px" />
-      </div>
-
       {/* All Products Grid Skeleton */}
-      <div style={{ marginTop: '48px' }}>
+      <div>
         <div
           style={{
             display: 'flex',
@@ -99,14 +86,8 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
         scrollMarginTop: '130px',
       }}
     >
-      {/* Category Main Banner */}
-      <SectionBanner
-        category={category}
-        productCount={products.length}
-      />
-
       {/* All Products Grid */}
-      <div className="section-catalog-below" style={{ marginTop: '48px' }}>
+      <div className="section-catalog-below">
         <div
           style={{
             display: 'flex',

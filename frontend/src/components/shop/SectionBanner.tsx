@@ -32,17 +32,13 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
     <div
       style={{
         position: 'relative',
-        width: '100vw',
-        left: '50%',
-        right: '50%',
-        marginLeft: '-50vw',
-        marginRight: '-50vw',
-        borderRadius: '0px', // The reference image doesn't seem to have rounded corners, or maybe we can keep 12px for consistency
-        marginBottom: '36px',
+        width: '100%',
+        borderRadius: '0px',
+        marginBottom: '0px',
         display: 'flex',
         flexDirection: 'row',
         backgroundColor: '#ffffff',
-        minHeight: '60vh', // Using a larger height to accommodate portrait images
+        minHeight: '60vh',
         overflow: 'hidden',
         boxShadow: '0 4px 24px rgba(0,0,0,0.05)',
       }}

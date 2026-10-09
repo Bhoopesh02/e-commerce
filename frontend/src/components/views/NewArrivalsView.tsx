@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
 import { RangeSlider } from '@/components/ui/RangeSlider';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
-import { SlidersHorizontal, X, RotateCcw, ArrowUp, Check } from 'lucide-react';
+import { SlidersHorizontal, X, RotateCcw, ArrowUp, Check, Search } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const NewArrivalsView: React.FC = () => {
@@ -25,6 +25,7 @@ export const NewArrivalsView: React.FC = () => {
   const [appliedPriceRange, setAppliedPriceRange] = useState<[number, number]>([0, 100000]);
   const [selectedAvailability, setSelectedAvailability] = useState<string>('all');
   const [appliedAvailability, setAppliedAvailability] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   useEffect(() => {
@@ -64,6 +65,16 @@ export const NewArrivalsView: React.FC = () => {
   const filteredProducts = useMemo(() => {
     let list = [...products];
 
+    // Search query filter
+    const query = searchQuery.trim().toLowerCase();
+    if (query) {
+      list = list.filter((p) =>
+        p.name.toLowerCase().includes(query) ||
+        p.description?.toLowerCase().includes(query) ||
+        p.tags?.some((t) => t.toLowerCase().includes(query))
+      );
+    }
+
     if (activeCategory !== 'all') {
       const cat = categories.find(c => c.slug === activeCategory);
       if (cat) {
@@ -78,7 +89,7 @@ export const NewArrivalsView: React.FC = () => {
     }
 
     return list;
-  }, [products, categories, activeCategory, appliedPriceRange, appliedAvailability]);
+  }, [products, categories, searchQuery, activeCategory, appliedPriceRange, appliedAvailability]);
 
   const resetFilters = () => {
     setActiveCategory('all');
@@ -86,9 +97,20 @@ export const NewArrivalsView: React.FC = () => {
     setAppliedPriceRange([0, 100000]);
     setSelectedAvailability('all');
     setAppliedAvailability('all');
+    setSearchQuery('');
   };
 
-  const hasActiveFilters = activeCategory !== 'all' || appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000 || appliedAvailability !== 'all';
+  const hasActiveFilters =
+    activeCategory !== 'all' ||
+    appliedPriceRange[0] > 0 ||
+    appliedPriceRange[1] < 100000 ||
+    appliedAvailability !== 'all' ||
+    searchQuery.trim().length > 0;
+
+  const activeCategoryName = useMemo(() => {
+    if (activeCategory === 'all') return '';
+    return categories.find((c) => c.slug === activeCategory)?.name || activeCategory;
+  }, [categories, activeCategory]);
 
   return (
     <div style={{ paddingTop: '76px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
@@ -106,12 +128,249 @@ export const NewArrivalsView: React.FC = () => {
       <div
         ref={stickyBarRef}
         className={`sticky-navigation-header ${isStuck ? 'is-stuck' : ''}`}
-        style={{ paddingTop: '4px', paddingBottom: '4px' }}
+        style={{ paddingTop: '6px', paddingBottom: '6px' }}
       >
         <div className="container">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
-            {/* Filters Button */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginLeft: 'auto', flexShrink: 0 }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '16px',
+              minHeight: '36px',
+              flexWrap: 'wrap',
+            }}
+          >
+            {/* Active Filters inside the Navbar */}
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                gap: '8px',
+                minWidth: 0,
+                flex: 1,
+              }}
+            >
+              {hasActiveFilters ? (
+                <>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                    Active Filters:
+                  </span>
+                  {searchQuery.trim() && (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '3px 10px',
+                        backgroundColor: 'var(--bg-surface)',
+                        borderRadius: 'var(--radius-pill)',
+                        border: '1px solid var(--border-color)',
+                        fontSize: '0.78rem',
+                        color: 'var(--text-primary)',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <span>Search: &ldquo;{searchQuery.trim()}&rdquo;</span>
+                      <X
+                        size={12}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => setSearchQuery('')}
+                        aria-label="Clear search filter"
+                      />
+                    </span>
+                  )}
+                  {activeCategory !== 'all' && (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '3px 10px',
+                        backgroundColor: 'var(--bg-surface)',
+                        borderRadius: 'var(--radius-pill)',
+                        border: '1px solid var(--border-color)',
+                        fontSize: '0.78rem',
+                        color: 'var(--text-primary)',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <span>Category: {activeCategoryName}</span>
+                      <X
+                        size={12}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => setActiveCategory('all')}
+                        aria-label="Remove category filter"
+                      />
+                    </span>
+                  )}
+                  {(appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000) && (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '3px 10px',
+                        backgroundColor: 'var(--bg-surface)',
+                        borderRadius: 'var(--radius-pill)',
+                        border: '1px solid var(--border-color)',
+                        fontSize: '0.78rem',
+                        color: 'var(--text-primary)',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <span>Price: ₹{appliedPriceRange[0].toLocaleString()} - ₹{appliedPriceRange[1].toLocaleString()}</span>
+                      <X
+                        size={12}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          setPriceRange([0, 100000]);
+                          setAppliedPriceRange([0, 100000]);
+                        }}
+                        aria-label="Remove price filter"
+                      />
+                    </span>
+                  )}
+                  {appliedAvailability !== 'all' && (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '3px 10px',
+                        backgroundColor: 'var(--bg-surface)',
+                        borderRadius: 'var(--radius-pill)',
+                        border: '1px solid var(--border-color)',
+                        fontSize: '0.78rem',
+                        color: 'var(--text-primary)',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <span>In Stock Only</span>
+                      <X
+                        size={12}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          setSelectedAvailability('all');
+                          setAppliedAvailability('all');
+                        }}
+                        aria-label="Remove availability filter"
+                      />
+                    </span>
+                  )}
+                  <button
+                    onClick={resetFilters}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      background: 'none',
+                      border: 'none',
+                      fontSize: '0.78rem',
+                      color: 'var(--brand-primary)',
+                      cursor: 'pointer',
+                      marginLeft: '4px',
+                      padding: 0,
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    <RotateCcw size={12} /> Reset all
+                  </button>
+                </>
+              ) : (
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', letterSpacing: '0.02em' }}>
+                  {filteredProducts.length} Silhouettes
+                </span>
+              )}
+            </div>
+
+            {/* Search Bar & Filters */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0, marginLeft: 'auto' }}>
+              {/* Inline Search Bar */}
+              <div
+                className="new-arrivals-search-bar"
+                style={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <Search
+                  size={15}
+                  strokeWidth={1.6}
+                  style={{
+                    position: 'absolute',
+                    left: '12px',
+                    color: 'var(--text-muted)',
+                    pointerEvents: 'none',
+                    flexShrink: 0,
+                  }}
+                />
+                <input
+                  type="text"
+                  id="new-arrivals-search-input"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search new arrivals..."
+                  aria-label="Search new arrivals"
+                  style={{
+                    width: '180px',
+                    padding: '7px 30px 7px 34px',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: 'var(--radius-pill, 999px)',
+                    fontSize: '0.82rem',
+                    fontFamily: 'inherit',
+                    backgroundColor: 'var(--bg-surface, #fafafa)',
+                    color: 'var(--text-primary)',
+                    outline: 'none',
+                    transition: 'border-color 0.2s ease, box-shadow 0.2s ease, width 0.3s ease',
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--text-muted)';
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0,0,0,0.04)';
+                    e.currentTarget.style.width = '230px';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border-color)';
+                    e.currentTarget.style.boxShadow = 'none';
+                    if (!searchQuery) e.currentTarget.style.width = '180px';
+                  }}
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    aria-label="Clear search"
+                    style={{
+                      position: 'absolute',
+                      right: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '2px',
+                      borderRadius: '50%',
+                      color: 'var(--text-muted)',
+                    }}
+                  >
+                    <X size={13} />
+                  </button>
+                )}
+              </div>
+
+              {/* Subtle Divider */}
+              <div
+                style={{
+                  width: '1px',
+                  height: '20px',
+                  backgroundColor: 'var(--border-color)',
+                  flexShrink: 0,
+                }}
+              />
+
+              {/* Filters Button */}
               <button
                 onClick={() => setMobileFiltersOpen(true)}
                 aria-label="Open Filters"
@@ -132,31 +391,23 @@ export const NewArrivalsView: React.FC = () => {
               >
                 <SlidersHorizontal size={14} />
                 <span>Filters</span>
+                {hasActiveFilters && (
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '6px',
+                      height: '6px',
+                      borderRadius: '50%',
+                      backgroundColor: 'var(--color-terracotta, var(--color-golden-500))',
+                      marginLeft: '2px',
+                    }}
+                  />
+                )}
               </button>
             </div>
           </div>
-
-          {/* Active Filter Chips */}
-          {hasActiveFilters && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px', marginTop: '12px' }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Active Filters:</span>
-              {(appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000) && (
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 10px', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-pill)', border: '1px solid var(--border-color)', fontSize: '0.78rem' }}>
-                  Price: ₹{appliedPriceRange[0].toLocaleString()} - ₹{appliedPriceRange[1].toLocaleString()}
-                  <X size={12} style={{ cursor: 'pointer' }} onClick={() => { setPriceRange([0, 100000]); setAppliedPriceRange([0, 100000]); }} />
-                </span>
-              )}
-              {appliedAvailability !== 'all' && (
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 10px', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-pill)', border: '1px solid var(--border-color)', fontSize: '0.78rem' }}>
-                  In Stock Only
-                  <X size={12} style={{ cursor: 'pointer' }} onClick={() => { setSelectedAvailability('all'); setAppliedAvailability('all'); }} />
-                </span>
-              )}
-              <button onClick={resetFilters} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'none', border: 'none', fontSize: '0.78rem', color: 'var(--brand-primary)', cursor: 'pointer', marginLeft: '4px' }}>
-                <RotateCcw size={12} /> Reset all
-              </button>
-            </div>
-          )}
         </div>
       </div>
 
@@ -199,24 +450,143 @@ export const NewArrivalsView: React.FC = () => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '16px 8px 120px' }}>
           {/* Category Filter */}
           <div>
-            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem', letterSpacing: '0.06em', marginBottom: '20px', color: 'var(--text-primary)', textTransform: 'uppercase' }}>Category</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingLeft: '16px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', fontSize: '1.05rem', cursor: 'pointer', color: 'var(--text-primary)', position: 'relative' }}>
-                <div style={{ position: 'absolute', left: '-16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {activeCategory === 'all' && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#141414' }} />}
+            <h4
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontSize: '1.05rem',
+                letterSpacing: '0.06em',
+                marginBottom: '16px',
+                color: 'var(--text-primary)',
+                textTransform: 'uppercase',
+              }}
+            >
+              Category
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  fontSize: '0.95rem',
+                  cursor: 'pointer',
+                  color: 'var(--text-primary)',
+                  padding: '8px 10px',
+                  borderRadius: '8px',
+                  backgroundColor: activeCategory === 'all' ? 'var(--overlay-black-5)' : 'transparent',
+                  transition: 'background-color 0.2s ease, opacity 0.2s ease',
+                  userSelect: 'none',
+                }}
+              >
+                <div
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    borderRadius: '50%',
+                    border:
+                      activeCategory === 'all'
+                        ? '1.5px solid var(--color-black-tie)'
+                        : '1.5px solid var(--border-color)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    backgroundColor: activeCategory === 'all' ? 'var(--color-black-tie)' : 'transparent',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {activeCategory === 'all' && (
+                    <div
+                      style={{
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        backgroundColor: 'var(--color-diamond)',
+                      }}
+                    />
+                  )}
                 </div>
-                <input type="radio" checked={activeCategory === 'all'} onChange={() => setActiveCategory('all')} style={{ display: 'none' }} />
-                <span style={{ fontWeight: activeCategory === 'all' ? 500 : 400, opacity: activeCategory === 'all' ? 1 : 0.8 }}>All Categories</span>
+                <input
+                  type="radio"
+                  checked={activeCategory === 'all'}
+                  onChange={() => setActiveCategory('all')}
+                  style={{ display: 'none' }}
+                />
+                <span
+                  style={{
+                    fontWeight: activeCategory === 'all' ? 600 : 400,
+                    opacity: activeCategory === 'all' ? 1 : 0.85,
+                    letterSpacing: '0.01em',
+                  }}
+                >
+                  All Categories
+                </span>
               </label>
-              {categories.map((cat) => (
-                <label key={cat.id} style={{ display: 'flex', alignItems: 'center', fontSize: '1.05rem', cursor: 'pointer', color: 'var(--text-primary)', position: 'relative' }}>
-                  <div style={{ position: 'absolute', left: '-16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {activeCategory === cat.slug && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#141414' }} />}
-                  </div>
-                  <input type="radio" checked={activeCategory === cat.slug} onChange={() => setActiveCategory(cat.slug)} style={{ display: 'none' }} />
-                  <span style={{ fontWeight: activeCategory === cat.slug ? 500 : 400, opacity: activeCategory === cat.slug ? 1 : 0.8 }}>{cat.name}</span>
-                </label>
-              ))}
+
+              {categories.map((cat) => {
+                const isSelected = activeCategory === cat.slug;
+                return (
+                  <label
+                    key={cat.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      fontSize: '0.95rem',
+                      cursor: 'pointer',
+                      color: 'var(--text-primary)',
+                      padding: '8px 10px',
+                      borderRadius: '8px',
+                      backgroundColor: isSelected ? 'var(--overlay-black-5)' : 'transparent',
+                      transition: 'background-color 0.2s ease, opacity 0.2s ease',
+                      userSelect: 'none',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '18px',
+                        height: '18px',
+                        borderRadius: '50%',
+                        border: isSelected
+                          ? '1.5px solid var(--color-black-tie)'
+                          : '1.5px solid var(--border-color)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        backgroundColor: isSelected ? 'var(--color-black-tie)' : 'transparent',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            width: '6px',
+                            height: '6px',
+                            borderRadius: '50%',
+                            backgroundColor: 'var(--color-diamond)',
+                          }}
+                        />
+                      )}
+                    </div>
+                    <input
+                      type="radio"
+                      checked={isSelected}
+                      onChange={() => setActiveCategory(cat.slug)}
+                      style={{ display: 'none' }}
+                    />
+                    <span
+                      style={{
+                        fontWeight: isSelected ? 600 : 400,
+                        opacity: isSelected ? 1 : 0.85,
+                        letterSpacing: '0.01em',
+                      }}
+                    >
+                      {cat.name}
+                    </span>
+                  </label>
+                );
+              })}
             </div>
           </div>
 
