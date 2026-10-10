@@ -75,12 +75,12 @@ export default function AccountOverviewPage() {
       <style jsx>{`
         .overview-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 24px;
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+          gap: clamp(16px, 3vw, 24px);
         }
         
         .overview-block {
-          padding: 32px 24px;
+          padding: clamp(20px, 4vw, 32px) clamp(16px, 4vw, 24px);
           border: 1px solid var(--overlay-black-10);
           cursor: pointer;
           transition: all 0.3s ease;

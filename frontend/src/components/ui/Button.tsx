@@ -128,8 +128,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         disabled={disabled || isLoading}
+        data-full-width={fullWidth ? 'true' : undefined}
         style={{ ...baseStyle, ...variantStyle, ...style }}
-        className={`luxury-btn luxury-btn-${variant} ${className}`}
+        className={`luxury-btn luxury-btn-${variant} ${fullWidth ? 'luxury-btn-fullwidth' : ''} ${className}`}
         {...props}
       >
         {isLoading ? (
@@ -141,6 +142,49 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             {rightIcon && <span className="luxury-btn-icon luxury-btn-icon-right">{rightIcon}</span>}
           </>
         )}
+        <style jsx global>{`
+          @media (max-width: 640px) {
+            .luxury-btn {
+              box-sizing: border-box !important;
+              max-width: 100% !important;
+              white-space: normal !important;
+              text-align: center !important;
+              line-height: 1.3 !important;
+              height: auto !important;
+              min-height: 2.75rem !important;
+              padding-inline: clamp(14px, 4vw, 24px) !important;
+              padding-top: 0.6rem !important;
+              padding-bottom: 0.6rem !important;
+              letter-spacing: 0.06em !important;
+              font-size: clamp(0.72rem, 3.4vw, 0.85rem) !important;
+              overflow: visible !important;
+              min-width: 0 !important;
+            }
+
+            .luxury-btn.luxury-btn-fullwidth,
+            .luxury-btn[data-full-width="true"] {
+              width: 100% !important;
+              max-width: 100% !important;
+            }
+
+            .luxury-btn::after {
+              display: none !important;
+            }
+
+            .luxury-btn-label {
+              white-space: normal !important;
+              text-align: center !important;
+              line-height: 1.3 !important;
+              max-width: 100% !important;
+              min-width: 0 !important;
+              overflow-wrap: break-word !important;
+            }
+
+            .luxury-btn-icon {
+              flex-shrink: 0 !important;
+            }
+          }
+        `}</style>
       </button>
     );
   }

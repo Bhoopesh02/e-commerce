@@ -77,8 +77,10 @@ export const StatusTimeline: React.FC<StatusTimelineProps> = ({
   const currentStepIndex = ORDER_STEPS.indexOf(currentStatus);
 
   return (
-    <div style={{ width: '100%', padding: '16px 0' }}>
+    <div className="status-timeline-wrapper" style={{ width: '100%', padding: '16px 0' }}>
+      {/* Desktop Horizontal Stepper (>600px) */}
       <div
+        className="timeline-desktop"
         style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -178,6 +180,134 @@ export const StatusTimeline: React.FC<StatusTimelineProps> = ({
           );
         })}
       </div>
+
+      {/* Mobile Vertical Stepper (<=600px) */}
+      <div className="timeline-mobile">
+        {ORDER_STEPS.map((step, idx) => {
+          const isCompleted = idx <= currentStepIndex;
+          const isCurrent = idx === currentStepIndex;
+          const isLast = idx === ORDER_STEPS.length - 1;
+          const isNextCompleted = idx + 1 <= currentStepIndex;
+          const timestamp = getStepTimestamp(step);
+
+          return (
+            <div key={step} className="timeline-mobile-step">
+              <div className="timeline-mobile-indicator">
+                <div
+                  className="timeline-mobile-icon"
+                  style={{
+                    backgroundColor: isCompleted ? 'var(--cta-primary)' : 'var(--bg-surface)',
+                    color: isCompleted ? 'var(--cta-text)' : 'var(--text-muted)',
+                    border: `2px solid ${isCompleted ? 'var(--cta-primary)' : 'var(--border-color)'}`,
+                    boxShadow: isCurrent ? '0 0 0 4px rgba(194, 155, 76, 0.25)' : 'none',
+                  }}
+                >
+                  {getIcon(step)}
+                </div>
+                {!isLast && (
+                  <div
+                    className={`timeline-mobile-line ${isNextCompleted ? 'completed' : ''}`}
+                  />
+                )}
+              </div>
+
+              <div className="timeline-mobile-content">
+                <span className={`timeline-mobile-label ${!isCompleted ? 'pending' : ''}`}>
+                  {step}
+                </span>
+                {timestamp ? (
+                  <span className="timeline-mobile-time">{timestamp}</span>
+                ) : (
+                  <span className="timeline-mobile-time" style={{ fontStyle: 'italic', opacity: 0.7 }}>
+                    Pending atelier update
+                  </span>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <style jsx>{`
+        @media (max-width: 600px) {
+          .timeline-desktop {
+            display: none !important;
+          }
+          .timeline-mobile {
+            display: flex !important;
+            flex-direction: column;
+            position: relative;
+            padding: 8px 0;
+          }
+          .timeline-mobile-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            position: relative;
+            padding-bottom: 24px;
+          }
+          .timeline-mobile-step:last-child {
+            padding-bottom: 4px;
+          }
+          .timeline-mobile-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            flex-shrink: 0;
+            width: 32px;
+          }
+          .timeline-mobile-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-pill);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+          }
+          .timeline-mobile-line {
+            position: absolute;
+            top: 32px;
+            bottom: -24px;
+            width: 2px;
+            background-color: var(--border-color);
+            z-index: 1;
+          }
+          .timeline-mobile-line.completed {
+            background-color: var(--cta-primary);
+          }
+          .timeline-mobile-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-top: 3px;
+          }
+          .timeline-mobile-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.2;
+          }
+          .timeline-mobile-label.pending {
+            color: var(--text-muted);
+            font-weight: 500;
+          }
+          .timeline-mobile-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+          }
+        }
+        @media (min-width: 601px) {
+          .timeline-desktop {
+            display: flex !important;
+          }
+          .timeline-mobile {
+            display: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };

@@ -54,8 +54,8 @@ export const SupportView: React.FC = () => {
   };
 
   return (
-    <div style={{ paddingTop: '110px', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      <div className="container" style={{ maxWidth: '1080px' }}>
+    <div className="account-section support-view-section fade-in">
+      <div style={{ maxWidth: '1080px', width: '100%' }}>
         <Link
           href="/account"
           style={{
@@ -64,18 +64,19 @@ export const SupportView: React.FC = () => {
             gap: '8px',
             fontSize: '0.85rem',
             color: 'var(--brand-primary)',
-            marginBottom: '24px',
+            marginBottom: '20px',
             fontWeight: 500,
+            minHeight: '2.75rem',
           }}
         >
           <ArrowLeft size={16} /> Back to Account
         </Link>
 
-        <div style={{ marginBottom: '32px' }}>
+        <div style={{ marginBottom: '28px' }}>
           <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
             Client Relations Desk
           </span>
-          <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', marginTop: '4px' }}>
+          <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', marginTop: '4px' }}>
             Atelier Concierge Inquiries
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', marginTop: '6px' }}>
@@ -83,17 +84,9 @@ export const SupportView: React.FC = () => {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '32px', alignItems: 'flex-start' }}>
+        <div className="support-grid">
           {/* Left: New Inquiry Form */}
-          <div
-            style={{
-              backgroundColor: 'var(--bg-surface)',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--border-color)',
-              padding: '28px',
-              boxShadow: 'var(--shadow-sm)',
-            }}
-          >
+          <div className="support-card inquiry-form-card">
             <h2 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-display)', marginBottom: '16px' }}>
               Dispatch New Inquiry
             </h2>
@@ -117,21 +110,15 @@ export const SupportView: React.FC = () => {
                   placeholder="Detail your request or fitting inquiry..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  style={{
-                    padding: '12px 14px',
-                    borderRadius: 'var(--radius-sm)',
-                    border: '1px solid var(--border-color)',
-                    backgroundColor: 'var(--bg-surface)',
-                    fontSize: '0.9rem',
-                    color: 'var(--text-primary)',
-                    resize: 'none',
-                  }}
+                  className="support-textarea"
                 />
               </div>
 
-              <Button type="submit" variant="primary" isLoading={isSubmitting} leftIcon={<Send size={15} />}>
-                Send Inquiry
-              </Button>
+              <div className="support-btn-wrap">
+                <Button type="submit" variant="primary" isLoading={isSubmitting} leftIcon={<Send size={15} />}>
+                  Send Inquiry
+                </Button>
+              </div>
             </form>
           </div>
 
@@ -143,13 +130,9 @@ export const SupportView: React.FC = () => {
               <div
                 key={t.id}
                 onClick={() => setSelectedTicket(t)}
+                className="ticket-card"
                 style={{
-                  padding: '20px',
-                  backgroundColor: 'var(--bg-surface)',
-                  borderRadius: 'var(--radius-sm)',
                   border: selectedTicket?.id === t.id ? '2px solid var(--brand-primary)' : '1px solid var(--border-color)',
-                  cursor: 'pointer',
-                  boxShadow: 'var(--shadow-sm)',
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
@@ -185,6 +168,83 @@ export const SupportView: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .support-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+          gap: 32px;
+          align-items: flex-start;
+        }
+
+        .support-card {
+          background-color: var(--bg-surface);
+          border-radius: var(--radius-md);
+          border: 1px solid var(--border-color);
+          padding: 28px;
+          box-shadow: var(--shadow-sm);
+        }
+
+        .ticket-card {
+          padding: 20px;
+          background-color: var(--bg-surface);
+          border-radius: var(--radius-sm);
+          cursor: pointer;
+          box-shadow: var(--shadow-sm);
+          transition: border-color 0.2s ease;
+        }
+
+        .support-textarea {
+          padding: 12px 14px;
+          border-radius: var(--radius-sm);
+          border: 1px solid var(--border-color);
+          background-color: var(--bg-surface);
+          font-size: 0.95rem;
+          color: var(--text-primary);
+          resize: none;
+          width: 100%;
+        }
+
+        @media (max-width: 600px) {
+          .support-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+          }
+
+          .support-card {
+            padding: clamp(14px, 4vw, 28px);
+          }
+
+          .ticket-card {
+            padding: clamp(14px, 4vw, 20px);
+          }
+
+          .support-textarea {
+            font-size: 16px; /* Prevents auto-zoom on mobile */
+          }
+
+          .support-btn-wrap {
+            width: 100%;
+            min-width: 0;
+            overflow: visible;
+          }
+
+          .support-btn-wrap :global(button) {
+            width: 100% !important;
+            max-width: 100% !important;
+            justify-content: center !important;
+            min-height: 2.75rem !important;
+            padding-inline: clamp(14px, 4vw, 24px) !important;
+            font-size: clamp(0.72rem, 3.4vw, 0.85rem) !important;
+            letter-spacing: 0.06em !important;
+            white-space: normal !important;
+            line-height: 1.3 !important;
+            text-align: center !important;
+            overflow: visible !important;
+            min-width: 0 !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };

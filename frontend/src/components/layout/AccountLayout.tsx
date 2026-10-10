@@ -2,9 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/useAuthStore';
-import { ArrowRight } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 interface AccountLayoutProps {
   children: React.ReactNode;
@@ -20,14 +18,56 @@ const TABS = [
 ] as const;
 
 export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
-  const router = useRouter();
   const pathname = usePathname();
-  const { user, logout } = useAuthStore();
+  const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
 
-  const handleLogout = () => {
-    logout();
-    router.push('/signout');
-  };
+  const [canScrollLeft, setCanScrollLeft] = React.useState(false);
+  const [canScrollRight, setCanScrollRight] = React.useState(false);
+
+  const updateScrollOverflow = React.useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const { scrollLeft, clientWidth, scrollWidth } = container;
+    setCanScrollLeft(scrollLeft > 4);
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 4);
+  }, []);
+
+  React.useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const onScroll = () => {
+      updateScrollOverflow();
+    };
+
+    container.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', updateScrollOverflow);
+
+    // Initial check
+    updateScrollOverflow();
+
+    return () => {
+      container.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', updateScrollOverflow);
+    };
+  }, [updateScrollOverflow]);
+
+  React.useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const activeEl = container.querySelector('.mobile-nav-item.active') as HTMLElement | null;
+    if (activeEl) {
+      const targetScrollLeft = activeEl.offsetLeft - (container.clientWidth - activeEl.clientWidth) / 2;
+      container.scrollTo({
+        left: Math.max(0, targetScrollLeft),
+        behavior: 'smooth',
+      });
+    }
+
+    const timer = setTimeout(updateScrollOverflow, 350);
+    return () => clearTimeout(timer);
+  }, [pathname, updateScrollOverflow]);
 
   return (
     <div className="account-page">
@@ -56,17 +96,11 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
               );
             })}
           </nav>
-          
-          <div className="sidebar-footer">
-            <button className="signout-link" onClick={handleLogout}>
-              Sign Out <ArrowRight size={14} />
-            </button>
-          </div>
         </aside>
 
         {/* Mobile Nav */}
-        <nav className="account-mobile-nav">
-          <div className="mobile-nav-scroll">
+        <nav className={`account-mobile-nav ${canScrollLeft ? 'fade-left' : ''} ${canScrollRight ? 'fade-right' : ''}`}>
+          <div className="mobile-nav-scroll" ref={scrollContainerRef}>
             {TABS.map(tab => {
               const isActive = tab.href === '/account' 
                 ? pathname === '/account' 
@@ -88,12 +122,6 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
         {/* Right Content */}
         <main className="account-content">
           {children}
-
-          <div className="mobile-signout">
-             <button className="signout-link" onClick={handleLogout}>
-              Sign Out <ArrowRight size={14} />
-            </button>
-          </div>
         </main>
       </div>
 
@@ -126,13 +154,18 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
         }
         
         @media (max-width: 768px) {
+          .account-page {
+            padding-top: calc(var(--navbar-height, 64px) + clamp(12px, 3vw, 24px));
+            padding-bottom: 48px;
+          }
+
           .account-sidebar {
             display: none;
           }
           
           .account-container {
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
           }
 
           .account-mobile-nav {
@@ -141,14 +174,35 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
             border-bottom: 1px solid var(--border-color);
             margin-bottom: 24px;
             overflow: hidden;
+            position: relative;
+            -webkit-mask-image: none;
+            mask-image: none;
+            transition: -webkit-mask-image 0.2s ease, mask-image 0.2s ease;
+          }
+
+          .account-mobile-nav.fade-right {
+            -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 32px), transparent 100%);
+            mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 32px), transparent 100%);
+          }
+
+          .account-mobile-nav.fade-left {
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 32px, #000 100%);
+            mask-image: linear-gradient(to right, transparent 0%, #000 32px, #000 100%);
+          }
+
+          .account-mobile-nav.fade-left.fade-right {
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 32px, #000 calc(100% - 32px), transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, #000 32px, #000 calc(100% - 32px), transparent 100%);
           }
 
           .mobile-nav-scroll {
             display: flex;
             overflow-x: auto;
-            gap: 24px;
-            padding-bottom: 12px;
+            gap: 20px;
+            padding: 0 16px 10px 4px;
             scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+            -webkit-overflow-scrolling: touch;
           }
           
           .mobile-nav-scroll::-webkit-scrollbar {
@@ -162,12 +216,16 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
             white-space: nowrap;
             text-decoration: none;
             transition: opacity 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            min-height: 2.75rem; /* 44px touch target */
+            padding: 0 4px;
           }
 
           .mobile-nav-item.active {
             opacity: 1;
             font-weight: 500;
-            border-bottom: 1px solid var(--color-black-tie);
+            border-bottom: 2px solid var(--color-black-tie);
           }
         }
         
@@ -233,50 +291,6 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
         .nav-item.active::after,
         .nav-item:hover::after {
           transform: scaleX(1);
-        }
-        
-        .sidebar-footer {
-          padding-top: 32px;
-          border-top: 1px solid var(--border-color);
-        }
-        
-        .signout-link {
-          background: none;
-          border: none;
-          padding: 0;
-          font-size: 0.95rem;
-          color: var(--text-primary);
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          opacity: 0.7;
-          transition: opacity 0.2s ease;
-        }
-        
-        .signout-link:hover {
-          opacity: 1;
-        }
-        
-        .signout-link svg {
-          transition: transform 0.2s ease;
-        }
-        
-        .signout-link:hover svg {
-          transform: translateX(4px);
-        }
-
-        .mobile-signout {
-          display: none;
-          margin-top: 48px;
-          padding-top: 24px;
-          border-top: 1px solid var(--border-color);
-        }
-
-        @media (max-width: 768px) {
-          .mobile-signout {
-            display: block;
-          }
         }
 
         /* Content Styles */

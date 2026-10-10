@@ -1,10 +1,18 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
+import { ArrowRight } from 'lucide-react';
 
 export default function ProfilePage() {
-  const { user } = useAuthStore();
+  const router = useRouter();
+  const { user, logout } = useAuthStore();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/signout');
+  };
 
   return (
     <div className="account-section fade-in">
@@ -50,6 +58,23 @@ export default function ProfilePage() {
             <span className="settings-value">••••••••</span>
           </div>
           <button className="text-action-sm">Change Password</button>
+        </div>
+      </div>
+
+      <div className="settings-group" style={{ marginTop: '48px' }}>
+        <div className="settings-header">
+          <h3 className="settings-subtitle">Session & Account</h3>
+        </div>
+        <div className="settings-row">
+          <div className="settings-info">
+            <span className="settings-label">Active Session</span>
+            <span className="settings-value" style={{ fontSize: '0.92rem', color: 'var(--text-secondary)' }}>
+              Signed in as {user?.email || 'ayesha@example.com'}
+            </span>
+          </div>
+          <button className="signout-btn" onClick={handleLogout}>
+            Sign Out <ArrowRight size={14} />
+          </button>
         </div>
       </div>
 
@@ -115,6 +140,42 @@ export default function ProfilePage() {
         .text-action-sm:hover {
           opacity: 1;
           color: var(--text-primary);
+        }
+
+        .signout-btn {
+          background: none;
+          border: none;
+          padding: 0;
+          font-size: 0.95rem;
+          color: var(--text-primary);
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          opacity: 0.75;
+          transition: opacity 0.2s ease;
+          min-height: 2.75rem;
+        }
+
+        .signout-btn:hover {
+          opacity: 1;
+        }
+
+        .signout-btn svg {
+          transition: transform 0.2s ease;
+        }
+
+        .signout-btn:hover svg {
+          transform: translateX(4px);
+        }
+
+        @media (max-width: 600px) {
+          .settings-row {
+            padding: 16px 0;
+          }
+          .text-action-sm {
+            min-height: 2.75rem;
+          }
         }
       `}</style>
     </div>

@@ -447,6 +447,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingTop: '8px' }}>
               <div className="pdp-action-row">
                 <div
+                  className="pdp-quantity-selector"
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -455,12 +456,16 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     padding: '6px 14px',
                     gap: '14px',
                     backgroundColor: 'var(--bg-surface)',
+                    flexShrink: 0,
+                    height: '48px',
+                    boxSizing: 'border-box',
                   }}
                 >
                   <button
                     type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}
+                    aria-label="Decrease quantity"
                   >
                     -
                   </button>
@@ -471,12 +476,13 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     type="button"
                     onClick={() => setQuantity(Math.min(selectedVariant?.stock || 5, quantity + 1))}
                     style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}
+                    aria-label="Increase quantity"
                   >
                     +
                   </button>
                 </div>
 
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <Button
                     variant="primary"
                     size="lg"
@@ -492,7 +498,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
               </div>
 
               <div className="pdp-action-row">
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <Button
                     variant="primary"
                     size="lg"

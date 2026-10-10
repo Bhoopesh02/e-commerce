@@ -133,8 +133,8 @@ export const WishlistView: React.FC = () => {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-              gap: '36px',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))',
+              gap: 'clamp(20px, 4vw, 36px)',
             }}
             className="product-grid"
           >

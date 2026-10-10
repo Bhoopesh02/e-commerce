@@ -119,10 +119,14 @@ export default function OrdersPage() {
         @media (max-width: 767px) {
           .orders-filter {
             flex-wrap: wrap;
-            row-gap: 12px;
+            row-gap: 8px;
+            gap: 16px;
           }
           .filter-btn {
             min-width: 0;
+            min-height: 2.75rem;
+            display: inline-flex;
+            align-items: center;
           }
         }
       `}</style>

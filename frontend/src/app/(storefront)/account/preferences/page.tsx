@@ -164,6 +164,21 @@ export default function PreferencesPage() {
         .btn-primary:hover {
           opacity: 0.9;
         }
+
+        @media (max-width: 600px) {
+          .toggle-row {
+            padding: clamp(16px, 4vw, 32px) 0;
+            gap: 16px;
+          }
+
+          .btn-primary {
+            width: 100%;
+            min-height: 2.75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
       `}</style>
     </div>
   );

@@ -27,6 +27,62 @@ interface OrderDetailViewProps {
   orderId: string;
 }
 
+const OrderItemThumbnail: React.FC<{ src?: string; alt: string }> = ({ src, alt }) => {
+  const [hasError, setHasError] = useState(!src);
+
+  return (
+    <div
+      className="order-item-thumb"
+      style={{
+        position: 'relative',
+        overflow: 'hidden',
+        flexShrink: 0,
+        backgroundColor: 'var(--color-neutral-100)',
+        borderRadius: 'var(--radius-sm)',
+      }}
+    >
+      {!hasError && src ? (
+        <Image
+          src={src}
+          alt=""
+          fill
+          sizes="(max-width: 600px) 22vw, 120px"
+          style={{ objectFit: 'cover' }}
+          onError={() => setHasError(true)}
+        />
+      ) : (
+        <div
+          className="order-item-fallback"
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'var(--color-neutral-100)',
+          }}
+          aria-hidden="true"
+        >
+          <Package size={22} style={{ color: 'var(--text-muted)', opacity: 0.6 }} />
+        </div>
+      )}
+      <style jsx>{`
+        .order-item-thumb {
+          width: 75px;
+          height: 95px;
+        }
+        @media (max-width: 600px) {
+          .order-item-thumb {
+            width: clamp(72px, 22vw, 120px) !important;
+            aspect-ratio: 3 / 4 !important;
+            height: auto !important;
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
+
 export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
@@ -121,55 +177,36 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
             color: 'var(--brand-primary)',
             marginBottom: '24px',
             fontWeight: 500,
+            minHeight: '2.75rem',
           }}
         >
           <ArrowLeft size={16} /> Back to Commissions Portfolio
         </Link>
 
         {/* Order Header Card */}
-        <div
-          style={{
-            backgroundColor: 'var(--bg-surface)',
-            borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--border-color)',
-            padding: '32px',
-            boxShadow: 'var(--shadow-sm)',
-            marginBottom: '32px',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              gap: '16px',
-              borderBottom: '1px solid var(--border-light)',
-              paddingBottom: '20px',
-              marginBottom: '24px',
-            }}
-          >
+        <div className="order-detail-card">
+          <div className="order-header-row">
             <div>
-              <span style={{ display: 'block', marginBottom: '8px', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
+              <span className="order-header-badge">
                 Official Atelier Commission
               </span>
-              <h1 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', marginTop: '4px' }}>
+              <h1 className="order-header-title">
                 Commission Details
               </h1>
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+              <span className="order-header-date">
                 Registered: {new Date(order.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
               </span>
             </div>
 
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <div className="order-header-actions">
               {canCancel && (
-                <Button variant="danger" size="sm" onClick={() => setCancelModalOpen(true)} leftIcon={<XCircle size={15} />}>
+                <Button className="order-action-btn" variant="danger" size="sm" onClick={() => setCancelModalOpen(true)} leftIcon={<XCircle size={15} />}>
                   Cancel Commission
                 </Button>
               )}
 
               {canReturn && (
-                <Button variant="outline" size="sm" onClick={() => setReturnModalOpen(true)} leftIcon={<RotateCcw size={15} />}>
+                <Button className="order-action-btn order-action-return" variant="outline" size="sm" onClick={() => setReturnModalOpen(true)} leftIcon={<RotateCcw size={15} />}>
                   Request Return / Exchange
                 </Button>
               )}
@@ -186,26 +223,14 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
 
           {/* Courier Tracking strip */}
           {order.trackingInfo && order.status !== 'Cancelled' && (
-            <div
-              style={{
-                backgroundColor: 'var(--overlay-golden-10)',
-                border: '1px solid var(--overlay-golden-35)',
-                borderRadius: 'var(--radius-sm)',
-                padding: '16px 20px',
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                gap: '12px',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <Truck size={20} style={{ color: 'var(--brand-primary)' }} />
-                <div>
-                  <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>
-                    {order.trackingInfo.carrier} · Waybill #{order.trackingInfo.trackingId}
+            <div className="order-tracking-strip">
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <Truck size={20} style={{ color: 'var(--brand-primary)', flexShrink: 0, marginTop: '2px' }} />
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <span className="tracking-carrier-text">
+                    {order.trackingInfo.carrier} · Waybill <span className="tracking-waybill">#{order.trackingInfo.trackingId}</span>
                   </span>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block' }}>
+                  <span className="tracking-arrival-text">
                     Estimated Arrival: {order.trackingInfo.estimatedDelivery || 'In Transit'}
                   </span>
                 </div>
@@ -216,14 +241,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
                   href={order.trackingInfo.trackingUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    fontSize: '0.82rem',
-                    color: 'var(--brand-primary)',
-                    fontWeight: 600,
-                  }}
+                  className="tracking-link-btn"
                 >
                   Live Courier Tracking <ExternalLink size={13} />
                 </a>
@@ -233,44 +251,32 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
         </div>
 
         {/* Garments Breakdown Card */}
-        <div
-          style={{
-            backgroundColor: 'var(--bg-surface)',
-            borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--border-color)',
-            padding: '32px',
-            marginBottom: '32px',
-          }}
-        >
+        <div className="order-detail-card">
           <h2 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', marginBottom: '20px' }}>
             Commissioned Silhouettes
           </h2>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '24px' }}>
             {order.items.map((item, idx) => (
-              <div key={idx} style={{ display: 'flex', gap: '16px', alignItems: 'center', borderBottom: '1px solid var(--border-light)', paddingBottom: '16px' }}>
-                <div
-                  style={{
-                    position: 'relative',
-                    width: '75px',
-                    height: '95px',
-                    borderRadius: 'var(--radius-sm)',
-                    overflow: 'hidden',
-                    flexShrink: 0,
-                  }}
-                >
-                  <Image src={item.productImage || ''} alt={item.productName || 'Garment'} fill sizes="75px" style={{ objectFit: 'cover' }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <h3 style={{ fontSize: '0.98rem', fontWeight: 600 }}>{item.productName}</h3>
-                  <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+              <div key={idx} className="order-item-row">
+                <OrderItemThumbnail src={item.productImage} alt={item.productName || 'Garment'} />
+                
+                <div className="order-item-content">
+                  <div className="order-item-header">
+                    <h3 className="order-item-title">{item.productName}</h3>
+                    <span className="order-item-price-mobile">
+                      {formatPrice(item.price * item.quantity)}
+                    </span>
+                  </div>
+                  <p className="order-item-meta">
                     SKU: {item.sku} · Size: {item.size} · Color: {item.color}
                   </p>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-primary)', marginTop: '4px' }}>
+                  <p className="order-item-qty">
                     Qty: {item.quantity} × {formatPrice(item.price)}
                   </p>
                 </div>
-                <span style={{ fontSize: '1.05rem', fontWeight: 600 }}>
+                
+                <span className="order-item-price-desktop">
                   {formatPrice(item.price * item.quantity)}
                 </span>
               </div>
@@ -278,7 +284,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
           </div>
 
           {/* Totals */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.9rem', maxWidth: '380px', marginLeft: 'auto' }}>
+          <div className="order-totals-card">
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Subtotal</span>
               <span>{formatPrice(order.totals.subtotal)}</span>
@@ -310,15 +316,8 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
         </div>
 
         {/* Address & Payment Info Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
-          <div
-            style={{
-              backgroundColor: 'var(--bg-surface)',
-              borderRadius: 'var(--radius-sm)',
-              border: '1px solid var(--border-color)',
-              padding: '24px',
-            }}
-          >
+        <div className="order-info-grid">
+          <div className="order-info-card">
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
               <MapPin size={18} style={{ color: 'var(--brand-primary)' }} />
               <h3 style={{ fontSize: '0.95rem', fontWeight: 600 }}>Delivery Residence</h3>
@@ -332,14 +331,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
             </p>
           </div>
 
-          <div
-            style={{
-              backgroundColor: 'var(--bg-surface)',
-              borderRadius: 'var(--radius-sm)',
-              border: '1px solid var(--border-color)',
-              padding: '24px',
-            }}
-          >
+          <div className="order-info-card">
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
               <CreditCard size={18} style={{ color: 'var(--brand-primary)' }} />
               <h3 style={{ fontSize: '0.95rem', fontWeight: 600 }}>Payment Method</h3>
@@ -349,11 +341,295 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
               <br />
               Status: <span style={{ color: 'var(--color-success)', fontWeight: 500 }}>Settled via Adyen</span>
               <br />
-              Transaction ID: <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>{order.payment.transactionId}</span>
+              Transaction ID: <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', overflowWrap: 'anywhere' }}>{order.payment.transactionId}</span>
             </p>
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .order-detail-card {
+          background-color: var(--bg-surface);
+          border-radius: var(--radius-md);
+          border: 1px solid var(--border-color);
+          padding: 32px;
+          box-shadow: var(--shadow-sm);
+          margin-bottom: 32px;
+        }
+
+        .order-header-row {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 16px;
+          border-bottom: 1px solid var(--border-light);
+          padding-bottom: 20px;
+          margin-bottom: 24px;
+        }
+
+        .order-header-badge {
+          display: block;
+          margin-bottom: 8px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--brand-primary);
+        }
+
+        .order-header-title {
+          font-size: clamp(1.8rem, 3vw, 2.4rem);
+          margin-top: 4px;
+        }
+
+        .order-header-date {
+          font-size: 0.85rem;
+          color: var(--text-muted);
+        }
+
+        .order-header-actions {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+
+        .order-tracking-strip {
+          background-color: var(--overlay-golden-10);
+          border: 1px solid var(--overlay-golden-35);
+          border-radius: var(--radius-sm);
+          padding: 16px 20px;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .tracking-carrier-text {
+          font-size: 0.88rem;
+          font-weight: 600;
+          display: block;
+        }
+
+        .tracking-waybill {
+          overflow-wrap: anywhere;
+          word-break: break-word;
+        }
+
+        .tracking-arrival-text {
+          font-size: 0.78rem;
+          color: var(--text-muted);
+          display: block;
+        }
+
+        .tracking-link-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 0.82rem;
+          color: var(--brand-primary);
+          font-weight: 600;
+          text-decoration: none;
+        }
+
+        .order-item-row {
+          display: flex;
+          gap: 16px;
+          align-items: center;
+          border-bottom: 1px solid var(--border-light);
+          padding-bottom: 16px;
+        }
+
+        :global(.order-item-thumb) {
+          position: relative;
+          width: 75px;
+          height: 95px;
+          border-radius: var(--radius-sm);
+          overflow: hidden;
+          flex-shrink: 0;
+          background-color: var(--color-neutral-100);
+        }
+
+        .order-item-fallback {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: var(--color-neutral-100);
+        }
+
+        .order-item-content {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .order-item-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          gap: 8px;
+        }
+
+        .order-item-title {
+          font-size: 0.98rem;
+          font-weight: 600;
+          margin: 0;
+          word-break: break-word;
+        }
+
+        .order-item-price-mobile {
+          display: none;
+        }
+
+        .order-item-price-desktop {
+          font-size: 1.05rem;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+
+        .order-item-meta {
+          font-size: 0.82rem;
+          color: var(--text-muted);
+          margin-top: 2px;
+          overflow-wrap: anywhere;
+        }
+
+        .order-item-qty {
+          font-size: 0.85rem;
+          color: var(--text-primary);
+          margin-top: 4px;
+        }
+
+        .order-totals-card {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          font-size: 0.9rem;
+          max-width: 380px;
+          margin-left: auto;
+        }
+
+        .order-info-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 24px;
+        }
+
+        .order-info-card {
+          background-color: var(--bg-surface);
+          border-radius: var(--radius-sm);
+          border: 1px solid var(--border-color);
+          padding: 24px;
+        }
+
+        @media (max-width: 600px) {
+          .order-detail-card {
+            padding: clamp(12px, 4vw, 32px);
+            margin-bottom: 20px;
+          }
+
+          .order-header-actions {
+            width: 100%;
+            min-width: 0;
+            overflow: visible;
+            flex-direction: column;
+            gap: 10px;
+          }
+
+          :global(.order-action-btn) {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            justify-content: center !important;
+            min-height: 2.75rem !important;
+            padding-inline: clamp(14px, 4vw, 24px) !important;
+            padding-top: 0.6rem !important;
+            padding-bottom: 0.6rem !important;
+            font-size: clamp(0.72rem, 3.4vw, 0.85rem) !important;
+            letter-spacing: 0.06em !important;
+            white-space: normal !important;
+            line-height: 1.3 !important;
+            text-align: center !important;
+            overflow: visible !important;
+            min-width: 0 !important;
+          }
+
+          .order-tracking-strip {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 14px 16px;
+            gap: 12px;
+          }
+
+          .tracking-link-btn {
+            min-height: 2.75rem;
+            display: inline-flex;
+            align-items: center;
+          }
+
+          .order-item-row {
+            gap: clamp(12px, 3.5vw, 16px);
+            align-items: flex-start;
+          }
+
+          :global(.order-item-thumb) {
+            width: clamp(72px, 22vw, 120px);
+            aspect-ratio: 3 / 4;
+            height: auto;
+          }
+
+          .order-item-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+          }
+
+          .order-item-title {
+            font-size: clamp(0.92rem, 3vw, 1rem);
+            line-height: 1.3;
+          }
+
+          .order-item-price-mobile {
+            display: block;
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-top: 2px;
+            color: var(--brand-primary);
+          }
+
+          .order-item-price-desktop {
+            display: none;
+          }
+
+          .order-item-meta {
+            margin-top: 6px;
+            line-height: 1.4;
+          }
+
+          .order-item-qty {
+            margin-top: 4px;
+          }
+
+          .order-totals-card {
+            max-width: 100%;
+            width: 100%;
+            margin-left: 0;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-light);
+          }
+
+          .order-info-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+
+          .order-info-card {
+            padding: clamp(12px, 4vw, 24px);
+          }
+        }
+      `}</style>
 
       {/* Cancellation Modal */}
       <Modal isOpen={cancelModalOpen} onClose={() => setCancelModalOpen(false)} title="Confirm Commission Cancellation">

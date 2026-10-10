@@ -104,6 +104,14 @@ export default function ReturnsPage() {
         .list-row:first-child {
           border-top: 1px solid var(--overlay-black-10);
         }
+
+        @media (max-width: 640px) {
+          .list-row {
+            flex-direction: column;
+            gap: 16px;
+            padding: 20px 0;
+          }
+        }
         
         .row-col {
           display: flex;
@@ -123,6 +131,14 @@ export default function ReturnsPage() {
           flex: 1;
           align-items: flex-end;
           text-align: right;
+        }
+
+        @media (max-width: 640px) {
+          .col-right {
+            align-items: flex-start;
+            text-align: left;
+            margin-top: 4px;
+          }
         }
         
         .row-title {

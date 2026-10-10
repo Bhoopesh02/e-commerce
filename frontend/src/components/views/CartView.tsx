@@ -87,11 +87,13 @@ export const CartView: React.FC = () => {
         <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)', marginBottom: '36px' }}>Your Atelier Bag</h1>
 
         <div
+          className="cart-main-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
             gap: '48px',
             alignItems: 'flex-start',
+            minWidth: 0,
           }}
         >
           {/* Left: Bag Items */}
@@ -174,6 +176,7 @@ export const CartView: React.FC = () => {
 
           {/* Right: Order Summary & Privilege Code */}
           <div
+            className="cart-summary-card"
             style={{
               padding: '32px',
               backgroundColor: 'var(--bg-surface)',
@@ -183,6 +186,7 @@ export const CartView: React.FC = () => {
               display: 'flex',
               flexDirection: 'column',
               gap: '20px',
+              minWidth: 0,
             }}
           >
             <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>Order Summary</h3>
@@ -302,6 +306,19 @@ export const CartView: React.FC = () => {
           </div>
         </div>
       </div>
+      <style jsx>{`
+        @media (max-width: 640px) {
+          .cart-main-grid {
+            gap: 24px !important;
+          }
+
+          .cart-summary-card {
+            padding: clamp(14px, 4vw, 24px) !important;
+            min-width: 0 !important;
+            box-sizing: border-box !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };

@@ -107,11 +107,14 @@ export const OrderRow: React.FC<OrderRowProps> = ({ order }) => {
         
         @media (max-width: 640px) {
           .col-right {
-            align-items: flex-start;
+            align-items: center;
             text-align: left;
             flex-direction: row;
             justify-content: space-between;
             margin-top: 8px;
+          }
+          .text-action {
+            min-height: 2.75rem;
           }
         }
         

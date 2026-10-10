@@ -118,6 +118,7 @@
   --bg-secondary: var(--bg-muted);
   --bg-surface-elevated: var(--bg-surface);
   --nav-backdrop: var(--overlay-white-85);
+  --navbar-height: 76px;
 
   /* ===== Typography ===== */
   /* Moved to typography.css */
@@ -169,4 +170,11 @@
   --hero-min-height: 100dvh;
   --heading-letter-spacing: -0.02em;
 }
+
+@media (max-width: 767px) {
+  :root {
+    --navbar-height: 64px;
+  }
+}
+
 

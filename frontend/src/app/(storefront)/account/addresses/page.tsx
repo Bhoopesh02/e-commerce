@@ -339,6 +339,59 @@ export default function AddressesPage() {
         .btn-outline:hover {
           border-color: var(--text-primary);
         }
+
+        @media (max-width: 600px) {
+          .address-form-container {
+            padding: clamp(14px, 4vw, 40px);
+          }
+
+          .address-card {
+            padding: clamp(16px, 4vw, 32px) clamp(14px, 4vw, 24px);
+          }
+
+          .form-row {
+            flex-direction: column;
+            gap: 16px;
+          }
+
+          .form-group input,
+          .form-group select {
+            font-size: 16px;
+            padding: 12px 14px;
+          }
+
+          .form-actions {
+            flex-direction: column-reverse;
+            gap: 12px;
+            width: 100%;
+            min-width: 0;
+            overflow: visible;
+          }
+
+          .btn-primary,
+          .btn-outline {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            white-space: normal;
+            line-height: 1.3;
+            min-height: 2.75rem;
+            padding-inline: clamp(14px, 4vw, 24px);
+            font-size: clamp(0.72rem, 3.4vw, 0.85rem);
+            letter-spacing: 0.06em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: visible;
+            min-width: 0;
+          }
+
+          .text-action,
+          .text-action-sm {
+            min-height: 2.75rem;
+          }
+        }
       `}</style>
     </div>
   );

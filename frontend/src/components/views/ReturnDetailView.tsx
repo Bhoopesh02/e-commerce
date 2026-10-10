@@ -65,7 +65,7 @@ export const ReturnDetailView: React.FC<ReturnDetailViewProps> = ({ returnId }) 
             backgroundColor: 'var(--bg-surface)',
             borderRadius: 'var(--radius-md)',
             border: '1px solid var(--border-color)',
-            padding: '36px',
+            padding: 'clamp(14px, 4vw, 36px)',
             boxShadow: 'var(--shadow-sm)',
           }}
         >

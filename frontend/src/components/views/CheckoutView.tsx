@@ -349,6 +349,7 @@ export const CheckoutView: React.FC = () => {
         )}
 
         <div
+          className="checkout-main-grid"
           style={{
             maxWidth: '1040px',
             margin: '0 auto',
@@ -356,16 +357,20 @@ export const CheckoutView: React.FC = () => {
             gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
             gap: '48px',
             alignItems: 'flex-start',
+            minWidth: 0,
           }}
         >
           {/* Left: Step Content */}
           <div
+            className="checkout-step-card"
             style={{
               backgroundColor: 'var(--bg-surface)',
               borderRadius: 'var(--radius-md)',
               border: '1px solid var(--border-color)',
               padding: '36px',
               boxShadow: 'var(--shadow-sm)',
+              minWidth: 0,
+              overflow: 'visible',
             }}
           >
             {/* Step 1: Contact */}
@@ -484,7 +489,7 @@ export const CheckoutView: React.FC = () => {
 
             {/* Step 4: Payment (Adyen Drop-in) */}
             {step === 4 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              <div className="checkout-step-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0, overflow: 'visible' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>Select Payment Method</h3>
                   <button onClick={() => setStep(3)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
@@ -504,8 +509,10 @@ export const CheckoutView: React.FC = () => {
                   fullWidth
                   isLoading={isSubmitting}
                   onClick={handlePlaceOrder}
+                  className="checkout-auth-button"
                 >
-                  Authorize Payment ({formatPrice(total)})
+                  <span className="checkout-auth-label">Authorize Payment</span>
+                  <span className="checkout-auth-amount">({formatPrice(total)})</span>
                 </Button>
               </div>
             )}
@@ -513,12 +520,14 @@ export const CheckoutView: React.FC = () => {
 
           {/* Right: Order Summary */}
           <div
+            className="checkout-summary-card"
             style={{
               backgroundColor: 'var(--bg-surface)',
               borderRadius: 'var(--radius-md)',
               border: '1px solid var(--border-color)',
               padding: '32px',
               boxShadow: 'var(--shadow-sm)',
+              minWidth: 0,
             }}
           >
             <h3 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', marginBottom: '20px' }}>
@@ -585,6 +594,60 @@ export const CheckoutView: React.FC = () => {
           </div>
         </div>
       </div>
+      <style jsx>{`
+        .checkout-auth-button :global(.checkout-auth-label) {
+          display: inline;
+        }
+        .checkout-auth-button :global(.checkout-auth-amount) {
+          display: inline;
+          margin-left: 0.35em;
+        }
+
+        @media (max-width: 640px) {
+          .checkout-main-grid {
+            gap: 24px !important;
+          }
+
+          .checkout-step-card,
+          .checkout-summary-card {
+            padding: clamp(14px, 4vw, 24px) !important;
+            min-width: 0 !important;
+            overflow: visible !important;
+            box-sizing: border-box !important;
+          }
+
+          .checkout-step-content {
+            min-width: 0 !important;
+            overflow: visible !important;
+            width: 100% !important;
+          }
+
+          .checkout-auth-button {
+            width: 100% !important;
+            min-width: 0 !important;
+            overflow: visible !important;
+          }
+
+          .checkout-auth-button :global(.checkout-auth-label) {
+            display: block !important;
+            line-height: 1.25 !important;
+          }
+
+          .checkout-auth-button :global(.checkout-auth-amount) {
+            display: block !important;
+            margin-left: 0 !important;
+            margin-top: 2px !important;
+            font-size: 0.88em !important;
+            opacity: 0.95 !important;
+            line-height: 1.2 !important;
+          }
+
+          .checkout-step-content :global(button) {
+            max-width: 100% !important;
+            min-width: 0 !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };
