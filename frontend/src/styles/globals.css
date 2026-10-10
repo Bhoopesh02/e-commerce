@@ -917,15 +917,29 @@ button.filter-btn:focus-visible,
   align-items: center;
   gap: 8px;
   flex-wrap: nowrap;
-  flex-shrink: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
   width: 100%;
+  position: relative;
 }
 
-.revenue-card__controls::-webkit-scrollbar {
+.revenue-card__pills {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  min-width: 0;
+  flex: 1 1 auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.revenue-card__pills::-webkit-scrollbar {
   display: none;
+}
+
+.revenue-card__menu-wrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .revenue-card__kpi {
@@ -945,6 +959,106 @@ button.filter-btn:focus-visible,
   display: flex;
   gap: 8px;
   position: relative;
+  overflow: visible;
+}
+
+.revenue-chart__plot-area {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+  overflow: visible;
+}
+
+.revenue-chart__hit-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  z-index: 15;
+  pointer-events: auto;
+}
+
+.revenue-chart__hit-col {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  cursor: default;
+  outline: none;
+}
+
+.revenue-chart__hit-col:focus-visible {
+  outline: none;
+}
+
+.revenue-chart__guide-line {
+  position: absolute;
+  top: 0;
+  bottom: 10%;
+  width: 0;
+  border-left: 1.5px dashed var(--neutral-300, #CBD5E1);
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.85;
+  transition: opacity 180ms var(--ease-editorial);
+}
+
+.revenue-chart__dot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-sapphire-700);
+  border: 1.5px solid var(--admin-surface);
+  box-sizing: content-box;
+  pointer-events: none;
+  z-index: 12;
+  transition: opacity 180ms var(--ease-editorial);
+}
+
+.revenue-chart__active-dot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-sapphire-700);
+  border: 2px solid var(--admin-surface);
+  box-shadow: 0 0 0 5px rgba(36, 75, 87, 0.25);
+  box-sizing: content-box;
+  pointer-events: none;
+  z-index: 14;
+  transition: opacity 180ms var(--ease-editorial);
+}
+
+.revenue-chart__compare-dot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #8EAFB8;
+  border: 1.5px solid var(--admin-surface);
+  box-shadow: 0 0 0 3px rgba(142, 175, 184, 0.3);
+  box-sizing: content-box;
+  pointer-events: none;
+  z-index: 13;
+  transition: opacity 180ms var(--ease-editorial);
+}
+
+.revenue-chart__tooltip {
+  position: absolute;
+  background-color: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  pointer-events: none;
+  z-index: 35;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: opacity 180ms var(--ease-editorial);
 }
 
 /* Peak Sales Day Card Refined Styles */
@@ -952,6 +1066,7 @@ button.filter-btn:focus-visible,
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: visible;
 }
 
 .peak-sales-subtitle {
@@ -971,6 +1086,7 @@ button.filter-btn:focus-visible,
   padding-top: 32px;
   position: relative;
   width: 100%;
+  overflow: visible;
 }
 
 .peak-sales-day-col {
@@ -982,6 +1098,37 @@ button.filter-btn:focus-visible,
   height: 100%;
   min-width: 0;
   z-index: 1;
+  outline: none;
+}
+
+.peak-sales-day-col:hover,
+.peak-sales-day-col:focus-visible,
+.peak-sales-day-col:focus-within {
+  z-index: 40;
+}
+
+.peak-sales-day-col:focus-visible {
+  outline: none;
+}
+
+.peak-sales-day-col:focus-visible .peak-sales-bar {
+  box-shadow: 0 0 0 2px var(--admin-surface), 0 0 0 4px var(--color-sapphire-700);
+}
+
+.peak-sales-day-col:focus-visible .peak-sales-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.peak-sales-day-col:hover .peak-sales-bar:not(.peak-sales-bar--peak):not(.peak-sales-bar--selected) {
+  background: var(--color-sapphire-300, #7DA1AB);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.peak-sales-day-col:hover .peak-sales-bar--peak {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(36, 75, 87, 0.35);
 }
 
 .peak-sales-track {
@@ -997,13 +1144,59 @@ button.filter-btn:focus-visible,
   width: min(100%, 30px);
   border-radius: 8px 8px 3px 3px;
   background: var(--color-icy-lake-300, #CAD4D6);
-  transition: height 350ms var(--ease-editorial);
+  transition: height 350ms var(--ease-editorial), background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
   position: relative;
-  cursor: pointer;
 }
 
 .peak-sales-bar--peak {
   background: var(--color-sapphire-700, #244B57);
+}
+
+.peak-sales-bar--selected {
+  box-shadow: 0 0 0 2px var(--admin-surface), 0 0 0 4px var(--color-sapphire-700), 0 4px 12px rgba(36, 75, 87, 0.25) !important;
+  transform: translateY(-2px);
+}
+
+/* Tooltip Anchored Just Above Bar & Pill */
+.peak-sales-tooltip {
+  position: absolute;
+  bottom: calc(var(--bar-h, 0%) + 36px);
+  background-color: var(--color-black-tie);
+  color: var(--color-diamond);
+  padding: 8px 10px;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  font-size: 0.72rem;
+  white-space: nowrap;
+  z-index: 35;
+  pointer-events: none;
+  min-width: 130px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 180ms var(--ease-editorial), visibility 180ms var(--ease-editorial);
+}
+
+.peak-sales-tooltip--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.peak-sales-tooltip--first {
+  left: 0;
+  right: auto;
+  transform: none;
+}
+
+.peak-sales-tooltip--last {
+  right: 0;
+  left: auto;
+  transform: none;
+}
+
+.peak-sales-tooltip--center {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
 }
 
 .peak-sales-stats {
@@ -1033,7 +1226,13 @@ button.filter-btn:focus-visible,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .peak-sales-bar {
+  .peak-sales-bar,
+  .peak-sales-tooltip,
+  .revenue-chart__tooltip,
+  .revenue-chart__guide-line,
+  .revenue-chart__dot,
+  .revenue-chart__active-dot,
+  .revenue-chart__compare-dot {
     transition: none !important;
   }
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -80,29 +81,109 @@ export default function AdminDashboardPage() {
   const [isChannelTableView, setIsChannelTableView] = useState(false);
   const [isRevenueMenuOpen, setIsRevenueMenuOpen] = useState(false);
   const revenueMenuRef = React.useRef<HTMLDivElement>(null);
-  const [hoveredPoint, setHoveredPoint] = useState<{
-    id: string;
-    label: string;
-    fullDate: string;
-    revenue: number;
-    orders: number;
-    aov: number;
-    prevVal?: number;
-    x: number;
-    y: number;
-    isCompare?: boolean;
-  } | null>(null);
-  const [hoveredChannelKey, setHoveredChannelKey] = useState<string | null>(null);
+  const revenueButtonRef = React.useRef<HTMLButtonElement>(null);
+  const revenueMenuDropdownRef = React.useRef<HTMLDivElement>(null);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number; isMobile: boolean }>({
+    top: 0,
+    left: 0,
+    isMobile: false,
+  });
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (revenueMenuRef.current && !revenueMenuRef.current.contains(e.target as Node)) {
-        setIsRevenueMenuOpen(false);
+    setIsMounted(true);
+  }, []);
+
+  const closeRevenueMenu = React.useCallback(() => {
+    setIsRevenueMenuOpen(false);
+    revenueButtonRef.current?.focus();
+  }, []);
+
+  const [activePointIndex, setActivePointIndex] = useState<number | null>(null);
+  const [tooltipPos, setTooltipPos] = useState<{ left: number; top: number; isMeasured: boolean }>({
+    left: 0,
+    top: 0,
+    isMeasured: false,
+  });
+  const plotRef = React.useRef<HTMLDivElement>(null);
+  const tooltipRef = React.useRef<HTMLDivElement>(null);
+  const [hoveredChannelKey, setHoveredChannelKey] = useState<string | null>(null);
+
+  // STEP 3: Close menu on outside click, Esc, window resize and scroll (capture phase)
+  useEffect(() => {
+    if (!isRevenueMenuOpen) return;
+
+    function handlePointerDown(e: MouseEvent | PointerEvent) {
+      const target = e.target as Node;
+      if (
+        revenueButtonRef.current?.contains(target) ||
+        revenueMenuDropdownRef.current?.contains(target)
+      ) {
+        return;
+      }
+      closeRevenueMenu();
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeRevenueMenu();
       }
     }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+
+    function handleScrollOrResize(e: Event) {
+      if (revenueMenuDropdownRef.current?.contains(e.target as Node)) {
+        return;
+      }
+      closeRevenueMenu();
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('resize', handleScrollOrResize);
+    window.addEventListener('scroll', handleScrollOrResize, true); // capture phase
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('resize', handleScrollOrResize);
+      window.removeEventListener('scroll', handleScrollOrResize, true);
+    };
+  }, [isRevenueMenuOpen, closeRevenueMenu]);
+
+  // Keyboard navigation for menu items (ArrowDown / ArrowUp)
+  const handleMenuKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeRevenueMenu();
+      return;
+    }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!revenueMenuDropdownRef.current) return;
+      const items = Array.from(
+        revenueMenuDropdownRef.current.querySelectorAll<HTMLElement>('[role="menuitem"]')
+      );
+      if (items.length === 0) return;
+      const activeEl = document.activeElement as HTMLElement;
+      const currentIndex = items.indexOf(activeEl);
+      let nextIndex = 0;
+      if (e.key === 'ArrowDown') {
+        nextIndex = currentIndex === -1 || currentIndex === items.length - 1 ? 0 : currentIndex + 1;
+      } else {
+        nextIndex = currentIndex === -1 || currentIndex === 0 ? items.length - 1 : currentIndex - 1;
+      }
+      items[nextIndex]?.focus();
+    }
+  };
+
+  // Auto-focus first item when menu opens
+  useEffect(() => {
+    if (isRevenueMenuOpen && revenueMenuDropdownRef.current) {
+      const firstItem = revenueMenuDropdownRef.current.querySelector<HTMLElement>('[role="menuitem"]');
+      firstItem?.focus();
+    }
+  }, [isRevenueMenuOpen]);
 
   // Top Performing Items Table state
   const [sortField, setSortField] = useState<'revenue' | 'units' | 'rating' | 'name'>('revenue');
@@ -692,19 +773,21 @@ export default function AdminDashboardPage() {
     let peakVal = 1000;
 
     for (let i = 0; i < bucketCount; i++) {
+      const isLast = i === bucketCount - 1;
       const bStart = startMs + i * stepMs;
-      const bEnd = i === bucketCount - 1 ? endMs : startMs + (i + 1) * stepMs;
+      const bEnd = isLast ? endMs : startMs + (i + 1) * stepMs;
       const pbStart = prevStartMs + i * stepMs;
-      const pbEnd = i === bucketCount - 1 ? prevEndMs : prevStartMs + (i + 1) * stepMs;
+      const pbEnd = isLast ? prevEndMs : prevStartMs + (i + 1) * stepMs;
 
+      // Half-open range [bStart, bEnd), with the last bucket inclusive of endMs
       const cOrders = activeCur.filter((o) => {
         const t = new Date(o.createdAt || o.statusHistory[0]?.timestamp || o.id).getTime();
-        return t >= bStart && t <= bEnd;
+        return isLast ? t >= bStart && t <= endMs : t >= bStart && t < bEnd;
       });
 
       const pOrders = activePrev.filter((o) => {
         const t = new Date(o.createdAt || o.statusHistory[0]?.timestamp || o.id).getTime();
-        return t >= pbStart && t <= pbEnd;
+        return isLast ? t >= pbStart && t <= prevEndMs : t >= pbStart && t < pbEnd;
       });
 
       const bRev = cOrders.reduce((s, o) => s + o.totals.total, 0);
@@ -724,7 +807,9 @@ export default function AdminDashboardPage() {
       const x = Math.round(padX + (i / Math.max(1, bucketCount - 1)) * usableW);
 
       const dStart = new Date(bStart);
-      const dEnd = new Date(bEnd);
+      // For multi-day buckets, label as start to (end - 1 day) so days never overlap across buckets
+      const dEnd = isLast ? new Date(endMs) : new Date(bEnd - 86400000);
+      const safeDEnd = dEnd.getTime() < dStart.getTime() ? dStart : dEnd;
       let label = '';
       let fullDate = '';
 
@@ -733,10 +818,15 @@ export default function AdminDashboardPage() {
         fullDate = dStart.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
       } else if (granularity === 'weekly') {
         label = `W${i + 1}`;
-        fullDate = `Week ${i + 1} (${dStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${dEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })})`;
+        fullDate = `Week ${i + 1} (${dStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${safeDEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })})`;
       } else {
-        label = dStart.toLocaleDateString('en-US', { month: 'short' });
-        fullDate = dStart.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        if (dStart.getMonth() === safeDEnd.getMonth() && dStart.getFullYear() === safeDEnd.getFullYear()) {
+          label = dStart.toLocaleDateString('en-US', { month: 'short' });
+          fullDate = dStart.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        } else {
+          label = dStart.toLocaleDateString('en-US', { month: 'short' });
+          fullDate = `${dStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${safeDEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+        }
       }
 
       rawBuckets.push({
@@ -797,6 +887,111 @@ export default function AdminDashboardPage() {
     showCompareLine,
   ]);
 
+  // STEP 2: Measure and position tooltip beside the point (14px gap, vertically centered, clamped to line plot area)
+  const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
+
+  useIsomorphicLayoutEffect(() => {
+    if (activePointIndex === null || !plotRef.current || !tooltipRef.current) return;
+    const plotRect = plotRef.current.getBoundingClientRect();
+    const tooltipRect = tooltipRef.current.getBoundingClientRect();
+    const activePt = chartData.points[activePointIndex];
+    if (!activePt || plotRect.width === 0 || plotRect.height === 0) return;
+
+    const plotWidth = plotRect.width;
+    const plotHeight = plotRect.height;
+    const tooltipWidth = tooltipRect.width;
+    const tooltipHeight = tooltipRect.height;
+
+    const pointPxX = (activePt.x / 400) * plotWidth;
+    const pointPxY = (activePt.y / 100) * plotHeight;
+
+    // Beside the point with 14px gap:
+    // Opens to the right when point is in left half of plot,
+    // to the left when in right half
+    const gap = 14;
+    const isLeftHalf = pointPxX <= plotWidth / 2;
+    const targetLeft = isLeftHalf ? pointPxX + gap : pointPxX - tooltipWidth - gap;
+
+    // Clamped horizontally to stay within [0, plotWidth - tooltipWidth]
+    const maxLeft = Math.max(0, plotWidth - tooltipWidth);
+    const clampedLeft = Math.max(0, Math.min(maxLeft, targetLeft));
+
+    // Vertically centered on the point:
+    const targetTop = pointPxY - tooltipHeight / 2;
+
+    // Clamped to [0, plotHeight - tooltipHeight] (above the x-axis labels, below header pills)
+    const maxTop = Math.max(0, plotHeight - tooltipHeight);
+    const clampedTop = Math.max(0, Math.min(maxTop, targetTop));
+
+    setTooltipPos({ left: clampedLeft, top: clampedTop, isMeasured: true });
+  }, [activePointIndex, chartData.points, revenueMetric, showCompareLine]);
+
+  // Window resize listener to recompute beside-point positioning responsively
+  useEffect(() => {
+    function handleResize() {
+      if (activePointIndex === null || !plotRef.current || !tooltipRef.current) return;
+      const plotRect = plotRef.current.getBoundingClientRect();
+      const tooltipRect = tooltipRef.current.getBoundingClientRect();
+      const activePt = chartData.points[activePointIndex];
+      if (!activePt || plotRect.width === 0 || plotRect.height === 0) return;
+
+      const pointPxX = (activePt.x / 400) * plotRect.width;
+      const pointPxY = (activePt.y / 100) * plotRect.height;
+      const gap = 14;
+      const isLeftHalf = pointPxX <= plotRect.width / 2;
+      const targetLeft = isLeftHalf ? pointPxX + gap : pointPxX - tooltipRect.width - gap;
+      const maxLeft = Math.max(0, plotRect.width - tooltipRect.width);
+      const clampedLeft = Math.max(0, Math.min(maxLeft, targetLeft));
+      const targetTop = pointPxY - tooltipRect.height / 2;
+      const maxTop = Math.max(0, plotRect.height - tooltipRect.height);
+      const clampedTop = Math.max(0, Math.min(maxTop, targetTop));
+      setTooltipPos({ left: clampedLeft, top: clampedTop, isMeasured: true });
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [activePointIndex, chartData.points]);
+
+  // Touch listener: on @media (hover: none), tapping outside the plot area hides the tooltip
+  useEffect(() => {
+    function handleDocumentPointer(e: PointerEvent) {
+      if (plotRef.current && !plotRef.current.contains(e.target as Node)) {
+        setActivePointIndex(null);
+      }
+    }
+    document.addEventListener('pointerdown', handleDocumentPointer);
+    return () => document.removeEventListener('pointerdown', handleDocumentPointer);
+  }, []);
+
+  // STEP 2: Compute portal position for the "..." options menu
+  useIsomorphicLayoutEffect(() => {
+    if (!isRevenueMenuOpen || !revenueButtonRef.current) return;
+
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+    if (isMobile) {
+      setMenuPos({ top: 0, left: 0, isMobile: true });
+      return;
+    }
+
+    const rect = revenueButtonRef.current.getBoundingClientRect();
+    const menuWidth = 280;
+    // Right-aligned to the button:
+    let left = rect.right - menuWidth;
+    // Clamped to [8, window.innerWidth - menuWidth - 8]:
+    const minLeft = 8;
+    const maxLeft = Math.max(minLeft, window.innerWidth - menuWidth - 8);
+    left = Math.max(minLeft, Math.min(maxLeft, left));
+
+    const measuredMenuHeight = revenueMenuDropdownRef.current ? revenueMenuDropdownRef.current.offsetHeight : 240;
+    const roomBelow = window.innerHeight - rect.bottom - 16;
+    let top = rect.bottom + 8;
+    // If not enough room below the button, open upward:
+    if (roomBelow < measuredMenuHeight && rect.top > measuredMenuHeight + 16) {
+      top = Math.max(8, rect.top - 8 - measuredMenuHeight);
+    }
+
+    setMenuPos({ top, left, isMobile: false });
+  }, [isRevenueMenuOpen]);
+
   // Clean, non-overlapping X-axis milestone labels
   const axisLabels = React.useMemo(() => {
     if (chartData.points.length === 0) return [];
@@ -835,6 +1030,9 @@ export default function AdminDashboardPage() {
 
     return result;
   }, [chartData.points]);
+
+  // Active hover point on Overall Revenue chart
+  const activePoint = activePointIndex !== null ? chartData.points[activePointIndex] : null;
 
   // Peak Sales Day by Weekday aggregated over shared date range
   const weeklyActivity = React.useMemo(() => {
@@ -1576,121 +1774,125 @@ export default function AdminDashboardPage() {
 
               {/* Controls Row: Metric pills | Granularity pills | Compare | "..." menu */}
               <div className="revenue-card__controls">
-                <div
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    backgroundColor: 'var(--bg-subtle)',
-                    borderRadius: 'var(--radius-pill)',
-                    padding: '3px 4px',
-                    border: '1px solid var(--admin-border-light)',
-                    flexShrink: 0,
-                    whiteSpace: 'nowrap',
-                    gap: '1px',
-                  }}
-                >
-                {/* 1. Metric Switcher */}
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '1px' }}>
-                  {(['revenue', 'orders', 'aov'] as const).map((m) => (
-                    <button
-                      key={m}
-                      type="button"
-                      onClick={() => setRevenueMetric(m)}
-                      style={{
-                        padding: '3px 9px',
-                        fontSize: '0.72rem',
-                        fontWeight: revenueMetric === m ? 600 : 500,
-                        border: 'none',
-                        borderRadius: 'var(--radius-pill)',
-                        cursor: 'pointer',
-                        transition: 'all 0.15s ease',
-                        backgroundColor: revenueMetric === m ? 'var(--admin-surface)' : 'transparent',
-                        color: revenueMetric === m ? 'var(--admin-text-primary)' : 'var(--text-muted)',
-                        boxShadow: revenueMetric === m ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {m === 'aov' ? 'AOV' : m.charAt(0).toUpperCase() + m.slice(1)}
-                    </button>
-                  ))}
-                </div>
+                {/* Pills Scroller (holds metric pills, granularity pills, Compare) */}
+                <div className="revenue-card__pills">
+                  <div
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      backgroundColor: 'var(--bg-subtle)',
+                      borderRadius: 'var(--radius-pill)',
+                      padding: '3px 4px',
+                      border: '1px solid var(--admin-border-light)',
+                      flexShrink: 0,
+                      whiteSpace: 'nowrap',
+                      gap: '1px',
+                    }}
+                  >
+                    {/* 1. Metric Switcher */}
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '1px' }}>
+                      {(['revenue', 'orders', 'aov'] as const).map((m) => (
+                        <button
+                          key={m}
+                          type="button"
+                          onClick={() => setRevenueMetric(m)}
+                          style={{
+                            padding: '3px 9px',
+                            fontSize: '0.72rem',
+                            fontWeight: revenueMetric === m ? 600 : 500,
+                            border: 'none',
+                            borderRadius: 'var(--radius-pill)',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s ease',
+                            backgroundColor: revenueMetric === m ? 'var(--admin-surface)' : 'transparent',
+                            color: revenueMetric === m ? 'var(--admin-text-primary)' : 'var(--text-muted)',
+                            boxShadow: revenueMetric === m ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
+                            lineHeight: 1.2,
+                          }}
+                        >
+                          {m === 'aov' ? 'AOV' : m.charAt(0).toUpperCase() + m.slice(1)}
+                        </button>
+                      ))}
+                    </div>
 
-                {/* Subtle Divider */}
-                <div style={{ width: '1px', height: '14px', backgroundColor: 'var(--admin-border)', margin: '0 4px', opacity: 0.7 }} />
+                    {/* Subtle Divider */}
+                    <div style={{ width: '1px', height: '14px', backgroundColor: 'var(--admin-border)', margin: '0 4px', opacity: 0.7 }} />
 
-                {/* 2. Granularity Toggle (Daily / Weekly / Monthly) */}
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '1px' }}>
-                  {(['daily', 'weekly', 'monthly'] as const).map((g) => (
+                    {/* 2. Granularity Toggle (Daily / Weekly / Monthly) */}
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '1px' }}>
+                      {(['daily', 'weekly', 'monthly'] as const).map((g) => (
+                        <button
+                          key={g}
+                          type="button"
+                          onClick={() => {
+                            setGranularity(g);
+                            setIsUserGranularity(true);
+                          }}
+                          title={`${g.charAt(0).toUpperCase() + g.slice(1)} aggregation`}
+                          style={{
+                            padding: '3px 8px',
+                            fontSize: '0.72rem',
+                            fontWeight: granularity === g ? 600 : 500,
+                            border: 'none',
+                            borderRadius: 'var(--radius-pill)',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s ease',
+                            backgroundColor: granularity === g ? 'var(--admin-surface)' : 'transparent',
+                            color: granularity === g ? 'var(--admin-text-primary)' : 'var(--text-muted)',
+                            boxShadow: granularity === g ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
+                            lineHeight: 1.2,
+                          }}
+                        >
+                          {g.charAt(0).toUpperCase() + g.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Subtle Divider */}
+                    <div style={{ width: '1px', height: '14px', backgroundColor: 'var(--admin-border)', margin: '0 4px', opacity: 0.7 }} />
+
+                    {/* 3. Compare Previous Period Toggle */}
                     <button
-                      key={g}
                       type="button"
-                      onClick={() => {
-                        setGranularity(g);
-                        setIsUserGranularity(true);
-                      }}
-                      title={`${g.charAt(0).toUpperCase() + g.slice(1)} aggregation`}
+                      onClick={() => setShowCompareLine(!showCompareLine)}
+                      title={showCompareLine ? 'Hide previous period comparison line' : 'Show previous period comparison line'}
                       style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
                         padding: '3px 8px',
                         fontSize: '0.72rem',
-                        fontWeight: granularity === g ? 600 : 500,
-                        border: 'none',
+                        fontWeight: showCompareLine ? 600 : 500,
                         borderRadius: 'var(--radius-pill)',
+                        border: 'none',
+                        backgroundColor: showCompareLine ? 'var(--admin-surface)' : 'transparent',
+                        color: showCompareLine ? 'var(--color-sapphire-700)' : 'var(--text-muted)',
+                        boxShadow: showCompareLine ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
                         cursor: 'pointer',
                         transition: 'all 0.15s ease',
-                        backgroundColor: granularity === g ? 'var(--admin-surface)' : 'transparent',
-                        color: granularity === g ? 'var(--admin-text-primary)' : 'var(--text-muted)',
-                        boxShadow: granularity === g ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
                         lineHeight: 1.2,
                       }}
                     >
-                      {g.charAt(0).toUpperCase() + g.slice(1)}
+                      {showCompareLine ? <Eye size={12} style={{ color: 'var(--color-sapphire-700)' }} /> : <EyeOff size={12} />}
+                      <span>Compare</span>
                     </button>
-                  ))}
+                  </div>
                 </div>
 
-                {/* Subtle Divider */}
-                <div style={{ width: '1px', height: '14px', backgroundColor: 'var(--admin-border)', margin: '0 4px', opacity: 0.7 }} />
-
-                {/* 3. Compare Previous Period Toggle */}
-                <button
-                  type="button"
-                  onClick={() => setShowCompareLine(!showCompareLine)}
-                  title={showCompareLine ? 'Hide previous period comparison line' : 'Show previous period comparison line'}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    padding: '3px 8px',
-                    fontSize: '0.72rem',
-                    fontWeight: showCompareLine ? 600 : 500,
-                    borderRadius: 'var(--radius-pill)',
-                    border: 'none',
-                    backgroundColor: showCompareLine ? 'var(--admin-surface)' : 'transparent',
-                    color: showCompareLine ? 'var(--color-sapphire-700)' : 'var(--text-muted)',
-                    boxShadow: showCompareLine ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {showCompareLine ? <Eye size={12} style={{ color: 'var(--color-sapphire-700)' }} /> : <EyeOff size={12} />}
-                  <span>Compare</span>
-                </button>
-
-                {/* Subtle Divider */}
-                <div style={{ width: '1px', height: '14px', backgroundColor: 'var(--admin-border)', margin: '0 4px', opacity: 0.7 }} />
-
-                {/* 4. Card "..." Menu */}
-                <div ref={revenueMenuRef} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                {/* 4. Menu Button Wrap (flex-shrink: 0, outside the scroller) */}
+                <div className="revenue-card__menu-wrap" ref={revenueMenuRef}>
                   <button
+                    ref={revenueButtonRef}
                     type="button"
                     onClick={() => setIsRevenueMenuOpen(!isRevenueMenuOpen)}
+                    aria-haspopup="menu"
+                    aria-expanded={isRevenueMenuOpen}
                     title="Revenue options"
                     style={{
-                      border: 'none',
-                      backgroundColor: isRevenueMenuOpen ? 'var(--admin-surface)' : 'transparent',
+                      border: '1px solid var(--admin-border-light)',
+                      backgroundColor: isRevenueMenuOpen ? 'var(--admin-surface)' : 'var(--bg-subtle)',
                       cursor: 'pointer',
-                      padding: '3px 6px',
+                      padding: '4px 7px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -1698,25 +1900,67 @@ export default function AdminDashboardPage() {
                       borderRadius: 'var(--radius-pill)',
                       transition: 'all 0.15s ease',
                       boxShadow: isRevenueMenuOpen ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
+                      height: '28px',
                     }}
                   >
                     <MoreHorizontal size={15} />
                   </button>
+                </div>
+              </div>
 
-                  {isRevenueMenuOpen && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '100%',
-                      right: 0,
-                      marginTop: '4px',
-                      backgroundColor: 'var(--admin-surface)',
-                      border: '1px solid var(--admin-border)',
-                      borderRadius: 'var(--radius-sm)',
-                      boxShadow: 'var(--shadow-md)',
-                      zIndex: 30,
-                      minWidth: '260px',
-                      padding: '6px 0',
-                    }}>
+              {/* Portal: Render dropdown / bottom sheet into document.body */}
+              {isMounted && isRevenueMenuOpen && createPortal(
+                menuPos.isMobile ? (
+                  <div
+                    style={{
+                      position: 'fixed',
+                      inset: 0,
+                      zIndex: 1000,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'flex-end',
+                    }}
+                  >
+                    {/* Backdrop */}
+                    <div
+                      onClick={closeRevenueMenu}
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.45)',
+                        backdropFilter: 'blur(2px)',
+                      }}
+                    />
+
+                    {/* Bottom Sheet */}
+                    <div
+                      ref={revenueMenuDropdownRef}
+                      role="menu"
+                      aria-label="Revenue options"
+                      onKeyDown={handleMenuKeyDown}
+                      style={{
+                        position: 'relative',
+                        zIndex: 1001,
+                        backgroundColor: 'var(--admin-surface)',
+                        borderTop: '1px solid var(--admin-border)',
+                        borderRadius: '16px 16px 0 0',
+                        boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
+                        padding: '12px 0 24px',
+                        maxHeight: '80vh',
+                        overflowY: 'auto',
+                      }}
+                    >
+                      {/* Pull handle */}
+                      <div
+                        style={{
+                          width: '36px',
+                          height: '4px',
+                          backgroundColor: 'var(--color-neutral-300, #CBD5E1)',
+                          borderRadius: '2px',
+                          margin: '0 auto 12px',
+                        }}
+                      />
+
                       {/* Counted Statuses Note */}
                       <div style={{
                         padding: 'var(--space-2) var(--space-4)',
@@ -1735,8 +1979,10 @@ export default function AdminDashboardPage() {
 
                       {/* Export CSV */}
                       <div
+                        role="menuitem"
+                        tabIndex={0}
                         onClick={() => {
-                          setIsRevenueMenuOpen(false);
+                          closeRevenueMenu();
                           const isPay = channelView === 'payments';
                           const channels = isPay ? settlementData.paymentMethods : settlementData.trafficSources;
                           const lines = [
@@ -1765,6 +2011,12 @@ export default function AdminDashboardPage() {
                           triggerCsvDownload(lines.join('\n'), `aurelia_revenue_${channelView}_${dateRange.start}_to_${dateRange.end}`);
                           showToast('Settlement & timeline report exported to CSV.', 'success');
                         }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            (e.currentTarget as HTMLElement).click();
+                          }
+                        }}
                         style={{
                           padding: 'var(--space-2) var(--space-4)',
                           fontSize: '0.82rem',
@@ -1773,9 +2025,12 @@ export default function AdminDashboardPage() {
                           display: 'flex',
                           alignItems: 'center',
                           gap: 'var(--space-2)',
+                          outline: 'none',
                         }}
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-subtle)')}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                        onFocus={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-subtle)')}
+                        onBlur={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                       >
                         <Download size={14} style={{ color: 'var(--text-muted)' }} />
                         <span>Export Revenue & Settlement (CSV)</span>
@@ -1783,9 +2038,17 @@ export default function AdminDashboardPage() {
 
                       {/* Switch to Table View */}
                       <div
+                        role="menuitem"
+                        tabIndex={0}
                         onClick={() => {
                           setIsChannelTableView(!isChannelTableView);
-                          setIsRevenueMenuOpen(false);
+                          closeRevenueMenu();
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            (e.currentTarget as HTMLElement).click();
+                          }
                         }}
                         style={{
                           padding: 'var(--space-2) var(--space-4)',
@@ -1796,9 +2059,12 @@ export default function AdminDashboardPage() {
                           alignItems: 'center',
                           gap: 'var(--space-2)',
                           borderTop: '1px solid var(--admin-border-light)',
+                          outline: 'none',
                         }}
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-subtle)')}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                        onFocus={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-subtle)')}
+                        onBlur={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                       >
                         <TableIcon size={14} style={{ color: 'var(--text-muted)' }} />
                         <span>{isChannelTableView ? 'Switch to 3-Column View' : 'Switch to Table View'}</span>
@@ -1806,9 +2072,17 @@ export default function AdminDashboardPage() {
 
                       {/* Go to Payments Report */}
                       <div
+                        role="menuitem"
+                        tabIndex={0}
                         onClick={() => {
-                          setIsRevenueMenuOpen(false);
+                          closeRevenueMenu();
                           router.push('/admin/orders');
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            (e.currentTarget as HTMLElement).click();
+                          }
                         }}
                         style={{
                           padding: 'var(--space-2) var(--space-4)',
@@ -1819,19 +2093,186 @@ export default function AdminDashboardPage() {
                           alignItems: 'center',
                           gap: 'var(--space-2)',
                           borderTop: '1px solid var(--admin-border-light)',
+                          outline: 'none',
                         }}
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-subtle)')}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                        onFocus={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-subtle)')}
+                        onBlur={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                       >
                         <ExternalLink size={14} style={{ color: 'var(--text-muted)' }} />
                         <span>Go to Orders & Payments Log</span>
                       </div>
                     </div>
-                  )}
-                </div>
-              </div>
+                  </div>
+                ) : (
+                  <div
+                    ref={revenueMenuDropdownRef}
+                    role="menu"
+                    aria-label="Revenue options"
+                    onKeyDown={handleMenuKeyDown}
+                    style={{
+                      position: 'fixed',
+                      top: `${menuPos.top}px`,
+                      left: `${menuPos.left}px`,
+                      width: '280px',
+                      maxHeight: 'calc(100vh - 32px)',
+                      overflowY: 'auto',
+                      backgroundColor: 'var(--admin-surface)',
+                      border: '1px solid var(--admin-border)',
+                      borderRadius: 'var(--radius-sm, 6px)',
+                      boxShadow: 'var(--shadow-lg, 0 10px 25px rgba(0,0,0,0.15))',
+                      zIndex: 1000,
+                      padding: '6px 0',
+                    }}
+                  >
+                    {/* Counted Statuses Note */}
+                    <div style={{
+                      padding: 'var(--space-2) var(--space-4)',
+                      fontSize: '0.75rem',
+                      color: 'var(--text-muted)',
+                      backgroundColor: 'var(--bg-subtle)',
+                      borderBottom: '1px solid var(--admin-border-light)',
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '6px',
+                      lineHeight: 1.4,
+                    }}>
+                      <Info size={14} style={{ flexShrink: 0, marginTop: '2px', color: 'var(--color-sapphire-700)' }} />
+                      <span>Counted: Paid & confirmed orders only (excludes cancelled & refunded).</span>
+                    </div>
+
+                    {/* Export CSV */}
+                    <div
+                      role="menuitem"
+                      tabIndex={0}
+                      onClick={() => {
+                        closeRevenueMenu();
+                        const isPay = channelView === 'payments';
+                        const channels = isPay ? settlementData.paymentMethods : settlementData.trafficSources;
+                        const lines = [
+                          'AURELIA ATELIER - SETTLEMENT & REVENUE REPORT',
+                          `Reporting Period: ${dateRange.start} to ${dateRange.end} (${preset})`,
+                          `Active Metric: ${revenueMetric.toUpperCase()}`,
+                          `Total Settled: ${formatPrice(settlementData.totalBaseRevenue)}`,
+                          `Active Channel Filter: ${activeChannelFilter ? activeChannelFilter.label : 'All Channels'}`,
+                          '',
+                          `--- ${isPay ? 'PAYMENT METHODS' : 'TRAFFIC SOURCES'} ---`,
+                          isPay
+                            ? 'Gateway,Amount (INR),Share %,Orders,AOV (INR),Success Rate,Failed Rate'
+                            : 'Source,Revenue (INR),Share %,Orders,AOV (INR)',
+                          ...channels.map((c) =>
+                            isPay
+                              ? `"${c.label}",${c.amount},${c.sharePct}%,${c.count},${c.aov},${c.successRate}%,${c.failedRate}%`
+                              : `"${c.label}",${c.amount},${c.sharePct}%,${c.count},${c.aov}`
+                          ),
+                          '',
+                          '--- TIMELINE MILESTONES ---',
+                          'Milestone,Full Date,Revenue (INR),Orders,AOV (INR),Previous Period (INR)',
+                          ...chartData.points.map(
+                            (pt) => `"${pt.label}","${pt.fullDate}",${pt.revenue},${pt.orders},${pt.aov},${pt.prevVal}`
+                          ),
+                        ];
+                        triggerCsvDownload(lines.join('\n'), `aurelia_revenue_${channelView}_${dateRange.start}_to_${dateRange.end}`);
+                        showToast('Settlement & timeline report exported to CSV.', 'success');
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          (e.currentTarget as HTMLElement).click();
+                        }
+                      }}
+                      style={{
+                        padding: 'var(--space-2) var(--space-4)',
+                        fontSize: '0.82rem',
+                        color: 'var(--admin-text-primary)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--space-2)',
+                        outline: 'none',
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-subtle)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                      onFocus={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-subtle)')}
+                      onBlur={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                    >
+                      <Download size={14} style={{ color: 'var(--text-muted)' }} />
+                      <span>Export Revenue & Settlement (CSV)</span>
+                    </div>
+
+                    {/* Switch to Table View */}
+                    <div
+                      role="menuitem"
+                      tabIndex={0}
+                      onClick={() => {
+                        setIsChannelTableView(!isChannelTableView);
+                        closeRevenueMenu();
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          (e.currentTarget as HTMLElement).click();
+                        }
+                      }}
+                      style={{
+                        padding: 'var(--space-2) var(--space-4)',
+                        fontSize: '0.82rem',
+                        color: 'var(--admin-text-primary)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--space-2)',
+                        borderTop: '1px solid var(--admin-border-light)',
+                        outline: 'none',
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-subtle)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                      onFocus={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-subtle)')}
+                      onBlur={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                    >
+                      <TableIcon size={14} style={{ color: 'var(--text-muted)' }} />
+                      <span>{isChannelTableView ? 'Switch to 3-Column View' : 'Switch to Table View'}</span>
+                    </div>
+
+                    {/* Go to Payments Report */}
+                    <div
+                      role="menuitem"
+                      tabIndex={0}
+                      onClick={() => {
+                        closeRevenueMenu();
+                        router.push('/admin/orders');
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          (e.currentTarget as HTMLElement).click();
+                        }
+                      }}
+                      style={{
+                        padding: 'var(--space-2) var(--space-4)',
+                        fontSize: '0.82rem',
+                        color: 'var(--admin-text-primary)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--space-2)',
+                        borderTop: '1px solid var(--admin-border-light)',
+                        outline: 'none',
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-subtle)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                      onFocus={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-subtle)')}
+                      onBlur={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                    >
+                      <ExternalLink size={14} style={{ color: 'var(--text-muted)' }} />
+                      <span>Go to Orders & Payments Log</span>
+                    </div>
+                  </div>
+                ),
+                document.body
+              )}
             </div>
-          </div>
 
             {/* Main KPI + Timeline SVG Chart */}
             <div style={{
@@ -1955,48 +2396,138 @@ export default function AdminDashboardPage() {
 
                 {/* Chart Graphic + X-axis Dates */}
                 <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', position: 'relative' }}>
-                  {/* Floating Point Tooltip */}
-                  {hoveredPoint && (
-                    <div style={{
-                      position: 'absolute',
-                      left: `${(hoveredPoint.x / 400) * 100}%`,
-                      top: '0px',
-                      transform: 'translate(-50%, -105%)',
-                      backgroundColor: 'var(--admin-surface)',
-                      border: '1px solid var(--admin-border)',
-                      boxShadow: 'var(--shadow-md)',
-                      borderRadius: 'var(--radius-sm)',
-                      padding: '6px 10px',
-                      pointerEvents: 'none',
-                      zIndex: 25,
-                      whiteSpace: 'nowrap',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '2px',
-                    }}>
-                      <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--admin-text-primary)' }}>
-                        {hoveredPoint.fullDate}
-                      </div>
-                      <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--color-sapphire-700)' }}>
-                        {formatPrice(hoveredPoint.revenue)}
-                      </div>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                        {hoveredPoint.orders} {hoveredPoint.orders === 1 ? 'commission' : 'commissions'} • {formatPrice(hoveredPoint.aov)} AOV
-                      </div>
-                      {showCompareLine && hoveredPoint.prevVal !== undefined && (
-                        <div style={{ fontSize: '0.68rem', color: '#64748b', borderTop: '1px solid var(--admin-border-light)', paddingTop: '2px', marginTop: '2px' }}>
-                          Prior period: {formatPrice(hoveredPoint.prevVal)}
+                  {/* SVG Canvas for Grid & Lines (Plot Area) */}
+                  <div
+                    ref={plotRef}
+                    className="revenue-chart__plot-area"
+                    onMouseLeave={() => setActivePointIndex(null)}
+                  >
+                    {/* Floating Point Tooltip (inside plot, measured and clamped) */}
+                    {activePoint && (
+                      <div
+                        ref={tooltipRef}
+                        className="revenue-chart__tooltip"
+                        style={{
+                          left: `${tooltipPos.left}px`,
+                          top: `${tooltipPos.top}px`,
+                          opacity: tooltipPos.isMeasured ? 1 : 0,
+                        }}
+                      >
+                        <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--admin-text-primary)' }}>
+                          {activePoint.fullDate}
                         </div>
-                      )}
-                    </div>
-                  )}
+                        <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--color-sapphire-700)' }}>
+                          {revenueMetric === 'revenue'
+                            ? formatPrice(activePoint.revenue)
+                            : revenueMetric === 'orders'
+                            ? `${activePoint.orders} ${activePoint.orders === 1 ? 'order' : 'orders'}`
+                            : formatPrice(activePoint.aov)}
+                        </div>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                          {revenueMetric === 'revenue'
+                            ? `${activePoint.orders} ${activePoint.orders === 1 ? 'commission' : 'commissions'} • ${formatPrice(activePoint.aov)} AOV`
+                            : revenueMetric === 'orders'
+                            ? `${formatPrice(activePoint.revenue)} • ${formatPrice(activePoint.aov)} AOV`
+                            : `${formatPrice(activePoint.revenue)} • ${activePoint.orders} ${activePoint.orders === 1 ? 'commission' : 'commissions'}`}
+                        </div>
+                        {showCompareLine && activePoint.prevVal !== undefined && (
+                          <div style={{ fontSize: '0.68rem', color: '#64748b', borderTop: '1px solid var(--admin-border-light)', paddingTop: '2px', marginTop: '2px' }}>
+                            Prior period: {revenueMetric === 'orders' ? `${activePoint.prevOrders} orders` : formatPrice(activePoint.prevVal)}
+                          </div>
+                        )}
+                      </div>
+                    )}
 
-                  {/* SVG Canvas for Grid & Lines */}
-                  <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
+                    {/* Hit Layer: full-height invisible columns for smooth hover and accessibility */}
+                    <div className="revenue-chart__hit-layer">
+                      {chartData.points.map((pt, idx) => {
+                        const valText =
+                          revenueMetric === 'revenue'
+                            ? formatPrice(pt.revenue)
+                            : revenueMetric === 'orders'
+                            ? `${pt.orders} orders`
+                            : formatPrice(pt.aov);
+                        return (
+                          <div
+                            key={pt.id}
+                            tabIndex={0}
+                            role="button"
+                            aria-label={`${pt.fullDate}: ${valText}`}
+                            className="revenue-chart__hit-col"
+                            style={{
+                              left: `${(idx / chartData.points.length) * 100}%`,
+                              width: `${(1 / chartData.points.length) * 100}%`,
+                            }}
+                            onMouseEnter={() => {
+                              setActivePointIndex(idx);
+                              setTooltipPos((prev) => ({ ...prev, isMeasured: false }));
+                            }}
+                            onFocus={() => {
+                              setActivePointIndex(idx);
+                              setTooltipPos((prev) => ({ ...prev, isMeasured: false }));
+                            }}
+                            onClick={() => {
+                              if (typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches) {
+                                setActivePointIndex((prev) => (prev === idx ? null : idx));
+                              }
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+
+                    {/* Vertical dashed guide line limited strictly to plot area (top of line area to x-axis baseline) */}
+                    {activePoint && (
+                      <div
+                        className="revenue-chart__guide-line"
+                        style={{
+                          left: `${(activePoint.x / 400) * 100}%`,
+                        }}
+                      />
+                    )}
+
+                    {/* Base dots rendered as HTML elements for perfect circles at every width */}
+                    {chartData.points.map((pt, idx) => {
+                      const isActive = activePointIndex === idx;
+                      return (
+                        <div
+                          key={pt.id}
+                          className="revenue-chart__dot"
+                          style={{
+                            left: `${(pt.x / 400) * 100}%`,
+                            top: `${(pt.y / 100) * 100}%`,
+                            opacity: isActive ? 0 : 0.9,
+                          }}
+                        />
+                      );
+                    })}
+
+                    {/* Prior-period matching dot when Compare is on */}
+                    {activePoint && showCompareLine && (
+                      <div
+                        className="revenue-chart__compare-dot"
+                        style={{
+                          left: `${(activePoint.x / 400) * 100}%`,
+                          top: `${(activePoint.prevY / 100) * 100}%`,
+                        }}
+                      />
+                    )}
+
+                    {/* Active dot and soft sapphire ring rendered as HTML element (10px circle, 50% radius) */}
+                    {activePoint && (
+                      <div
+                        className="revenue-chart__active-dot"
+                        style={{
+                          left: `${(activePoint.x / 400) * 100}%`,
+                          top: `${(activePoint.y / 100) * 100}%`,
+                        }}
+                      />
+                    )}
+
                     <svg
                       viewBox="0 0 400 100"
                       preserveAspectRatio="none"
-                      style={{ width: '100%', height: '100%', overflow: 'visible' }}
+                      style={{ width: '100%', height: '100%', overflow: 'hidden' }}
                     >
                       <defs>
                         <linearGradient id="revenueChartGradient" x1="0" y1="0" x2="0" y2="1">
@@ -2036,41 +2567,6 @@ export default function AdminDashboardPage() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
-
-                      {/* Interactive Hoverable Points */}
-                      {chartData.points.map((pt) => {
-                        const isHovered = hoveredPoint?.id === pt.id;
-                        return (
-                          <g key={pt.id}>
-                            {/* Hover hit area */}
-                            <circle
-                              cx={pt.x}
-                              cy={pt.y}
-                              r="12"
-                              fill="transparent"
-                              style={{ cursor: 'pointer' }}
-                              onMouseEnter={() => setHoveredPoint(pt)}
-                              onMouseLeave={() => setHoveredPoint(null)}
-                            />
-                            {/* Visual Point */}
-                            <circle
-                              cx={pt.x}
-                              cy={pt.y}
-                              r={isHovered ? 5.5 : 3.5}
-                              fill="var(--color-sapphire-700)"
-                              stroke="var(--admin-surface)"
-                              strokeWidth="2"
-                              style={{
-                                cursor: 'pointer',
-                                transition: 'all 0.15s ease',
-                                filter: isHovered ? 'drop-shadow(0 0 4px rgba(26, 59, 71, 0.4))' : 'none',
-                              }}
-                              onMouseEnter={() => setHoveredPoint(pt)}
-                              onMouseLeave={() => setHoveredPoint(null)}
-                            />
-                          </g>
-                        );
-                      })}
                     </svg>
                   </div>
 
@@ -2466,22 +2962,51 @@ export default function AdminDashboardPage() {
               </div>
 
               {weeklyActivity.days.map((day) => {
+                const val = salesDayMetric === 'revenue' ? day.revenue : day.count;
                 const isSelected = selectedWeekday === day.dayIdx;
                 const isHovered = hoveredDay === day.dayIdx;
+                const isFirst = day.dayIdx === 0;
+                const isLast = day.dayIdx === 6;
 
                 return (
                   <div
                     key={day.label}
                     className="peak-sales-day-col"
+                    style={{
+                      ['--bar-h' as any]: `${day.heightPct}%`,
+                      cursor: val > 0 ? 'pointer' : 'default',
+                    }}
+                    tabIndex={val > 0 ? 0 : -1}
+                    role="button"
+                    aria-disabled={val === 0}
+                    aria-label={`${day.fullName}: ${val === 0 ? 'No sales' : salesDayMetric === 'revenue' ? formatPrice(day.revenue) : `${day.count} orders`}, ${day.pctShare}% of weekly ${salesDayMetric}`}
                     onMouseEnter={() => setHoveredDay(day.dayIdx)}
                     onMouseLeave={() => setHoveredDay(null)}
+                    onFocus={() => setHoveredDay(day.dayIdx)}
+                    onBlur={() => setHoveredDay(null)}
+                    onClick={() => {
+                      if (val === 0) return;
+                      if (typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches) {
+                        if (hoveredDay !== day.dayIdx) {
+                          setHoveredDay(day.dayIdx);
+                          return;
+                        }
+                      }
+                      setSelectedWeekday(isSelected ? null : day.dayIdx);
+                    }}
+                    onKeyDown={(e) => {
+                      if (val === 0) return;
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedWeekday(isSelected ? null : day.dayIdx);
+                      }
+                    }}
                   >
                     {/* Track: Definite parent flex basis for percentage bar height */}
                     <div className="peak-sales-track">
                       {/* Bar with percentage height & min 3% */}
                       <div
-                        className={`peak-sales-bar ${day.isPeak ? 'peak-sales-bar--peak' : ''}`}
-                        onClick={() => setSelectedWeekday(isSelected ? null : day.dayIdx)}
+                        className={`peak-sales-bar ${day.isPeak ? 'peak-sales-bar--peak' : ''} ${isSelected ? 'peak-sales-bar--selected' : ''}`}
                         style={{
                           height: `${day.heightPct}%`,
                           backgroundColor: day.isPeak
@@ -2489,16 +3014,10 @@ export default function AdminDashboardPage() {
                             : isHovered
                             ? 'var(--color-sapphire-300, #7DA1AB)'
                             : 'var(--color-icy-lake-300, #CAD4D6)',
-                          boxShadow: isSelected
-                            ? '0 0 0 2px var(--admin-surface), 0 0 0 4px var(--color-sapphire-700), 0 4px 12px rgba(36, 75, 87, 0.25)'
-                            : isHovered
-                            ? '0 4px 10px rgba(0,0,0,0.12)'
-                            : 'none',
-                          transform: isSelected || isHovered ? 'translateY(-2px)' : 'none',
                         }}
                       >
-                        {/* Value Pill pinned above the bar */}
-                        {(day.isPeak || isHovered || isSelected) && (
+                        {/* Value Pill pinned above the bar: only for Peak day or Selected bar, NOT on hover */}
+                        {(day.isPeak || isSelected) && (
                           <div style={{
                             position: 'absolute',
                             bottom: 'calc(100% + 5px)',
@@ -2526,7 +3045,6 @@ export default function AdminDashboardPage() {
 
                     {/* Day Name */}
                     <span
-                      onClick={() => setSelectedWeekday(isSelected ? null : day.dayIdx)}
                       style={{
                         marginTop: '8px',
                         fontSize: '0.74rem',
@@ -2536,56 +3054,53 @@ export default function AdminDashboardPage() {
                           ? 'var(--text-primary)'
                           : 'var(--text-muted)',
                         fontWeight: day.isPeak || isSelected ? 700 : 500,
-                        cursor: 'pointer',
                         userSelect: 'none',
                       }}
                     >
                       {day.label}
                     </span>
 
-                    {/* Interactive Hover Tooltip */}
-                    {isHovered && (
-                      <div style={{
-                        position: 'absolute',
-                        bottom: 'calc(100% + 8px)',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        backgroundColor: 'var(--color-black-tie)',
-                        color: 'var(--color-diamond)',
-                        padding: '8px 10px',
-                        borderRadius: '6px',
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.28)',
-                        fontSize: '0.72rem',
-                        whiteSpace: 'nowrap',
-                        zIndex: 30,
-                        pointerEvents: 'none',
-                        minWidth: '130px',
-                      }}>
-                        <div style={{ fontWeight: 700, fontSize: '0.78rem', borderBottom: '1px solid rgba(255,255,255,0.18)', paddingBottom: '3px', marginBottom: '4px' }}>
-                          {day.fullName} {day.isPeak && '👑 (Peak Day)'}
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', marginBottom: '2px' }}>
-                          <span style={{ color: 'rgba(255,255,255,0.65)' }}>{salesDayMetric === 'revenue' ? 'Revenue:' : 'Orders:'}</span>
-                          <span style={{ fontWeight: 600 }}>
-                            {salesDayMetric === 'revenue' ? formatPrice(day.revenue) : `${day.count} orders`}
-                          </span>
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', marginBottom: '4px' }}>
-                          <span style={{ color: 'rgba(255,255,255,0.65)' }}>Weekly Share:</span>
-                          <span style={{ fontWeight: 700, color: 'var(--color-golden-300)' }}>{day.pctShare}%</span>
-                        </div>
-                        <div style={{
-                          fontSize: '0.64rem',
-                          color: 'var(--color-sapphire-300)',
-                          borderTop: '1px solid rgba(255,255,255,0.12)',
-                          paddingTop: '3px',
-                          textAlign: 'center',
-                          fontWeight: 500,
-                        }}>
-                          {isSelected ? 'Click to clear filter' : 'Click to filter Top Items'}
-                        </div>
-                      </div>
-                    )}
+                    {/* Interactive Anchored Tooltip (above the bar + pill, edge-aligned on boundaries) */}
+                    <div
+                      className={`peak-sales-tooltip ${isFirst ? 'peak-sales-tooltip--first' : isLast ? 'peak-sales-tooltip--last' : 'peak-sales-tooltip--center'} ${isHovered ? 'peak-sales-tooltip--visible' : ''}`}
+                    >
+                      {val === 0 ? (
+                        <>
+                          <div style={{ fontWeight: 700, fontSize: '0.78rem', borderBottom: '1px solid rgba(255,255,255,0.18)', paddingBottom: '3px', marginBottom: '4px' }}>
+                            {day.fullName}
+                          </div>
+                          <div style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.75)' }}>
+                            No sales
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div style={{ fontWeight: 700, fontSize: '0.78rem', borderBottom: '1px solid rgba(255,255,255,0.18)', paddingBottom: '3px', marginBottom: '4px' }}>
+                            {day.fullName} {day.isPeak ? '👑 (Peak Day)' : ''}
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', marginBottom: '2px' }}>
+                            <span style={{ color: 'rgba(255,255,255,0.65)' }}>{salesDayMetric === 'revenue' ? 'Revenue:' : 'Orders:'}</span>
+                            <span style={{ fontWeight: 600 }}>
+                              {salesDayMetric === 'revenue' ? formatPrice(day.revenue) : `${day.count} orders`}
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', marginBottom: '4px' }}>
+                            <span style={{ color: 'rgba(255,255,255,0.65)' }}>Weekly Share:</span>
+                            <span style={{ fontWeight: 700, color: 'var(--color-golden-300)' }}>{day.pctShare}%</span>
+                          </div>
+                          <div style={{
+                            fontSize: '0.64rem',
+                            color: 'var(--color-sapphire-300)',
+                            borderTop: '1px solid rgba(255,255,255,0.12)',
+                            paddingTop: '3px',
+                            textAlign: 'center',
+                            fontWeight: 500,
+                          }}>
+                            {isSelected ? 'Click to clear filter' : 'Click to filter Top Items'}
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
                 );
               })}
