@@ -23,12 +23,12 @@ export interface CropQueueItem {
 export interface CroppedSilhouetteImage {
   id: string;
   file: File;
-  previewUrl: string; // 4:3 cropped data URL
+  previewUrl: string; // 3:4 cropped data URL
   originalDataUrl: string; // preserved for re-cropping
   name: string;
   width: number;
   height: number;
-  aspectRatio: number; // strictly 4 / 3 ~ 1.33333333
+  aspectRatio: number; // strictly 3 / 4 = 0.75
 }
 
 interface SilhouetteImageCropperModalProps {
@@ -93,19 +93,19 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
   const initCropBox = useCallback((displayWidth: number, displayHeight: number) => {
     if (displayWidth <= 0 || displayHeight <= 0) return;
 
-    // 4:3 Aspect Ratio (width / height = 4 / 3 = 1.33333)
-    const targetRatio = 4 / 3;
+    // 3:4 Aspect Ratio (width / height = 3 / 4 = 0.75)
+    const targetRatio = 3 / 4;
     let initialW = 0;
     let initialH = 0;
 
     const availableRatio = displayWidth / displayHeight;
 
     if (availableRatio >= targetRatio) {
-      // Image is wider than 4:3 -> height is the constraining dimension
+      // Image is wider than 3:4 -> height is the constraining dimension
       initialH = displayHeight * 0.9;
       initialW = initialH * targetRatio;
     } else {
-      // Image is taller than 4:3 -> width is the constraining dimension
+      // Image is taller than 3:4 -> width is the constraining dimension
       initialW = displayWidth * 0.9;
       initialH = initialW / targetRatio;
     }
@@ -196,9 +196,9 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set preview canvas to 4:3 ratio (240x180)
-    canvas.width = 240;
-    canvas.height = 180;
+    // Set preview canvas to 3:4 ratio (180x240)
+    canvas.width = 180;
+    canvas.height = 240;
 
     const img = imageRef.current;
     const clientW = displaySize.width || img.clientWidth || 1;
@@ -249,13 +249,13 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
 
       const deltaX = e.clientX - dragStartRef.current.mouseX;
       const deltaY = e.clientY - dragStartRef.current.mouseY;
-      const targetRatio = 4 / 3;
+      const targetRatio = 3 / 4;
 
       const { clientW, clientH } = getImageDimensions();
       if (clientW === 0 || clientH === 0) return;
 
       if (activeHandle === null) {
-        // Dragging the entire 4:3 crop box
+        // Dragging the entire 3:4 crop box
         const newX = Math.max(0, Math.min(clientW - cropBox.width, dragStartRef.current.boxX + deltaX));
         const newY = Math.max(0, Math.min(clientH - cropBox.height, dragStartRef.current.boxY + deltaY));
 
@@ -265,7 +265,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
           y: Math.round(newY),
         }));
       } else {
-        // Resizing with 4:3 aspect ratio lock
+        // Resizing with 3:4 aspect ratio lock
         let newW = dragStartRef.current.boxW;
         let newH = dragStartRef.current.boxH;
         let newX = dragStartRef.current.boxX;
@@ -368,7 +368,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
   // PRESET BUTTON ACTIONS (Zoom Box, Expand Box, Reset & Center)
   // -------------------------------------------------------------
 
-  // Reset & Center 4:3 Box
+  // Reset & Center 3:4 Box
   const handleCenterCrop = () => {
     const { clientW, clientH } = getImageDimensions();
     if (clientW > 0 && clientH > 0) {
@@ -381,9 +381,9 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
     const { clientW, clientH } = getImageDimensions();
     if (clientW <= 0 || clientH <= 0) return;
 
-    const targetRatio = 4 / 3;
+    const targetRatio = 3 / 4;
 
-    // Calculate maximum fitting 4:3 box inside the image boundaries
+    // Calculate maximum fitting 3:4 box inside the image boundaries
     let maxW = 0;
     let maxH = 0;
     if (clientW / clientH >= targetRatio) {
@@ -423,7 +423,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
     });
   };
 
-  // Perform export with strict 4:3 validation
+  // Perform export with strict 3:4 validation
   const handleApplyCrop = () => {
     if (!imageRef.current || !currentItem) return;
 
@@ -439,14 +439,15 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
     const naturalCropX = Math.max(0, Math.round(cropBox.x * scaleX));
     const naturalCropY = Math.max(0, Math.round(cropBox.y * scaleY));
     const naturalCropW = Math.round(cropBox.width * scaleX);
+    const naturalCropH = Math.round(cropBox.height * scaleY);
 
-    // Standard high-resolution output locked strictly at 4:3 ratio
-    const targetWidth = Math.max(800, Math.min(1600, naturalCropW));
-    const targetHeight = Math.round(targetWidth * 0.75); // Exactly 4:3
+    // Standard high-resolution output locked strictly at 3:4 ratio (portrait)
+    const targetWidth = Math.max(750, Math.min(1500, naturalCropW));
+    const targetHeight = Math.round(targetWidth * (4 / 3)); // Exactly 3:4
 
-    // Verify 4:3 ratio mathematically
+    // Verify 3:4 ratio mathematically
     const ratioCheck = targetWidth / targetHeight;
-    if (Math.abs(ratioCheck - 4 / 3) > 0.005) {
+    if (Math.abs(ratioCheck - 3 / 4) > 0.005) {
       alert('Aspect ratio check failed. Please re-adjust crop.');
       return;
     }
@@ -464,14 +465,12 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
 
-    const sourceCropH = Math.round(naturalCropW * 0.75);
-
     ctx.drawImage(
       img,
       naturalCropX,
       naturalCropY,
       naturalCropW,
-      sourceCropH,
+      naturalCropH,
       0,
       0,
       targetWidth,
@@ -485,7 +484,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
         if (!blob) return;
 
         const cleanName = currentItem.name.replace(/\.[^/.]+$/, '');
-        const croppedFile = new File([blob], `${cleanName}-silhouette-4x3.jpg`, {
+        const croppedFile = new File([blob], `${cleanName}-silhouette-3x4.jpg`, {
           type: 'image/jpeg',
           lastModified: Date.now(),
         });
@@ -495,10 +494,10 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
           file: croppedFile,
           previewUrl: croppedDataUrl,
           originalDataUrl: currentItem.originalDataUrl,
-          name: `${cleanName} (4:3)`,
+          name: `${cleanName} (3:4)`,
           width: targetWidth,
           height: targetHeight,
-          aspectRatio: 4 / 3,
+          aspectRatio: 3 / 4,
         };
 
         onCropFinished(croppedResult);
@@ -623,13 +622,13 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                   }}
                 >
                   <ShieldCheck size={12} />
-                  4:3 Ratio Locked
+                  3:4 Ratio Locked
                 </span>
               </div>
               <p style={{ fontSize: '0.8rem', color: 'var(--admin-text-secondary, #9E9EA7)', margin: '2px 0 0 0' }}>
                 {isMultiQueue
                   ? `Processing item ${activeQueueIndex + 1} of ${queue.length}: "${currentItem.name}"`
-                  : `Framing "${currentItem.name}" to Atelier 4:3 standard`}
+                  : `Framing "${currentItem.name}" to Atelier 3:4 standard`}
               </p>
             </div>
           </div>
@@ -764,7 +763,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                     }}
                   />
 
-                  {/* Active 4:3 Crop Window */}
+                  {/* Active 3:4 Crop Window */}
                   <div
                     onMouseDown={(e) => handleMouseDown(e, null)}
                     style={{
@@ -843,10 +842,10 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                         border: '1px solid var(--overlay-golden-35)',
                       }}
                     >
-                      4:3
+                      3:4
                     </div>
 
-                    {/* Corner Handles for 4:3 Proportional Scaling */}
+                    {/* Corner Handles for 3:4 Proportional Scaling */}
                     {/* Top-Left */}
                     <div
                       onMouseDown={(e) => handleMouseDown(e, 'nw')}
@@ -921,7 +920,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
             </div>
           </div>
 
-          {/* Side Controls & Live 4:3 Preview */}
+          {/* Side Controls & Live 3:4 Preview */}
           <div
             style={{
               flex: '0 0 260px',
@@ -930,7 +929,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
               gap: '20px',
             }}
           >
-            {/* Live 4:3 Preview Box */}
+            {/* Live 3:4 Preview Box */}
             <div
               style={{
                 backgroundColor: '#1A1A1E',
@@ -947,7 +946,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                   Stored Output Preview
                 </span>
                 <span style={{ fontSize: '0.7rem', color: 'var(--brand-accent)', fontWeight: 600 }}>
-                  4:3 Ratio
+                  3:4 Ratio
                 </span>
               </div>
 
@@ -955,7 +954,9 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
               <div
                 style={{
                   width: '100%',
-                  aspectRatio: '4 / 3',
+                  maxWidth: '180px',
+                  margin: '0 auto',
+                  aspectRatio: '3 / 4',
                   backgroundColor: '#0D0D10',
                   borderRadius: '6px',
                   border: '1px solid #33333D',
@@ -979,15 +980,15 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
               <div style={{ fontSize: '0.75rem', color: '#A0A0AB', lineHeight: 1.4 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
                   <span>Ratio format:</span>
-                  <strong style={{ color: "var(--text-inverse)" }}>4:3 (1.33:1)</strong>
+                  <strong style={{ color: "var(--text-inverse)" }}>3:4 (0.75:1)</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
                   <span>Export dimensions:</span>
-                  <strong style={{ color: "var(--text-inverse)" }}>1200 × 900 px</strong>
+                  <strong style={{ color: "var(--text-inverse)" }}>900 × 1200 px</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
                   <span>Storage rule:</span>
-                  <strong style={{ color: '#7EC3D8' }}>Strict 4:3 Enforced</strong>
+                  <strong style={{ color: '#7EC3D8' }}>Strict 3:4 Enforced</strong>
                 </div>
               </div>
             </div>
@@ -1064,11 +1065,11 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                 </button>
               </div>
 
-              {/* Bottom Row: Reset & Center 4:3 Box */}
+              {/* Bottom Row: Reset & Center 3:4 Box */}
               <button
                 type="button"
                 id="crop-reset-center-btn"
-                title="Reset and center the 4:3 crop box"
+                title="Reset and center the 3:4 crop box"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -1089,7 +1090,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                   fontWeight: 600,
                 }}
               >
-                <Maximize2 size={14} style={{ color: 'var(--brand-accent)' }} /> Reset & Center 4:3 Box
+                <Maximize2 size={14} style={{ color: 'var(--brand-accent)' }} /> Reset & Center 3:4 Box
               </button>
             </div>
 
@@ -1107,7 +1108,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
             >
               <Info size={15} style={{ color: '#7EC3D8', flexShrink: 0, marginTop: '2px' }} />
               <span style={{ fontSize: '0.72rem', color: '#B5CCD2', lineHeight: 1.4 }}>
-                Only verified 4:3 cropped imagery will be persisted to the catalog to maintain storefront alignment.
+                Only verified 3:4 cropped imagery will be persisted to the catalog to maintain storefront alignment.
               </span>
             </div>
           </div>
@@ -1140,7 +1141,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
               leftIcon={<Check size={16} />}
               onClick={handleApplyCrop}
             >
-              {isMultiQueue && !isLastInQueue ? 'Apply 4:3 Crop & Next' : 'Save 4:3 Silhouette Image'}
+              {isMultiQueue && !isLastInQueue ? 'Apply 3:4 Crop & Next' : 'Save 3:4 Silhouette Image'}
             </Button>
           </div>
         </div>

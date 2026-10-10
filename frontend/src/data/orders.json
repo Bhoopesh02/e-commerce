@@ -60,6 +60,12 @@
       "transactionId": "TXN_UPI_982736192",
       "upiVpa": "ayesha@oksbi"
     },
+    "paymentMethod": "UPI",
+    "attribution": {
+      "source": "direct",
+      "medium": "none",
+      "referrer": "direct"
+    },
     "totals": {
       "subtotal": 24999,
       "discount": 2500,
@@ -115,6 +121,12 @@
       "status": "successful",
       "transactionId": "TXN_CRD_384729103",
       "cardLast4": "4242"
+    },
+    "paymentMethod": "Card",
+    "attribution": {
+      "source": "social",
+      "medium": "instagram_bio",
+      "referrer": "https://instagram.com/aurelia.atelier"
     },
     "totals": {
       "subtotal": 38999,
@@ -180,6 +192,12 @@
       "status": "successful",
       "transactionId": "TXN_NB_771928341"
     },
+    "paymentMethod": "NetBanking",
+    "attribution": {
+      "source": "direct",
+      "medium": "concierge_referral",
+      "referrer": "direct"
+    },
     "totals": {
       "subtotal": 28999,
       "discount": 0,
@@ -215,27 +233,27 @@
     "statusHistory": [
       {
         "status": "Placed",
-        "timestamp": "2026-08-01T10:00:00Z",
+        "timestamp": "2026-08-14T10:00:00Z",
         "note": "Order confirmed and registered at Aurelia Central Atelier."
       },
       {
         "status": "Confirmed",
-        "timestamp": "2026-08-01T13:00:00Z",
+        "timestamp": "2026-08-14T13:00:00Z",
         "note": "Payment verified. Being prepared by the atelier."
       },
       {
         "status": "Packed",
-        "timestamp": "2026-08-02T09:00:00Z",
+        "timestamp": "2026-08-15T09:00:00Z",
         "note": "Garment inspected and wrapped in archival tissue."
       },
       {
         "status": "Shipped",
-        "timestamp": "2026-08-03T11:00:00Z",
+        "timestamp": "2026-08-16T11:00:00Z",
         "note": "Dispatched via BlueDart white-glove courier."
       },
       {
         "status": "Delivered",
-        "timestamp": "2026-08-05T15:30:00Z",
+        "timestamp": "2026-08-18T15:30:00Z",
         "note": "Delivered and signed for at client address."
       }
     ],
@@ -254,6 +272,12 @@
       "status": "successful",
       "transactionId": "TXN_COD_11092834"
     },
+    "paymentMethod": "COD",
+    "attribution": {
+      "source": "organic",
+      "medium": "google",
+      "referrer": "https://www.google.com/"
+    },
     "totals": {
       "subtotal": 18499,
       "discount": 1000,
@@ -264,9 +288,9 @@
     "trackingInfo": {
       "carrier": "BlueDart Express",
       "trackingId": "BD554433221IN",
-      "estimatedDelivery": "2026-08-05"
+      "estimatedDelivery": "2026-08-18"
     },
-    "createdAt": "2026-08-01T10:00:00Z"
+    "createdAt": "2026-08-14T10:00:00Z"
   },
   {
     "id": "ord_1005",
@@ -323,6 +347,12 @@
       "status": "successful",
       "transactionId": "TXN_UPI_774821093",
       "upiVpa": "ayesha@oksbi"
+    },
+    "paymentMethod": "UPI",
+    "attribution": {
+      "source": "organic",
+      "medium": "seo_collection",
+      "referrer": "https://www.google.com/"
     },
     "totals": {
       "subtotal": 14999,
@@ -395,6 +425,12 @@
       "transactionId": "TXN_CRD_991827364",
       "cardLast4": "4242"
     },
+    "paymentMethod": "Card",
+    "attribution": {
+      "source": "social",
+      "medium": "instagram_story",
+      "referrer": "https://instagram.com/"
+    },
     "totals": {
       "subtotal": 33998,
       "discount": 0,
@@ -408,5 +444,514 @@
       "estimatedDelivery": "N/A"
     },
     "createdAt": "2026-09-10T16:00:00Z"
+  },
+  {
+    "id": "ord_1007",
+    "userId": "usr_002",
+    "customerName": "Devika Mehra",
+    "customerEmail": "devika@example.com",
+    "items": [
+      {
+        "productId": "prod_003",
+        "productName": "Silk Charmeuse Draped Evening Gown",
+        "productImage": "/images/products/silk-charmeuse-draped-evening-gown-4k-1.webp",
+        "sku": "GWN-EMR-M",
+        "size": "M",
+        "color": "Deep Aubergine",
+        "quantity": 2,
+        "price": 38999
+      }
+    ],
+    "status": "Delivered",
+    "statusHistory": [
+      {
+        "status": "Placed",
+        "timestamp": "2026-10-02T11:20:00Z",
+        "note": "Order confirmed and registered at Aurelia Central Atelier."
+      },
+      {
+        "status": "Confirmed",
+        "timestamp": "2026-10-02T12:00:00Z",
+        "note": "Payment verified via UPI."
+      },
+      {
+        "status": "Delivered",
+        "timestamp": "2026-10-05T14:00:00Z",
+        "note": "Delivered via white-glove service."
+      }
+    ],
+    "address": {
+      "id": "addr_2",
+      "name": "Devika Mehra",
+      "phone": "+91 98111 22334",
+      "line1": "Flat 4B, Regency Heights, Bandra West",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "pincode": "400050",
+      "isDefault": true
+    },
+    "payment": {
+      "method": "UPI",
+      "status": "successful",
+      "transactionId": "TXN_UPI_55441199",
+      "upiVpa": "devika@okaxis"
+    },
+    "paymentMethod": "UPI",
+    "attribution": {
+      "source": "organic",
+      "medium": "google_search",
+      "referrer": "https://google.com"
+    },
+    "totals": {
+      "subtotal": 77998,
+      "discount": 0,
+      "tax": 7502,
+      "delivery": 0,
+      "total": 85500
+    },
+    "trackingInfo": {
+      "carrier": "BlueDart Express",
+      "trackingId": "BD11223344IN",
+      "estimatedDelivery": "2026-10-05"
+    },
+    "createdAt": "2026-10-02T11:20:00Z"
+  },
+  {
+    "id": "ord_1008",
+    "userId": "usr_003",
+    "customerName": "Kabir Singhania",
+    "customerEmail": "kabir@example.com",
+    "items": [
+      {
+        "productId": "prod_001",
+        "productName": "Italian Leather Jacket",
+        "productImage": "/images/products/italian-leather-jacket-4k-1.webp",
+        "sku": "LJ-BLK-L",
+        "size": "L",
+        "color": "Nocturne Black",
+        "quantity": 1,
+        "price": 24999
+      },
+      {
+        "productId": "prod_002",
+        "productName": "Sculpted Double-Breasted Blazer",
+        "productImage": "/images/products/sculpted-double-breasted-blazer-4k-1.webp",
+        "sku": "BLZ-NAV-40",
+        "size": "40R",
+        "color": "Midnight Navy",
+        "quantity": 1,
+        "price": 18499
+      }
+    ],
+    "status": "Delivered",
+    "statusHistory": [
+      {
+        "status": "Placed",
+        "timestamp": "2026-10-06T15:45:00Z",
+        "note": "Order confirmed and registered at Aurelia Central Atelier."
+      },
+      {
+        "status": "Delivered",
+        "timestamp": "2026-10-08T18:00:00Z",
+        "note": "Delivered and verified."
+      }
+    ],
+    "address": {
+      "id": "addr_3",
+      "name": "Kabir Singhania",
+      "phone": "+91 98222 55443",
+      "line1": "Villa 18, Golf Links",
+      "city": "New Delhi",
+      "state": "Delhi",
+      "pincode": "110003",
+      "isDefault": true
+    },
+    "payment": {
+      "method": "UPI",
+      "status": "successful",
+      "transactionId": "TXN_UPI_66778899",
+      "upiVpa": "kabir@okhdfc"
+    },
+    "paymentMethod": "UPI",
+    "attribution": {
+      "source": "organic",
+      "medium": "editorial",
+      "referrer": "https://vogue.in"
+    },
+    "totals": {
+      "subtotal": 43498,
+      "discount": 3500,
+      "tax": 3997,
+      "delivery": 0,
+      "total": 43995
+    },
+    "trackingInfo": {
+      "carrier": "BlueDart Express",
+      "trackingId": "BD99887766IN",
+      "estimatedDelivery": "2026-10-08"
+    },
+    "createdAt": "2026-10-06T15:45:00Z"
+  },
+  {
+    "id": "ord_1009",
+    "userId": "usr_001",
+    "customerName": "Ayesha Rahman",
+    "customerEmail": "ayesha@example.com",
+    "items": [
+      {
+        "productId": "prod_005",
+        "productName": "Atelier Sculptural Leather Tote",
+        "productImage": "/images/products/atelier-sculptural-leather-tote-4k-1.webp",
+        "sku": "TOT-COG-ONE",
+        "size": "One Size",
+        "color": "Cognac Ochre",
+        "quantity": 1,
+        "price": 28999
+      },
+      {
+        "productId": "prod_007",
+        "productName": "Auric Twisted Vermeil Cuff",
+        "productImage": "/images/products/auric-twisted-vermeil-cuff-4k-1.webp",
+        "sku": "JWL-CUF-GLD",
+        "size": "Standard",
+        "color": "18k Gold",
+        "quantity": 1,
+        "price": 11999
+      }
+    ],
+    "status": "Placed",
+    "statusHistory": [
+      {
+        "status": "Placed",
+        "timestamp": "2026-10-10T10:15:00Z",
+        "note": "Order placed and confirmed."
+      }
+    ],
+    "address": {
+      "id": "addr_1",
+      "name": "Ayesha Rahman",
+      "phone": "+91 98765 43210",
+      "line1": "12 MG Road, Alwarpet",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "pincode": "600001",
+      "isDefault": true
+    },
+    "payment": {
+      "method": "UPI",
+      "status": "successful",
+      "transactionId": "TXN_UPI_10101010",
+      "upiVpa": "ayesha@oksbi"
+    },
+    "paymentMethod": "UPI",
+    "attribution": {
+      "source": "direct",
+      "medium": "app",
+      "referrer": "direct"
+    },
+    "totals": {
+      "subtotal": 40998,
+      "discount": 2500,
+      "tax": 3502,
+      "delivery": 0,
+      "total": 42000
+    },
+    "trackingInfo": {
+      "carrier": "BlueDart Express",
+      "trackingId": "Pending Dispatch",
+      "estimatedDelivery": "2026-10-13"
+    },
+    "createdAt": "2026-10-10T10:15:00Z"
+  },
+  {
+    "id": "ord_1010",
+    "userId": "usr_002",
+    "customerName": "Devika Mehra",
+    "customerEmail": "devika@example.com",
+    "items": [
+      {
+        "productId": "prod_002",
+        "productName": "Sculpted Double-Breasted Blazer",
+        "productImage": "/images/products/sculpted-double-breasted-blazer-4k-1.webp",
+        "sku": "BLZ-NAV-38",
+        "size": "38R",
+        "color": "Midnight Navy",
+        "quantity": 1,
+        "price": 18499
+      }
+    ],
+    "status": "Delivered",
+    "statusHistory": [
+      {
+        "status": "Placed",
+        "timestamp": "2026-10-04T14:30:00Z",
+        "note": "Order confirmed via Net Banking."
+      },
+      {
+        "status": "Delivered",
+        "timestamp": "2026-10-07T16:00:00Z",
+        "note": "Delivered safely."
+      }
+    ],
+    "address": {
+      "id": "addr_2",
+      "name": "Devika Mehra",
+      "phone": "+91 98111 22334",
+      "line1": "Flat 4B, Regency Heights, Bandra West",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "pincode": "400050",
+      "isDefault": true
+    },
+    "payment": {
+      "method": "NetBanking",
+      "status": "successful",
+      "transactionId": "TXN_NB_99881122"
+    },
+    "paymentMethod": "NetBanking",
+    "attribution": {
+      "source": "organic",
+      "medium": "search",
+      "referrer": "https://google.com"
+    },
+    "totals": {
+      "subtotal": 18499,
+      "discount": 1000,
+      "tax": 1665,
+      "delivery": 0,
+      "total": 19164
+    },
+    "trackingInfo": {
+      "carrier": "BlueDart Express",
+      "trackingId": "BD44332211IN",
+      "estimatedDelivery": "2026-10-07"
+    },
+    "createdAt": "2026-10-04T14:30:00Z"
+  },
+  {
+    "id": "ord_1011",
+    "userId": "usr_003",
+    "customerName": "Kabir Singhania",
+    "customerEmail": "kabir@example.com",
+    "items": [
+      {
+        "productId": "prod_001",
+        "productName": "Italian Leather Jacket",
+        "productImage": "/images/products/italian-leather-jacket-4k-1.webp",
+        "sku": "LJ-BLK-M",
+        "size": "M",
+        "color": "Nocturne Black",
+        "quantity": 1,
+        "price": 24999
+      },
+      {
+        "productId": "prod_006",
+        "productName": "Florentine Chelsea Boot",
+        "productImage": "/images/products/florentine-chelsea-boot-4k-1.webp",
+        "sku": "BOT-ESP-42",
+        "size": "EU 42",
+        "color": "Espresso Suede",
+        "quantity": 1,
+        "price": 21999
+      }
+    ],
+    "status": "Delivered",
+    "statusHistory": [
+      {
+        "status": "Placed",
+        "timestamp": "2026-08-20T11:00:00Z",
+        "note": "Previous period executive order."
+      },
+      {
+        "status": "Delivered",
+        "timestamp": "2026-08-23T14:00:00Z",
+        "note": "Delivered."
+      }
+    ],
+    "address": {
+      "id": "addr_3",
+      "name": "Kabir Singhania",
+      "phone": "+91 98222 55443",
+      "line1": "Villa 18, Golf Links",
+      "city": "New Delhi",
+      "state": "Delhi",
+      "pincode": "110003",
+      "isDefault": true
+    },
+    "payment": {
+      "method": "UPI",
+      "status": "successful",
+      "transactionId": "TXN_UPI_88990011"
+    },
+    "paymentMethod": "UPI",
+    "attribution": {
+      "source": "direct",
+      "medium": "newsletter",
+      "referrer": "direct"
+    },
+    "totals": {
+      "subtotal": 46998,
+      "discount": 5000,
+      "tax": 3002,
+      "delivery": 0,
+      "total": 45000
+    },
+    "trackingInfo": {
+      "carrier": "BlueDart Express",
+      "trackingId": "BD88776655IN",
+      "estimatedDelivery": "2026-08-23"
+    },
+    "createdAt": "2026-08-20T11:00:00Z"
+  },
+  {
+    "id": "ord_1012",
+    "userId": "usr_002",
+    "customerName": "Devika Mehra",
+    "customerEmail": "devika@example.com",
+    "items": [
+      {
+        "productId": "prod_003",
+        "productName": "Silk Charmeuse Draped Evening Gown",
+        "productImage": "/images/products/silk-charmeuse-draped-evening-gown-4k-1.webp",
+        "sku": "GWN-EMR-S",
+        "size": "S",
+        "color": "Deep Aubergine",
+        "quantity": 1,
+        "price": 38999
+      },
+      {
+        "productId": "prod_004",
+        "productName": "Mongolian Cashmere Ribbed Turtleneck",
+        "productImage": "/images/products/mongolian-cashmere-ribbed-turtleneck-4k-2.webp",
+        "sku": "CSH-CRM-S",
+        "size": "S",
+        "color": "Warm Sand",
+        "quantity": 1,
+        "price": 14999
+      }
+    ],
+    "status": "Delivered",
+    "statusHistory": [
+      {
+        "status": "Placed",
+        "timestamp": "2026-08-27T16:00:00Z",
+        "note": "Previous period couture collection order."
+      },
+      {
+        "status": "Delivered",
+        "timestamp": "2026-08-30T13:30:00Z",
+        "note": "Delivered."
+      }
+    ],
+    "address": {
+      "id": "addr_2",
+      "name": "Devika Mehra",
+      "phone": "+91 98111 22334",
+      "line1": "Flat 4B, Regency Heights, Bandra West",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "pincode": "400050",
+      "isDefault": true
+    },
+    "payment": {
+      "method": "Card",
+      "status": "successful",
+      "transactionId": "TXN_CRD_77665544",
+      "cardLast4": "1122"
+    },
+    "paymentMethod": "Card",
+    "attribution": {
+      "source": "social",
+      "medium": "instagram",
+      "referrer": "https://instagram.com"
+    },
+    "totals": {
+      "subtotal": 53998,
+      "discount": 5000,
+      "tax": 3002,
+      "delivery": 0,
+      "total": 52000
+    },
+    "trackingInfo": {
+      "carrier": "BlueDart Express",
+      "trackingId": "BD77665544IN",
+      "estimatedDelivery": "2026-08-30"
+    },
+    "createdAt": "2026-08-27T16:00:00Z"
+  },
+  {
+    "id": "ord_1013",
+    "userId": "usr_001",
+    "customerName": "Ayesha Rahman",
+    "customerEmail": "ayesha@example.com",
+    "items": [
+      {
+        "productId": "prod_001",
+        "productName": "Italian Leather Jacket",
+        "productImage": "/images/products/italian-leather-jacket-4k-1.webp",
+        "sku": "LJ-BLK-M",
+        "size": "M",
+        "color": "Nocturne Black",
+        "quantity": 2,
+        "price": 24999
+      },
+      {
+        "productId": "prod_003",
+        "productName": "Silk Charmeuse Draped Evening Gown",
+        "productImage": "/images/products/silk-charmeuse-draped-evening-gown-4k-1.webp",
+        "sku": "GWN-EMR-S",
+        "size": "S",
+        "color": "Deep Aubergine",
+        "quantity": 2,
+        "price": 38999
+      }
+    ],
+    "status": "Delivered",
+    "statusHistory": [
+      {
+        "status": "Placed",
+        "timestamp": "2026-09-02T13:00:00Z",
+        "note": "Previous period high-value order."
+      },
+      {
+        "status": "Delivered",
+        "timestamp": "2026-09-05T17:00:00Z",
+        "note": "Delivered."
+      }
+    ],
+    "address": {
+      "id": "addr_1",
+      "name": "Ayesha Rahman",
+      "phone": "+91 98765 43210",
+      "line1": "12 MG Road, Alwarpet",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "pincode": "600001",
+      "isDefault": true
+    },
+    "payment": {
+      "method": "UPI",
+      "status": "successful",
+      "transactionId": "TXN_UPI_99001122"
+    },
+    "paymentMethod": "UPI",
+    "attribution": {
+      "source": "organic",
+      "medium": "google",
+      "referrer": "https://google.com"
+    },
+    "totals": {
+      "subtotal": 127996,
+      "discount": 20000,
+      "tax": 5004,
+      "delivery": 0,
+      "total": 113000
+    },
+    "trackingInfo": {
+      "carrier": "BlueDart Express",
+      "trackingId": "BD99001122IN",
+      "estimatedDelivery": "2026-09-05"
+    },
+    "createdAt": "2026-09-02T13:00:00Z"
   }
 ]

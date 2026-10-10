@@ -36,7 +36,7 @@ export default function NewProductPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Stored 4:3 cropped images
+  // Stored 3:4 cropped images
   const [silhouetteImages, setSilhouetteImages] = useState<CroppedSilhouetteImage[]>([]);
 
   // Cropper modal state
@@ -123,10 +123,10 @@ export default function NewProductPage() {
 
   // Callback when an image finishes cropping
   const handleCropFinished = (result: CroppedSilhouetteImage) => {
-    // Mathematical guarantee: strict 4:3 check before storing
+    // Mathematical guarantee: strict 3:4 check before storing
     const ratio = result.width / result.height;
-    if (Math.abs(ratio - 4 / 3) > 0.01) {
-      alert('Security validation: Image must strictly adhere to 4:3 aspect ratio to be stored.');
+    if (Math.abs(ratio - 3 / 4) > 0.01) {
+      alert('Security validation: Image must strictly adhere to 3:4 aspect ratio to be stored.');
       return;
     }
 
@@ -156,17 +156,17 @@ export default function NewProductPage() {
     e.preventDefault();
 
     if (silhouetteImages.length === 0) {
-      alert('Atelier policy requires at least 1 verified 4:3 cropped silhouette image.');
+      alert('Atelier policy requires at least 1 verified 3:4 cropped silhouette image.');
       return;
     }
 
-    // Double check that all stored images strictly satisfy 4:3
-    const non4x3Images = silhouetteImages.filter(
-      (img) => Math.abs(img.width / img.height - 4 / 3) > 0.01
+    // Double check that all stored images strictly satisfy 3:4
+    const non3x4Images = silhouetteImages.filter(
+      (img) => Math.abs(img.width / img.height - 3 / 4) > 0.01
     );
 
-    if (non4x3Images.length > 0) {
-      alert('Non 4:3 image detected. Only strictly cropped 4:3 silhouette images may be stored.');
+    if (non3x4Images.length > 0) {
+      alert('Non 3:4 image detected. Only strictly cropped 3:4 silhouette images may be stored.');
       return;
     }
 
@@ -179,10 +179,10 @@ export default function NewProductPage() {
         price: parseFloat(formData.price) || 0,
         description: formData.description,
         images: silhouetteImages.map((img) => img.previewUrl),
-        tags: ['Atelier Silhouette', 'New Arrival', '4:3 Curated'],
+        tags: ['Atelier Silhouette', 'New Arrival', '3:4 Curated'],
       });
 
-      alert('New silhouette drafted successfully with verified 4:3 imagery!');
+      alert('New silhouette drafted successfully with verified 3:4 imagery!');
       router.push('/admin/products');
     } catch (err) {
       console.error(err);
@@ -312,7 +312,7 @@ export default function NewProductPage() {
           required
         />
 
-        {/* Silhouette Images Upload with 4:3 Enforcement */}
+        {/* Silhouette Images Upload with 3:4 Enforcement */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <label
@@ -339,7 +339,7 @@ export default function NewProductPage() {
                   border: '1px solid var(--overlay-golden-35)',
                 }}
               >
-                4:3 Ratio Locked
+                3:4 Ratio Locked
               </span>
             </label>
             <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
@@ -364,11 +364,11 @@ export default function NewProductPage() {
             <ShieldCheck size={16} color="var(--brand-primary)" style={{ flexShrink: 0 }} />
             <span>
               <strong>Atelier Visual Standard:</strong> All uploaded images must be cropped to a strict{' '}
-              <strong>4:3 aspect ratio</strong>. The interactive cropper will open automatically upon upload.
+              <strong>3:4 aspect ratio</strong>. The interactive cropper will open automatically upon upload.
             </span>
           </div>
 
-          {/* Stored 4:3 Cropped Images Grid */}
+          {/* Stored 3:4 Cropped Images Grid */}
           {silhouetteImages.length > 0 && (
             <div
               style={{
@@ -392,12 +392,12 @@ export default function NewProductPage() {
                     position: 'relative',
                   }}
                 >
-                  {/* Exact 4:3 Display Box */}
+                  {/* Exact 3:4 Display Box */}
                   <div
                     style={{
                       position: 'relative',
                       width: '100%',
-                      aspectRatio: '4 / 3',
+                      aspectRatio: '3 / 4',
                       overflow: 'hidden',
                       backgroundColor: 'var(--text-primary)',
                     }}
@@ -488,7 +488,7 @@ export default function NewProductPage() {
                         }}
                       >
                         <CheckCircle2 size={12} />
-                        4:3 Stored
+                        3:4 Stored
                       </span>
                       <span style={{ color: 'var(--text-muted)' }}>
                         {img.width}×{img.height}
@@ -515,7 +515,7 @@ export default function NewProductPage() {
                       }}
                     >
                       <Crop size={13} />
-                      Re-crop (4:3)
+                      Re-crop (3:4)
                     </button>
                   </div>
                 </div>
@@ -592,7 +592,7 @@ export default function NewProductPage() {
                     display: 'block',
                   }}
                 >
-                  Select or drag photos. You will interactively crop each image into <strong>4:3 ratio</strong>.
+                  Select or drag photos. You will interactively crop each image into <strong>3:4 ratio</strong>.
                 </span>
               </div>
 
@@ -606,7 +606,7 @@ export default function NewProductPage() {
                   border: '1px solid var(--border-color)',
                 }}
               >
-                JPG, PNG, WEBP (Only 4:3 stored)
+                JPG, PNG, WEBP (Only 3:4 stored)
               </span>
             </div>
           )}
@@ -669,11 +669,11 @@ export default function NewProductPage() {
                 }}
               >
                 <CheckCircle2 size={16} />
-                {silhouetteImages.length} 4:3 {silhouetteImages.length === 1 ? 'image' : 'images'} ready for storage
+                {silhouetteImages.length} 3:4 {silhouetteImages.length === 1 ? 'image' : 'images'} ready for storage
               </span>
             ) : (
               <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                Please add and crop at least 1 image to 4:3
+                Please add and crop at least 1 image to 3:4
               </span>
             )}
           </div>
@@ -689,7 +689,7 @@ export default function NewProductPage() {
         </div>
       </form>
 
-      {/* 4:3 Image Cropper Modal */}
+      {/* 3:4 Image Cropper Modal */}
       <SilhouetteImageCropperModal
         isOpen={cropperModalOpen}
         queue={cropQueue}

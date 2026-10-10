@@ -139,6 +139,12 @@ export interface OrderItem {
   price: number;
 }
 
+export interface OrderAttribution {
+  source?: 'direct' | 'organic' | 'social' | 'email' | 'referral' | 'paid' | string;
+  medium?: string;
+  referrer?: string;
+}
+
 export interface Order {
   id: string;
   userId: string;
@@ -149,6 +155,8 @@ export interface Order {
   statusHistory: StatusHistoryItem[];
   address: Address;
   payment: PaymentInfo;
+  paymentMethod?: string;
+  attribution?: OrderAttribution;
   totals: OrderTotals;
   trackingInfo?: TrackingInfo;
   createdAt: string;

@@ -74,8 +74,8 @@ let wishlistsState: Record<string, string[]> = (wishlistsData as { userId: strin
   {}
 );
 
-// Catalog version tag to invalidate stale client localStorage when products.json updates
-const CATALOG_VERSION = '2026.10.09.v2'; // Bump this string to force a cache reset across clients-side state on first mount (runs only once per session)
+// Catalog version tag to invalidate stale client localStorage when products/orders update
+const CATALOG_VERSION = '2026.10.10.v1'; // Bump this string to force a cache reset across clients-side state on first mount (runs only once per session)
 let isClientStateInitialized = false;
 
 function ensureClientState() {
@@ -90,9 +90,12 @@ function ensureClientState() {
     productsState = [...(productsData as Product[])];
     saveData('products', productsState);
     
-    // Also reset banners to ensure new metadata/photos show up
+    // Also reset banners and orders to ensure new metadata/orders show up
     bannersState = [...(bannersData as Banner[])];
     saveData('banners', bannersState);
+
+    ordersState = [...(ordersData as Order[])];
+    saveData('orders', ordersState);
     
     window.localStorage.setItem('aurelia_catalog_version', CATALOG_VERSION);
   } else {

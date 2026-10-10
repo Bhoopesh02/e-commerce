@@ -9,11 +9,7 @@ import {
   LayoutDashboard,
   Package,
   ShoppingCart,
-  Boxes,
-  Users,
   RotateCcw,
-  BarChart3,
-  Settings,
   ArrowLeft,
   Shield,
   ChevronDown,
@@ -37,7 +33,6 @@ const ADMIN_NAV_ITEMS = [
   { href: '/admin/products', label: 'Silhouettes & Catalog', icon: <Package size={18} /> },
   { href: '/admin/orders', label: 'Commissions & Fulfillment', icon: <ShoppingCart size={18} /> },
   { href: '/admin/returns', label: 'Returns & Authorizations', icon: <RotateCcw size={18} /> },
-  { href: '/admin/reports', label: 'Analytics & CSV Export', icon: <BarChart3 size={18} /> },
 ];
 
 export const AdminSidebar: React.FC = () => {
