@@ -30,25 +30,25 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const wishlistCount = productIds.length;
 
   useEffect(() => {
-    let rafId: number | null = null;
+    let isScrolledLocal = typeof window !== 'undefined' ? window.scrollY > 48 : false;
+    if (isScrolledLocal) {
+      setIsScrolled(true);
+    }
+
     const handleScroll = () => {
-      if (rafId !== null) return;
-      rafId = requestAnimationFrame(() => {
-        const y = window.scrollY;
-        // Hysteresis: activate above 48px, deactivate only below 16px to prevent threshold flapping
-        setIsScrolled((prev) => {
-          if (!prev && y > 48) return true;
-          if (prev && y < 16) return false;
-          return prev;
-        });
-        rafId = null;
-      });
+      const y = window.scrollY;
+      // Hysteresis threshold check: only trigger React state update when crossing threshold
+      if (!isScrolledLocal && y > 48) {
+        isScrolledLocal = true;
+        setIsScrolled(true);
+      } else if (isScrolledLocal && y < 16) {
+        isScrolledLocal = false;
+        setIsScrolled(false);
+      }
     };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (rafId !== null) cancelAnimationFrame(rafId);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const newArrivalsHref = '/new-arrivals';
@@ -126,17 +126,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           left: 0,
           right: 0,
           zIndex: 100,
+          transform: 'translateZ(0)',
+          WebkitTransform: 'translateZ(0)',
+          willChange: 'transform',
           transition:
-            'background 350ms var(--ease-luxury), background-color 350ms var(--ease-luxury), backdrop-filter 350ms var(--ease-luxury), -webkit-backdrop-filter 350ms var(--ease-luxury), color 350ms var(--ease-luxury)',
+            'background 250ms ease, background-color 250ms ease, color 250ms ease',
           background: isScrolled
-            ? 'var(--nav-backdrop)'
+            ? 'rgba(255, 255, 255, 0.95)'
             : isHomePage
               ? 'linear-gradient(180deg, var(--overlay-black-50) 0%, var(--overlay-black-30) 60%, transparent 100%)'
               : 'transparent',
-          backdropFilter: isScrolled ? 'blur(16px)' : 'blur(0px)',
-          WebkitBackdropFilter: isScrolled ? 'blur(16px)' : 'blur(0px)',
-          borderBottom: 'none',
-          boxShadow: 'none',
+          backdropFilter: isScrolled ? 'blur(6px)' : 'none',
+          WebkitBackdropFilter: isScrolled ? 'blur(6px)' : 'none',
+          borderBottom: isScrolled ? '1px solid var(--border-color)' : 'none',
+          boxShadow: isScrolled ? '0 2px 10px rgba(0, 0, 0, 0.03)' : 'none',
           color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
         }}
       >

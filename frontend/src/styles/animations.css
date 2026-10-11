@@ -523,8 +523,14 @@ a:focus-visible .luxury-btn:not(:disabled)>span:last-child svg {
 [data-admin="true"] .luxury-btn:hover::after,
 [class*="admin-"] .luxury-btn:hover::after,
 .luxury-btn.no-sheen:hover::after,
+.luxury-btn[data-no-sheen="true"]:hover::after,
+a:hover .luxury-btn.no-sheen::after,
+a:focus-visible .luxury-btn.no-sheen::after,
+a:hover .luxury-btn[data-no-sheen="true"]::after,
+a:focus-visible .luxury-btn[data-no-sheen="true"]::after,
 .luxury-btn-ghost:hover::after {
   transform: none !important;
+  display: none !important;
 }
 
 .admin-layout .luxury-btn .luxury-btn-icon-right,
@@ -536,6 +542,9 @@ a:focus-visible .luxury-btn:not(:disabled)>span:last-child svg {
 [data-admin="true"] .luxury-btn .luxury-btn-icon-right,
 [class*="admin-"] .luxury-btn .luxury-btn-icon-right,
 .luxury-btn.no-sheen .luxury-btn-icon-right,
+.luxury-btn[data-no-sheen="true"] .luxury-btn-icon-right,
+.luxury-btn.no-sheen svg.lucide-arrow-right,
+.luxury-btn[data-no-sheen="true"] svg.lucide-arrow-right,
 .luxury-btn:disabled .luxury-btn-icon-right,
 .luxury-btn[disabled] .luxury-btn-icon-right {
   transform: none !important;
@@ -550,8 +559,20 @@ a:focus-visible .luxury-btn:not(:disabled)>span:last-child svg {
 .admin-panel .luxury-btn:hover .luxury-btn-icon-right,
 [data-admin="true"] .luxury-btn:hover .luxury-btn-icon-right,
 [class*="admin-"] .luxury-btn:hover .luxury-btn-icon-right,
-.luxury-btn.no-sheen:hover .luxury-btn-icon-right {
+.luxury-btn.no-sheen:hover .luxury-btn-icon-right,
+.luxury-btn[data-no-sheen="true"]:hover .luxury-btn-icon-right,
+.luxury-btn.no-sheen:hover svg.lucide-arrow-right,
+.luxury-btn[data-no-sheen="true"]:hover svg.lucide-arrow-right,
+.luxury-btn.no-sheen:hover > span:last-child svg,
+.luxury-btn[data-no-sheen="true"]:hover > span:last-child svg,
+a:hover .luxury-btn.no-sheen .luxury-btn-icon-right,
+a:focus-visible .luxury-btn.no-sheen .luxury-btn-icon-right,
+a:hover .luxury-btn[data-no-sheen="true"] .luxury-btn-icon-right,
+a:focus-visible .luxury-btn[data-no-sheen="true"] .luxury-btn-icon-right,
+a:hover .luxury-btn.no-sheen svg.lucide-arrow-right,
+a:focus-visible .luxury-btn.no-sheen svg.lucide-arrow-right {
   transform: none !important;
+  transition: none !important;
 }
 
 /* Mobile safety for all luxury buttons */

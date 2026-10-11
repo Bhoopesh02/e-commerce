@@ -295,6 +295,7 @@ export const CartView: React.FC = () => {
               fullWidth
               rightIcon={<ArrowRight size={16} />}
               onClick={() => router.push('/checkout')}
+              disableSheen
             >
               Proceed to Checkout
             </Button>

@@ -491,6 +491,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     isLoading={isAddingToCart}
                     onClick={handleAddToCart}
                     leftIcon={<ShoppingBag size={17} />}
+                    disableSheen
                   >
                     {isOutOfStock ? 'Sold Out' : 'Add to Atelier Bag'}
                   </Button>
@@ -507,6 +508,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     onClick={handleBuyNow}
                     rightIcon={<ArrowRight size={17} />}
                     style={{ letterSpacing: '0.05em' }}
+                    disableSheen
                   >
                     PROCEED TO CHECKOUT
                   </Button>

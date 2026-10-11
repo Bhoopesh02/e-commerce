@@ -146,6 +146,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
   }, [activeCategory, appliedPriceRange, appliedAvailability, selectedSort, searchQuery, handlePageChange]);
 
   const stickyBarRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
@@ -173,26 +174,22 @@ export const ShopView: React.FC<ShopViewProps> = ({
     }
   }, [activeCategory]);
 
+  // Track sticky state via off-thread IntersectionObserver to avoid scroll jank
   useEffect(() => {
-    let rafId: number | null = null;
-    const handleScroll = () => {
-      if (rafId !== null) return;
-      rafId = requestAnimationFrame(() => {
-        if (stickyBarRef.current) {
-          const navHeight = window.innerWidth <= 767 ? 64 : 76;
-          const rect = stickyBarRef.current.getBoundingClientRect();
-          setIsStuck(rect.top <= navHeight + 2);
-        }
-        rafId = null;
-      });
-    };
+    if (!sentinelRef.current) return;
+    const navHeight = typeof window !== 'undefined' && window.innerWidth <= 767 ? 64 : 76;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsStuck(!entry.isIntersecting);
+      },
+      {
+        rootMargin: `-${navHeight}px 0px 0px 0px`,
+        threshold: [0],
+      }
+    );
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (rafId !== null) cancelAnimationFrame(rafId);
-    };
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
   }, []);
 
   // Server pre-fetched for storefront 'a' — skip redundant first-mount fetch
@@ -440,6 +437,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Sticky Filter Bar Sentinel for Off-Thread IntersectionObserver */}
+      <div ref={sentinelRef} style={{ height: '1px', marginBottom: '-1px', pointerEvents: 'none' }} aria-hidden="true" />
 
       {/* Sticky Category Navigation Bar & Global Controls (Fixed Nav Bar on Collection Page) */}
       <div

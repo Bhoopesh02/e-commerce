@@ -28,7 +28,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   aspectRatio = '3 / 4',
   variant = 'standard',
-  sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 420px',
+  sizes = '(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 300px',
   onClick,
   priority = false,
 }) => {

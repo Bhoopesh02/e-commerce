@@ -346,6 +346,7 @@ export const CartDrawer: React.FC = () => {
               size="lg"
               fullWidth
               rightIcon={<ArrowRight size={16} />}
+              disableSheen
             >
               Proceed to Checkout
             </Button>

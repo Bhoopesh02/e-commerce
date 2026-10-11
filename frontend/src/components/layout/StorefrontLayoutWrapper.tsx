@@ -22,6 +22,26 @@ interface StorefrontLayoutWrapperProps {
   children: React.ReactNode;
 }
 
+// Exclude footer from account pages, orders, purchasing/checkout flows, and admin panel
+const shouldHideFooter = (pathname: string | null): boolean => {
+  if (!pathname) return false;
+  const normalized = pathname.replace(/\/+$/, '') || '/';
+  const excludedPrefixes = [
+    '/account',
+    '/orders',
+    '/order',
+    '/cart',
+    '/checkout',
+    '/payment',
+    '/purchase',
+    '/confirmation',
+    '/admin',
+  ];
+  return excludedPrefixes.some(
+    (prefix) => normalized === prefix || normalized.startsWith(`${prefix}/`)
+  );
+};
+
 export const StorefrontLayoutWrapper: React.FC<StorefrontLayoutWrapperProps> = ({
   storefrontId,
   children,
@@ -38,11 +58,13 @@ export const StorefrontLayoutWrapper: React.FC<StorefrontLayoutWrapperProps> = (
     }
   }, [storefrontId, setStorefront, initStorefront]);
 
+  const showFooter = !shouldHideFooter(pathname);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', overflowX: 'clip' }}>
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
       <div style={{ flex: 1 }}>{children}</div>
-      {(pathname === '/' || pathname === '/shop' || pathname.startsWith('/collections')) && <Footer />}
+      {showFooter && <Footer />}
 
       {/* Global Interactive Overlays */}
       <CartDrawer />

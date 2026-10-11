@@ -23,6 +23,7 @@ export const NewArrivalsView: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isStuck, setIsStuck] = useState(false);
   const stickyBarRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   // Filters
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -34,17 +35,22 @@ export const NewArrivalsView: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
+  // Offload sticky state detection to an IntersectionObserver to eliminate main-thread layout thrashing
   useEffect(() => {
-    const handleScroll = () => {
-      if (stickyBarRef.current) {
-        const navHeight = window.innerWidth <= 767 ? 64 : 76;
-        const rect = stickyBarRef.current.getBoundingClientRect();
-        setIsStuck(rect.top <= navHeight + 2);
+    if (!sentinelRef.current) return;
+    const navHeight = typeof window !== 'undefined' && window.innerWidth <= 767 ? 64 : 76;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsStuck(!entry.isIntersecting);
+      },
+      {
+        rootMargin: `-${navHeight}px 0px 0px 0px`,
+        threshold: [0],
       }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    );
+
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -224,7 +230,7 @@ export const NewArrivalsView: React.FC = () => {
             alt="New Arrivals — The Sartorial Vanguard"
             fill
             priority
-            quality={92}
+            quality={80}
             sizes="100vw"
             style={{
               objectFit: 'cover',
@@ -369,6 +375,9 @@ export const NewArrivalsView: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Sticky Filter Bar Sentinel for Off-Thread IntersectionObserver */}
+      <div ref={sentinelRef} style={{ height: '1px', marginBottom: '-1px', pointerEvents: 'none' }} aria-hidden="true" />
 
       {/* Sticky Filter Bar */}
       <div

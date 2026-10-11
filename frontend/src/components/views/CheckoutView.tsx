@@ -274,7 +274,7 @@ export const CheckoutView: React.FC = () => {
               <Button variant="primary">Track Order Progress</Button>
             </Link>
             <Link href="/shop">
-              <Button variant="outline">Continue Shopping</Button>
+              <Button variant="outline" disableSheen>Continue Shopping</Button>
             </Link>
           </div>
         </div>
@@ -396,7 +396,7 @@ export const CheckoutView: React.FC = () => {
                   onChange={(e) => setPhone(e.target.value)}
                   required
                 />
-                <Button variant="primary" onClick={() => setStep(2)} rightIcon={<ArrowRight size={16} />}>
+                <Button variant="primary" onClick={() => setStep(2)} rightIcon={<ArrowRight size={16} />} disableSheen>
                   Continue to Shipping
                 </Button>
               </div>
@@ -427,7 +427,7 @@ export const CheckoutView: React.FC = () => {
                   onChange={(e) => setPincode(e.target.value)}
                   required
                 />
-                <Button variant="primary" onClick={() => setStep(3)} rightIcon={<ArrowRight size={16} />}>
+                <Button variant="primary" onClick={() => setStep(3)} rightIcon={<ArrowRight size={16} />} disableSheen>
                   Continue to Delivery
                 </Button>
               </div>
@@ -481,7 +481,7 @@ export const CheckoutView: React.FC = () => {
                   </div>
                 </div>
 
-                <Button variant="primary" onClick={() => setStep(4)} rightIcon={<ArrowRight size={16} />}>
+                <Button variant="primary" onClick={() => setStep(4)} rightIcon={<ArrowRight size={16} />} disableSheen>
                   Continue to Payment
                 </Button>
               </div>
@@ -510,6 +510,7 @@ export const CheckoutView: React.FC = () => {
                   isLoading={isSubmitting}
                   onClick={handlePlaceOrder}
                   className="checkout-auth-button"
+                  disableSheen
                 >
                   <span className="checkout-auth-label">Authorize Payment</span>
                   <span className="checkout-auth-amount">({formatPrice(total)})</span>
