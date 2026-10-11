@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { getProducts, getCategories } from '@/lib/mockApi';
 import { Product, Category } from '@/types';
 import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCard';
@@ -8,8 +9,11 @@ import { Button } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
 import { RangeSlider } from '@/components/ui/RangeSlider';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
-import { SlidersHorizontal, X, RotateCcw, ArrowUp, Check, Search } from 'lucide-react';
+import Image from 'next/image';
+import { SlidersHorizontal, X, RotateCcw, ArrowUp, ArrowDown, Check, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+export const PRODUCTS_PER_PAGE = 36;
 
 export const NewArrivalsView: React.FC = () => {
   const { storefront } = useStorefrontStore();
@@ -114,17 +118,256 @@ export const NewArrivalsView: React.FC = () => {
     return categories.find((c) => c.slug === activeCategory)?.name || activeCategory;
   }, [categories, activeCategory]);
 
+  // Pagination (36 products per page)
+  const searchParams = useSearchParams();
+  const getPageFromParam = useCallback((param: string | null): number => {
+    if (!param) return 1;
+    const parsed = parseInt(param, 10);
+    return isNaN(parsed) || parsed < 1 ? 1 : parsed;
+  }, []);
+
+  const [currentPage, setCurrentPage] = useState<number>(() =>
+    getPageFromParam(searchParams?.get('page') ?? null)
+  );
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setCurrentPage(newPage);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      if (newPage <= 1) {
+        url.searchParams.delete('page');
+      } else {
+        url.searchParams.set('page', String(newPage));
+      }
+      window.history.replaceState(null, '', url.pathname + url.search);
+    }
+  }, []);
+
+  // Sync state if URL searchParams change
+  useEffect(() => {
+    const urlPage = getPageFromParam(searchParams?.get('page') ?? null);
+    if (urlPage !== currentPage) {
+      setCurrentPage(urlPage);
+    }
+  }, [searchParams, getPageFromParam, currentPage]);
+
+  // Reset to page 1 on active category, filter, or search query change
+  useEffect(() => {
+    handlePageChange(1);
+  }, [activeCategory, appliedPriceRange, appliedAvailability, searchQuery, handlePageChange]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE));
+
+  // Clamp current page if product count shrinks below current page
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      handlePageChange(totalPages);
+    }
+  }, [totalPages, currentPage, handlePageChange]);
+
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+    return filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
+  }, [filteredProducts, currentPage]);
+
+  const scrollToGridTop = () => {
+    if (stickyBarRef.current) {
+      const navOffset = window.innerWidth <= 767 ? 70 : 85;
+      const top = stickyBarRef.current.getBoundingClientRect().top + window.pageYOffset - navOffset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const getVisiblePageNumbers = (current: number, total: number): (number | string)[] => {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    if (current <= 4) {
+      return [1, 2, 3, 4, 5, '...', total];
+    }
+    if (current >= total - 3) {
+      return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+    }
+    return [1, '...', current - 1, current, current + 1, '...', total];
+  };
+
   return (
     <div style={{ paddingTop: '76px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      {/* Page Header */}
-      <div className="container" style={{ paddingTop: '40px', paddingBottom: '20px' }}>
-        <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontFamily: 'var(--font-display)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: '16px', letterSpacing: '-0.02em' }}>
-          New Arrivals
-        </h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: '1rem', maxWidth: '600px' }}>
-          Discover the latest pieces from our collection, featuring exceptional craftsmanship and timeless design.
-        </p>
-      </div>
+      {/* Full-Width Hero Banner Section */}
+      <section
+        className="new-arrivals-hero-banner"
+        style={{
+          position: 'relative',
+          width: '100%',
+          overflow: 'hidden',
+          backgroundColor: '#0c1218',
+          borderBottom: '1px solid var(--border-color)',
+          minHeight: 'clamp(440px, 48vw, 580px)',
+          display: 'flex',
+          alignItems: 'center',
+          marginBottom: '28px',
+        }}
+      >
+        {/* Background Image Layer (Full Screen Width) */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 1,
+          }}
+        >
+          <Image
+            src="/images/banners/new-arrivals/new-arrivals-hero.webp"
+            alt="New Arrivals — The Sartorial Vanguard"
+            fill
+            priority
+            quality={92}
+            sizes="100vw"
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'right 20% center',
+            }}
+          />
+
+          {/* Cinematic Scrim Gradients for Contrast & Legibility */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'linear-gradient(90deg, rgba(8, 14, 20, 0.94) 0%, rgba(8, 14, 20, 0.82) 36%, rgba(8, 14, 20, 0.35) 68%, rgba(8, 14, 20, 0.06) 100%)',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'linear-gradient(0deg, rgba(8, 14, 20, 0.75) 0%, transparent 45%, rgba(8, 14, 20, 0.25) 100%)',
+            }}
+          />
+        </div>
+
+        {/* Left-Side Editorial Content (Aligned to Site Container Grid) */}
+        <div
+          className="container"
+          style={{
+            position: 'relative',
+            zIndex: 2,
+            width: '100%',
+          }}
+        >
+          <div
+            style={{
+              maxWidth: '680px',
+              padding: 'clamp(36px, 5vw, 64px) 0',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '18px',
+            }}
+          >
+            {/* Main Headline */}
+            <motion.h1
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.08 }}
+              style={{
+                fontSize: 'clamp(2.2rem, 4.6vw, 3.8rem)',
+                fontFamily: 'var(--font-display, Cormorant Garamond, serif)',
+                fontWeight: 400,
+                color: '#ffffff',
+                lineHeight: 1.08,
+                letterSpacing: '-0.02em',
+                margin: 0,
+                textShadow: '0 2px 20px rgba(0,0,0,0.5)',
+              }}
+            >
+              The Sartorial Vanguard
+            </motion.h1>
+
+            {/* Editorial Description */}
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.16 }}
+              style={{
+                fontSize: 'clamp(0.92rem, 1.1vw, 1.05rem)',
+                fontFamily: 'var(--font-body)',
+                color: 'rgba(235, 240, 245, 0.88)',
+                lineHeight: 1.65,
+                margin: 0,
+                maxWidth: '540px',
+                textShadow: '0 1px 8px rgba(0,0,0,0.4)',
+              }}
+            >
+              Architectural suiting, handcrafted Italian leather duffels, and refined knitwear designed for sovereign presence.
+            </motion.p>
+
+            {/* Quick Actions / CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.24 }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '16px',
+                marginTop: '6px',
+                flexWrap: 'wrap',
+              }}
+            >
+              <button
+                onClick={scrollToGridTop}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '13px 28px',
+                  borderRadius: '0px',
+                  backgroundColor: '#ffffff',
+                  color: '#0a1016',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  fontFamily: 'var(--font-body)',
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  border: '1px solid #ffffff',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+                  transition: 'all 0.25s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = '#ffffff';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#ffffff';
+                  e.currentTarget.style.color = '#0a1016';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.25)';
+                }}
+              >
+                <span>Explore Silhouettes</span>
+                <ArrowDown size={14} />
+              </button>
+
+              <span
+                style={{
+                  fontSize: '0.82rem',
+                  color: 'rgba(215, 225, 235, 0.75)',
+                  letterSpacing: '0.04em',
+                }}
+              >
+                {filteredProducts.length} pieces available
+              </span>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
       {/* Sticky Filter Bar */}
       <div
@@ -285,7 +528,9 @@ export const NewArrivalsView: React.FC = () => {
                 </>
               ) : (
                 <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', letterSpacing: '0.02em' }}>
-                  {filteredProducts.length} Silhouettes
+                  {totalPages > 1
+                    ? `${filteredProducts.length} Silhouettes (Page ${currentPage} of ${totalPages})`
+                    : `${filteredProducts.length} Silhouettes`}
                 </span>
               )}
             </div>
@@ -423,13 +668,150 @@ export const NewArrivalsView: React.FC = () => {
         {loading ? (
           <ProductGridSkeleton count={8} />
         ) : filteredProducts.length > 0 ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }} className="product-grid max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]">
-            {filteredProducts.map((product, idx) => (
-              <motion.div key={product.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-30px' }} transition={{ duration: 0.45, delay: (idx % 4) * 0.06 }}>
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
-          </div>
+          <>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }} className="product-grid max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]">
+              {paginatedProducts.map((product, idx) => (
+                <motion.div key={product.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-30px' }} transition={{ duration: 0.45, delay: (idx % 4) * 0.06 }}>
+                  <ProductCard product={product} />
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {filteredProducts.length > PRODUCTS_PER_PAGE && (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  marginTop: '56px',
+                  gap: '16px',
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: '0.82rem',
+                    color: 'var(--text-muted)',
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  Showing {(currentPage - 1) * PRODUCTS_PER_PAGE + 1}–{Math.min(currentPage * PRODUCTS_PER_PAGE, filteredProducts.length)} of {filteredProducts.length} Silhouettes
+                </div>
+
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  {/* Previous Button */}
+                  <button
+                    onClick={() => {
+                      handlePageChange(currentPage - 1);
+                      scrollToGridTop();
+                    }}
+                    disabled={currentPage === 1}
+                    aria-label="Previous Page"
+                    style={{
+                      width: '38px',
+                      height: '38px',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '1px solid var(--border-color)',
+                      backgroundColor: 'var(--bg-surface)',
+                      color: 'var(--text-primary)',
+                      cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                      opacity: currentPage === 1 ? 0.35 : 1,
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+
+                  {/* Page Numbers */}
+                  {getVisiblePageNumbers(currentPage, totalPages).map((pageNum, idx) => {
+                    if (typeof pageNum === 'string') {
+                      return (
+                        <span
+                          key={`ellipsis-${idx}`}
+                          style={{
+                            width: '28px',
+                            textAlign: 'center',
+                            color: 'var(--text-muted)',
+                            fontSize: '0.9rem',
+                            userSelect: 'none',
+                          }}
+                        >
+                          {pageNum}
+                        </span>
+                      );
+                    }
+
+                    const isActive = currentPage === pageNum;
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => {
+                          handlePageChange(pageNum);
+                          scrollToGridTop();
+                        }}
+                        aria-label={`Page ${pageNum}`}
+                        aria-current={isActive ? 'page' : undefined}
+                        style={{
+                          width: '38px',
+                          height: '38px',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.85rem',
+                          fontWeight: isActive ? 600 : 400,
+                          border: isActive ? '1px solid var(--text-primary)' : '1px solid var(--border-color)',
+                          backgroundColor: isActive ? 'var(--text-primary)' : 'var(--bg-surface)',
+                          color: isActive ? 'var(--bg-primary)' : 'var(--text-primary)',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+
+                  {/* Next Button */}
+                  <button
+                    onClick={() => {
+                      handlePageChange(currentPage + 1);
+                      scrollToGridTop();
+                    }}
+                    disabled={currentPage === totalPages}
+                    aria-label="Next Page"
+                    style={{
+                      width: '38px',
+                      height: '38px',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '1px solid var(--border-color)',
+                      backgroundColor: 'var(--bg-surface)',
+                      color: 'var(--text-primary)',
+                      cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                      opacity: currentPage === totalPages ? 0.35 : 1,
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         ) : (
           <div style={{ textAlign: 'center', padding: '80px 24px', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
             <h3 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-display)', marginBottom: '8px' }}>No Silhouettes Found</h3>
@@ -438,7 +820,7 @@ export const NewArrivalsView: React.FC = () => {
           </div>
         )}
 
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '60px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: filteredProducts.length > PRODUCTS_PER_PAGE ? '36px' : '60px' }}>
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover-fill-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 24px', borderRadius: 'var(--radius-pill)', border: '1px solid var(--border-color)', fontSize: '0.85rem', fontWeight: 500, backgroundColor: 'var(--bg-surface)', cursor: 'pointer' }}>
             <ArrowUp size={16} />
             <span>Return to Top</span>

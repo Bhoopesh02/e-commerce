@@ -415,7 +415,7 @@ export const Footer: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shop?tag=new-arrival" className="footer-link">
+                  <Link href="/new-arrivals" className="footer-link">
                     New Arrivals
                   </Link>
                 </li>

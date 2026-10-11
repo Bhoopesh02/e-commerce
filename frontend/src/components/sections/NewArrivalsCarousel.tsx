@@ -134,7 +134,7 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
                 </button>
               </div>
               <Link
-                href="/shop?tag=new-arrival"
+                href="/new-arrivals"
                 className="editorial-arrow-link"
                 style={{
                   fontSize: '0.85rem',
