@@ -382,6 +382,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                     role="listbox"
                     aria-label="Select Bank"
                     className="bank-dropdown-menu"
+                    data-lenis-prevent
                     style={{
                       position: 'absolute',
                       top: 'calc(100% + 4px)',

@@ -55,6 +55,7 @@ export const Drawer: React.FC<DrawerProps> = ({
       aria-hidden={!isOpen}
       aria-labelledby={title ? titleId : undefined}
       aria-label={ariaLabel || (!title ? 'Drawer' : undefined)}
+      data-lenis-prevent
       style={{
         position: 'fixed',
         top: 0,
@@ -78,6 +79,7 @@ export const Drawer: React.FC<DrawerProps> = ({
       onClick={onClose}
     >
       <div
+        data-lenis-prevent
         style={{
           width: '100%',
           maxWidth: width,
@@ -156,6 +158,7 @@ export const Drawer: React.FC<DrawerProps> = ({
         </div>
 
         <div
+          data-lenis-prevent
           style={{
             flex: 1,
             overflowY: 'auto',

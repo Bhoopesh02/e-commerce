@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { usePathname } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -10,6 +11,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   fullWidth?: boolean;
+  disableSheen?: boolean;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -22,6 +24,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       leftIcon,
       rightIcon,
       fullWidth = false,
+      disableSheen = false,
       className = '',
       disabled,
       style,
@@ -29,6 +32,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
+    const pathname = usePathname();
+    const isAdminRoute = Boolean(pathname?.startsWith('/admin'));
+    const isNoSheen = disableSheen || variant === 'ghost' || isAdminRoute;
     // Standardized luxury button dimensions: identical heights, vertical padding, and font scales
     const sizeConfig = {
       sm: {
@@ -129,8 +135,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         data-full-width={fullWidth ? 'true' : undefined}
+        data-no-sheen={isNoSheen ? 'true' : undefined}
         style={{ ...baseStyle, ...variantStyle, ...style }}
-        className={`luxury-btn luxury-btn-${variant} ${fullWidth ? 'luxury-btn-fullwidth' : ''} ${className}`}
+        className={`luxury-btn luxury-btn-${variant} ${fullWidth ? 'luxury-btn-fullwidth' : ''} ${isNoSheen ? 'no-sheen' : ''} ${className}`}
         {...props}
       >
         {isLoading ? (

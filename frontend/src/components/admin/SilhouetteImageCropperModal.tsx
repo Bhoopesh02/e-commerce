@@ -526,6 +526,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
     <div
       role="dialog"
       aria-modal="true"
+      data-lenis-prevent
       style={{
         position: 'fixed',
         inset: 0,
@@ -655,6 +656,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
 
         {/* Workspace Body */}
         <div
+          data-lenis-prevent
           style={{
             display: 'flex',
             flexDirection: 'row',

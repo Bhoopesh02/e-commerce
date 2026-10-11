@@ -14,14 +14,27 @@ import {
   Sparkles,
   Info,
   CheckCircle2,
-  Trash2,
 } from 'lucide-react';
+import { AnimatedTrashIcon } from '@/components/ui/AnimatedTrashIcon';
 import {
   SilhouetteImageCropperModal,
   CropQueueItem,
   CroppedSilhouetteImage,
 } from '@/components/admin/SilhouetteImageCropperModal';
+import { AdminDropdown, DropdownOption } from '@/components/admin/AdminDropdown';
 import { createProduct } from '@/lib/mockApi';
+
+const CATEGORY_OPTIONS: DropdownOption[] = [
+  { value: 'cat_outerwear', label: 'Outerwear' },
+  { value: 'cat_dresses', label: 'Dresses' },
+  { value: 'cat_tailoring', label: 'Tailoring' },
+  { value: 'cat_eveningwear', label: 'Eveningwear' },
+  { value: 'cat_knitwear', label: 'Knitwear' },
+  { value: 'cat_leather_goods', label: 'Leather Goods' },
+  { value: 'cat_footwear', label: 'Footwear' },
+  { value: 'cat_jewelry', label: 'Fine Jewelry' },
+  { value: 'cat_fragrances', label: 'Fragrances' },
+];
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -170,6 +183,11 @@ export default function NewProductPage() {
       return;
     }
 
+    if (!formData.categoryId) {
+      alert('Please select a category division.');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -263,44 +281,15 @@ export default function NewProductPage() {
           required
         />
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <label
-            style={{
-              fontSize: '0.8rem',
-              fontWeight: 500,
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase',
-              color: 'var(--text-secondary)',
-            }}
-          >
-            Category Division
-          </label>
-          <select
-            name="categoryId"
-            value={formData.categoryId}
-            onChange={handleChange}
-            style={{
-              padding: '10px 14px',
-              borderRadius: 'var(--radius-sm)',
-              border: '1px solid var(--border-color)',
-              backgroundColor: 'var(--bg-surface)',
-              color: 'var(--text-primary)',
-              fontSize: '0.92rem',
-              outline: 'none',
-            }}
-            required
-          >
-            <option value="cat_outerwear">Outerwear</option>
-            <option value="cat_dresses">Dresses</option>
-            <option value="cat_tailoring">Tailoring</option>
-            <option value="cat_eveningwear">Eveningwear</option>
-            <option value="cat_knitwear">Knitwear</option>
-            <option value="cat_leather_goods">Leather Goods</option>
-            <option value="cat_footwear">Footwear</option>
-            <option value="cat_jewelry">Fine Jewelry</option>
-            <option value="cat_fragrances">Fragrances</option>
-          </select>
-        </div>
+        <AdminDropdown
+          label="Category Division"
+          name="categoryId"
+          value={formData.categoryId}
+          onChange={(val) => setFormData((prev) => ({ ...prev, categoryId: val }))}
+          options={CATEGORY_OPTIONS}
+          searchPlaceholder="Search category divisions..."
+          required
+        />
 
         <Input
           label="Atelier Price (₹)"
@@ -454,9 +443,10 @@ export default function NewProductPage() {
                         justifyContent: 'center',
                         cursor: 'pointer',
                         transition: 'background 0.2s',
+                        overflow: 'visible',
                       }}
                     >
-                      <Trash2 size={12} />
+                      <AnimatedTrashIcon size={12} />
                     </button>
                   </div>
 

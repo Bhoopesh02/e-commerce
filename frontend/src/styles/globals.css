@@ -1,6 +1,7 @@
 @import './variables.css';
 @import './typography.css';
 @import './animations.css';
+@import 'lenis/dist/lenis.css';
 
 /* CSS Reset & Base */
 *,
@@ -22,6 +23,15 @@ html {
   color-scheme: light;
   scrollbar-gutter: stable;
   overflow-x: clip;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+html.lenis {
+  scroll-behavior: auto !important;
 }
 
 

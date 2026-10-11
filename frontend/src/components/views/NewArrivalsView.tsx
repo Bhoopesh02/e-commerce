@@ -12,6 +12,7 @@ import { useStorefrontStore } from '@/store/useStorefrontStore';
 import Image from 'next/image';
 import { SlidersHorizontal, X, RotateCcw, ArrowUp, ArrowDown, Check, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { smoothScrollService } from '@/services/smooth-scroll';
 
 export const PRODUCTS_PER_PAGE = 36;
 
@@ -174,9 +175,9 @@ export const NewArrivalsView: React.FC = () => {
     if (stickyBarRef.current) {
       const navOffset = window.innerWidth <= 767 ? 70 : 85;
       const top = stickyBarRef.current.getBoundingClientRect().top + window.pageYOffset - navOffset;
-      window.scrollTo({ top, behavior: 'smooth' });
+      smoothScrollService.scrollTo(top);
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      smoothScrollService.scrollTo(0);
     }
   };
 
@@ -821,7 +822,7 @@ export const NewArrivalsView: React.FC = () => {
         )}
 
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: filteredProducts.length > PRODUCTS_PER_PAGE ? '36px' : '60px' }}>
-          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover-fill-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 24px', borderRadius: 'var(--radius-pill)', border: '1px solid var(--border-color)', fontSize: '0.85rem', fontWeight: 500, backgroundColor: 'var(--bg-surface)', cursor: 'pointer' }}>
+          <button onClick={() => smoothScrollService.scrollTo(0)} className="hover-fill-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 24px', borderRadius: 'var(--radius-pill)', border: '1px solid var(--border-color)', fontSize: '0.85rem', fontWeight: 500, backgroundColor: 'var(--bg-surface)', cursor: 'pointer' }}>
             <ArrowUp size={16} />
             <span>Return to Top</span>
           </button>

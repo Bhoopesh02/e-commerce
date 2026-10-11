@@ -29,6 +29,8 @@ export default function AdminLoginPage() {
 
   return (
     <div
+      data-admin="true"
+      className="admin-layout admin-panel"
       style={{
         minHeight: '100vh',
         display: 'flex',

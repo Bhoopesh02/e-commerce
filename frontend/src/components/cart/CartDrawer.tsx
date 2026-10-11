@@ -99,6 +99,7 @@ export const CartDrawer: React.FC = () => {
           <>
             {/* Items List */}
             <div
+              data-lenis-prevent
               style={{
                 flex: 1,
                 overflowY: 'auto',

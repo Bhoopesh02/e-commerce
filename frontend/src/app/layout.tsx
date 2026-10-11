@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import '@/styles/globals.css';
 import { BRAND_NAME, BRAND_TAGLINE } from '@/lib/constants';
+import { SmoothScrollProvider } from '@/components/common/SmoothScrollProvider';
 
 export const metadata: Metadata = {
   title: `${BRAND_NAME} Atelier | Luxury Haute Couture & Ready-to-Wear`,
@@ -44,7 +45,9 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: antiFlashScript }} />
       </head>
-      <body>{children}</body>
+      <body>
+        <SmoothScrollProvider>{children}</SmoothScrollProvider>
+      </body>
     </html>
   );
 }

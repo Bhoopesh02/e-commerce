@@ -358,6 +358,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
+              data-lenis-prevent
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
@@ -511,6 +512,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
       <AnimatePresence>
         {hoveredNav && hoveredNav !== 'home' && (
           <motion.div
+            data-lenis-prevent
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}

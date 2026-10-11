@@ -7,6 +7,22 @@ import { Input } from '@/components/ui/Input';
 import { ArrowLeft, Save, UploadCloud, X } from 'lucide-react';
 import { getProductById, adminUpdateProduct } from '@/lib/mockApi';
 import { Product } from '@/types';
+import { AdminDropdown, DropdownOption } from '@/components/admin/AdminDropdown';
+
+const CATEGORY_OPTIONS: DropdownOption[] = [
+  { value: 'cat_outerwear', label: 'Outerwear' },
+  { value: 'cat_dresses', label: 'Dresses' },
+  { value: 'cat_tailoring', label: 'Tailoring' },
+  { value: 'cat_eveningwear', label: 'Eveningwear' },
+  { value: 'cat_knitwear', label: 'Knitwear' },
+  { value: 'cat_leather_goods', label: 'Leather Goods' },
+  { value: 'cat_footwear', label: 'Footwear' },
+  { value: 'cat_jewelry', label: 'Fine Jewelry' },
+  { value: 'cat_fragrances', label: 'Fragrances' },
+  { value: 'cat_tops', label: 'Tops' },
+  { value: 'cat_bottoms', label: 'Bottoms' },
+  { value: 'cat_accessories', label: 'Accessories' },
+];
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -27,6 +43,7 @@ export default function EditProductPage() {
 
   useEffect(() => {
     async function load() {
+      if (!id) return;
       try {
         const product = await getProductById(id);
         if (product) {
@@ -84,6 +101,11 @@ export default function EditProductPage() {
     e.preventDefault();
     if (imagePreviews.length === 0) {
       alert('Please have at least 1 image.');
+      return;
+    }
+
+    if (!formData.categoryId) {
+      alert('Please select a category division.');
       return;
     }
     
@@ -152,33 +174,16 @@ export default function EditProductPage() {
           required
         />
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <label style={{ fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
-            Category
-          </label>
-          <select
-            name="categoryId"
-            value={formData.categoryId}
-            onChange={handleChange}
-            style={{
-              padding: '10px 14px',
-              borderRadius: 'var(--radius-sm)',
-              border: '1px solid var(--border-color)',
-              backgroundColor: 'var(--bg-surface)',
-              color: 'var(--text-primary)',
-              fontSize: '0.92rem',
-              outline: 'none',
-            }}
-            required
-          >
-            <option value="" disabled>Select a category</option>
-            <option value="cat_outerwear">Outerwear</option>
-            <option value="cat_dresses">Dresses</option>
-            <option value="cat_tops">Tops</option>
-            <option value="cat_bottoms">Bottoms</option>
-            <option value="cat_accessories">Accessories</option>
-          </select>
-        </div>
+        <AdminDropdown
+          label="Category Division"
+          name="categoryId"
+          value={formData.categoryId}
+          onChange={(val) => setFormData((prev) => ({ ...prev, categoryId: val }))}
+          options={CATEGORY_OPTIONS}
+          searchPlaceholder="Search category divisions..."
+          placeholder="Select a category division"
+          required
+        />
 
         <Input
           label="Atelier Price (₹)"

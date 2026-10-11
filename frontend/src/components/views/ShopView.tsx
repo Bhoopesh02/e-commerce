@@ -14,6 +14,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { FlatProductGrid, PAGE_SIZE } from '@/components/shop/FlatProductGrid';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { SlidersHorizontal, X, RotateCcw, ArrowUp, Check, Search } from 'lucide-react';
+import { smoothScrollService } from '@/services/smooth-scroll';
 
 export const ShopViewSkeleton: React.FC = () => {
   return (
@@ -153,9 +154,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
       const navHeight = window.innerWidth <= 767 ? 64 : 76;
       const rect = gridContainerRef.current.getBoundingClientRect();
       const scrollTop = window.pageYOffset + rect.top - navHeight - 16;
-      window.scrollTo({ top: Math.max(0, scrollTop), behavior: 'smooth' });
+      smoothScrollService.scrollTo(Math.max(0, scrollTop));
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      smoothScrollService.scrollTo(0);
     }
   }, []);
 
@@ -363,10 +364,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
       const naturalTop = stickyBarRef.current.offsetTop;
       const targetScroll = naturalTop - navHeight;
       if (Math.abs(window.pageYOffset - targetScroll) > 16) {
-        window.scrollTo({ top: Math.max(0, targetScroll), behavior: 'smooth' });
+        smoothScrollService.scrollTo(Math.max(0, targetScroll));
       }
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      smoothScrollService.scrollTo(0);
     }
   }, [gender]);
 
@@ -395,7 +396,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       prevUrlCategoryRef.current = urlCatSlug;
       setActiveCategory(urlCatSlug);
       setStagedCategory(urlCatSlug);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      smoothScrollService.scrollTo(0);
     }
   }, [searchParams, defaultCategory]);
 
@@ -772,7 +773,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '60px' }}>
           <button
             onClick={() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              smoothScrollService.scrollTo(0);
             }}
             className="hover-fill-btn"
             style={{

@@ -237,6 +237,7 @@ export const ProductImageLightbox: React.FC<ProductImageLightboxProps> = ({
       role="dialog"
       aria-modal="true"
       aria-label={`${productName} image viewer`}
+      data-lenis-prevent
       style={{
         position: 'fixed',
         inset: 0,
@@ -442,6 +443,7 @@ export const ProductImageLightbox: React.FC<ProductImageLightboxProps> = ({
           }}
         >
           <div
+            data-lenis-prevent
             style={{
               display: 'flex',
               gap: '12px',

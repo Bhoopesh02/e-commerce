@@ -6,7 +6,7 @@ interface AnimatedTrashIconProps extends React.SVGProps<SVGSVGElement> {
   size?: number | string;
 }
 
-export const AnimatedTrashIcon: React.FC<AnimatedTrashIconProps> = ({ size = 24, className = '', ...props }) => {
+export const AnimatedTrashIcon: React.FC<AnimatedTrashIconProps> = ({ size = 24, className = '', style, ...props }) => {
   return (
     <>
       <style>{`
@@ -20,11 +20,13 @@ export const AnimatedTrashIcon: React.FC<AnimatedTrashIconProps> = ({ size = 24,
         }
         
         button:hover .animated-trash-icon,
+        .luxury-btn:hover .animated-trash-icon,
         .animated-trash-icon:hover {
-          color: var(--color-error, var(--color-error)) !important;
+          color: var(--color-error, #B00020) !important;
         }
         
         button:hover .animated-trash-lid,
+        .luxury-btn:hover .animated-trash-lid,
         .animated-trash-icon:hover .animated-trash-lid {
           transform: rotate(-30deg) translateY(-2px);
         }
@@ -40,7 +42,7 @@ export const AnimatedTrashIcon: React.FC<AnimatedTrashIconProps> = ({ size = 24,
         strokeLinecap="round"
         strokeLinejoin="round"
         className={`animated-trash-icon ${className}`}
-        style={{ overflow: 'visible' }}
+        style={{ overflow: 'visible', ...style }}
         {...props}
       >
         <g className="animated-trash-lid">

@@ -47,6 +47,7 @@ export const Modal: React.FC<ModalProps> = ({
       aria-modal="true"
       aria-labelledby={title ? titleId : undefined}
       aria-label={ariaLabel || (!title ? 'Dialog' : undefined)}
+      data-lenis-prevent
       style={{
         position: 'fixed',
         top: 0,
@@ -65,6 +66,7 @@ export const Modal: React.FC<ModalProps> = ({
     >
       <div
         className="modal-content-box"
+        data-lenis-prevent
         style={{
           backgroundColor: 'var(--bg-surface)',
           border: '1px solid var(--border-color)',

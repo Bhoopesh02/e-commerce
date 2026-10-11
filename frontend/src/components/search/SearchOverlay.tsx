@@ -325,6 +325,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
 
       {/* Drawer Panel */}
       <aside
+        data-lenis-prevent
         onClick={(e) => e.stopPropagation()}
         style={{
           position: 'relative',
@@ -496,7 +497,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
         </div>
 
         {/* Drawer Body ("What's New" or Results Grid) */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'var(--bg-primary)' }}>
+        <div data-lenis-prevent style={{ flex: 1, overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'var(--bg-primary)' }}>
           
           {/* MOBILE VIEW ONLY: Interactive Filters Bar */}
           <div className="mobile-search-filters-container" style={{ display: 'flex', flexDirection: 'column', gap: '10px', paddingBottom: '12px', borderBottom: '1px solid var(--border-light)' }}>
@@ -548,6 +549,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
 
             {/* Horizontal Scrollable Filter Pills */}
             <div
+              data-lenis-prevent
               style={{
                 display: 'flex',
                 gap: '8px',

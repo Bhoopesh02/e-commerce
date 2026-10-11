@@ -9,7 +9,8 @@ import { Product } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { Package, Search, Plus, Sparkles, Filter, ChevronDown, Check, Edit2, Trash2 } from 'lucide-react';
+import { Package, Search, Plus, Sparkles, Filter, ChevronDown, Check, Edit2 } from 'lucide-react';
+import { AnimatedTrashIcon } from '@/components/ui/AnimatedTrashIcon';
 
 function AdminProductsPageContent() {
   const searchParams = useSearchParams();
@@ -414,18 +415,35 @@ function AdminProductsPageContent() {
                         <Button
                           variant="ghost"
                           size="sm"
+                          disableSheen
+                          className="admin-action-btn admin-edit-btn no-sheen"
                           onClick={() => router.push(`/admin/products/${p.id}/edit`)}
-                          style={{ width: '32px', height: '32px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--admin-text-secondary)' }}
+                          aria-label="Edit silhouette"
+                          title="Edit silhouette"
+                          style={{ width: '32px', height: '32px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--admin-text-secondary)', overflow: 'visible' }}
                         >
                           <Edit2 size={16} />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
+                          disableSheen
+                          className="admin-action-btn admin-delete-btn no-sheen"
                           onClick={() => handleDelete(p.id)}
-                          style={{ width: '32px', height: '32px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-error)' }}
+                          aria-label="Delete silhouette"
+                          title="Delete silhouette"
+                          style={{
+                            width: '32px',
+                            height: '32px',
+                            padding: 0,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'var(--admin-text-secondary)',
+                            overflow: 'visible',
+                          }}
                         >
-                          <Trash2 size={16} />
+                          <AnimatedTrashIcon size={16} />
                         </Button>
                       </div>
                     </td>

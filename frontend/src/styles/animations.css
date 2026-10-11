@@ -493,14 +493,64 @@ a:focus-visible .luxury-btn:not(:disabled)>span:last-child svg {
   transform: translateX(3px);
 }
 
-/* Disabled and loading state suppression */
+/* ==========================================================================
+   Admin Panel Suppression: Disable liquid sheen sweep & icon nudge for ALL buttons
+   ========================================================================== */
+.admin-layout .luxury-btn::after,
+.admin-main .luxury-btn::after,
+.admin-main-content .luxury-btn::after,
+.admin-sidebar .luxury-btn::after,
+.admin-topbar .luxury-btn::after,
+.admin-panel .luxury-btn::after,
+[data-admin="true"] .luxury-btn::after,
+[class*="admin-"] .luxury-btn::after,
+.luxury-btn.no-sheen::after,
+.luxury-btn[data-no-sheen="true"]::after,
 .luxury-btn:disabled::after,
-.luxury-btn[disabled]::after {
+.luxury-btn[disabled]::after,
+.luxury-btn-ghost::after {
   display: none !important;
+  content: none !important;
+  opacity: 0 !important;
 }
 
+.admin-layout .luxury-btn:hover::after,
+.admin-main .luxury-btn:hover::after,
+.admin-main-content .luxury-btn:hover::after,
+.admin-sidebar .luxury-btn:hover::after,
+.admin-topbar .luxury-btn:hover::after,
+.admin-panel .luxury-btn:hover::after,
+[data-admin="true"] .luxury-btn:hover::after,
+[class*="admin-"] .luxury-btn:hover::after,
+.luxury-btn.no-sheen:hover::after,
+.luxury-btn-ghost:hover::after {
+  transform: none !important;
+}
+
+.admin-layout .luxury-btn .luxury-btn-icon-right,
+.admin-main .luxury-btn .luxury-btn-icon-right,
+.admin-main-content .luxury-btn .luxury-btn-icon-right,
+.admin-sidebar .luxury-btn .luxury-btn-icon-right,
+.admin-topbar .luxury-btn .luxury-btn-icon-right,
+.admin-panel .luxury-btn .luxury-btn-icon-right,
+[data-admin="true"] .luxury-btn .luxury-btn-icon-right,
+[class*="admin-"] .luxury-btn .luxury-btn-icon-right,
+.luxury-btn.no-sheen .luxury-btn-icon-right,
 .luxury-btn:disabled .luxury-btn-icon-right,
 .luxury-btn[disabled] .luxury-btn-icon-right {
+  transform: none !important;
+  transition: none !important;
+}
+
+.admin-layout .luxury-btn:hover .luxury-btn-icon-right,
+.admin-main .luxury-btn:hover .luxury-btn-icon-right,
+.admin-main-content .luxury-btn:hover .luxury-btn-icon-right,
+.admin-sidebar .luxury-btn:hover .luxury-btn-icon-right,
+.admin-topbar .luxury-btn:hover .luxury-btn-icon-right,
+.admin-panel .luxury-btn:hover .luxury-btn-icon-right,
+[data-admin="true"] .luxury-btn:hover .luxury-btn-icon-right,
+[class*="admin-"] .luxury-btn:hover .luxury-btn-icon-right,
+.luxury-btn.no-sheen:hover .luxury-btn-icon-right {
   transform: none !important;
 }
 
