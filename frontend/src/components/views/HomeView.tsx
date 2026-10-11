@@ -19,9 +19,154 @@ import {
 } from '@/lib/mockApi';
 import { Product, Category, StorefrontConfig } from '@/types';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
+import {
+  StaggerContainer,
+  StaggerFadeUp,
+  LineReveal,
+} from '@/components/ui/StaggerReveal';
+import heritageBannerImg from '../../../public/images/products/new/Gemini_Generated_Image_wi5d5owi5d5owi5d.png';
+import newArrivalsBannerImg from '../../../public/images/products/new/Gemini_Generated_Image_8hy0gw8hy0gw8hy0.png';
+
+interface HomeBannerCardProps {
+  imageSrc: StaticImageData;
+  alt: string;
+  eyebrow: string;
+  headline: string;
+  description: string;
+}
+
+const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
+  imageSrc,
+  alt,
+  eyebrow,
+  headline,
+  description,
+}) => {
+  const [loaded, setLoaded] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const isInView = useInView(containerRef, { once: true, amount: 0.25 });
+  const shouldReduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (imgRef.current?.complete) {
+      setLoaded(true);
+    }
+  }, []);
+
+  const isReady = isInView && loaded;
+
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '400px',
+        borderRadius: '16px',
+        overflow: 'hidden',
+        backgroundColor: '#1c1917',
+      }}
+    >
+      {/* Background Image with Loaded Gate Animation */}
+      <motion.div
+        initial={false}
+        animate={{
+          opacity: loaded ? 1 : 0,
+          ...(shouldReduceMotion ? { scale: 1 } : { scale: isReady ? 1 : 1.08 }),
+        }}
+        transition={{
+          opacity: { duration: 0.8, ease: 'easeOut' },
+          scale: { duration: 2.4, ease: [0.22, 1, 0.36, 1] },
+        }}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 1,
+        }}
+      >
+        <Image
+          ref={imgRef}
+          src={imageSrc}
+          alt={alt}
+          fill
+          sizes="(max-width: 1200px) 100vw, 1200px"
+          placeholder="blur"
+          onLoad={() => setLoaded(true)}
+          style={{ objectFit: 'cover', objectPosition: 'center' }}
+        />
+      </motion.div>
+
+      <StaggerContainer
+        initial="hidden"
+        animate={isReady ? 'show' : 'hidden'}
+        delayChildren={0.25}
+        staggerChildren={0.14}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: 'rgba(0,0,0,0.4)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          padding: '20px',
+          zIndex: 2,
+        }}
+      >
+        <StaggerFadeUp
+          as="span"
+          style={{
+            fontSize: '0.85rem',
+            fontWeight: 600,
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            color: 'var(--color-golden-200)',
+            marginBottom: '16px',
+            display: 'block',
+          }}
+        >
+          {eyebrow}
+        </StaggerFadeUp>
+
+        <h2
+          style={{
+            color: '#fff',
+            fontSize: 'clamp(2rem, 4vw, 3.5rem)',
+            fontFamily: 'var(--font-display)',
+            marginBottom: '16px',
+            lineHeight: 1.15,
+          }}
+        >
+          <LineReveal bottomPadding="8px">
+            {headline}
+          </LineReveal>
+        </h2>
+
+        <StaggerFadeUp
+          as="p"
+          style={{
+            color: 'rgba(255,255,255,0.9)',
+            fontSize: '1.1rem',
+            maxWidth: '600px',
+            lineHeight: 1.6,
+            margin: 0,
+          }}
+        >
+          {description}
+        </StaggerFadeUp>
+      </StaggerContainer>
+    </div>
+  );
+};
 
 
 
@@ -164,25 +309,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <React.Fragment key={id}>
             <section style={{ padding: '0 0 20px', backgroundColor: 'var(--bg-primary)' }}>
               <div className="container">
-                <ScrollReveal duration={0.6}>
-                  <div style={{ position: 'relative', width: '100%', height: '400px', borderRadius: '16px', overflow: 'hidden' }}>
-                    <Image 
-                      src="/images/products/new/Gemini_Generated_Image_wi5d5owi5d5owi5d.png" 
-                      alt="Signature Excellence Banner"
-                      fill
-                      style={{ objectFit: 'cover', objectPosition: 'center', transform: 'scale(1.05)' }}
-                    />
-                    <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.4)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '20px' }}>
-                      <span style={{ fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--color-golden-200)', marginBottom: '16px' }}>Our Heritage</span>
-                      <h2 style={{ color: '#fff', fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontFamily: 'var(--font-display)', marginBottom: '16px', lineHeight: 1.1 }}>
-                        The Signature of Excellence
-                      </h2>
-                      <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem', maxWidth: '600px', lineHeight: 1.6 }}>
-                        Discover the foundational pillars that define our commitment to unparalleled craftsmanship and uncompromising quality.
-                      </p>
-                    </div>
-                  </div>
-                </ScrollReveal>
+                <HomeBannerCard
+                  imageSrc={heritageBannerImg}
+                  alt="Signature Excellence Banner"
+                  eyebrow="Our Heritage"
+                  headline="The Signature of Excellence"
+                  description="Discover the foundational pillars that define our commitment to unparalleled craftsmanship and uncompromising quality."
+                />
               </div>
             </section>
             <ExpandingCarousel
@@ -219,25 +352,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <React.Fragment key={id}>
             <section style={{ padding: '60px 0 20px', backgroundColor: 'var(--bg-primary)' }}>
               <div className="container">
-                <ScrollReveal duration={0.6}>
-                  <div style={{ position: 'relative', width: '100%', height: '400px', borderRadius: '16px', overflow: 'hidden' }}>
-                    <Image 
-                      src="/images/products/new/Gemini_Generated_Image_8hy0gw8hy0gw8hy0.png" 
-                      alt="New Arrivals Banner"
-                      fill
-                      style={{ objectFit: 'cover', objectPosition: 'center', transform: 'scale(1.05)' }}
-                    />
-                    <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.4)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '20px' }}>
-                      <span style={{ fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--color-golden-200)', marginBottom: '16px' }}>Just Arrived</span>
-                      <h2 style={{ color: '#fff', fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontFamily: 'var(--font-display)', marginBottom: '16px', lineHeight: 1.1 }}>
-                        The New Season Collection
-                      </h2>
-                      <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem', maxWidth: '600px', lineHeight: 1.6 }}>
-                        Discover our latest arrivals, featuring exquisite craftsmanship and unparalleled elegance for the modern connoisseur.
-                      </p>
-                    </div>
-                  </div>
-                </ScrollReveal>
+                <HomeBannerCard
+                  imageSrc={newArrivalsBannerImg}
+                  alt="New Arrivals Banner"
+                  eyebrow="Just Arrived"
+                  headline="The New Season Collection"
+                  description="Discover our latest arrivals, featuring exquisite craftsmanship and unparalleled elegance for the modern connoisseur."
+                />
               </div>
             </section>
             <NewArrivalsCarousel products={uploadedNewArrivals} loading={loading} />

@@ -1,30 +1,57 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { Button } from '@/components/ui/Button';
 import { ArrowRight } from 'lucide-react';
+import {
+  StaggerContainer,
+  StaggerFadeUp,
+  LineReveal,
+} from '@/components/ui/StaggerReveal';
+import heroImg from '../../../public/images/banners/Gemini_Generated_Image_piepdipiepdipiep.png';
 
 export const HeroSection: React.FC = () => {
   const { storefront } = useStorefrontStore();
-
   const isEditorial = storefront === 'a';
+
+  const [loaded, setLoaded] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (imgRef.current?.complete) {
+      setLoaded(true);
+    }
+  }, []);
 
   return (
     <section
-      className="hero-section"
+      className="hero-section h-[100svh] min-h-[640px] w-full"
       style={{
         position: 'relative',
         width: '100%',
+        height: '100svh',
+        minHeight: '640px',
         display: 'flex',
         overflow: 'hidden',
-        backgroundColor: 'var(--color-black-tie)',
+        backgroundColor: '#2b241d',
       }}
     >
-      {/* Background Image with Slow Scale Animation */}
-      <div
+      {/* Background Image with Loaded Gate Animation */}
+      <motion.div
+        initial={false}
+        animate={{
+          opacity: loaded ? 1 : 0,
+          ...(shouldReduceMotion ? { scale: 1 } : { scale: loaded ? 1 : 1.08 }),
+        }}
+        transition={{
+          opacity: { duration: 0.8, ease: 'easeOut' },
+          scale: { duration: 2.4, ease: [0.22, 1, 0.36, 1] },
+        }}
         style={{
           position: 'absolute',
           top: 0,
@@ -35,19 +62,20 @@ export const HeroSection: React.FC = () => {
         }}
       >
         <Image
-          src="/images/banners/Gemini_Generated_Image_piepdipiepdipiep.png"
+          ref={imgRef}
+          src={heroImg}
           alt="Aurelia Luxury Campaign - The Winter Collection"
           fill
           priority
-          quality={100}
-          unoptimized
           sizes="100vw"
-          className="animate-hero-scale hero-image"
+          placeholder="blur"
+          onLoad={() => setLoaded(true)}
+          className="hero-image"
           style={{
             objectFit: 'cover',
           }}
         />
-      </div>
+      </motion.div>
 
       {/* Dark gradient overlay behind text on mobile for readability */}
       <div className="hero-mobile-overlay" aria-hidden="true" />
@@ -65,8 +93,16 @@ export const HeroSection: React.FC = () => {
       >
         {isEditorial ? (
           /* Editorial Experience Layout */
-          <div className="hero-text-block editorial-text-block" style={{ maxWidth: '600px', textShadow: '0 2px 10px rgba(0, 0, 0, 0.45)' }}>
-            <span
+          <StaggerContainer
+            key="editorial-hero"
+            className="hero-text-block editorial-text-block"
+            delayChildren={0.3}
+            staggerChildren={0.14}
+            animate={loaded ? "show" : "hidden"}
+            style={{ maxWidth: '600px', textShadow: '0 2px 10px rgba(0, 0, 0, 0.45)' }}
+          >
+            <StaggerFadeUp
+              as="span"
               className="hero-eyebrow"
               style={{
                 fontSize: 'clamp(0.75rem, 1.5vw, 0.85rem)',
@@ -79,7 +115,7 @@ export const HeroSection: React.FC = () => {
               }}
             >
               EXCLUSIVE: AURELIA ATELIER
-            </span>
+            </StaggerFadeUp>
 
             <h1
               className="hero-heading"
@@ -96,10 +132,16 @@ export const HeroSection: React.FC = () => {
                 wordBreak: 'break-word',
               }}
             >
-              NOCTURNAL SILHOUETTES
+              <LineReveal bottomPadding="8px">
+                NOCTURNAL
+              </LineReveal>
+              <LineReveal bottomPadding="8px">
+                SILHOUETTES
+              </LineReveal>
             </h1>
 
-            <p
+            <StaggerFadeUp
+              as="p"
               className="hero-description"
               style={{
                 fontSize: 'clamp(0.875rem, 1.4vw, 1.05rem)',
@@ -110,20 +152,29 @@ export const HeroSection: React.FC = () => {
               }}
             >
               The new collection arrives at Aurelia. Hand-finished Italian nappa leather, double-faced cashmere, and bias-cut mulberry silk.
-            </p>
+            </StaggerFadeUp>
 
             <div className="hero-cta-group">
-              <Link href="/shop?categorySlug=outerwear" className="hero-cta-link">
-                <Button variant="white" size="lg" className="hero-cta-button" style={{ borderRadius: '0' }}>
-                  Discover more
-                </Button>
-              </Link>
+              <StaggerFadeUp className="hero-cta-link">
+                <Link href="/shop?categorySlug=outerwear" style={{ textDecoration: 'none', display: 'block' }}>
+                  <Button variant="white" size="lg" className="hero-cta-button" style={{ borderRadius: '0' }}>
+                    Discover more
+                  </Button>
+                </Link>
+              </StaggerFadeUp>
             </div>
-          </div>
+          </StaggerContainer>
         ) : (
           /* Refined Shopping Mode Layout */
-          <div className="hero-text-block refined-mode-inner">
-            <span
+          <StaggerContainer
+            key="refined-hero"
+            className="hero-text-block refined-mode-inner"
+            delayChildren={0.3}
+            staggerChildren={0.14}
+            animate={loaded ? "show" : "hidden"}
+          >
+            <StaggerFadeUp
+              as="span"
               className="hero-eyebrow"
               style={{
                 fontSize: 'clamp(0.75rem, 1.5vw, 0.85rem)',
@@ -132,10 +183,11 @@ export const HeroSection: React.FC = () => {
                 textTransform: 'uppercase',
                 color: 'var(--brand-accent)',
                 marginBottom: '16px',
+                display: 'block',
               }}
             >
               Aurelia Wardrobe Foundations
-            </span>
+            </StaggerFadeUp>
 
             <h1
               className="hero-heading"
@@ -150,10 +202,16 @@ export const HeroSection: React.FC = () => {
                 wordBreak: 'break-word',
               }}
             >
-              The Permanent Collection
+              <LineReveal bottomPadding="8px">
+                The Permanent
+              </LineReveal>
+              <LineReveal bottomPadding="8px">
+                Collection
+              </LineReveal>
             </h1>
 
-            <p
+            <StaggerFadeUp
+              as="p"
               className="hero-description"
               style={{
                 fontSize: 'clamp(0.9rem, 1.4vw, 1.1rem)',
@@ -164,34 +222,51 @@ export const HeroSection: React.FC = () => {
               }}
             >
               Essential Italian tailoring, pure Mongolian cashmere, and artisan leather accessories engineered for effortless longevity.
-            </p>
+            </StaggerFadeUp>
 
             <div className="hero-cta-group">
-              <Link href="/shop" className="hero-cta-link">
-                <Button variant="primary" size="lg" rightIcon={<ArrowRight size={16} />} className="hero-cta-button">
-                  Shop Full Catalog
-                </Button>
-              </Link>
-              <Link href="/shop?categorySlug=tailoring" className="hero-cta-link">
-                <Button variant="white" size="lg" className="hero-cta-button">
-                  Explore Tailoring
-                </Button>
-              </Link>
+              <StaggerFadeUp className="hero-cta-link">
+                <Link href="/shop" style={{ textDecoration: 'none', display: 'block' }}>
+                  <Button variant="primary" size="lg" rightIcon={<ArrowRight size={16} />} className="hero-cta-button">
+                    Shop Full Catalog
+                  </Button>
+                </Link>
+              </StaggerFadeUp>
+              <StaggerFadeUp className="hero-cta-link">
+                <Link href="/shop?categorySlug=tailoring" style={{ textDecoration: 'none', display: 'block' }}>
+                  <Button variant="white" size="lg" className="hero-cta-button">
+                    Explore Tailoring
+                  </Button>
+                </Link>
+              </StaggerFadeUp>
             </div>
-          </div>
+          </StaggerContainer>
         )}
       </div>
 
       <style jsx global>{`
         .hero-section {
           width: 100%;
-          min-height: 100vh;
-          min-height: 100svh;
+          height: 100svh;
+          min-height: 640px;
           box-sizing: border-box;
           align-items: center;
           justify-content: flex-start;
           padding-top: max(88px, env(safe-area-inset-top, 0px));
           padding-bottom: var(--space-8);
+          background-color: #2b241d;
+        }
+
+        .h-\[100svh\] {
+          height: 100svh;
+        }
+
+        .min-h-\[640px\] {
+          min-height: 640px;
+        }
+
+        .w-full {
+          width: 100%;
         }
 
         .hero-content-container {
@@ -256,9 +331,6 @@ export const HeroSection: React.FC = () => {
         /* Desktop: >= 1024px */
         @media (min-width: 1024px) {
           .hero-section {
-            min-height: min(100vh, 960px);
-            min-height: min(100svh, 960px);
-            max-height: 960px;
             align-items: center;
             justify-content: flex-start;
           }
