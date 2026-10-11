@@ -147,7 +147,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
   const stickyBarRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const tabsContainerRef = useRef<HTMLDivElement>(null);
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToGridTop = useCallback(() => {
@@ -160,19 +159,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
       smoothScrollService.scrollTo(0);
     }
   }, []);
-
-  // Scroll active category tab into view
-  useEffect(() => {
-    if (tabsContainerRef.current) {
-      const activeTab = tabsContainerRef.current.querySelector<HTMLButtonElement>('.active-category-tab');
-      if (activeTab) {
-        const containerRect = tabsContainerRef.current.getBoundingClientRect();
-        const tabRect = activeTab.getBoundingClientRect();
-        const scrollAmount = tabRect.left - containerRect.left - (containerRect.width / 2) + (tabRect.width / 2);
-        tabsContainerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-      }
-    }
-  }, [activeCategory]);
 
   // Track sticky state via off-thread IntersectionObserver to avoid scroll jank
   useEffect(() => {

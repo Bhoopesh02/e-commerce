@@ -320,6 +320,7 @@ export const BannerProductCarousel: React.FC<BannerProductCarouselProps> = ({
         <div
           ref={scrollRef}
           className="banner-product-scroll-track"
+          data-lenis-prevent
           style={{
             display: 'flex',
             gap: '20px',
