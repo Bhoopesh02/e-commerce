@@ -28,11 +28,14 @@ import {
   StaggerFadeUp,
   LineReveal,
 } from '@/components/ui/StaggerReveal';
-import heritageBannerImg from '../../../public/images/products/new/Gemini_Generated_Image_wi5d5owi5d5owi5d.png';
-import newArrivalsBannerImg from '../../../public/images/products/new/Gemini_Generated_Image_8hy0gw8hy0gw8hy0.png';
+import heritageBannerImg from '../../../public/images/banners/new/Gemini_Generated_Image_wi5d5owi5d5owi5d.png';
+import heritageBannerMobileImg from '../../../public/images/banners/new/Gemini_Generated_Image_n4wph0n4wph0n4wp.png';
+import newArrivalsBannerImg from '../../../public/images/banners/new/Gemini_Generated_Image_8hy0gw8hy0gw8hy0.png';
+import newArrivalsBannerMobileImg from '../../../public/images/banners/new/Gemini_Generated_Image_lo7saulo7saulo7s.png';
 
 interface HomeBannerCardProps {
   imageSrc: StaticImageData;
+  mobileImageSrc?: StaticImageData;
   alt: string;
   eyebrow: string;
   headline: string;
@@ -41,6 +44,7 @@ interface HomeBannerCardProps {
 
 const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
   imageSrc,
+  mobileImageSrc,
   alt,
   eyebrow,
   headline,
@@ -48,12 +52,13 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
 }) => {
   const [loaded, setLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
+  const desktopImgRef = useRef<HTMLImageElement>(null);
+  const mobileImgRef = useRef<HTMLImageElement>(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.25 });
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (imgRef.current?.complete) {
+    if (desktopImgRef.current?.complete || mobileImgRef.current?.complete) {
       setLoaded(true);
     }
   }, []);
@@ -92,16 +97,45 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
           zIndex: 1,
         }}
       >
-        <Image
-          ref={imgRef}
-          src={imageSrc}
-          alt={alt}
-          fill
-          sizes="(max-width: 1200px) 100vw, 1200px"
-          placeholder="blur"
-          onLoad={() => setLoaded(true)}
-          style={{ objectFit: 'cover', objectPosition: 'center' }}
-        />
+        {mobileImageSrc ? (
+          <>
+            <div className="home-banner-img-mobile">
+              <Image
+                ref={mobileImgRef}
+                src={mobileImageSrc}
+                alt={alt}
+                fill
+                sizes="(max-width: 767px) 100vw, 1px"
+                placeholder="blur"
+                onLoad={() => setLoaded(true)}
+                style={{ objectFit: 'cover', objectPosition: 'center' }}
+              />
+            </div>
+            <div className="home-banner-img-desktop">
+              <Image
+                ref={desktopImgRef}
+                src={imageSrc}
+                alt={alt}
+                fill
+                sizes="(max-width: 1200px) 100vw, 1200px"
+                placeholder="blur"
+                onLoad={() => setLoaded(true)}
+                style={{ objectFit: 'cover', objectPosition: 'center' }}
+              />
+            </div>
+          </>
+        ) : (
+          <Image
+            ref={desktopImgRef}
+            src={imageSrc}
+            alt={alt}
+            fill
+            sizes="(max-width: 1200px) 100vw, 1200px"
+            placeholder="blur"
+            onLoad={() => setLoaded(true)}
+            style={{ objectFit: 'cover', objectPosition: 'center' }}
+          />
+        )}
       </motion.div>
 
       <StaggerContainer
@@ -311,6 +345,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <div className="container">
                 <HomeBannerCard
                   imageSrc={heritageBannerImg}
+                  mobileImageSrc={heritageBannerMobileImg}
                   alt="Signature Excellence Banner"
                   eyebrow="Our Heritage"
                   headline="The Signature of Excellence"
@@ -354,6 +389,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <div className="container">
                 <HomeBannerCard
                   imageSrc={newArrivalsBannerImg}
+                  mobileImageSrc={newArrivalsBannerMobileImg}
                   alt="New Arrivals Banner"
                   eyebrow="Just Arrived"
                   headline="The New Season Collection"
