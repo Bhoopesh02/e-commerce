@@ -22,15 +22,6 @@ const ROTATING_QUERIES = [
   "Sculptural Gold Cuff",
 ];
 
-const SUGGESTIONS = [
-  "Italian Leather",
-  "Double-Breasted",
-  "Silk Gown",
-  "Cashmere",
-  "Goodyear Chelsea",
-  "Gold Vermeil",
-];
-
 // Luxury color grouping
 const COLOR_GROUPS = [
   { name: 'Black', hex: '#1A1A1A', matches: ['Black', 'Noir', 'Abyss', 'Nocturne', 'Onyx', 'Stealth'] },
@@ -344,7 +335,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
         }}
       >
         {/* Drawer Search Header */}
-        <div style={{ padding: '24px', borderBottom: '1px solid var(--border-light)', backgroundColor: 'var(--bg-primary)' }}>
+        <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-light)', backgroundColor: 'var(--bg-primary)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <button
               onClick={onClose}
@@ -439,59 +430,6 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                   <X size={16} />
                 </button>
               )}
-            </div>
-          </div>
-
-          {/* Popular Searches Pills */}
-          <div style={{ marginTop: '20px' }}>
-            <span
-              style={{
-                display: 'block',
-                fontSize: '10px',
-                textTransform: 'uppercase',
-                fontWeight: 'bold',
-                letterSpacing: '0.1em',
-                color: 'var(--brand-primary)',
-                marginBottom: '8px',
-              }}
-            >
-              Suggested Explorations
-            </span>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-              {SUGGESTIONS.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => {
-                    setQuery(tag);
-                    if (!isMobile) {
-                      router.push(`/search?q=${encodeURIComponent(tag)}`);
-                      onClose();
-                    }
-                  }}
-                  style={{
-                    fontSize: '12px',
-                    padding: '4px 12px',
-                    borderRadius: '9999px',
-                    border: '1px solid var(--border-color)',
-                    backgroundColor: 'var(--bg-primary)',
-                    color: 'var(--text-secondary)',
-                    cursor: 'pointer',
-                    transition: 'all 200ms',
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--brand-primary)';
-                    e.currentTarget.style.color = 'var(--brand-primary)';
-                    e.currentTarget.style.backgroundColor = 'var(--bg-primary)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border-color)';
-                    e.currentTarget.style.color = 'var(--text-secondary)';
-                    e.currentTarget.style.backgroundColor = 'var(--color-diamond)';
-                  }}
-                >
-                  {tag}
-                </button>
-              ))}
             </div>
           </div>
         </div>

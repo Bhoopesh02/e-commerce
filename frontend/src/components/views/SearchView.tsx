@@ -44,15 +44,6 @@ const SORT_OPTIONS = [
   { id: 'price-desc', label: 'Price: High to Low' }
 ];
 
-const SUGGESTIONS = [
-  "Italian Leather",
-  "Double-Breasted",
-  "Silk Gown",
-  "Cashmere",
-  "Goodyear Chelsea",
-  "Gold Vermeil",
-];
-
 // Reusable hook for detecting click outside
 function useOnClickOutside<T extends HTMLElement = HTMLElement>(ref: React.RefObject<T | null>, handler: () => void) {
   useEffect(() => {
@@ -477,57 +468,7 @@ function SearchContent() {
             />
           </form>
 
-          {/* Popular Searches Pills */}
-          <div style={{ marginTop: '24px', textAlign: 'center' }}>
-            <span
-              style={{
-                display: 'block',
-                fontSize: '11px',
-                textTransform: 'uppercase',
-                fontWeight: 'bold',
-                letterSpacing: '0.1em',
-                color: 'var(--brand-primary)',
-                marginBottom: '12px',
-              }}
-            >
-              Suggested Explorations
-            </span>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
-              {SUGGESTIONS.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => {
-                    setQuery(tag);
-                    const params = new URLSearchParams(searchParams.toString());
-                    params.set('q', tag);
-                    router.push(`${pathname}?${params.toString()}`);
-                  }}
-                  style={{
-                    fontSize: '13px',
-                    padding: '6px 16px',
-                    borderRadius: '9999px',
-                    border: '1px solid var(--border-color)',
-                    backgroundColor: 'var(--bg-primary)',
-                    color: 'var(--text-secondary)',
-                    cursor: 'pointer',
-                    transition: 'all 200ms',
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--brand-primary)';
-                    e.currentTarget.style.color = 'var(--brand-primary)';
-                    e.currentTarget.style.backgroundColor = 'var(--bg-surface)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border-color)';
-                    e.currentTarget.style.color = 'var(--text-secondary)';
-                    e.currentTarget.style.backgroundColor = 'var(--color-diamond)';
-                  }}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
+
         </div>
 
         {hasSearched && (
