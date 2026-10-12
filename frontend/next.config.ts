@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     root: path.resolve(__dirname),
   },
   images: {
+    formats: ['image/avif', 'image/webp'],
     qualities: [100, 60, 75, 80, 85, 90, 92],
     remotePatterns: [
       {

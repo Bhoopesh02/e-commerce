@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, useReducedMotion } from 'framer-motion';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { Button } from '@/components/ui/Button';
 import { ArrowRight } from 'lucide-react';
@@ -13,13 +12,13 @@ import {
   LineReveal,
 } from '@/components/ui/StaggerReveal';
 import heroImg from '../../../public/images/banners/Gemini_Generated_Image_piepdipiepdipiep.png';
+import heroMobileImg from '../../../public/images/banners/hero-mobile.png';
 
 export const HeroSection: React.FC = () => {
   const { storefront } = useStorefrontStore();
   const isEditorial = storefront === 'a';
 
   const [loaded, setLoaded] = useState(false);
-  const shouldReduceMotion = useReducedMotion();
   const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
@@ -30,35 +29,53 @@ export const HeroSection: React.FC = () => {
 
   return (
     <section
-      className="hero-section h-[100svh] min-h-[640px] w-full"
+      className="relative w-full min-h-screen min-h-[100svh] overflow-hidden flex flex-col hero-section"
       style={{
         position: 'relative',
         width: '100%',
-        height: '100svh',
-        minHeight: '640px',
-        display: 'flex',
+        minHeight: '100vh',
         overflow: 'hidden',
         backgroundColor: '#2b241d',
       }}
     >
-      {/* Background Image with Loaded Gate Animation */}
-      <motion.div
-        initial={false}
-        animate={{
-          opacity: loaded ? 1 : 0,
-          ...(shouldReduceMotion ? { scale: 1 } : { scale: loaded ? 1 : 1.08 }),
-        }}
-        transition={{
-          opacity: { duration: 0.8, ease: 'easeOut' },
-          scale: { duration: 2.4, ease: [0.22, 1, 0.36, 1] },
-        }}
+      {/* Background Image Container - Mobile Portrait Crop (<768px) */}
+      <div
+        className="hero-image-mobile-wrapper block md:hidden absolute inset-0 z-0 w-full h-full pointer-events-none overflow-hidden"
         style={{
           position: 'absolute',
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
-          zIndex: 1,
+          zIndex: 0,
+        }}
+      >
+        <Image
+          src={heroMobileImg}
+          alt="Aurelia Luxury Campaign - The Winter Collection"
+          fill
+          priority
+          quality={90}
+          sizes="(max-width: 767px) 100vw, 1px"
+          onLoad={() => setLoaded(true)}
+          className="object-cover object-center hero-image-mobile"
+          style={{
+            objectFit: 'cover',
+            objectPosition: 'center center',
+          }}
+        />
+      </div>
+
+      {/* Background Image Container - Desktop Landscape Banner (>=768px) */}
+      <div
+        className="hero-image-desktop-wrapper hidden md:block absolute inset-0 z-0 w-full h-full pointer-events-none overflow-hidden"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
         }}
       >
         <Image
@@ -67,27 +84,29 @@ export const HeroSection: React.FC = () => {
           alt="Aurelia Luxury Campaign - The Winter Collection"
           fill
           priority
+          quality={90}
           sizes="100vw"
-          placeholder="blur"
           onLoad={() => setLoaded(true)}
-          className="hero-image"
+          className="object-cover md:object-center hero-image"
           style={{
             objectFit: 'cover',
+            objectPosition: 'center center',
           }}
         />
-      </motion.div>
+      </div>
 
       {/* Dark gradient overlay behind text on mobile for readability */}
       <div className="hero-mobile-overlay" aria-hidden="true" />
 
-      {/* Hero Content Container */}
+      {/* Hero Content Wrapper */}
       <div
-        className={`container hero-content-container ${isEditorial ? 'editorial-layout' : 'refined-layout'}`}
+        className={`relative z-10 flex flex-col justify-center text-left w-full min-h-screen min-h-[100svh] px-6 sm:px-10 md:px-16 lg:px-24 hero-content-container ${
+          isEditorial ? 'editorial-layout' : 'refined-layout'
+        }`}
         style={{
           position: 'relative',
-          zIndex: 3,
+          zIndex: 10,
           color: 'var(--bg-subtle)',
-          maxWidth: isEditorial ? '1200px' : '900px',
           width: '100%',
         }}
       >
@@ -95,15 +114,20 @@ export const HeroSection: React.FC = () => {
           /* Editorial Experience Layout */
           <StaggerContainer
             key="editorial-hero"
-            className="hero-text-block editorial-text-block"
+            className="hero-text-block editorial-text-block max-w-xl w-full text-left"
             delayChildren={0.3}
             staggerChildren={0.14}
-            animate={loaded ? "show" : "hidden"}
-            style={{ maxWidth: '600px', textShadow: '0 2px 10px rgba(0, 0, 0, 0.45)' }}
+            animate={loaded ? 'show' : 'hidden'}
+            style={{
+              maxWidth: '600px',
+              width: '100%',
+              textAlign: 'left',
+              textShadow: '0 2px 10px rgba(0, 0, 0, 0.45)',
+            }}
           >
             <StaggerFadeUp
               as="span"
-              className="hero-eyebrow"
+              className="hero-eyebrow text-left block mb-4"
               style={{
                 fontSize: 'clamp(0.75rem, 1.5vw, 0.85rem)',
                 fontWeight: 600,
@@ -112,13 +136,14 @@ export const HeroSection: React.FC = () => {
                 color: 'var(--bg-subtle)',
                 marginBottom: '16px',
                 display: 'block',
+                textAlign: 'left',
               }}
             >
               EXCLUSIVE: AURELIA ATELIER
             </StaggerFadeUp>
 
             <h1
-              className="hero-heading"
+              className="hero-heading text-left"
               style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: 'clamp(2.25rem, 7vw, 5rem)',
@@ -130,34 +155,42 @@ export const HeroSection: React.FC = () => {
                 textTransform: 'uppercase',
                 overflowWrap: 'break-word',
                 wordBreak: 'break-word',
+                textAlign: 'left',
               }}
             >
-              <LineReveal bottomPadding="8px">
-                NOCTURNAL
-              </LineReveal>
-              <LineReveal bottomPadding="8px">
-                SILHOUETTES
-              </LineReveal>
+              <LineReveal bottomPadding="8px">NOCTURNAL</LineReveal>
+              <LineReveal bottomPadding="8px">SILHOUETTES</LineReveal>
             </h1>
 
             <StaggerFadeUp
               as="p"
-              className="hero-description"
+              className="hero-description text-left max-w-[38ch] mb-6"
               style={{
                 fontSize: 'clamp(0.875rem, 1.4vw, 1.05rem)',
                 color: 'var(--bg-subtle)',
                 lineHeight: 1.6,
                 maxWidth: '38ch',
-                marginBottom: '32px',
+                marginBottom: '24px',
+                textAlign: 'left',
               }}
             >
-              The new collection arrives at Aurelia. Hand-finished Italian nappa leather, double-faced cashmere, and bias-cut mulberry silk.
+              The new collection arrives at Aurelia. Hand-finished Italian nappa
+              leather, double-faced cashmere, and bias-cut mulberry silk.
             </StaggerFadeUp>
 
-            <div className="hero-cta-group">
-              <StaggerFadeUp className="hero-cta-link">
-                <Link href="/shop?categorySlug=outerwear" style={{ textDecoration: 'none', display: 'block' }}>
-                  <Button variant="white" size="lg" className="hero-cta-button" style={{ borderRadius: '0' }}>
+            <div className="hero-cta-group flex flex-wrap gap-4 items-center justify-start text-left">
+              <StaggerFadeUp className="hero-cta-link text-left inline-flex self-start w-auto">
+                <Link
+                  href="/shop?categorySlug=outerwear"
+                  style={{ textDecoration: 'none', display: 'inline-block' }}
+                  className="inline-flex self-start w-auto"
+                >
+                  <Button
+                    variant="white"
+                    size="lg"
+                    className="hero-cta-button inline-flex items-center justify-center w-auto self-start px-7 py-3.5 sm:px-9 sm:py-4 md:px-10 lg:px-12 min-h-[48px] text-xs tracking-[0.2em] sm:text-sm uppercase whitespace-nowrap max-w-full transition-colors duration-300 hover:bg-white/90 active:scale-[0.98]"
+                    style={{ borderRadius: '0' }}
+                  >
                     Discover more
                   </Button>
                 </Link>
@@ -168,14 +201,19 @@ export const HeroSection: React.FC = () => {
           /* Refined Shopping Mode Layout */
           <StaggerContainer
             key="refined-hero"
-            className="hero-text-block refined-mode-inner"
+            className="hero-text-block refined-mode-inner max-w-xl w-full text-left"
             delayChildren={0.3}
             staggerChildren={0.14}
-            animate={loaded ? "show" : "hidden"}
+            animate={loaded ? 'show' : 'hidden'}
+            style={{
+              maxWidth: '600px',
+              width: '100%',
+              textAlign: 'left',
+            }}
           >
             <StaggerFadeUp
               as="span"
-              className="hero-eyebrow"
+              className="hero-eyebrow text-left block mb-4"
               style={{
                 fontSize: 'clamp(0.75rem, 1.5vw, 0.85rem)',
                 fontWeight: 600,
@@ -184,13 +222,14 @@ export const HeroSection: React.FC = () => {
                 color: 'var(--brand-accent)',
                 marginBottom: '16px',
                 display: 'block',
+                textAlign: 'left',
               }}
             >
               Aurelia Wardrobe Foundations
             </StaggerFadeUp>
 
             <h1
-              className="hero-heading"
+              className="hero-heading text-left"
               style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: 'clamp(2.25rem, 7vw, 5rem)',
@@ -200,40 +239,50 @@ export const HeroSection: React.FC = () => {
                 color: 'var(--bg-subtle)',
                 overflowWrap: 'break-word',
                 wordBreak: 'break-word',
+                textAlign: 'left',
               }}
             >
-              <LineReveal bottomPadding="8px">
-                The Permanent
-              </LineReveal>
-              <LineReveal bottomPadding="8px">
-                Collection
-              </LineReveal>
+              <LineReveal bottomPadding="8px">The Permanent</LineReveal>
+              <LineReveal bottomPadding="8px">Collection</LineReveal>
             </h1>
 
             <StaggerFadeUp
               as="p"
-              className="hero-description"
+              className="hero-description text-left max-w-[38ch] mb-8"
               style={{
                 fontSize: 'clamp(0.9rem, 1.4vw, 1.1rem)',
                 color: 'var(--border-color)',
                 lineHeight: 1.6,
                 maxWidth: '38ch',
                 marginBottom: '32px',
+                textAlign: 'left',
               }}
             >
-              Essential Italian tailoring, pure Mongolian cashmere, and artisan leather accessories engineered for effortless longevity.
+              Essential Italian tailoring, pure Mongolian cashmere, and artisan
+              leather accessories engineered for effortless longevity.
             </StaggerFadeUp>
 
-            <div className="hero-cta-group">
-              <StaggerFadeUp className="hero-cta-link">
-                <Link href="/shop" style={{ textDecoration: 'none', display: 'block' }}>
-                  <Button variant="primary" size="lg" rightIcon={<ArrowRight size={16} />} className="hero-cta-button">
+            <div className="hero-cta-group flex flex-wrap gap-4 items-center justify-start text-left">
+              <StaggerFadeUp className="hero-cta-link text-left">
+                <Link
+                  href="/shop"
+                  style={{ textDecoration: 'none', display: 'block' }}
+                >
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    rightIcon={<ArrowRight size={16} />}
+                    className="hero-cta-button"
+                  >
                     Shop Full Catalog
                   </Button>
                 </Link>
               </StaggerFadeUp>
-              <StaggerFadeUp className="hero-cta-link">
-                <Link href="/shop?categorySlug=tailoring" style={{ textDecoration: 'none', display: 'block' }}>
+              <StaggerFadeUp className="hero-cta-link text-left">
+                <Link
+                  href="/shop?categorySlug=tailoring"
+                  style={{ textDecoration: 'none', display: 'block' }}
+                >
                   <Button variant="white" size="lg" className="hero-cta-button">
                     Explore Tailoring
                   </Button>
@@ -246,144 +295,91 @@ export const HeroSection: React.FC = () => {
 
       <style jsx global>{`
         .hero-section {
+          position: relative;
           width: 100%;
-          height: 100svh;
-          min-height: 640px;
+          min-height: 100vh;
+          min-height: 100svh;
           box-sizing: border-box;
-          align-items: center;
-          justify-content: flex-start;
-          padding-top: max(88px, env(safe-area-inset-top, 0px));
-          padding-bottom: var(--space-8);
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
           background-color: #2b241d;
         }
 
-        .h-\[100svh\] {
-          height: 100svh;
+        .hero-image-mobile-wrapper {
+          display: block;
         }
 
-        .min-h-\[640px\] {
-          min-height: 640px;
+        .hero-image-desktop-wrapper {
+          display: none;
         }
 
-        .w-full {
-          width: 100%;
-        }
-
-        .hero-content-container {
-          padding-left: clamp(1rem, 4vw, 3rem) !important;
-          padding-right: clamp(1rem, 4vw, 3rem) !important;
-          box-sizing: border-box;
+        .hero-image-mobile {
+          object-fit: cover !important;
+          object-position: center center !important;
+          filter: none !important;
         }
 
         .hero-image {
           object-fit: cover !important;
-          object-position: center 20% !important;
+          object-position: center center !important;
+          filter: none !important;
+        }
+
+        @media (min-width: 768px) {
+          .hero-image-mobile-wrapper {
+            display: none !important;
+          }
+          .hero-image-desktop-wrapper {
+            display: block !important;
+          }
+        }
+
+        .hero-content-container {
+          position: relative;
+          z-index: 10;
+          display: flex;
+          flex-direction: column;
+          justify-content: center !important;
+          width: 100%;
+          min-height: 100vh;
+          min-height: 100svh;
+          box-sizing: border-box;
+          text-align: left;
+          padding-left: 24px;
+          padding-right: 24px;
+          padding-top: max(88px, env(safe-area-inset-top, 0px));
+          padding-bottom: max(32px, env(safe-area-inset-bottom, 0px));
+        }
+
+        @media (min-width: 640px) {
+          .hero-content-container {
+            padding-left: 40px;
+            padding-right: 40px;
+          }
+        }
+
+        @media (min-width: 768px) {
+          .hero-content-container {
+            justify-content: center !important;
+            padding-left: 64px;
+            padding-right: 64px;
+            padding-bottom: 0;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .hero-content-container {
+            padding-left: 96px;
+            padding-right: 96px;
+          }
         }
 
         .hero-mobile-overlay {
           display: none;
         }
 
-        .hero-heading {
-          font-size: clamp(2.25rem, 7vw, 5rem) !important;
-          overflow-wrap: break-word;
-          word-break: break-word;
-        }
-
-        .hero-description {
-          max-width: 38ch !important;
-        }
-
-        .hero-cta-group {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 16px;
-        }
-
-        .hero-cta-link {
-          display: inline-block;
-          width: auto;
-        }
-
-        .hero-cta-button {
-          width: auto !important;
-        }
-
-        .editorial-layout {
-          text-align: left;
-        }
-
-        .editorial-text-block {
-          max-width: 600px;
-        }
-
-        .refined-layout {
-          text-align: center;
-        }
-
-        .refined-mode-inner {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          margin: 0 auto;
-        }
-
-        /* Desktop: >= 1024px */
-        @media (min-width: 1024px) {
-          .hero-section {
-            align-items: center;
-            justify-content: flex-start;
-          }
-
-          .hero-image {
-            object-position: center 20% !important;
-          }
-
-          .hero-cta-button {
-            min-width: 180px;
-          }
-        }
-
-        /* Tablets: 640px to 1023px */
-        @media (min-width: 640px) and (max-width: 1023px) {
-          .hero-section {
-            align-items: flex-end;
-            justify-content: flex-start;
-            padding-top: max(88px, env(safe-area-inset-top, 0px));
-            padding-bottom: clamp(48px, 8vh, 80px);
-          }
-
-          .hero-content-container {
-            text-align: left !important;
-          }
-
-          .hero-text-block {
-            max-width: 60% !important;
-          }
-
-          .refined-mode-inner {
-            align-items: flex-start !important;
-            margin: 0 !important;
-          }
-
-          .hero-image {
-            object-position: 60% center !important;
-          }
-
-          .hero-cta-button {
-            min-width: 180px;
-          }
-        }
-
-        /* Phones: < 640px */
-        @media (max-width: 639px) {
-          .hero-section {
-            align-items: flex-end;
-            justify-content: flex-start;
-            padding-top: max(84px, env(safe-area-inset-top, 0px));
-            padding-bottom: clamp(28px, 6vh, 44px);
-          }
-
+        @media (max-width: 767px) {
           .hero-mobile-overlay {
             display: block;
             position: absolute;
@@ -393,46 +389,113 @@ export const HeroSection: React.FC = () => {
             background: linear-gradient(
               to top,
               rgba(20, 20, 20, 0.75) 0%,
-              transparent 100%
+              rgba(20, 20, 20, 0.35) 50%,
+              rgba(20, 20, 20, 0.2) 100%
             );
-          }
-
-          .hero-content-container {
-            width: 100% !important;
-            max-width: 100% !important;
-            text-align: left !important;
-          }
-
-          .hero-text-block {
-            max-width: 100% !important;
-            width: 100% !important;
-          }
-
-          .refined-mode-inner {
-            align-items: flex-start !important;
-            margin: 0 !important;
-            width: 100% !important;
-          }
-
-          .hero-image {
-            object-position: 70% center !important;
           }
         }
 
-        /* Button: full width below 480px, auto on desktop/tablet */
+        .hero-heading {
+          font-size: clamp(2.25rem, 7vw, 5rem) !important;
+          overflow-wrap: break-word;
+          word-break: break-word;
+          text-align: left !important;
+        }
+
+        .hero-description {
+          max-width: 38ch !important;
+          text-align: left !important;
+          margin-bottom: 24px !important;
+        }
+
+        .hero-cta-group {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 16px;
+          justify-content: flex-start;
+          align-items: center;
+          text-align: left;
+        }
+
+        .hero-cta-link {
+          display: inline-block;
+          width: auto;
+          text-align: left;
+        }
+
+        .hero-cta-button {
+          display: inline-flex !important;
+          width: auto !important;
+          max-width: 100% !important;
+          align-self: flex-start !important;
+          white-space: nowrap !important;
+          min-height: 48px !important;
+          padding: 14px 28px !important;
+          font-size: 0.75rem !important;
+          letter-spacing: 0.2em !important;
+          text-transform: uppercase !important;
+          transition: color 300ms, background-color 300ms, transform 150ms !important;
+        }
+
+        .hero-cta-button:hover {
+          background-color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        .hero-cta-button:active {
+          transform: scale(0.98) !important;
+        }
+
+        @media (min-width: 640px) {
+          .hero-cta-button {
+            padding: 16px 36px !important;
+            font-size: 0.875rem !important;
+          }
+        }
+
+        @media (min-width: 768px) {
+          .hero-cta-button {
+            padding-left: 40px !important;
+            padding-right: 40px !important;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .hero-cta-button {
+            padding-left: 48px !important;
+            padding-right: 48px !important;
+          }
+        }
+
+        .editorial-layout,
+        .refined-layout {
+          text-align: left !important;
+        }
+
+        .editorial-text-block,
+        .refined-mode-inner {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start !important;
+          text-align: left !important;
+          margin: 0 !important;
+          max-width: 600px;
+          width: 100%;
+        }
+
         @media (max-width: 479px) {
           .hero-cta-group {
-            width: 100%;
+            width: auto;
             flex-direction: column;
+            align-items: flex-start;
           }
 
           .hero-cta-link {
-            width: 100%;
-            display: block;
+            width: auto;
+            display: inline-flex;
           }
 
           .hero-cta-button {
-            width: 100% !important;
+            width: auto !important;
             min-width: 0 !important;
           }
         }
@@ -440,3 +503,4 @@ export const HeroSection: React.FC = () => {
     </section>
   );
 };
+
