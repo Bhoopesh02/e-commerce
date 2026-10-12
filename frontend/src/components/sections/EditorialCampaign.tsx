@@ -144,21 +144,34 @@ export const EditorialCampaign: React.FC = () => {
           .editorial-grid {
             gap: 32px;
           }
+          .editorial-reveal {
+            width: 100vw;
+            max-width: 100vw;
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+            min-height: auto;
+          }
           .editorial-image {
-            height: 380px;
+            position: relative;
+            top: 0;
+            bottom: 0;
+            right: auto;
             width: 100%;
-            margin-left: 0;
+            height: clamp(380px, 100vw, 480px);
+            border-radius: 0;
+            box-shadow: none;
           }
           .editorial-tag {
             left: 16px !important;
-            right: 16px;
+            right: auto;
             bottom: 16px;
+            width: fit-content;
             max-width: calc(100% - 32px);
           }
         }
         @media (max-width: 480px) {
           .editorial-image {
-            height: 340px;
+            height: clamp(360px, 105vw, 440px);
           }
         }
       `}</style>
@@ -185,7 +198,7 @@ export const EditorialCampaign: React.FC = () => {
                   fill
                   quality={60}
                   sizes="(max-width: 1024px) 100vw, 50vw"
-                  style={{ objectFit: 'cover' }}
+                  style={{ objectFit: 'cover', objectPosition: 'center 20%' }}
                 />
               </motion.div>
               <div

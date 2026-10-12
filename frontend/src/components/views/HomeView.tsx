@@ -117,7 +117,7 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
                 src={imageSrc}
                 alt={alt}
                 fill
-                sizes="(max-width: 1200px) 100vw, 1200px"
+                sizes="(max-width: 767px) 1px, (max-width: 1200px) 100vw, 1200px"
                 placeholder="blur"
                 onLoad={() => setLoaded(true)}
                 style={{ objectFit: 'cover', objectPosition: 'center' }}

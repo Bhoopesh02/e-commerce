@@ -85,7 +85,7 @@ export const HeroSection: React.FC = () => {
           fill
           priority
           quality={90}
-          sizes="100vw"
+          sizes="(min-width: 768px) 100vw, 1px"
           onLoad={() => setLoaded(true)}
           className="object-cover md:object-center hero-image"
           style={{
