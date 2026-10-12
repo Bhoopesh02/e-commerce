@@ -817,8 +817,8 @@
     "categoryId": "cat_tailoring",
     "price": 15499,
     "images": [
-      "/images/sections/products/tailoring/architectural-peplum-waistcoat-1.webp",
-      "/images/sections/products/tailoring/architectural-peplum-waistcoat-2.webp"
+      "/images/sections/products/tailoring/architectural-peplum-waistcoat-v2-1.webp",
+      "/images/sections/products/tailoring/architectural-peplum-waistcoat-v2-2.webp"
     ],
     "variants": [
       {
@@ -853,73 +853,6 @@
       "tailoring",
       "waistcoat",
       "vest"
-    ],
-    "storefronts": [
-      "a",
-      "b"
-    ],
-    "genders": [
-      "women"
-    ]
-  },
-  {
-    "id": "prod_tai_003",
-    "slug": "florentine-hourglass-tuxedo-jacket",
-    "name": "Florentine Hourglass Tuxedo Jacket",
-    "subtitle": "Silk Duchesse Peak Lapel",
-    "description": "An evening sartorial tour-de-force cut with high armholes, sweeping silk duchesse lapels, and a floating horsehair canvas chest piece.",
-    "details": [
-      "Super 150s Australian merino wool",
-      "Glossy silk duchesse facing on lapels and jetted pockets",
-      "Hand-set natural horn button",
-      "Florentine cut silhouette with sculpted waist"
-    ],
-    "materials": [
-      "90% Super 150s Wool, 10% Silk Duchesse"
-    ],
-    "careGuide": [
-      "Specialist dry clean only",
-      "Store with shoulder contour form"
-    ],
-    "categoryId": "cat_tailoring",
-    "price": 26999,
-    "images": [
-      "/images/sections/products/tailoring/florentine-hourglass-tuxedo-jacket-1.webp",
-      "/images/sections/products/tailoring/florentine-hourglass-tuxedo-jacket-2.webp"
-    ],
-    "variants": [
-      {
-        "sku": "TXJ-BLK-38",
-        "size": "38R",
-        "color": "Midnight Noir",
-        "stock": 3
-      },
-      {
-        "sku": "TXJ-BLK-40",
-        "size": "40R",
-        "color": "Midnight Noir",
-        "stock": 3
-      },
-      {
-        "sku": "TXJ-BLK-42",
-        "size": "42R",
-        "color": "Midnight Noir",
-        "stock": 1
-      }
-    ],
-    "availability": "in_stock",
-    "rating": {
-      "average": 4.9,
-      "count": 22
-    },
-    "featured": true,
-    "isNewArrival": true,
-    "isTrending": true,
-    "tags": [
-      "new-arrival",
-      "tailoring",
-      "tuxedo",
-      "evening"
     ],
     "storefronts": [
       "a",
