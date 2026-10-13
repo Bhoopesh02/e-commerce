@@ -13,7 +13,7 @@ import { RangeSlider } from '@/components/ui/RangeSlider';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FlatProductGrid, PAGE_SIZE } from '@/components/shop/FlatProductGrid';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
-import { SlidersHorizontal, X, RotateCcw, ArrowUp, Check, Search } from 'lucide-react';
+import { SlidersHorizontal, X, RotateCcw, ArrowUp, Check, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { smoothScrollService } from '@/services/smooth-scroll';
 
 export const ShopViewSkeleton: React.FC = () => {
@@ -115,11 +115,29 @@ export const ShopView: React.FC<ShopViewProps> = ({
     return isNaN(parsed) || parsed < 1 ? 1 : parsed;
   }, []);
 
+  const stickyBarRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const gridContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollToGridTop = useCallback(() => {
+    const navHeight = typeof window !== 'undefined' && window.innerWidth <= 767 ? 64 : 76;
+    if (sentinelRef.current) {
+      const targetScroll = sentinelRef.current.getBoundingClientRect().top + window.pageYOffset - navHeight;
+      smoothScrollService.scrollTo(Math.max(0, targetScroll));
+    } else if (gridContainerRef.current) {
+      const rect = gridContainerRef.current.getBoundingClientRect();
+      const scrollTop = window.pageYOffset + rect.top - navHeight - 16;
+      smoothScrollService.scrollTo(Math.max(0, scrollTop));
+    } else {
+      smoothScrollService.scrollTo(0);
+    }
+  }, []);
+
   const [currentPage, setCurrentPage] = useState<number>(() =>
     getPageFromParam(searchParams.get('page'))
   );
 
-  const handlePageChange = useCallback((newPage: number) => {
+  const handlePageChange = useCallback((newPage: number, shouldScroll = true) => {
     setCurrentPage(newPage);
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
@@ -129,36 +147,29 @@ export const ShopView: React.FC<ShopViewProps> = ({
         url.searchParams.set('page', String(newPage));
       }
       window.history.replaceState(null, '', url.pathname + url.search);
+      if (shouldScroll) {
+        requestAnimationFrame(() => {
+          scrollToGridTop();
+        });
+      }
     }
-  }, []);
+  }, [scrollToGridTop]);
 
   // Sync state if URL searchParams change
   useEffect(() => {
     const urlPage = getPageFromParam(searchParams.get('page'));
     if (urlPage !== currentPage) {
       setCurrentPage(urlPage);
+      requestAnimationFrame(() => {
+        scrollToGridTop();
+      });
     }
-  }, [searchParams, getPageFromParam, currentPage]);
+  }, [searchParams, getPageFromParam, currentPage, scrollToGridTop]);
 
   // Reset to page 1 on active category, filter, sort, or search query change
   useEffect(() => {
-    handlePageChange(1);
+    handlePageChange(1, false);
   }, [activeCategory, appliedPriceRange, appliedAvailability, selectedSort, searchQuery, handlePageChange]);
-
-  const stickyBarRef = useRef<HTMLDivElement>(null);
-  const sentinelRef = useRef<HTMLDivElement>(null);
-  const gridContainerRef = useRef<HTMLDivElement>(null);
-
-  const scrollToGridTop = useCallback(() => {
-    if (gridContainerRef.current) {
-      const navHeight = window.innerWidth <= 767 ? 64 : 76;
-      const rect = gridContainerRef.current.getBoundingClientRect();
-      const scrollTop = window.pageYOffset + rect.top - navHeight - 16;
-      smoothScrollService.scrollTo(Math.max(0, scrollTop));
-    } else {
-      smoothScrollService.scrollTo(0);
-    }
-  }, []);
 
   // Track sticky state via off-thread IntersectionObserver to avoid scroll jank
   useEffect(() => {
@@ -781,15 +792,24 @@ export const ShopView: React.FC<ShopViewProps> = ({
         </div>
 
         {/* Pagination Controls */}
-        {gender && activeCategory === 'all' && filteredProducts.length > PAGE_SIZE && (
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px', gap: '8px' }}>
-            {Array.from({ length: Math.ceil(filteredProducts.length / PAGE_SIZE) }).map((_, idx) => (
+        {gender && activeCategory === 'all' && filteredProducts.length > PAGE_SIZE && (() => {
+          const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE);
+          return (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: '40px',
+                gap: '8px',
+                flexWrap: 'wrap',
+              }}
+            >
+              {/* Previous Button */}
               <button
-                key={idx}
-                onClick={() => {
-                  handlePageChange(idx + 1);
-                  scrollToGridTop();
-                }}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                aria-label="Previous Page"
                 style={{
                   width: '36px',
                   height: '36px',
@@ -797,19 +817,69 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '0.9rem',
-                  border: currentPage === idx + 1 ? '1px solid var(--text-primary)' : '1px solid var(--border-color)',
-                  backgroundColor: currentPage === idx + 1 ? 'var(--text-primary)' : 'var(--bg-surface)',
-                  color: currentPage === idx + 1 ? 'var(--bg-primary)' : 'var(--text-primary)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
+                  border: '1px solid var(--border-color)',
+                  backgroundColor: 'var(--bg-surface)',
+                  color: 'var(--text-primary)',
+                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                  opacity: currentPage === 1 ? 0.35 : 1,
+                  transition: 'all 0.2s ease',
                 }}
               >
-                {idx + 1}
+                <ChevronLeft size={16} />
               </button>
-            ))}
-          </div>
-        )}
+
+              {/* Numbered Page Buttons */}
+              {Array.from({ length: totalPages }).map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handlePageChange(idx + 1)}
+                  aria-label={`Page ${idx + 1}`}
+                  aria-current={currentPage === idx + 1 ? 'page' : undefined}
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.9rem',
+                    fontWeight: currentPage === idx + 1 ? 600 : 400,
+                    border: currentPage === idx + 1 ? '1px solid var(--text-primary)' : '1px solid var(--border-color)',
+                    backgroundColor: currentPage === idx + 1 ? 'var(--text-primary)' : 'var(--bg-surface)',
+                    color: currentPage === idx + 1 ? 'var(--bg-primary)' : 'var(--text-primary)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {idx + 1}
+                </button>
+              ))}
+
+              {/* Next Button */}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                aria-label="Next Page"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1px solid var(--border-color)',
+                  backgroundColor: 'var(--bg-surface)',
+                  color: 'var(--text-primary)',
+                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                  opacity: currentPage === totalPages ? 0.35 : 1,
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Mobile Filters Drawer / Bottom Sheet */}

@@ -93,7 +93,7 @@ class SmoothScrollService implements ISmoothScrollService {
     if (this.lenis) {
       this.lenis.scrollTo(target, options);
     } else if (typeof window !== 'undefined') {
-      const behavior: ScrollBehavior = options?.immediate ? 'instant' : 'auto';
+      const behavior: ScrollBehavior = options?.immediate ? 'instant' : 'smooth';
       if (typeof target === 'number') {
         window.scrollTo({ top: target, behavior });
       } else if (typeof target === 'string') {

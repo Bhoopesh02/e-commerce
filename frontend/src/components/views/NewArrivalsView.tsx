@@ -138,7 +138,20 @@ export const NewArrivalsView: React.FC = () => {
     getPageFromParam(searchParams?.get('page') ?? null)
   );
 
-  const handlePageChange = useCallback((newPage: number) => {
+  const scrollToGridTop = useCallback(() => {
+    const navOffset = typeof window !== 'undefined' && window.innerWidth <= 767 ? 64 : 76;
+    if (sentinelRef.current) {
+      const target = sentinelRef.current.getBoundingClientRect().top + window.pageYOffset - navOffset;
+      smoothScrollService.scrollTo(Math.max(0, target));
+    } else if (stickyBarRef.current) {
+      const target = stickyBarRef.current.offsetTop - navOffset;
+      smoothScrollService.scrollTo(Math.max(0, target));
+    } else {
+      smoothScrollService.scrollTo(0);
+    }
+  }, []);
+
+  const handlePageChange = useCallback((newPage: number, shouldScroll = true) => {
     setCurrentPage(newPage);
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
@@ -148,20 +161,28 @@ export const NewArrivalsView: React.FC = () => {
         url.searchParams.set('page', String(newPage));
       }
       window.history.replaceState(null, '', url.pathname + url.search);
+      if (shouldScroll) {
+        requestAnimationFrame(() => {
+          scrollToGridTop();
+        });
+      }
     }
-  }, []);
+  }, [scrollToGridTop]);
 
   // Sync state if URL searchParams change
   useEffect(() => {
     const urlPage = getPageFromParam(searchParams?.get('page') ?? null);
     if (urlPage !== currentPage) {
       setCurrentPage(urlPage);
+      requestAnimationFrame(() => {
+        scrollToGridTop();
+      });
     }
-  }, [searchParams, getPageFromParam, currentPage]);
+  }, [searchParams, getPageFromParam, currentPage, scrollToGridTop]);
 
   // Reset to page 1 on active category, filter, or search query change
   useEffect(() => {
-    handlePageChange(1);
+    handlePageChange(1, false);
   }, [activeCategory, appliedPriceRange, appliedAvailability, searchQuery, handlePageChange]);
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE));
@@ -169,7 +190,7 @@ export const NewArrivalsView: React.FC = () => {
   // Clamp current page if product count shrinks below current page
   useEffect(() => {
     if (currentPage > totalPages) {
-      handlePageChange(totalPages);
+      handlePageChange(totalPages, false);
     }
   }, [totalPages, currentPage, handlePageChange]);
 
@@ -177,16 +198,6 @@ export const NewArrivalsView: React.FC = () => {
     const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
     return filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
   }, [filteredProducts, currentPage]);
-
-  const scrollToGridTop = () => {
-    if (stickyBarRef.current) {
-      const navOffset = window.innerWidth <= 767 ? 70 : 85;
-      const top = stickyBarRef.current.getBoundingClientRect().top + window.pageYOffset - navOffset;
-      smoothScrollService.scrollTo(top);
-    } else {
-      smoothScrollService.scrollTo(0);
-    }
-  };
 
   const getVisiblePageNumbers = (current: number, total: number): (number | string)[] => {
     if (total <= 7) {
