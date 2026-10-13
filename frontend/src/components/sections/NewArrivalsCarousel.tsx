@@ -18,8 +18,6 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
 }) => {
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const scrollTrackRef = useRef<HTMLDivElement>(null);
-  const scrollThumbRef = useRef<HTMLDivElement>(null);
   const cardItemsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   // Smooth lerp & physics animation values
@@ -111,30 +109,7 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
         }
       });
 
-      // Update interactive luxury scrollbar below the products
-      if (scrollThumbRef.current && scrollTrackRef.current) {
-        const maxScroll = maxScrollRef.current;
-        const trackWidth = scrollTrackRef.current.clientWidth;
-        const viewportWidth = viewportRef.current?.clientWidth || 1;
-        const contentWidth = trackRef.current?.scrollWidth || 1;
 
-        if (maxScroll > 0) {
-          // Dynamic thumb width proportional to visible content
-          const thumbWidth = Math.max(48, Math.min(trackWidth * 0.6, (viewportWidth / contentWidth) * trackWidth));
-          const availableTrack = Math.max(1, trackWidth - thumbWidth);
-          const progress = Math.max(0, Math.min(1, -currentX / maxScroll));
-          const thumbX = progress * availableTrack;
-
-          // Organic stretch effect on velocity
-          const stretch = 1 + Math.min(0.3, Math.abs(v) * 0.0018);
-
-          scrollThumbRef.current.style.width = `${thumbWidth}px`;
-          scrollThumbRef.current.style.transform = `translate3d(${thumbX.toFixed(2)}px, 0, 0) scaleX(${stretch.toFixed(3)})`;
-        } else {
-          scrollThumbRef.current.style.width = `${trackWidth}px`;
-          scrollThumbRef.current.style.transform = `translate3d(0, 0, 0) scaleX(1)`;
-        }
-      }
 
       rafIdRef.current = requestAnimationFrame(animate);
     };
@@ -247,36 +222,7 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
     }
   };
 
-  // Interactive scrollbar scrubbing / clicking below products
-  const handleScrollbarPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!scrollTrackRef.current || maxScrollRef.current <= 0) return;
-    e.preventDefault();
 
-    const rect = scrollTrackRef.current.getBoundingClientRect();
-    const trackWidth = rect.width;
-    const thumbWidth = scrollThumbRef.current?.offsetWidth || 48;
-    const availableTrack = Math.max(1, trackWidth - thumbWidth);
-
-    const calculateTarget = (clientX: number) => {
-      const clickOffset = clientX - rect.left - thumbWidth / 2;
-      const progress = Math.max(0, Math.min(1, clickOffset / availableTrack));
-      setTargetX(-progress * maxScrollRef.current);
-    };
-
-    calculateTarget(e.clientX);
-
-    const onPointerMove = (ev: PointerEvent) => {
-      calculateTarget(ev.clientX);
-    };
-
-    const onPointerUp = () => {
-      window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('pointerup', onPointerUp);
-    };
-
-    window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', onPointerUp);
-  };
 
   return (
     <section className="new-arrivals-section" style={{ padding: '60px 0', backgroundColor: 'var(--bg-primary)' }}>
@@ -427,60 +373,7 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
             </div>
           </div>
 
-          {/* Scroll Animation & Interactive Progress Indicator Below the Products */}
-          <div
-            className="carousel-scrollbar-container"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              marginTop: '28px',
-              width: '100%',
-            }}
-          >
-            {/* Minimalist luxury scroll track with interactive hit-box */}
-            <div
-              ref={scrollTrackRef}
-              onPointerDown={handleScrollbarPointerDown}
-              role="scrollbar"
-              aria-label="New Arrivals carousel progress"
-              style={{
-                position: 'relative',
-                flex: 1,
-                height: '24px',
-                display: 'flex',
-                alignItems: 'center',
-                cursor: 'pointer',
-                touchAction: 'none',
-              }}
-            >
-              {/* Inactive track line */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '11px',
-                  left: 0,
-                  right: 0,
-                  height: '2px',
-                  backgroundColor: 'var(--border-color, rgba(0, 0, 0, 0.08))',
-                  borderRadius: '1px',
-                }}
-              />
-              {/* Active eased thumb */}
-              <div
-                ref={scrollThumbRef}
-                style={{
-                  position: 'absolute',
-                  top: '11px',
-                  left: 0,
-                  height: '2px',
-                  backgroundColor: 'var(--text-primary, #111111)',
-                  borderRadius: '1px',
-                  willChange: 'transform, width',
-                  transformOrigin: 'left center',
-                }}
-              />
-            </div>
-          </div>
+
         </ScrollReveal>
       </div>
 

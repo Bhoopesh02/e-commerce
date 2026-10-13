@@ -71,9 +71,9 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
       style={{
         position: 'relative',
         width: '100%',
-        minHeight: 'clamp(320px, 48vw, 420px)',
-        height: 'clamp(320px, 48vw, 420px)',
-        borderRadius: '16px',
+        minHeight: 'clamp(340px, 32vw, 520px)',
+        height: 'clamp(340px, 32vw, 520px)',
+        borderRadius: 0,
         overflow: 'hidden',
         backgroundColor: '#1c1917',
       }}
@@ -120,7 +120,7 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
                 alt={alt}
                 fill
                 quality={92}
-                sizes="(max-width: 767px) 1px, (max-width: 1200px) 100vw, 1200px"
+                sizes="(max-width: 767px) 1px, 100vw"
                 placeholder="blur"
                 onLoad={() => setLoaded(true)}
                 style={{ objectFit: 'cover', objectPosition: 'center' }}
@@ -134,7 +134,7 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
             alt={alt}
             fill
             quality={92}
-            sizes="(max-width: 1200px) 100vw, 1200px"
+            sizes="100vw"
             placeholder="blur"
             onLoad={() => setLoaded(true)}
             style={{ objectFit: 'cover', objectPosition: 'center' }}
@@ -345,17 +345,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
         return (
           <React.Fragment key={id}>
-            <section style={{ padding: '0 0 20px', backgroundColor: 'var(--bg-primary)' }}>
-              <div className="container">
-                <HomeBannerCard
-                  imageSrc={heritageBannerImg}
-                  mobileImageSrc={heritageBannerMobileImg}
-                  alt="Signature Excellence Banner"
-                  eyebrow="Our Heritage"
-                  headline="The Signature of Excellence"
-                  description="Discover the foundational pillars that define our commitment to unparalleled craftsmanship and uncompromising quality."
-                />
-              </div>
+            <section style={{ width: '100%', padding: '0 0 20px', backgroundColor: 'var(--bg-primary)' }}>
+              <HomeBannerCard
+                imageSrc={heritageBannerImg}
+                mobileImageSrc={heritageBannerMobileImg}
+                alt="Signature Excellence Banner"
+                eyebrow="Our Heritage"
+                headline="The Signature of Excellence"
+                description="Discover the foundational pillars that define our commitment to unparalleled craftsmanship and uncompromising quality."
+              />
             </section>
             <ExpandingCarousel
               products={signatureProducts.length >= 4 ? signatureProducts : products}
@@ -389,17 +387,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
         );
         return (
           <React.Fragment key={id}>
-            <section style={{ padding: '60px 0 20px', backgroundColor: 'var(--bg-primary)' }}>
-              <div className="container">
-                <HomeBannerCard
-                  imageSrc={newArrivalsBannerImg}
-                  mobileImageSrc={newArrivalsBannerMobileImg}
-                  alt="New Arrivals Banner"
-                  eyebrow="Just Arrived"
-                  headline="The New Season Collection"
-                  description="Discover our latest arrivals, featuring exquisite craftsmanship and unparalleled elegance for the modern connoisseur."
-                />
-              </div>
+            <section style={{ width: '100%', padding: '60px 0 20px', backgroundColor: 'var(--bg-primary)' }}>
+              <HomeBannerCard
+                imageSrc={newArrivalsBannerImg}
+                mobileImageSrc={newArrivalsBannerMobileImg}
+                alt="New Arrivals Banner"
+                eyebrow="Just Arrived"
+                headline="The New Season Collection"
+                description="Discover our latest arrivals, featuring exquisite craftsmanship and unparalleled elegance for the modern connoisseur."
+              />
             </section>
             <NewArrivalsCarousel products={uploadedNewArrivals} loading={loading} />
           </React.Fragment>

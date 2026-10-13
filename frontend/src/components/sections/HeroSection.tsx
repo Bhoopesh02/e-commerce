@@ -188,8 +188,9 @@ export const HeroSection: React.FC = () => {
                   <Button
                     variant="white"
                     size="lg"
-                    className="hero-cta-button inline-flex items-center justify-center w-auto self-start px-7 py-3.5 sm:px-9 sm:py-4 md:px-10 lg:px-12 min-h-[48px] text-xs tracking-[0.2em] sm:text-sm uppercase whitespace-nowrap max-w-full transition-colors duration-300 hover:bg-white/90 active:scale-[0.98]"
-                    style={{ borderRadius: '0' }}
+                    disableSheen
+                    className="hero-cta-button inline-flex items-center justify-center w-auto self-start px-7 py-3.5 sm:px-9 sm:py-4 md:px-10 lg:px-12 min-h-[48px] text-xs tracking-[0.2em] sm:text-sm uppercase whitespace-nowrap max-w-full"
+                    style={{ borderRadius: '0', transition: 'none', transform: 'none' }}
                   >
                     Discover more
                   </Button>
@@ -283,7 +284,7 @@ export const HeroSection: React.FC = () => {
                   href="/shop?categorySlug=tailoring"
                   style={{ textDecoration: 'none', display: 'block' }}
                 >
-                  <Button variant="white" size="lg" className="hero-cta-button">
+                  <Button variant="white" size="lg" disableSheen className="hero-cta-button">
                     Explore Tailoring
                   </Button>
                 </Link>
@@ -434,15 +435,30 @@ export const HeroSection: React.FC = () => {
           font-size: 0.75rem !important;
           letter-spacing: 0.2em !important;
           text-transform: uppercase !important;
-          transition: color 300ms, background-color 300ms, transform 150ms !important;
+          transition: none !important;
+          transform: none !important;
         }
 
-        .hero-cta-button:hover {
-          background-color: rgba(255, 255, 255, 0.9) !important;
+        .hero-cta-button:hover,
+        .hero-cta-button:focus-visible,
+        .hero-cta-button:active,
+        a:hover .hero-cta-button,
+        a:focus-visible .hero-cta-button {
+          transform: none !important;
+          box-shadow: none !important;
+          background-color: var(--bg-primary) !important;
         }
 
-        .hero-cta-button:active {
-          transform: scale(0.98) !important;
+        .hero-cta-button::after,
+        .hero-cta-button:hover::after,
+        .hero-cta-button:focus-visible::after,
+        a:hover .hero-cta-button::after,
+        a:focus-visible .hero-cta-button::after {
+          display: none !important;
+          content: none !important;
+          opacity: 0 !important;
+          transform: none !important;
+          animation: none !important;
         }
 
         @media (min-width: 640px) {
