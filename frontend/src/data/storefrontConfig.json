@@ -59,7 +59,7 @@
         "type": "brand_story",
         "title": "Craftsmanship Without Compromise",
         "subtitle": "100% Traceable European Materials",
-        "visible": true
+        "visible": false
       },
       {
         "id": "sec_newsletter",
@@ -116,7 +116,7 @@
         "type": "brand_story",
         "title": "Artisanal Integrity",
         "subtitle": "Every garment tailored with longevity in mind.",
-        "visible": true
+        "visible": false
       },
       {
         "id": "sec_newsletter",
