@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 
@@ -19,14 +19,128 @@ export interface EditorialCampaignProps {
   leftAlt?: string;
   centerAlt?: string;
   rightAlt?: string;
-  lookTitle?: string;
-  lookSubtitle?: string;
 }
+
+/**
+ * Precomputes high-frequency decaying jitter keyframes
+ * offset = sin(t * freq) * amplitude * (1 - p)^1.4
+ */
+const generateShakeKeyframes = (
+  durationMs = 1100,
+  steps = 30,
+  maxAmpX = 5,
+  maxAmpY = 4,
+  maxRot = 2.5,
+  phaseOffset = 0,
+  rotDir = -1
+) => {
+  const x: number[] = [];
+  const y: number[] = [];
+  const rot: number[] = [];
+  const times: number[] = [];
+
+  for (let i = 0; i <= steps; i++) {
+    const p = i / steps; // progress 0 -> 1
+    const decay = Math.pow(1 - p, 1.4); // decaying envelope
+    const t = p * (durationMs / 1000);
+
+    const xVal = p === 1 ? 0 : Math.sin(t * 22 * 2 * Math.PI + phaseOffset) * maxAmpX * decay;
+    const yVal = p === 1 ? 0 : Math.cos(t * 18 * 2 * Math.PI + phaseOffset * 1.3) * maxAmpY * decay;
+    const rotVal = p === 1 ? 0 : rotDir * Math.sin(t * 24 * 2 * Math.PI + phaseOffset * 0.7) * maxRot * decay;
+
+    x.push(Number(xVal.toFixed(2)));
+    y.push(Number(yVal.toFixed(2)));
+    rot.push(Number(rotVal.toFixed(2)));
+    times.push(Number(p.toFixed(3)));
+  }
+
+  return { x, y, rot, times };
+};
+
+/**
+ * Splits paragraph copy into structured, balanced lines for masked line reveals.
+ */
+const splitIntoLines = (text: string): string[] => {
+  if (text.includes('\n')) return text.split('\n').filter(Boolean);
+  if (text.includes('|')) return text.split('|').map((s) => s.trim()).filter(Boolean);
+
+  const words = text.split(' ');
+  if (words.length <= 7) return [text];
+  const count = Math.ceil(words.length / 3);
+  const l1 = words.slice(0, count).join(' ');
+  const l2 = words.slice(count, count * 2).join(' ');
+  const l3 = words.slice(count * 2).join(' ');
+  return [l1, l2, l3].filter(Boolean);
+};
+
+interface SplitParagraphProps {
+  text: string;
+  className?: string;
+  startDelay: number;
+  staggerDelay?: number;
+  isInView: boolean;
+  shouldReduceMotion: boolean;
+}
+
+const SplitParagraph: React.FC<SplitParagraphProps> = ({
+  text,
+  className,
+  startDelay,
+  staggerDelay = 0.14,
+  isInView,
+  shouldReduceMotion,
+}) => {
+  const lines = useMemo(() => splitIntoLines(text), [text]);
+
+  return (
+    <p className={className} aria-label={text}>
+      {lines.map((line, idx) => (
+        <span
+          key={idx}
+          className="editorial-line-mask"
+          style={{
+            display: 'block',
+            overflow: 'hidden',
+            paddingBottom: '0.12em',
+            marginBottom: '-0.12em',
+          }}
+        >
+          <motion.span
+            style={{
+              display: 'block',
+              transformOrigin: 'left bottom',
+              willChange: 'transform, opacity',
+            }}
+            initial={shouldReduceMotion ? { opacity: 0 } : { y: '110%', rotate: 2, opacity: 0 }}
+            animate={
+              isInView
+                ? { y: '0%', rotate: 0, opacity: 1 }
+                : shouldReduceMotion
+                ? { opacity: 0 }
+                : { y: '110%', rotate: 2, opacity: 0 }
+            }
+            transition={
+              shouldReduceMotion
+                ? { duration: 0.5 }
+                : {
+                    duration: 1.2,
+                    delay: startDelay + idx * staggerDelay,
+                    ease: [0.16, 1, 0.3, 1],
+                  }
+            }
+          >
+            {line}
+          </motion.span>
+        </span>
+      ))}
+    </p>
+  );
+};
 
 export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
   watermarkText = 'SILHOUETTE',
-  leftText = 'Performance-driven tailoring—drafted by master artisans in Northern Italy, engineered for effortless drape and winter endurance.',
-  rightText = 'Stay warm, stay refined. Double-faced cashmere and virgin wool blend thermal insulation with fluid flexibility in the toughest conditions.',
+  leftText = 'Performance-driven tailoring—|drafted by master artisans in Northern Italy,|engineered for effortless drape and winter endurance.',
+  rightText = 'Stay warm, stay refined.|Double-faced cashmere and virgin wool blend|thermal insulation with fluid flexibility in cold.',
   ctaText = 'Explore Overcoats',
   ctaLink = '/shop?categorySlug=outerwear',
   leftImage = '/images/banners/editorial/editorial-left.jpg',
@@ -35,22 +149,20 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
   leftAlt = 'Cropped Suede Harrington Bomber Jacket',
   centerAlt = 'Belted Cashmere Wrap Overcoat Florence Salon',
   rightAlt = 'Italian leather cuff and gloved tailoring detail',
-  lookTitle = 'Look 04 · Florence Salon',
-  lookSubtitle = 'Belted Cashmere Wrap Overcoat',
 }) => {
   const sectionRef = useRef<HTMLElement>(null);
-  const shouldReduceMotion = useReducedMotion();
-  const [activeMobileCard, setActiveMobileCard] = useState<number>(1); // 0: left, 1: center, 2: right
+  const shouldReduceMotion = Boolean(useReducedMotion());
+  const isInView = useInView(sectionRef, { once: true, amount: 0.25 });
 
-  // Subtle parallax effect on scroll
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  });
-
-  const yCenter = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? [0, 0] : [25, -25]);
-  const yLeft = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? [0, 0] : [-15, 15]);
-  const yRight = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? [0, 0] : [35, -15]);
+  // Slower decaying shake profiles for Left and Right dots (1100ms duration)
+  const leftShake = useMemo(
+    () => generateShakeKeyframes(1100, 30, 5, 4, 2.5, 0, -1),
+    []
+  );
+  const rightShake = useMemo(
+    () => generateShakeKeyframes(1100, 30, 4.5, 3.8, 2.2, 1.8, 1),
+    []
+  );
 
   return (
     <section
@@ -98,6 +210,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
           opacity: 0.85;
           white-space: nowrap;
           text-align: center;
+          will-change: transform, opacity;
         }
 
         /* 3-Column Desktop Grid Layout */
@@ -110,28 +223,6 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
           grid-template-columns: 1fr 1.35fr 1fr;
           gap: 36px;
           align-items: center;
-        }
-
-        /* Card styling */
-        .editorial-card-wrapper {
-          position: relative;
-          overflow: hidden;
-          background: #D9D7D2;
-          box-shadow: 0 18px 45px -12px rgba(20, 20, 20, 0.14);
-          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .editorial-card-wrapper:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 28px 60px -15px rgba(20, 20, 20, 0.22);
-        }
-
-        .editorial-card-img-zoom {
-          transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .editorial-card-wrapper:hover .editorial-card-img-zoom {
-          transform: scale(1.05);
         }
 
         /* Left Column */
@@ -147,6 +238,11 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
           max-width: 320px;
           height: 380px;
           border-radius: 26px;
+          position: relative;
+          background: #D9D7D2;
+          box-shadow: 0 18px 45px -12px rgba(20, 20, 20, 0.14);
+          overflow: hidden;
+          will-change: transform, opacity, clip-path;
         }
 
         .editorial-copy-bottom-left {
@@ -154,7 +250,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
           font-size: 0.88rem;
           line-height: 1.6;
           color: rgba(30, 30, 30, 0.72);
-          max-width: 250px;
+          max-width: 260px;
           margin-top: 4px;
         }
 
@@ -171,7 +267,11 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
           max-width: 440px;
           height: 540px;
           border-radius: 32px;
+          position: relative;
+          background: #D9D7D2;
           box-shadow: 0 26px 65px -15px rgba(20, 20, 20, 0.22);
+          overflow: hidden;
+          will-change: transform, opacity, clip-path;
         }
 
         /* Right Column */
@@ -198,11 +298,21 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
           max-width: 320px;
           height: 380px;
           border-radius: 26px;
+          position: relative;
+          background: #D9D7D2;
+          box-shadow: 0 18px 45px -12px rgba(20, 20, 20, 0.14);
+          overflow: hidden;
+          will-change: transform, opacity, clip-path;
         }
 
-        /* Mobile specific carousel styles */
-        .editorial-mobile-carousel {
-          display: none;
+        /* Hover Zoom on Cards once settled */
+        .editorial-card-img-zoom {
+          transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .editorial-card-left:hover .editorial-card-img-zoom,
+        .editorial-card-right:hover .editorial-card-img-zoom,
+        .editorial-card-center:hover .editorial-card-img-zoom {
+          transform: scale(1.04);
         }
 
         /* Responsive Breakpoints */
@@ -227,127 +337,197 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
           .editorial-banner-section {
             padding: 60px 16px 70px;
           }
-
           .editorial-layout-grid {
-            display: none;
+            grid-template-columns: 1fr;
+            gap: 36px;
           }
-
-          .editorial-mobile-carousel {
-            display: block;
-            position: relative;
-            z-index: 2;
-            width: 100%;
+          .editorial-col-left,
+          .editorial-col-center,
+          .editorial-col-right {
+            align-items: center;
+            margin-top: 0;
           }
-
-          .editorial-mobile-cards-track {
-            display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            gap: 16px;
-            padding: 10px 4px 20px;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
-          }
-
-          .editorial-mobile-cards-track::-webkit-scrollbar {
-            display: none;
-          }
-
-          .editorial-mobile-card-item {
-            flex: 0 0 82%;
-            scroll-snap-align: center;
-          }
-
-          .editorial-mobile-card-item .editorial-card-wrapper {
-            height: 420px;
-            border-radius: 24px;
-          }
-
-          .editorial-mobile-copy {
-            margin-top: 20px;
+          .editorial-copy-top-right {
+            align-self: center;
             text-align: center;
-            font-size: 0.88rem;
-            color: rgba(30, 30, 30, 0.75);
-            line-height: 1.5;
-            padding: 0 16px;
           }
-
-          .editorial-mobile-dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 16px;
-          }
-
-          .editorial-mobile-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(20, 20, 20, 0.2);
-            transition: all 0.3s ease;
-          }
-
-          .editorial-mobile-dot.active {
-            width: 24px;
-            border-radius: 4px;
-            background: var(--color-black-tie, #141414);
+          .editorial-copy-bottom-left {
+            text-align: center;
           }
         }
       `}</style>
 
-      {/* Decorative Ghost Background Typography */}
+      {/* 0.0s: Background Outline Letters fade in & slow horizontal drift (2.4s duration) */}
       <div className="editorial-watermark-container" aria-hidden="true">
-        <span className="editorial-watermark-text">{watermarkText}</span>
+        <motion.span
+          className="editorial-watermark-text"
+          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -35 }}
+          animate={
+            isInView
+              ? { opacity: 0.85, x: 0 }
+              : shouldReduceMotion
+              ? { opacity: 0 }
+              : { opacity: 0, x: -35 }
+          }
+          transition={
+            shouldReduceMotion
+              ? { duration: 0.6 }
+              : { duration: 2.4, delay: 0.0, ease: [0.16, 1, 0.3, 1] }
+          }
+        >
+          {watermarkText}
+        </motion.span>
       </div>
 
-      {/* Desktop 3-Card Staggered Layout */}
+      {/* Desktop 3-Card Master Layout */}
       <div className="editorial-layout-grid">
-        {/* Left Column: Card on top, Micro-copy below */}
-        <motion.div
-          className="editorial-col-left"
-          style={{ y: yLeft }}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <div className="editorial-card-wrapper editorial-card-left">
-            <div className="editorial-card-img-zoom" style={{ position: 'relative', width: '100%', height: '100%' }}>
-              <Image
-                src={leftImage}
-                alt={leftAlt}
-                fill
-                quality={92}
-                sizes="(max-width: 1080px) 280px, 320px"
-                style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
-              />
+        {/* Left Column: Grow from dot with jitter shake -> lands at 1.85s -> text at 2.2s */}
+        <div className="editorial-col-left">
+          {/* Outer Jitter Shake Wrapper (0.75s to 1.85s, duration 1.1s) */}
+          <motion.div
+            style={{ width: '100%', maxWidth: '320px', willChange: 'transform' }}
+            initial={shouldReduceMotion ? { opacity: 0 } : { x: 0, y: 0, rotate: 0 }}
+            animate={
+              isInView && !shouldReduceMotion
+                ? {
+                    x: leftShake.x,
+                    y: leftShake.y,
+                    rotate: leftShake.rot,
+                  }
+                : { x: 0, y: 0, rotate: 0 }
+            }
+            transition={{
+              delay: 0.75,
+              duration: 1.1,
+              times: leftShake.times,
+              ease: 'linear',
+            }}
+          >
+            {/* Inner Growth & Shape Morph Wrapper */}
+            <motion.div
+              className="editorial-card-left"
+              initial={
+                shouldReduceMotion
+                  ? { opacity: 0 }
+                  : {
+                      opacity: 0,
+                      scale: 0.1,
+                      clipPath: 'circle(0% at 50% 50%)',
+                    }
+              }
+              animate={
+                isInView
+                  ? shouldReduceMotion
+                    ? { opacity: 1 }
+                    : {
+                        opacity: [0, 1, 1, 1],
+                        scale: [0.1, 0.6, 1.04, 1.0],
+                        clipPath: [
+                          'circle(0% at 50% 50%)',
+                          'circle(45% at 50% 50%)',
+                          'circle(75% at 50% 50%)',
+                          'inset(0% 0% 0% 0% round 26px)',
+                        ],
+                      }
+                  : { opacity: 0 }
+              }
+              transition={
+                shouldReduceMotion
+                  ? { duration: 0.6 }
+                  : {
+                      delay: 0.75,
+                      duration: 1.1,
+                      times: [0, 0.45, 0.85, 1],
+                      ease: [0.16, 1, 0.3, 1],
+                    }
+              }
+            >
               <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.3) 100%)',
-                  pointerEvents: 'none',
-                }}
-              />
-            </div>
-          </div>
+                className="editorial-card-img-zoom"
+                style={{ position: 'relative', width: '100%', height: '100%' }}
+              >
+                <Image
+                  src={leftImage}
+                  alt={leftAlt}
+                  fill
+                  quality={92}
+                  sizes="(max-width: 1080px) 280px, 320px"
+                  style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
 
-          <p className="editorial-copy-bottom-left">
-            {leftText}
-          </p>
-        </motion.div>
+          {/* 2.2s: Left Paragraph line-by-line staggered reveal */}
+          <SplitParagraph
+            text={leftText}
+            className="editorial-copy-bottom-left"
+            startDelay={2.2}
+            staggerDelay={0.14}
+            isInView={isInView}
+            shouldReduceMotion={shouldReduceMotion}
+          />
+        </div>
 
-        {/* Center Column: Dominant Hero Card */}
-        <motion.div
-          className="editorial-col-center"
-          style={{ y: yCenter }}
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.9, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <div className="editorial-card-wrapper editorial-card-center">
-            <div className="editorial-card-img-zoom" style={{ position: 'relative', width: '100%', height: '100%' }}>
+        {/* Center Column: 0.35s Rising from below with slow inner zoom (1.6s duration) -> 2.0s Caption sequence */}
+        <div className="editorial-col-center">
+          <motion.div
+            className="editorial-card-center"
+            initial={
+              shouldReduceMotion
+                ? { opacity: 0 }
+                : {
+                    opacity: 0,
+                    y: 120,
+                    scale: 0.95,
+                    clipPath: 'inset(100% 0% 0% 0% round 32px)',
+                  }
+            }
+            animate={
+              isInView
+                ? shouldReduceMotion
+                  ? { opacity: 1 }
+                  : {
+                      opacity: 1,
+                      y: 0,
+                      scale: 1,
+                      clipPath: 'inset(0% 0% 0% 0% round 32px)',
+                    }
+                : shouldReduceMotion
+                ? { opacity: 0 }
+                : {
+                    opacity: 0,
+                    y: 120,
+                    scale: 0.95,
+                    clipPath: 'inset(100% 0% 0% 0% round 32px)',
+                  }
+            }
+            transition={
+              shouldReduceMotion
+                ? { duration: 0.6 }
+                : {
+                    duration: 1.6,
+                    delay: 0.35,
+                    ease: [0.16, 1, 0.3, 1],
+                  }
+            }
+          >
+            {/* Inner Image with 2.4s slow zoom settle */}
+            <motion.div
+              className="editorial-card-img-zoom"
+              style={{ position: 'relative', width: '100%', height: '100%' }}
+              initial={shouldReduceMotion ? { scale: 1 } : { scale: 1.2 }}
+              animate={isInView ? { scale: 1 } : shouldReduceMotion ? { scale: 1 } : { scale: 1.2 }}
+              transition={
+                shouldReduceMotion
+                  ? { duration: 0.6 }
+                  : {
+                      duration: 2.4,
+                      delay: 0.35,
+                      ease: [0.16, 1, 0.3, 1],
+                    }
+              }
+            >
               <Image
                 src={centerImage}
                 alt={centerAlt}
@@ -357,223 +537,100 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
                 sizes="(max-width: 1080px) 380px, 440px"
                 style={{ objectFit: 'cover', objectPosition: 'center 18%' }}
               />
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.45) 100%)',
-                  pointerEvents: 'none',
-                }}
-              />
+            </motion.div>
+          </motion.div>
+        </div>
 
-              {/* Floating Look Tag / Caption Pill */}
+        {/* Right Column: 2.45s Top text -> 1.0s Dot grows with positive shake -> lands at 2.1s */}
+        <div className="editorial-col-right">
+          {/* 2.45s: Right Paragraph line-by-line staggered reveal */}
+          <SplitParagraph
+            text={rightText}
+            className="editorial-copy-top-right"
+            startDelay={2.45}
+            staggerDelay={0.14}
+            isInView={isInView}
+            shouldReduceMotion={shouldReduceMotion}
+          />
+
+          {/* Outer Jitter Shake Wrapper (1.0s to 2.1s, duration 1.1s) */}
+          <motion.div
+            style={{ width: '100%', maxWidth: '320px', willChange: 'transform' }}
+            initial={shouldReduceMotion ? { opacity: 0 } : { x: 0, y: 0, rotate: 0 }}
+            animate={
+              isInView && !shouldReduceMotion
+                ? {
+                    x: rightShake.x,
+                    y: rightShake.y,
+                    rotate: rightShake.rot,
+                  }
+                : { x: 0, y: 0, rotate: 0 }
+            }
+            transition={{
+              delay: 1.0,
+              duration: 1.1,
+              times: rightShake.times,
+              ease: 'linear',
+            }}
+          >
+            {/* Inner Growth & Shape Morph Wrapper */}
+            <motion.div
+              className="editorial-card-right"
+              initial={
+                shouldReduceMotion
+                  ? { opacity: 0 }
+                  : {
+                      opacity: 0,
+                      scale: 0.1,
+                      clipPath: 'circle(0% at 50% 50%)',
+                    }
+              }
+              animate={
+                isInView
+                  ? shouldReduceMotion
+                    ? { opacity: 1 }
+                    : {
+                        opacity: [0, 1, 1, 1],
+                        scale: [0.1, 0.6, 1.04, 1.0],
+                        clipPath: [
+                          'circle(0% at 50% 50%)',
+                          'circle(45% at 50% 50%)',
+                          'circle(75% at 50% 50%)',
+                          'inset(0% 0% 0% 0% round 26px)',
+                        ],
+                      }
+                  : { opacity: 0 }
+              }
+              transition={
+                shouldReduceMotion
+                  ? { duration: 0.6 }
+                  : {
+                      delay: 1.0,
+                      duration: 1.1,
+                      times: [0, 0.45, 0.85, 1],
+                      ease: [0.16, 1, 0.3, 1],
+                    }
+              }
+            >
               <div
-                style={{
-                  position: 'absolute',
-                  bottom: '22px',
-                  left: '22px',
-                  right: '22px',
-                  padding: '14px 20px',
-                  backgroundColor: 'rgba(20, 20, 20, 0.85)',
-                  backdropFilter: 'blur(12px)',
-                  borderRadius: '16px',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  color: '#FFFFFF',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
-                }}
+                className="editorial-card-img-zoom"
+                style={{ position: 'relative', width: '100%', height: '100%' }}
               >
-                <div>
-                  <span
-                    style={{
-                      fontSize: '0.72rem',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.14em',
-                      color: 'var(--color-golden, #C29B4C)',
-                      display: 'block',
-                      fontWeight: 600,
-                    }}
-                  >
-                    {lookTitle}
-                  </span>
-                  <p
-                    style={{
-                      fontSize: '0.92rem',
-                      fontWeight: 600,
-                      color: '#F5F5F5',
-                      marginTop: '2px',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                  >
-                    {lookSubtitle}
-                  </p>
-                </div>
-
-                <Link
-                  href={ctaLink}
-                  aria-label="View Overcoat Details"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '50%',
-                    backgroundColor: 'rgba(255, 255, 255, 0.12)',
-                    color: '#FFFFFF',
-                    flexShrink: 0,
-                    transition: 'background-color 0.2s ease, transform 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--color-golden, #C29B4C)';
-                    e.currentTarget.style.color = '#141414';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.12)';
-                    e.currentTarget.style.color = '#FFFFFF';
-                  }}
-                >
-                  <ArrowRight size={16} />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Right Column: Micro-copy on top, Card shifted downwards */}
-        <motion.div
-          className="editorial-col-right"
-          style={{ y: yRight }}
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <p className="editorial-copy-top-right">
-            {rightText}
-          </p>
-
-          <div className="editorial-card-wrapper editorial-card-right">
-            <div className="editorial-card-img-zoom" style={{ position: 'relative', width: '100%', height: '100%' }}>
-              <Image
-                src={rightImage}
-                alt={rightAlt}
-                fill
-                quality={92}
-                sizes="(max-width: 1080px) 280px, 320px"
-                style={{ objectFit: 'cover', objectPosition: 'center 40%' }}
-              />
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.3) 100%)',
-                  pointerEvents: 'none',
-                }}
-              />
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Mobile Swipeable View */}
-      <div className="editorial-mobile-carousel">
-        <div
-          className="editorial-mobile-cards-track"
-          onScroll={(e) => {
-            const el = e.currentTarget;
-            const index = Math.round(el.scrollLeft / (el.offsetWidth * 0.82));
-            setActiveMobileCard(Math.min(2, Math.max(0, index)));
-          }}
-        >
-          {/* Card 0 (Left Detail) */}
-          <div className="editorial-mobile-card-item">
-            <div className="editorial-card-wrapper">
-              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                <Image
-                  src={leftImage}
-                  alt={leftAlt}
-                  fill
-                  quality={90}
-                  sizes="82vw"
-                  style={{ objectFit: 'cover' }}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Card 1 (Center Hero) */}
-          <div className="editorial-mobile-card-item">
-            <div className="editorial-card-wrapper">
-              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                <Image
-                  src={centerImage}
-                  alt={centerAlt}
-                  fill
-                  quality={92}
-                  sizes="82vw"
-                  style={{ objectFit: 'cover' }}
-                />
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '16px',
-                    left: '16px',
-                    right: '16px',
-                    padding: '12px 16px',
-                    backgroundColor: 'rgba(20, 20, 20, 0.88)',
-                    backdropFilter: 'blur(8px)',
-                    borderRadius: '12px',
-                    color: '#FFF',
-                  }}
-                >
-                  <span style={{ fontSize: '0.68rem', color: 'var(--color-golden, #C29B4C)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                    {lookTitle}
-                  </span>
-                  <p style={{ fontSize: '0.86rem', fontWeight: 600, color: '#FFF', marginTop: '2px' }}>
-                    {lookSubtitle}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2 (Right Detail) */}
-          <div className="editorial-mobile-card-item">
-            <div className="editorial-card-wrapper">
-              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
                 <Image
                   src={rightImage}
                   alt={rightAlt}
                   fill
-                  quality={90}
-                  sizes="82vw"
-                  style={{ objectFit: 'cover' }}
+                  quality={92}
+                  sizes="(max-width: 1080px) 280px, 320px"
+                  style={{ objectFit: 'cover', objectPosition: 'center center' }}
                 />
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
-
-        <div className="editorial-mobile-dots">
-          {[0, 1, 2].map((idx) => (
-            <div
-              key={idx}
-              className={`editorial-mobile-dot ${activeMobileCard === idx ? 'active' : ''}`}
-            />
-          ))}
-        </div>
-
-        <p className="editorial-mobile-copy">
-          {activeMobileCard === 0 ? leftText : activeMobileCard === 1 ? rightText : leftText}
-        </p>
       </div>
 
-      {/* Centered Primary CTA Button */}
+      {/* 2.85s: Centered Primary CTA Button */}
       <motion.div
         style={{
           display: 'flex',
@@ -583,10 +640,19 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
           position: 'relative',
           zIndex: 3,
         }}
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.3 }}
+        initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+        animate={
+          isInView
+            ? { opacity: 1, y: 0 }
+            : shouldReduceMotion
+            ? { opacity: 0 }
+            : { opacity: 0, y: 20 }
+        }
+        transition={
+          shouldReduceMotion
+            ? { duration: 0.6 }
+            : { duration: 0.9, delay: 2.85, ease: [0.16, 1, 0.3, 1] }
+        }
       >
         <Link href={ctaLink}>
           <Button
@@ -610,4 +676,6 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
     </section>
   );
 };
+
+
 

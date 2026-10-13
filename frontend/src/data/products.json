@@ -5264,12 +5264,12 @@
       "50ml / 1.7 fl.oz Heavy Glass Flacon"
     ],
     "careGuide": [
-      "Store at room temperature (18-22Â°C)"
+      "Store at room temperature (18-22°C)"
     ],
     "categoryId": "cat_fragrances",
     "price": 13500,
     "images": [
-      "/images/products/fragrances/vetiver-nocturne-absolu-1.avif"
+      "/images/products/fragrances/vetiver-nocturne-absolu-1.jpg"
     ],
     "variants": [
       {
@@ -5303,7 +5303,7 @@
   {
     "id": "prod_frag_8",
     "slug": "rose-eternelle-elixir",
-    "name": "Rose Ã‰ternelle Elixir",
+    "name": "Rose Éternelle Elixir",
     "subtitle": "Damask Rose, Pink Pepper & Smoked Frankincense",
     "description": "A gothic, sensual interpretation of the queen of flowers. Crimson Damask rose steeped in Oman frankincense smoke, dark Indonesian patchouli, and bourbon vanilla.",
     "details": [
