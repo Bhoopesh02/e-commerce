@@ -243,7 +243,8 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 alt={product.name}
                 fill
                 priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
+                quality={95}
+                sizes="(max-width: 1024px) 100vw, 55vw"
                 style={{
                   objectFit: 'cover',
                   transition: 'transform var(--duration-normal) var(--ease-editorial)',
@@ -305,7 +306,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                       transition: 'border-color var(--duration-fast)',
                     }}
                   >
-                    <Image src={img} alt={`${product.name} view ${idx + 1}`} fill sizes="76px" style={{ objectFit: 'cover' }} />
+                    <Image src={img} alt={`${product.name} view ${idx + 1}`} fill sizes="160px" quality={90} style={{ objectFit: 'cover' }} />
                   </button>
                 ))}
               </div>

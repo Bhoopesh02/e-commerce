@@ -121,8 +121,8 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                   src={product.images[0]}
                   alt={product.name}
                   fill
-                  quality={60}
-                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  quality={90}
+                  sizes="(max-width: 1024px) 100vw, 65vw"
                   style={{
                     objectFit: 'cover',
                     willChange: 'transform, filter',

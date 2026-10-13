@@ -196,8 +196,8 @@ export const EditorialCampaign: React.FC = () => {
                   src="/images/categories/cat-outerwear.jpg"
                   alt="Editorial Campaign Aurelia"
                   fill
-                  quality={60}
-                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  quality={90}
+                  sizes="(max-width: 1024px) 100vw, 55vw"
                   style={{ objectFit: 'cover', objectPosition: 'center 20%' }}
                 />
               </motion.div>

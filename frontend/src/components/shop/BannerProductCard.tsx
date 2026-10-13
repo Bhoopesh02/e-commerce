@@ -158,8 +158,8 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
           src={imageSrc}
           alt={product.name}
           fill
-          sizes="(max-width: 768px) 150px, 180px"
-          quality={75}
+          sizes="(max-width: 768px) 250px, 350px"
+          quality={92}
           onLoad={() => setIsImageLoaded(true)}
           onError={() => setIsImageLoaded(true)}
           style={{

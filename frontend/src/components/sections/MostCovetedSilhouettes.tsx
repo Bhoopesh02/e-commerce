@@ -375,6 +375,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                 onMouseMove={handleMouseMove}
                 style={{
                   display: 'flex',
+                  alignItems: 'flex-start',
                   gap: '16px',
                   overflowX: 'auto',
                   overflowY: 'hidden',
@@ -397,17 +398,17 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                       flexShrink: 0,
                       scrollSnapAlign: 'start',
                       display: 'flex',
-                      flexDirection: 'column'
+                      flexDirection: 'column',
                     }}
                   >
-                    <div style={{ flex: 1, position: 'relative' }}>
+                    <div style={{ position: 'relative' }}>
                       <Link href={`/product/${product.slug}`} style={{ display: 'block', width: '100%', aspectRatio: '3/4', position: 'relative', overflow: 'hidden', backgroundColor: '#f5f5f5' }}>
                          <img src={product.images[0]} alt={product.name} onLoad={updateImageHeight} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       </Link>
                     </div>
                     <div style={{ textAlign: 'center', marginTop: '16px' }}>
-                      <Link href={`/product/${product.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <span style={{ fontSize: '0.85rem', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                      <Link href={`/product/${product.slug}`} style={{ textDecoration: 'none', color: 'inherit', display: 'inline-block' }}>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase', lineHeight: 1.4, display: 'block' }}>
                           {product.name}
                         </span>
                       </Link>

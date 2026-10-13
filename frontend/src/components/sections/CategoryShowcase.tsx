@@ -121,10 +121,10 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                     src={cat.image}
                     alt={cat.name}
                     fill
-                    quality={80}
+                    quality={90}
                     priority
                     loading="eager"
-                    sizes="(max-width: 768px) 50vw, 25vw"
+                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     style={{
                       objectFit: 'cover',
                       transition: 'transform 0.5s ease'

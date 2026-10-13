@@ -162,6 +162,7 @@ export function CollectionsBannerCarousel() {
                 alt={slide.alt}
                 fill
                 priority={index === 1 || index === 2 || index === 0}
+                quality={92}
                 sizes="100vw"
                 style={{
                   objectFit: 'cover',
@@ -354,6 +355,7 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
           alt={banner.alt}
           fill
           priority
+          quality={92}
           sizes="100vw"
           style={{
             objectFit: 'cover',

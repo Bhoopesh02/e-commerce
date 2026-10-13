@@ -22,15 +22,17 @@ export interface ProductCardProps {
   sizes?: string;
   onClick?: () => void;
   priority?: boolean;
+  quality?: number;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   aspectRatio = '3 / 4',
   variant = 'standard',
-  sizes = '(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 300px',
+  sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1440px) 33vw, 450px',
   onClick,
   priority = false,
+  quality = 95,
 }) => {
   const shouldReduceMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
@@ -124,9 +126,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           src={product.images[0]}
           alt={product.name}
           fill={variant !== 'grid'}
-          width={variant === 'grid' ? 600 : undefined}
-          height={variant === 'grid' ? 800 : undefined}
-          quality={60}
+          width={variant === 'grid' ? 1200 : undefined}
+          height={variant === 'grid' ? 1600 : undefined}
+          quality={quality}
           sizes={sizes}
           priority={priority}
           onLoad={() => setIsImageLoaded(true)}
@@ -150,9 +152,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             src={product.images[1]}
             alt={`${product.name} alternate view`}
             fill={variant !== 'grid'}
-            width={variant === 'grid' ? 600 : undefined}
-            height={variant === 'grid' ? 800 : undefined}
-            quality={60}
+            width={variant === 'grid' ? 1200 : undefined}
+            height={variant === 'grid' ? 1600 : undefined}
+            quality={quality}
             sizes={sizes}
             className={variant === 'grid' ? 'product-image-secondary absolute inset-0 w-full h-full object-cover rounded-lg md:rounded-none' : 'product-image-secondary'}
             style={variant === 'grid' ? {

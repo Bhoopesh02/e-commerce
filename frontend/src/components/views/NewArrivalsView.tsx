@@ -13,6 +13,7 @@ import Image from 'next/image';
 import { SlidersHorizontal, X, RotateCcw, ArrowUp, ArrowDown, Check, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { smoothScrollService } from '@/services/smooth-scroll';
+import { HeroEditorialCarousel } from '@/components/sections/HeroEditorialCarousel';
 
 export const PRODUCTS_PER_PAGE = 36;
 
@@ -202,179 +203,15 @@ export const NewArrivalsView: React.FC = () => {
 
   return (
     <div style={{ paddingTop: '76px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      {/* Full-Width Hero Banner Section */}
-      <section
-        className="new-arrivals-hero-banner"
-        style={{
-          position: 'relative',
-          width: '100%',
-          overflow: 'hidden',
-          backgroundColor: '#0c1218',
-          borderBottom: '1px solid var(--border-color)',
-          minHeight: 'clamp(440px, 48vw, 580px)',
-          display: 'flex',
-          alignItems: 'center',
-          marginBottom: '28px',
+      {/* Editorial Hold-to-Expand Hero Banner Carousel with Category Themes */}
+      <HeroEditorialCarousel
+        onSelectCategory={(categorySlug) => {
+          setActiveCategory(categorySlug);
+          setStagedCategory(categorySlug);
         }}
-      >
-        {/* Background Image Layer (Full Screen Width) */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            zIndex: 1,
-          }}
-        >
-          <Image
-            src="/images/banners/new-arrivals/new-arrivals-hero.webp"
-            alt="New Arrivals — The Sartorial Vanguard"
-            fill
-            priority
-            quality={80}
-            sizes="100vw"
-            style={{
-              objectFit: 'cover',
-              objectPosition: 'right 20% center',
-            }}
-          />
-
-          {/* Cinematic Scrim Gradients for Contrast & Legibility */}
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'linear-gradient(90deg, rgba(8, 14, 20, 0.94) 0%, rgba(8, 14, 20, 0.82) 36%, rgba(8, 14, 20, 0.35) 68%, rgba(8, 14, 20, 0.06) 100%)',
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'linear-gradient(0deg, rgba(8, 14, 20, 0.75) 0%, transparent 45%, rgba(8, 14, 20, 0.25) 100%)',
-            }}
-          />
-        </div>
-
-        {/* Left-Side Editorial Content (Aligned to Site Container Grid) */}
-        <div
-          className="container"
-          style={{
-            position: 'relative',
-            zIndex: 2,
-            width: '100%',
-          }}
-        >
-          <div
-            style={{
-              maxWidth: '680px',
-              padding: 'clamp(36px, 5vw, 64px) 0',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '18px',
-            }}
-          >
-            {/* Main Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.08 }}
-              style={{
-                fontSize: 'clamp(2.2rem, 4.6vw, 3.8rem)',
-                fontFamily: 'var(--font-display, Cormorant Garamond, serif)',
-                fontWeight: 400,
-                color: '#ffffff',
-                lineHeight: 1.08,
-                letterSpacing: '-0.02em',
-                margin: 0,
-                textShadow: '0 2px 20px rgba(0,0,0,0.5)',
-              }}
-            >
-              The Sartorial Vanguard
-            </motion.h1>
-
-            {/* Editorial Description */}
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.16 }}
-              style={{
-                fontSize: 'clamp(0.92rem, 1.1vw, 1.05rem)',
-                fontFamily: 'var(--font-body)',
-                color: 'rgba(235, 240, 245, 0.88)',
-                lineHeight: 1.65,
-                margin: 0,
-                maxWidth: '540px',
-                textShadow: '0 1px 8px rgba(0,0,0,0.4)',
-              }}
-            >
-              Architectural suiting, handcrafted Italian leather duffels, and refined knitwear designed for sovereign presence.
-            </motion.p>
-
-            {/* Quick Actions / CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.24 }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '16px',
-                marginTop: '6px',
-                flexWrap: 'wrap',
-              }}
-            >
-              <button
-                onClick={scrollToGridTop}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  padding: '13px 28px',
-                  borderRadius: '0px',
-                  backgroundColor: '#ffffff',
-                  color: '#0a1016',
-                  fontSize: '0.82rem',
-                  fontWeight: 600,
-                  fontFamily: 'var(--font-body)',
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                  border: '1px solid #ffffff',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
-                  transition: 'all 0.25s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.color = '#ffffff';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#ffffff';
-                  e.currentTarget.style.color = '#0a1016';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.25)';
-                }}
-              >
-                <span>Explore Silhouettes</span>
-                <ArrowDown size={14} />
-              </button>
-
-              <span
-                style={{
-                  fontSize: '0.82rem',
-                  color: 'rgba(215, 225, 235, 0.75)',
-                  letterSpacing: '0.04em',
-                }}
-              >
-                {filteredProducts.length} pieces available
-              </span>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+        scrollToGridTop={scrollToGridTop}
+        totalProductsCount={filteredProducts.length}
+      />
 
       {/* Sticky Filter Bar Sentinel for Off-Thread IntersectionObserver */}
       <div ref={sentinelRef} style={{ height: '1px', marginBottom: '-1px', pointerEvents: 'none' }} aria-hidden="true" />

@@ -8,7 +8,7 @@
       {
         "productId": "prod_001",
         "productName": "Italian Leather Jacket",
-        "productImage": "/images/products/italian-leather-jacket-4k-1.webp",
+        "productImage": "/images/products/outerwear/italian-leather-jacket-4k-1.webp",
         "sku": "LJ-BLK-M",
         "size": "M",
         "color": "Nocturne Black",
@@ -90,7 +90,7 @@
       {
         "productId": "prod_003",
         "productName": "Silk Charmeuse Draped Evening Gown",
-        "productImage": "/images/products/silk-charmeuse-draped-evening-gown-4k-1.webp",
+        "productImage": "/images/products/eveningwear/silk-charmeuse-draped-evening-gown-4k-1.webp",
         "sku": "GWN-EMR-S",
         "size": "S",
         "color": "Deep Aubergine",
@@ -151,7 +151,7 @@
       {
         "productId": "prod_005",
         "productName": "Atelier Sculptural Leather Tote",
-        "productImage": "/images/products/atelier-sculptural-leather-tote-4k-1.webp",
+        "productImage": "/images/products/leather-goods/atelier-sculptural-leather-tote-4k-1.webp",
         "sku": "TOT-COG-ONE",
         "size": "One Size",
         "color": "Cognac Ochre",
@@ -221,7 +221,7 @@
       {
         "productId": "prod_002",
         "productName": "Sculpted Double-Breasted Blazer",
-        "productImage": "/images/products/sculpted-double-breasted-blazer-4k-1.webp",
+        "productImage": "/images/products/tailoring/sculpted-double-breasted-blazer-4k-1.webp",
         "sku": "BLZ-NAV-40",
         "size": "40R",
         "color": "Midnight Navy",
@@ -301,7 +301,7 @@
       {
         "productId": "prod_004",
         "productName": "Mongolian Cashmere Ribbed Turtleneck",
-        "productImage": "/images/products/mongolian-cashmere-ribbed-turtleneck-4k-2.webp",
+        "productImage": "/images/products/knitwear/mongolian-cashmere-ribbed-turtleneck-4k-2.webp",
         "sku": "CSH-CRM-M",
         "size": "M",
         "color": "Warm Sand",
@@ -378,7 +378,7 @@
       {
         "productId": "prod_007",
         "productName": "Auric Twisted Vermeil Cuff",
-        "productImage": "/images/products/auric-twisted-vermeil-cuff-4k-1.webp",
+        "productImage": "/images/products/fine-jewelry/auric-twisted-vermeil-cuff-4k-1.webp",
         "sku": "JWL-CUF-GLD",
         "size": "Standard",
         "color": "18k Gold",
@@ -388,7 +388,7 @@
       {
         "productId": "prod_006",
         "productName": "Florentine Chelsea Boot",
-        "productImage": "/images/products/florentine-chelsea-boot-4k-1.webp",
+        "productImage": "/images/products/footwear/florentine-chelsea-boot-4k-1.webp",
         "sku": "BOT-ESP-42",
         "size": "EU 42",
         "color": "Espresso Suede",
@@ -454,7 +454,7 @@
       {
         "productId": "prod_003",
         "productName": "Silk Charmeuse Draped Evening Gown",
-        "productImage": "/images/products/silk-charmeuse-draped-evening-gown-4k-1.webp",
+        "productImage": "/images/products/eveningwear/silk-charmeuse-draped-evening-gown-4k-1.webp",
         "sku": "GWN-EMR-M",
         "size": "M",
         "color": "Deep Aubergine",
@@ -525,7 +525,7 @@
       {
         "productId": "prod_001",
         "productName": "Italian Leather Jacket",
-        "productImage": "/images/products/italian-leather-jacket-4k-1.webp",
+        "productImage": "/images/products/outerwear/italian-leather-jacket-4k-1.webp",
         "sku": "LJ-BLK-L",
         "size": "L",
         "color": "Nocturne Black",
@@ -535,7 +535,7 @@
       {
         "productId": "prod_002",
         "productName": "Sculpted Double-Breasted Blazer",
-        "productImage": "/images/products/sculpted-double-breasted-blazer-4k-1.webp",
+        "productImage": "/images/products/tailoring/sculpted-double-breasted-blazer-4k-1.webp",
         "sku": "BLZ-NAV-40",
         "size": "40R",
         "color": "Midnight Navy",
@@ -601,7 +601,7 @@
       {
         "productId": "prod_005",
         "productName": "Atelier Sculptural Leather Tote",
-        "productImage": "/images/products/atelier-sculptural-leather-tote-4k-1.webp",
+        "productImage": "/images/products/leather-goods/atelier-sculptural-leather-tote-4k-1.webp",
         "sku": "TOT-COG-ONE",
         "size": "One Size",
         "color": "Cognac Ochre",
@@ -611,7 +611,7 @@
       {
         "productId": "prod_007",
         "productName": "Auric Twisted Vermeil Cuff",
-        "productImage": "/images/products/auric-twisted-vermeil-cuff-4k-1.webp",
+        "productImage": "/images/products/fine-jewelry/auric-twisted-vermeil-cuff-4k-1.webp",
         "sku": "JWL-CUF-GLD",
         "size": "Standard",
         "color": "18k Gold",
@@ -672,7 +672,7 @@
       {
         "productId": "prod_002",
         "productName": "Sculpted Double-Breasted Blazer",
-        "productImage": "/images/products/sculpted-double-breasted-blazer-4k-1.webp",
+        "productImage": "/images/products/tailoring/sculpted-double-breasted-blazer-4k-1.webp",
         "sku": "BLZ-NAV-38",
         "size": "38R",
         "color": "Midnight Navy",
@@ -737,7 +737,7 @@
       {
         "productId": "prod_001",
         "productName": "Italian Leather Jacket",
-        "productImage": "/images/products/italian-leather-jacket-4k-1.webp",
+        "productImage": "/images/products/outerwear/italian-leather-jacket-4k-1.webp",
         "sku": "LJ-BLK-M",
         "size": "M",
         "color": "Nocturne Black",
@@ -747,7 +747,7 @@
       {
         "productId": "prod_006",
         "productName": "Florentine Chelsea Boot",
-        "productImage": "/images/products/florentine-chelsea-boot-4k-1.webp",
+        "productImage": "/images/products/footwear/florentine-chelsea-boot-4k-1.webp",
         "sku": "BOT-ESP-42",
         "size": "EU 42",
         "color": "Espresso Suede",
@@ -812,7 +812,7 @@
       {
         "productId": "prod_003",
         "productName": "Silk Charmeuse Draped Evening Gown",
-        "productImage": "/images/products/silk-charmeuse-draped-evening-gown-4k-1.webp",
+        "productImage": "/images/products/eveningwear/silk-charmeuse-draped-evening-gown-4k-1.webp",
         "sku": "GWN-EMR-S",
         "size": "S",
         "color": "Deep Aubergine",
@@ -822,7 +822,7 @@
       {
         "productId": "prod_004",
         "productName": "Mongolian Cashmere Ribbed Turtleneck",
-        "productImage": "/images/products/mongolian-cashmere-ribbed-turtleneck-4k-2.webp",
+        "productImage": "/images/products/knitwear/mongolian-cashmere-ribbed-turtleneck-4k-2.webp",
         "sku": "CSH-CRM-S",
         "size": "S",
         "color": "Warm Sand",
@@ -888,7 +888,7 @@
       {
         "productId": "prod_001",
         "productName": "Italian Leather Jacket",
-        "productImage": "/images/products/italian-leather-jacket-4k-1.webp",
+        "productImage": "/images/products/outerwear/italian-leather-jacket-4k-1.webp",
         "sku": "LJ-BLK-M",
         "size": "M",
         "color": "Nocturne Black",
@@ -898,7 +898,7 @@
       {
         "productId": "prod_003",
         "productName": "Silk Charmeuse Draped Evening Gown",
-        "productImage": "/images/products/silk-charmeuse-draped-evening-gown-4k-1.webp",
+        "productImage": "/images/products/eveningwear/silk-charmeuse-draped-evening-gown-4k-1.webp",
         "sku": "GWN-EMR-S",
         "size": "S",
         "color": "Deep Aubergine",

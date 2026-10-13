@@ -22,8 +22,8 @@
     "categoryId": "cat_outerwear",
     "price": 24999,
     "images": [
-      "/images/products/italian-leather-jacket-4k-1.webp",
-      "/images/products/italian-leather-jacket-4k-2.webp"
+      "/images/products/outerwear/italian-leather-jacket-4k-1.webp",
+      "/images/products/outerwear/italian-leather-jacket-4k-2.webp"
     ],
     "variants": [
       {
@@ -89,8 +89,8 @@
     "categoryId": "cat_tailoring",
     "price": 18499,
     "images": [
-      "/images/products/sculpted-double-breasted-blazer-4k-1.webp",
-      "/images/products/sculpted-double-breasted-blazer-4k-2.webp"
+      "/images/products/tailoring/sculpted-double-breasted-blazer-4k-1.webp",
+      "/images/products/tailoring/sculpted-double-breasted-blazer-4k-2.webp"
     ],
     "variants": [
       {
@@ -155,8 +155,8 @@
     "categoryId": "cat_eveningwear",
     "price": 38999,
     "images": [
-      "/images/products/silk-charmeuse-draped-evening-gown-4k-2.webp",
-      "/images/products/silk-charmeuse-draped-evening-gown-4k-1.webp"
+      "/images/products/eveningwear/silk-charmeuse-draped-evening-gown-4k-2.webp",
+      "/images/products/eveningwear/silk-charmeuse-draped-evening-gown-4k-1.webp"
     ],
     "variants": [
       {
@@ -222,8 +222,8 @@
     "categoryId": "cat_knitwear",
     "price": 14999,
     "images": [
-      "/images/products/mongolian-cashmere-ribbed-turtleneck-4k-2.webp",
-      "/images/products/mongolian-cashmere-ribbed-turtleneck-model-1.webp"
+      "/images/products/knitwear/mongolian-cashmere-ribbed-turtleneck-4k-2.webp",
+      "/images/products/knitwear/mongolian-cashmere-ribbed-turtleneck-model-1.webp"
     ],
     "variants": [
       {
@@ -290,8 +290,8 @@
     "categoryId": "cat_leather_goods",
     "price": 28999,
     "images": [
-      "/images/products/atelier-sculptural-leather-tote-4k-1.webp",
-      "/images/products/atelier-sculptural-leather-tote-4k-2.webp"
+      "/images/products/leather-goods/atelier-sculptural-leather-tote-4k-1.webp",
+      "/images/products/leather-goods/atelier-sculptural-leather-tote-4k-2.webp"
     ],
     "variants": [
       {
@@ -351,8 +351,8 @@
     "categoryId": "cat_footwear",
     "price": 21999,
     "images": [
-      "/images/products/florentine-chelsea-boot-4k-1.webp",
-      "/images/products/florentine-chelsea-boot-4k-2.webp"
+      "/images/products/footwear/florentine-chelsea-boot-4k-1.webp",
+      "/images/products/footwear/florentine-chelsea-boot-4k-2.webp"
     ],
     "variants": [
       {
@@ -424,8 +424,8 @@
     "categoryId": "cat_jewelry",
     "price": 11999,
     "images": [
-      "/images/products/auric-twisted-vermeil-cuff-4k-1.webp",
-      "/images/products/auric-twisted-vermeil-cuff-4k-2.webp"
+      "/images/products/fine-jewelry/auric-twisted-vermeil-cuff-4k-1.webp",
+      "/images/products/fine-jewelry/auric-twisted-vermeil-cuff-4k-2.webp"
     ],
     "variants": [
       {
@@ -478,8 +478,7 @@
     "categoryId": "cat_outerwear",
     "price": 42999,
     "images": [
-      "/images/products/belted-cashmere-wrap-overcoat-1.png",
-      "/images/products/belted-cashmere-wrap-overcoat-4k-2.webp"
+      "/images/products/outerwear/belted-cashmere-wrap-overcoat-1.png"
     ],
     "variants": [
       {
@@ -1351,8 +1350,7 @@
     "price": 41999,
     "images": [
       "/images/sections/products/eveningwear/tiered-chiffon-cape-dress-1.webp",
-      "/images/sections/products/eveningwear/tiered-chiffon-cape-dress-2.webp",
-      "/images/sections/products/eveningwear/tiered-chiffon-cape-dress-3.webp"
+      "/images/sections/products/eveningwear/tiered-chiffon-cape-dress-2.webp"
     ],
     "variants": [
       {
@@ -1546,7 +1544,7 @@
     "categoryId": "cat_knitwear",
     "price": 21999,
     "images": [
-      "/images/products/chunky-cable-knit-merino-cardigan-1.png",
+      "/images/products/knitwear/chunky-cable-knit-merino-cardigan-1.png",
       "/images/sections/products/knitwear/chunky-cable-knit-merino-cardigan-2.webp"
     ],
     "variants": [
@@ -1742,7 +1740,7 @@
     "categoryId": "cat_leather_goods",
     "price": 22499,
     "images": [
-      "/images/products/new/curve-calfskin-crossbody-saddle-bag.jpg"
+      "/images/products/leather-goods/curve-calfskin-crossbody-saddle-bag.jpg"
     ],
     "variants": [
       {
@@ -2669,7 +2667,7 @@
     "categoryId": "cat_fragrances",
     "price": 24500,
     "images": [
-      "/images/products/prod-fragrance-1.avif"
+      "/images/products/fragrances/prod-fragrance-1.avif"
     ],
     "variants": [
       {
@@ -2679,7 +2677,7 @@
         },
         "price": 24500,
         "stock": 10,
-        "image": "/images/products/prod-fragrance-1.avif"
+        "image": "/images/products/fragrances/prod-fragrance-1.avif"
       },
       {
         "sku": "prod_frag_1-100ml",
@@ -2688,7 +2686,7 @@
         },
         "price": 36750,
         "stock": 5,
-        "image": "/images/products/prod-fragrance-1.avif"
+        "image": "/images/products/fragrances/prod-fragrance-1.avif"
       }
     ],
     "availability": "low_stock",
@@ -2735,7 +2733,7 @@
     "categoryId": "cat_fragrances",
     "price": 16000,
     "images": [
-      "/images/products/bergamot-blanc-eau-de-parfum.png"
+      "/images/products/fragrances/bergamot-blanc-eau-de-parfum.png"
     ],
     "variants": [
       {
@@ -2745,7 +2743,7 @@
         },
         "price": 16000,
         "stock": 10,
-        "image": "/images/products/prod-fragrance-2.avif"
+        "image": "/images/products/fragrances/prod-fragrance-2.avif"
       },
       {
         "sku": "prod_frag_2-100ml",
@@ -2754,7 +2752,7 @@
         },
         "price": 24000,
         "stock": 5,
-        "image": "/images/products/prod-fragrance-2.avif"
+        "image": "/images/products/fragrances/prod-fragrance-2.avif"
       }
     ],
     "availability": "low_stock",
@@ -2802,7 +2800,7 @@
     "categoryId": "cat_fragrances",
     "price": 19000,
     "images": [
-      "/images/products/prod-fragrance-3.avif"
+      "/images/products/fragrances/prod-fragrance-3.avif"
     ],
     "variants": [
       {
@@ -2812,7 +2810,7 @@
         },
         "price": 19000,
         "stock": 10,
-        "image": "/images/products/prod-fragrance-3.avif"
+        "image": "/images/products/fragrances/prod-fragrance-3.avif"
       },
       {
         "sku": "prod_frag_3-100ml",
@@ -2821,7 +2819,7 @@
         },
         "price": 28500,
         "stock": 5,
-        "image": "/images/products/prod-fragrance-3.avif"
+        "image": "/images/products/fragrances/prod-fragrance-3.avif"
       }
     ],
     "availability": "low_stock",
@@ -2869,7 +2867,7 @@
     "categoryId": "cat_fragrances",
     "price": 18500,
     "images": [
-      "/images/products/prod-fragrance-4.avif"
+      "/images/products/fragrances/prod-fragrance-4.avif"
     ],
     "variants": [
       {
@@ -2879,7 +2877,7 @@
         },
         "price": 18500,
         "stock": 10,
-        "image": "/images/products/prod-fragrance-4.avif"
+        "image": "/images/products/fragrances/prod-fragrance-4.avif"
       },
       {
         "sku": "prod_frag_4-100ml",
@@ -2888,7 +2886,7 @@
         },
         "price": 27750,
         "stock": 5,
-        "image": "/images/products/prod-fragrance-4.avif"
+        "image": "/images/products/fragrances/prod-fragrance-4.avif"
       }
     ],
     "availability": "low_stock",
@@ -2935,7 +2933,7 @@
     "categoryId": "cat_outerwear",
     "price": 28999,
     "images": [
-      "/images/products/monolithic-peacoat-1.jpg"
+      "/images/products/outerwear/monolithic-peacoat-1.jpg"
     ],
     "variants": [
       {
@@ -3001,7 +2999,7 @@
     "categoryId": "cat_outerwear",
     "price": 32500,
     "images": [
-      "/images/products/cropped-suede-bomber-1.jpg"
+      "/images/products/outerwear/cropped-suede-bomber-1.jpg"
     ],
     "variants": [
       {
@@ -3067,7 +3065,7 @@
     "categoryId": "cat_outerwear",
     "price": 34999,
     "images": [
-      "/images/products/bonded-gabardine-mackintosh-1.jpg"
+      "/images/products/outerwear/bonded-gabardine-mackintosh-1.jpg"
     ],
     "variants": [
       {
@@ -3135,7 +3133,7 @@
     "categoryId": "cat_outerwear",
     "price": 38000,
     "images": [
-      "/images/products/quilted-silk-down-parka-1.jpg"
+      "/images/products/outerwear/quilted-silk-down-parka-1.jpg"
     ],
     "variants": [
       {
@@ -3202,7 +3200,7 @@
     "categoryId": "cat_outerwear",
     "price": 29500,
     "images": [
-      "/images/products/capelet-structured-overcoat-1.jpg"
+      "/images/products/outerwear/capelet-structured-overcoat-1.jpg"
     ],
     "variants": [
       {
@@ -3269,7 +3267,7 @@
     "categoryId": "cat_tailoring",
     "price": 26999,
     "images": [
-      "/images/products/shawl-lapel-smoking-jacket-1.jpg"
+      "/images/products/tailoring/shawl-lapel-smoking-jacket-1.jpg"
     ],
     "variants": [
       {
@@ -3335,7 +3333,7 @@
     "categoryId": "cat_tailoring",
     "price": 12999,
     "images": [
-      "/images/products/high-rise-gurkha-trousers-1.jpg"
+      "/images/products/tailoring/high-rise-gurkha-trousers-1.jpg"
     ],
     "variants": [
       {
@@ -3401,7 +3399,7 @@
     "categoryId": "cat_tailoring",
     "price": 19999,
     "images": [
-      "/images/products/single-button-crepe-blazer-1.jpg"
+      "/images/products/tailoring/single-button-crepe-blazer-1.jpg"
     ],
     "variants": [
       {
@@ -3467,7 +3465,7 @@
     "categoryId": "cat_tailoring",
     "price": 36999,
     "images": [
-      "/images/products/windowpane-check-wool-suit-1.jpg"
+      "/images/products/tailoring/windowpane-check-wool-suit-1.jpg"
     ],
     "variants": [
       {
@@ -3533,7 +3531,7 @@
     "categoryId": "cat_tailoring",
     "price": 11499,
     "images": [
-      "/images/products/asymmetrical-wrap-vest-1.jpg"
+      "/images/products/tailoring/asymmetrical-wrap-vest-1.jpg"
     ],
     "variants": [
       {
@@ -3600,7 +3598,7 @@
     "categoryId": "cat_eveningwear",
     "price": 48000,
     "images": [
-      "/images/products/sequined-chantilly-lace-gown-1.jpg"
+      "/images/products/eveningwear/sequined-chantilly-lace-gown-1.jpg"
     ],
     "variants": [
       {
@@ -3666,7 +3664,7 @@
     "categoryId": "cat_eveningwear",
     "price": 31999,
     "images": [
-      "/images/products/one-shoulder-pleated-column-1.jpg"
+      "/images/products/eveningwear/one-shoulder-pleated-column-1.jpg"
     ],
     "variants": [
       {
@@ -3732,7 +3730,7 @@
     "categoryId": "cat_eveningwear",
     "price": 52000,
     "images": [
-      "/images/products/sweetheart-jacquard-ballgown-1.webp"
+      "/images/products/eveningwear/sweetheart-jacquard-ballgown-1.webp"
     ],
     "variants": [
       {
@@ -3798,7 +3796,8 @@
     "categoryId": "cat_eveningwear",
     "price": 27500,
     "images": [
-      "/images/products/liquid-gold-lame-slip-1.webp"
+      "/images/products/eveningwear/liquid-gold-lame-slip-1.webp",
+      "/images/products/eveningwear/liquid-gold-lame-slip-2.webp"
     ],
     "variants": [
       {
@@ -3864,7 +3863,8 @@
     "categoryId": "cat_eveningwear",
     "price": 39500,
     "images": [
-      "/images/products/sheer-organza-cape-gown-1.webp"
+      "/images/products/eveningwear/sheer-organza-cape-gown-1.webp",
+      "/images/products/eveningwear/sheer-organza-cape-gown-2.webp"
     ],
     "variants": [
       {
@@ -3929,7 +3929,7 @@
     "categoryId": "cat_knitwear",
     "price": 21999,
     "images": [
-      "/images/products/waffle-stitch-cashmere-cardigan-1.png"
+      "/images/products/knitwear/waffle-stitch-cashmere-cardigan-1.png"
     ],
     "variants": [
       {
@@ -3994,7 +3994,7 @@
     "categoryId": "cat_knitwear",
     "price": 16500,
     "images": [
-      "/images/products/boucle-fisherman-sweater-1.webp"
+      "/images/products/knitwear/boucle-fisherman-sweater-1.webp"
     ],
     "variants": [
       {
@@ -4059,7 +4059,7 @@
     "categoryId": "cat_knitwear",
     "price": 14999,
     "images": [
-      "/images/products/fine-rib-silk-cashmere-polo-1.png"
+      "/images/products/knitwear/fine-rib-silk-cashmere-polo-1.png"
     ],
     "variants": [
       {
@@ -4124,7 +4124,7 @@
     "categoryId": "cat_knitwear",
     "price": 18999,
     "images": [
-      "/images/products/draped-cashmere-poncho-shawl-1.png"
+      "/images/products/knitwear/draped-cashmere-poncho-shawl-1.png"
     ],
     "variants": [
       {
@@ -4177,7 +4177,7 @@
     "categoryId": "cat_knitwear",
     "price": 17500,
     "images": [
-      "/images/products/asymmetric-ribbed-midi-dress-1.webp"
+      "/images/products/knitwear/asymmetric-ribbed-midi-dress-1.webp"
     ],
     "variants": [
       {
@@ -4244,7 +4244,7 @@
     "categoryId": "cat_leather_goods",
     "price": 29999,
     "images": [
-      "/images/products/minimalist-box-calf-top-handle-1.webp"
+      "/images/products/leather-goods/minimalist-box-calf-top-handle-1.webp"
     ],
     "variants": [
       {
@@ -4304,7 +4304,7 @@
     "categoryId": "cat_leather_goods",
     "price": 34000,
     "images": [
-      "/images/products/braided-lambskin-oversized-hobo-1.webp"
+      "/images/products/leather-goods/braided-lambskin-oversized-hobo-1.webp"
     ],
     "variants": [
       {
@@ -4358,7 +4358,7 @@
     "categoryId": "cat_leather_goods",
     "price": 9999,
     "images": [
-      "/images/products/grained-leather-slim-folio-1.webp"
+      "/images/products/leather-goods/grained-leather-slim-folio-1.webp"
     ],
     "variants": [
       {
@@ -4419,7 +4419,7 @@
     "categoryId": "cat_leather_goods",
     "price": 15999,
     "images": [
-      "/images/products/sculptural-half-moon-belt-bag-1.webp"
+      "/images/products/leather-goods/sculptural-half-moon-belt-bag-1.webp"
     ],
     "variants": [
       {
@@ -4481,7 +4481,7 @@
     "categoryId": "cat_leather_goods",
     "price": 8499,
     "images": [
-      "/images/products/vintage-leather-satchel-briefcase.png"
+      "/images/products/leather-goods/vintage-leather-satchel-briefcase.png"
     ],
     "variants": [
       {
@@ -4542,7 +4542,7 @@
     "categoryId": "cat_footwear",
     "price": 21999,
     "images": [
-      "/images/products/monk-strap-hand-burnished-loafers.png"
+      "/images/products/footwear/monk-strap-hand-burnished-loafers.png"
     ],
     "variants": [
       {
@@ -4608,7 +4608,7 @@
     "categoryId": "cat_footwear",
     "price": 18500,
     "images": [
-      "/images/products/square-toe-slingback-pumps-1.webp"
+      "/images/products/footwear/square-toe-slingback-pumps-1.webp"
     ],
     "variants": [
       {
@@ -4675,7 +4675,7 @@
     "categoryId": "cat_footwear",
     "price": 24500,
     "images": [
-      "/images/products/shearling-winter-combat-boots-1.webp"
+      "/images/products/footwear/shearling-winter-combat-boots-1.webp"
     ],
     "variants": [
       {
@@ -4741,7 +4741,7 @@
     "categoryId": "cat_footwear",
     "price": 15999,
     "images": [
-      "/images/products/minimalist-leather-low-top-court-sneakers.png"
+      "/images/products/footwear/minimalist-leather-low-top-court-sneakers.png"
     ],
     "variants": [
       {
@@ -4808,7 +4808,7 @@
     "categoryId": "cat_footwear",
     "price": 22999,
     "images": [
-      "/images/products/strappy-satin-evening-stiletto-sandals.png"
+      "/images/products/footwear/strappy-satin-evening-stiletto-sandals.png"
     ],
     "variants": [
       {
@@ -4874,7 +4874,7 @@
     "categoryId": "cat_jewelry",
     "price": 18999,
     "images": [
-      "/images/products/celestial-diamond-huggie-hoops-1.webp"
+      "/images/products/fine-jewelry/celestial-diamond-huggie-hoops-1.webp"
     ],
     "variants": [
       {
@@ -4929,7 +4929,7 @@
     "categoryId": "cat_jewelry",
     "price": 23500,
     "images": [
-      "/images/products/tourmaline-cocktail-ring-1.webp"
+      "/images/products/fine-jewelry/tourmaline-cocktail-ring-1.webp"
     ],
     "variants": [
       {
@@ -4995,7 +4995,7 @@
     "categoryId": "cat_jewelry",
     "price": 14999,
     "images": [
-      "/images/products/lariat-baroque-pearl-necklace-1.webp"
+      "/images/products/fine-jewelry/lariat-baroque-pearl-necklace-1.webp"
     ],
     "variants": [
       {
@@ -5049,7 +5049,7 @@
     "categoryId": "cat_jewelry",
     "price": 11999,
     "images": [
-      "/images/products/ribbed-column-gold-cufflinks-1.webp"
+      "/images/products/fine-jewelry/ribbed-column-gold-cufflinks-1.webp"
     ],
     "variants": [
       {
@@ -5103,7 +5103,7 @@
     "categoryId": "cat_jewelry",
     "price": 21500,
     "images": [
-      "/images/products/geometric-open-collar-torc-1.webp"
+      "/images/products/fine-jewelry/geometric-open-collar-torc-1.webp"
     ],
     "variants": [
       {
@@ -5158,7 +5158,7 @@
     "categoryId": "cat_fragrances",
     "price": 14500,
     "images": [
-      "/images/products/cuir-velours-extrait-de-parfum.png"
+      "/images/products/fragrances/cuir-velours-extrait-de-parfum.png"
     ],
     "variants": [
       {
@@ -5214,7 +5214,7 @@
     "categoryId": "cat_fragrances",
     "price": 11999,
     "images": [
-      "/images/products/neroli-blanc-eau-de-parfum.png"
+      "/images/products/fragrances/neroli-blanc-eau-de-parfum.png"
     ],
     "variants": [
       {
@@ -5269,7 +5269,7 @@
     "categoryId": "cat_fragrances",
     "price": 13500,
     "images": [
-      "/images/products/vetiver-nocturne-absolu-1.avif"
+      "/images/products/fragrances/vetiver-nocturne-absolu-1.avif"
     ],
     "variants": [
       {
@@ -5323,7 +5323,7 @@
     "categoryId": "cat_fragrances",
     "price": 15999,
     "images": [
-      "/images/products/rose-eternelle-elixir-1.avif"
+      "/images/products/fragrances/rose-eternelle-elixir-1.avif"
     ],
     "variants": [
       {
@@ -5378,7 +5378,7 @@
     "categoryId": "cat_fragrances",
     "price": 16000,
     "images": [
-      "/images/products/tabac-vanille-extrait-de-parfum.png"
+      "/images/products/fragrances/tabac-vanille-extrait-de-parfum.png"
     ],
     "variants": [
       {
