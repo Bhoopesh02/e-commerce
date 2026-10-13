@@ -121,9 +121,9 @@ const SplitParagraph: React.FC<SplitParagraphProps> = ({
             }
             transition={
               shouldReduceMotion
-                ? { duration: 0.5 }
+                ? { duration: 0.4 }
                 : {
-                    duration: 0.95,
+                    duration: 0.7,
                     delay: startDelay + idx * staggerDelay,
                     ease: [0.16, 1, 0.3, 1],
                   }
@@ -458,12 +458,12 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
             </motion.div>
           </motion.div>
 
-          {/* 1.85s: Left Paragraph line-by-line staggered reveal */}
+          {/* 1.60s: Left Paragraph line-by-line staggered reveal */}
           <SplitParagraph
             text={leftText}
             className="editorial-copy-bottom-left"
-            startDelay={1.85}
-            staggerDelay={0.11}
+            startDelay={1.60}
+            staggerDelay={0.09}
             isInView={isInView}
             shouldReduceMotion={shouldReduceMotion}
           />
@@ -543,12 +543,12 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
 
         {/* Right Column: 2.10s Top text -> 0.75s Dot grows with positive shake -> lands at 1.6s */}
         <div className="editorial-col-right">
-          {/* 2.10s: Right Paragraph line-by-line staggered reveal */}
+          {/* 1.85s: Right Paragraph line-by-line staggered reveal */}
           <SplitParagraph
             text={rightText}
             className="editorial-copy-top-right"
-            startDelay={2.10}
-            staggerDelay={0.11}
+            startDelay={1.85}
+            staggerDelay={0.09}
             isInView={isInView}
             shouldReduceMotion={shouldReduceMotion}
           />
@@ -630,7 +630,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
         </div>
       </div>
 
-      {/* 2.50s: Centered Primary CTA Button */}
+      {/* 2.25s: Centered Primary CTA Button */}
       <motion.div
         style={{
           display: 'flex',
@@ -650,8 +650,8 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
         }
         transition={
           shouldReduceMotion
-            ? { duration: 0.5 }
-            : { duration: 0.65, delay: 2.5, ease: [0.16, 1, 0.3, 1] }
+            ? { duration: 0.4 }
+            : { duration: 0.6, delay: 2.25, ease: [0.16, 1, 0.3, 1] }
         }
       >
         <Link href={ctaLink}>

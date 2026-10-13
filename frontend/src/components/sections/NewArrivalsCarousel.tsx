@@ -43,7 +43,6 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
   // UI state
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-  const [activeCounter, setActiveCounter] = useState('01 / 06');
 
   // Compute maximum scroll limit and track bounds
   const updateBounds = useCallback(() => {
@@ -131,11 +130,6 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
 
           scrollThumbRef.current.style.width = `${thumbWidth}px`;
           scrollThumbRef.current.style.transform = `translate3d(${thumbX.toFixed(2)}px, 0, 0) scaleX(${stretch.toFixed(3)})`;
-
-          // Update product index counter (e.g. "01 / 06")
-          const totalCount = products.length || 6;
-          const currentIndex = Math.min(totalCount, Math.max(1, Math.round(progress * (totalCount - 1)) + 1));
-          setActiveCounter(`${String(currentIndex).padStart(2, '0')} / ${String(totalCount).padStart(2, '0')}`);
         } else {
           scrollThumbRef.current.style.width = `${trackWidth}px`;
           scrollThumbRef.current.style.transform = `translate3d(0, 0, 0) scaleX(1)`;
@@ -439,9 +433,8 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
             style={{
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'space-between',
               marginTop: '28px',
-              gap: '24px',
+              width: '100%',
             }}
           >
             {/* Minimalist luxury scroll track with interactive hit-box */}
@@ -486,22 +479,6 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
                   transformOrigin: 'left center',
                 }}
               />
-            </div>
-
-            {/* Position indicator */}
-            <div
-              style={{
-                fontSize: '0.75rem',
-                fontWeight: 500,
-                letterSpacing: '0.12em',
-                color: 'var(--text-secondary, #777777)',
-                userSelect: 'none',
-                minWidth: '48px',
-                textAlign: 'right',
-                fontVariantNumeric: 'tabular-nums',
-              }}
-            >
-              {activeCounter}
             </div>
           </div>
         </ScrollReveal>
