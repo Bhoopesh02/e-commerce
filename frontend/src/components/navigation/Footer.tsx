@@ -410,26 +410,25 @@ export const Footer: React.FC = () => {
             <div className="footer-links-list">
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <li>
-                  <Link href="/#brand-story" className="footer-link">
+                  <Link href="/#house-philosophy" className="footer-link">
                     The House Philosophy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/new-arrivals" className="footer-link">
+                  <Link href="/#new-arrivals" className="footer-link">
                     New Arrivals
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shop?tag=signature" className="footer-link">
+                  <Link href="/#signature-icons" className="footer-link">
                     Signature Icons
                   </Link>
                 </li>
                 <li className="hidden-mobile">
-                  <Link href="/shop?tag=bestseller" className="footer-link">
+                  <Link href="/#house-favorites" className="footer-link">
                     House Favorites
                   </Link>
                 </li>
-
               </ul>
 
               {/* Non-linked editorial hallmarks */}

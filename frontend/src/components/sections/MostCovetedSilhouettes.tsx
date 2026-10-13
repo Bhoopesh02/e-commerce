@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
@@ -24,6 +25,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   isLoading = false,
   onExploreClick,
 }) => {
+  const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
 
   // Outer container refs
@@ -52,10 +54,12 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   const isHoveredRef = useRef<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const isDraggingRef = useRef<boolean>(false);
+  const isPointerDownRef = useRef<boolean>(false);
   const lastInteractionTimeRef = useRef<number>(performance.now());
 
   // Drag calculation refs
   const dragStartXRef = useRef<number>(0);
+  const dragStartYRef = useRef<number>(0);
   const dragStartTargetXRef = useRef<number>(0);
   const lastPointerXRef = useRef<number>(0);
   const lastPointerTimeRef = useRef<number>(0);
@@ -304,25 +308,38 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   // Drag interaction on Track
   const handleTrackPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0 || maxScrollRef.current <= 0) return;
-    isDraggingRef.current = true;
-    setIsDragging(true);
+    isPointerDownRef.current = true;
+    isDraggingRef.current = false;
     hasMovedRef.current = false;
     dragStartXRef.current = e.clientX;
+    dragStartYRef.current = e.clientY;
     dragStartTargetXRef.current = targetXRef.current;
     lastPointerXRef.current = e.clientX;
     lastPointerTimeRef.current = performance.now();
     pointerSpeedRef.current = 0;
     lastInteractionTimeRef.current = performance.now();
-
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   };
 
   const handleTrackPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDraggingRef.current) return;
+    if (!isPointerDownRef.current) return;
 
     const deltaX = e.clientX - dragStartXRef.current;
-    if (Math.abs(deltaX) > 4) {
-      hasMovedRef.current = true;
+    const deltaY = e.clientY - dragStartYRef.current;
+
+    // Only initiate drag if movement exceeds 8px horizontally and is primarily horizontal
+    if (!isDraggingRef.current) {
+      if (Math.abs(deltaX) > 8 && Math.abs(deltaX) > Math.abs(deltaY)) {
+        isDraggingRef.current = true;
+        setIsDragging(true);
+        hasMovedRef.current = true;
+        try {
+          (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+        } catch {
+          // Ignored
+        }
+      } else {
+        return;
+      }
     }
 
     const now = performance.now();
@@ -340,34 +357,44 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   };
 
   const handleTrackPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDraggingRef.current) return;
-    isDraggingRef.current = false;
-    setIsDragging(false);
+    if (!isPointerDownRef.current) return;
+    isPointerDownRef.current = false;
     lastInteractionTimeRef.current = performance.now();
 
-    try {
-      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-    } catch {
-      // Ignored
-    }
+    if (isDraggingRef.current) {
+      isDraggingRef.current = false;
+      setIsDragging(false);
 
-    // Add flick momentum
-    const speed = pointerSpeedRef.current;
-    if (Math.abs(speed) > 0.25) {
-      const inertiaDelta = -speed * 150;
-      targetXRef.current = Math.max(0, Math.min(maxScrollRef.current, targetXRef.current + inertiaDelta));
-    }
+      try {
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch {
+        // Ignored
+      }
 
-    // Snap to nearest card
-    snapToNearestCard();
+      // Add flick momentum
+      const speed = pointerSpeedRef.current;
+      if (Math.abs(speed) > 0.25) {
+        const inertiaDelta = -speed * 150;
+        targetXRef.current = Math.max(0, Math.min(maxScrollRef.current, targetXRef.current + inertiaDelta));
+      }
+
+      // Snap to nearest card
+      snapToNearestCard();
+
+      // Keep hasMovedRef true briefly to swallow the drag-end click
+      setTimeout(() => {
+        hasMovedRef.current = false;
+      }, 80);
+    } else {
+      hasMovedRef.current = false;
+    }
   };
 
-  // Prevent link navigation if drag took place
+  // Prevent link navigation only if actual drag took place
   const handleClickCapture = (e: React.MouseEvent) => {
     if (hasMovedRef.current) {
       e.preventDefault();
       e.stopPropagation();
-      hasMovedRef.current = false;
     }
   };
 
@@ -613,7 +640,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
               position: 'relative',
               userSelect: 'none',
               touchAction: 'pan-y',
-              cursor: isDragging ? 'grabbing' : 'grab',
+              cursor: isDragging ? 'grabbing' : 'auto',
             }}
           >
             {isLoading || products.length === 0 ? (
@@ -661,6 +688,11 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                     ref={(el) => {
                       cardElementsRef.current[index] = el;
                     }}
+                    onClick={() => {
+                      if (!hasMovedRef.current) {
+                        router.push(`/product/${product.slug}`);
+                      }
+                    }}
                     style={{
                       width: 'clamp(220px, 22vw, 300px)',
                       flexShrink: 0,
@@ -668,11 +700,17 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                       flexDirection: 'column',
                       willChange: 'transform, opacity',
                       transformOrigin: 'center center',
+                      cursor: 'pointer',
                     }}
                   >
                     <div style={{ position: 'relative' }}>
                       <Link
                         href={`/product/${product.slug}`}
+                        onClick={(e) => {
+                          if (hasMovedRef.current) {
+                            e.preventDefault();
+                          }
+                        }}
                         style={{
                           display: 'block',
                           width: '100%',
@@ -680,6 +718,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                           position: 'relative',
                           overflow: 'hidden',
                           backgroundColor: '#f5f5f5',
+                          cursor: 'pointer',
                         }}
                       >
                         <img
@@ -692,6 +731,13 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                             height: '100%',
                             objectFit: 'cover',
                             pointerEvents: 'none',
+                            transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'scale(1.04)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'scale(1)';
                           }}
                         />
                       </Link>
@@ -699,10 +745,16 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                     <div style={{ textAlign: 'center', marginTop: '16px' }}>
                       <Link
                         href={`/product/${product.slug}`}
+                        onClick={(e) => {
+                          if (hasMovedRef.current) {
+                            e.preventDefault();
+                          }
+                        }}
                         style={{
                           textDecoration: 'none',
                           color: 'inherit',
                           display: 'inline-block',
+                          cursor: 'pointer',
                         }}
                       >
                         <span

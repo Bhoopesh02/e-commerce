@@ -211,23 +211,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 onMouseEnter={() => setHoveredNav('collections')}
                 style={{ height: '48px', display: 'inline-flex', alignItems: 'center' }}
               >
-                <button
-                  type="button"
-                  onClick={() => setHoveredNav(prev => prev === 'collections' ? null : 'collections')}
+                <Link
+                  href="/collections"
+                  onClick={() => setHoveredNav(null)}
                   className="nav-link-expand"
                   aria-expanded={hoveredNav === 'collections'}
                   aria-haspopup="true"
                   style={{
                     ...navLinkStyle,
-                    background: 'none',
-                    border: 'none',
-                    margin: 0,
-                    cursor: 'pointer',
-                    fontFamily: 'inherit',
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    height: '100%',
                   }}
                 >
                   Collections
-                </button>
+                </Link>
               </div>
 
               <Link
@@ -404,7 +403,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   Home
                 </Link>
                 <Link
-                  href="/shop"
+                  href="/collections"
                   onClick={() => setMobileMenuOpen(false)}
                   style={{
                     fontSize: '1rem',
@@ -416,6 +415,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   }}
                 >
                   Collections
+                </Link>
+                <Link
+                  href="/collections"
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    fontSize: '0.95rem',
+                    fontWeight: pathname === '/collections' ? 600 : 400,
+                    letterSpacing: '0.04em',
+                    minHeight: '36px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    paddingLeft: '16px',
+                    color: pathname === '/collections' ? 'var(--brand-primary)' : 'var(--text-primary)',
+                  }}
+                >
+                  All Collections
                 </Link>
                 <Link
                   href="/collections/men"
@@ -544,6 +559,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   <Link 
+                    href="/collections" 
+                    onClick={() => setHoveredNav(null)} 
+                    style={{ 
+                      fontSize: '0.95rem', 
+                      color: pathname === '/collections' ? 'var(--text-primary)' : 'var(--text-primary)',
+                      fontWeight: pathname === '/collections' ? 600 : 400,
+                      textDecoration: pathname === '/collections' ? 'underline' : 'none',
+                    }}
+                  >
+                    All Collections
+                  </Link>
+                  <Link 
                     href="/collections/men" 
                     onClick={() => setHoveredNav(null)} 
                     style={{ 
@@ -607,15 +634,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
               {/* Column 4: Featured Image */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div style={{ position: 'relative', width: '100%', paddingBottom: '80%', overflow: 'hidden', backgroundColor: 'var(--bg-subtle)' }}>
-                  {/* Since we don't have exactly the image from the user's prompt, we use an existing image */}
+                <Link
+                  href="/collections"
+                  onClick={() => setHoveredNav(null)}
+                  style={{ position: 'relative', width: '100%', paddingBottom: '80%', overflow: 'hidden', backgroundColor: 'var(--bg-subtle)', display: 'block' }}
+                >
                   <img 
                     src="/images/categories/cat-tailoring.jpg" 
                     alt="The New-Season Collections" 
                     style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                   />
-                </div>
-                <Link href="/new-arrivals" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--text-primary)', textDecoration: 'none' }}>
+                </Link>
+                <Link href="/collections" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--text-primary)', textDecoration: 'none' }}>
                   The New-Season Collections
                 </Link>
               </div>

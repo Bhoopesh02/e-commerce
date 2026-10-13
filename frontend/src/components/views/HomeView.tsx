@@ -286,7 +286,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
       case 'brand_intro':
         return (
-          <section key={id} className="brand-intro-section" style={{ padding: '80px 0 20px', backgroundColor: 'var(--bg-primary)' }}>
+          <section
+            key={id}
+            id="house-philosophy"
+            className="brand-intro-section"
+            style={{ padding: '80px 0 20px', backgroundColor: 'var(--bg-primary)', scrollMarginTop: '80px' }}
+          >
+            <div id="brand-story" style={{ position: 'relative', top: '-80px' }} aria-hidden="true" />
             <div className="container" style={{ maxWidth: '880px', textAlign: 'center' }}>
               <ScrollReveal duration={0.6}>
                 <span
@@ -344,7 +350,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           .filter(Boolean) as Product[];
 
         return (
-          <React.Fragment key={id}>
+          <section key={id} id="signature-icons" style={{ scrollMarginTop: '80px' }}>
             <section style={{ width: '100%', padding: '0 0 20px', backgroundColor: 'var(--bg-primary)' }}>
               <HomeBannerCard
                 imageSrc={heritageBannerImg}
@@ -360,7 +366,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               title={title}
               subtitle={subtitle}
             />
-          </React.Fragment>
+          </section>
         );
 
       case 'new_arrivals':
@@ -386,7 +392,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           newArrivalsTargetNames.some(target => p.name.includes(target))
         );
         return (
-          <React.Fragment key={id}>
+          <section key={id} id="new-arrivals" style={{ scrollMarginTop: '80px' }}>
             <section style={{ width: '100%', padding: '60px 0 20px', backgroundColor: 'var(--bg-primary)' }}>
               <HomeBannerCard
                 imageSrc={newArrivalsBannerImg}
@@ -398,7 +404,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               />
             </section>
             <NewArrivalsCarousel products={uploadedNewArrivals} loading={loading} />
-          </React.Fragment>
+          </section>
         );
 
       case 'editorial_campaign':
@@ -414,7 +420,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
           "Quilted Silk Down Parka"
         ];
         const uploadedTrending = products.filter((p) => targetNames.includes(p.name));
-        return <MostCovetedSilhouettes key={id} products={uploadedTrending} isLoading={loading} />;
+        return (
+          <section key={id} id="house-favorites" style={{ scrollMarginTop: '80px' }}>
+            <MostCovetedSilhouettes products={uploadedTrending} isLoading={loading} />
+          </section>
+        );
 
       case 'brand_story':
         return null;

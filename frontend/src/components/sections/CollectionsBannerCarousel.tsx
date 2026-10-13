@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const AUTOPLAY_INTERVAL_MS = 2000;
 const TRANSITION_DURATION_MS = 600;
@@ -15,7 +16,7 @@ const BANNER_DATA = [
     tags: ['Hand-Finished in Italy', 'Complimentary Global Shipping'],
   },
   {
-    src: '/images/banners/banner-autumn-winter.webp',
+    src: '/images/banners/new-arrivals/new-arrivals-hero.webp',
     alt: 'Autumn Winter Collection',
     heading: 'The Outerwear Edit',
     description: 'Sculpted coats and hand-stitched leather, cut for the colder months and made to last for years.',
@@ -57,6 +58,12 @@ export function CollectionsBannerCarousel() {
     if (isTransitioning) return;
     setIsTransitioning(true);
     setCurrentIndex((prev) => prev + 1);
+  }, [isTransitioning]);
+
+  const goToPrevSlide = useCallback(() => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => prev - 1);
   }, [isTransitioning]);
 
   useEffect(() => {
@@ -283,6 +290,39 @@ export function CollectionsBannerCarousel() {
           </div>
         ))}
       </div>
+
+      {/* Floating Arrow Controls with micro-animations */}
+      <button
+        type="button"
+        onClick={goToPrevSlide}
+        aria-label="Previous Collection Banner"
+        className="carousel-nav-arrow prev desktop-only"
+        style={{
+          position: 'absolute',
+          left: '24px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          zIndex: 10,
+        }}
+      >
+        <ChevronLeft size={22} strokeWidth={1.5} />
+      </button>
+
+      <button
+        type="button"
+        onClick={goToNextSlide}
+        aria-label="Next Collection Banner"
+        className="carousel-nav-arrow next desktop-only"
+        style={{
+          position: 'absolute',
+          right: '24px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          zIndex: 10,
+        }}
+      >
+        <ChevronRight size={22} strokeWidth={1.5} />
+      </button>
 
       <div
         style={{
