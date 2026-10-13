@@ -30,8 +30,6 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   const sectionRef = useRef<HTMLElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const progressBarRef = useRef<HTMLDivElement>(null);
-  const progressBarFillRef = useRef<HTMLDivElement>(null);
   const cardElementsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   // Cached layout measurements
@@ -63,7 +61,6 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   const lastPointerTimeRef = useRef<number>(0);
   const pointerSpeedRef = useRef<number>(0);
   const hasMovedRef = useRef<boolean>(false);
-  const isDraggingProgressRef = useRef<boolean>(false);
 
   // Chevron UI state
   const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
@@ -155,7 +152,6 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
         isPlayingRef.current &&
         !isHoveredRef.current &&
         !isDraggingRef.current &&
-        !isDraggingProgressRef.current &&
         isInactive &&
         maxScroll > 0;
 
@@ -198,13 +194,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
         trackRef.current.style.transform = `translate3d(${-scrollX.toFixed(2)}px, 0, 0)`;
       }
 
-      // 3. Progress bar: scaleX(progress) with transform-origin: left
-      if (progressBarFillRef.current && maxScroll > 0) {
-        const progress = Math.max(0, Math.min(1, scrollX / maxScroll));
-        progressBarFillRef.current.style.transform = `scaleX(${progress.toFixed(4)})`;
-      }
-
-      // 4. Position decides the look (per card, each frame)
+      // 3. Position decides the look (per card, each frame)
       // Read card centers -> map to flat transforms: scale, opacity, subtle translateY/skew
       const viewportWidth = viewportWidthRef.current || 600;
       const viewportCenterX = viewportWidth / 2;
@@ -402,44 +392,6 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
       lastInteractionTimeRef.current = performance.now();
       updateArrowButtons(targetXRef.current);
     }
-  };
-
-  // Interactive Progress Bar Dragging & Scrubbing
-  const handleProgressPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!progressBarRef.current || maxScrollRef.current <= 0) return;
-    e.preventDefault();
-    isDraggingProgressRef.current = true;
-    lastInteractionTimeRef.current = performance.now();
-
-    const updateFromPointer = (clientX: number) => {
-      if (!progressBarRef.current) return;
-      const rect = progressBarRef.current.getBoundingClientRect();
-      const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-      targetXRef.current = ratio * maxScrollRef.current;
-      updateArrowButtons(targetXRef.current);
-    };
-
-    updateFromPointer(e.clientX);
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-
-    const handlePointerMove = (moveEvent: PointerEvent) => {
-      if (!isDraggingProgressRef.current) return;
-      updateFromPointer(moveEvent.clientX);
-      lastInteractionTimeRef.current = performance.now();
-    };
-
-    const handlePointerUp = (upEvent: PointerEvent) => {
-      isDraggingProgressRef.current = false;
-      lastInteractionTimeRef.current = performance.now();
-      snapToNearestCard();
-      window.removeEventListener('pointermove', handlePointerMove);
-      window.removeEventListener('pointerup', handlePointerUp);
-      window.removeEventListener('pointercancel', handlePointerUp);
-    };
-
-    window.addEventListener('pointermove', handlePointerMove);
-    window.addEventListener('pointerup', handlePointerUp);
-    window.addEventListener('pointercancel', handlePointerUp);
   };
 
   const items = products;
@@ -773,52 +725,6 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
               </div>
             )}
           </div>
-
-          {/* Scannable Luxury Progress Bar */}
-          {!isLoading && products.length > 0 && (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                marginTop: '16px',
-                paddingLeft: '4px',
-                paddingRight: '16px',
-              }}
-            >
-              <div
-                ref={progressBarRef}
-                onPointerDown={handleProgressPointerDown}
-                role="slider"
-                aria-label="Horizontal scroll progress bar"
-                aria-valuemin={0}
-                aria-valuemax={100}
-                style={{
-                  flex: 1,
-                  height: '3px',
-                  backgroundColor: 'rgba(0, 0, 0, 0.08)',
-                  borderRadius: '2px',
-                  position: 'relative',
-                  cursor: 'pointer',
-                  overflow: 'hidden',
-                }}
-              >
-                <div
-                  ref={progressBarFillRef}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: 'var(--text-primary, #000)',
-                    transformOrigin: 'left',
-                    transform: 'scaleX(0)',
-                    willChange: 'transform',
-                  }}
-                />
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </section>

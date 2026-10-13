@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import '@/styles/globals.css';
 import { BRAND_NAME, BRAND_TAGLINE } from '@/lib/constants';
 import { SmoothScrollProvider } from '@/components/common/SmoothScrollProvider';
@@ -42,10 +43,12 @@ export default function RootLayout({
       data-theme="light"
       data-scroll-behavior="smooth"
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: antiFlashScript }} />
-      </head>
       <body>
+        <Script
+          id="anti-flash-script"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: antiFlashScript }}
+        />
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>
