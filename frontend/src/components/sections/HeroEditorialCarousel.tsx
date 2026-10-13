@@ -15,6 +15,7 @@ export interface BannerSlide {
   description: string;
   ctaText: string;
   image: string;
+  mobileImage: string;
 }
 
 export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
@@ -29,6 +30,7 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
       'Architectural suiting, handcrafted Italian leather duffels, and refined knitwear designed for sovereign presence.',
     ctaText: 'Explore Silhouettes',
     image: '/images/banners/new-arrivals/new-arrivals-hero.webp',
+    mobileImage: '/images/banners/new-arrivals/new-arrivals-hero-mobile.jpg',
   },
   {
     id: 'outerwear',
@@ -41,6 +43,7 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
       'Architectural virgin wool trench coats, double-faced heavy overcoats, and Milanese nappa leather jackets designed for climate resilience.',
     ctaText: 'Explore Outerwear',
     image: '/images/banners/new-arrivals/new-arrivals-outerwear.jpg',
+    mobileImage: '/images/banners/new-arrivals/new-arrivals-outerwear-mobile.jpg',
   },
   {
     id: 'eveningwear',
@@ -53,6 +56,7 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
       'Floor-sweeping liquid silk charmeuse, bias-cut drapery, and midnight obsidian velvet tailored for after-dark distinction.',
     ctaText: 'Explore Eveningwear',
     image: '/images/banners/new-arrivals/new-arrivals-eveningwear.jpg',
+    mobileImage: '/images/banners/new-arrivals/new-arrivals-eveningwear-mobile.png',
   },
   {
     id: 'leather-goods',
@@ -65,6 +69,7 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
       'Full-grain French box calfskin totes, structured saddle crossbodies, and weekend luggage hand-stitched with waxed cord.',
     ctaText: 'Explore Leather Goods',
     image: '/images/banners/new-arrivals/new-arrivals-leather.jpg',
+    mobileImage: '/images/banners/new-arrivals/new-arrivals-leather-mobile.jpg',
   },
 ];
 
@@ -185,17 +190,33 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
               key={slide.id}
               className={`${styles.slide} ${isActive ? styles.active : ''}`}
             >
-              {/* Background Image Layer (Full Width & Height) */}
+              {/* Background Image Layer (Dual Desktop & Mobile Cropping) */}
               <div className={styles.imageWrapper}>
-                <Image
-                  src={slide.image}
-                  alt={`${slide.title} — ${slide.subtitle}`}
-                  fill
-                  priority={index === 0}
-                  quality={85}
-                  sizes="100vw"
-                  className={styles.bannerImage}
-                />
+                {/* Desktop Landscape Crop */}
+                <div className={styles.desktopImageWrapper}>
+                  <Image
+                    src={slide.image}
+                    alt={`${slide.title} — ${slide.subtitle}`}
+                    fill
+                    priority={index === 0}
+                    quality={88}
+                    sizes="(max-width: 767px) 1px, 100vw"
+                    className={styles.bannerImage}
+                  />
+                </div>
+
+                {/* Mobile Portrait Crop (Framed like uploaded image) */}
+                <div className={styles.mobileImageWrapper}>
+                  <Image
+                    src={slide.mobileImage}
+                    alt={`${slide.title} — ${slide.subtitle}`}
+                    fill
+                    priority={index === 0}
+                    quality={92}
+                    sizes="(max-width: 767px) 100vw, 1px"
+                    className={styles.bannerImageMobile}
+                  />
+                </div>
 
                 {/* Cinematic Scrim Gradients */}
                 <div className={styles.scrimHorizontal} />

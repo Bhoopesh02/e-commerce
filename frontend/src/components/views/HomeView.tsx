@@ -71,7 +71,8 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
       style={{
         position: 'relative',
         width: '100%',
-        height: '400px',
+        minHeight: 'clamp(320px, 48vw, 420px)',
+        height: 'clamp(320px, 48vw, 420px)',
         borderRadius: '16px',
         overflow: 'hidden',
         backgroundColor: '#1c1917',
@@ -162,12 +163,12 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
         <StaggerFadeUp
           as="span"
           style={{
-            fontSize: '0.85rem',
+            fontSize: 'clamp(0.72rem, 1vw, 0.85rem)',
             fontWeight: 600,
             letterSpacing: '0.15em',
             textTransform: 'uppercase',
             color: 'var(--color-golden-200)',
-            marginBottom: '16px',
+            marginBottom: '12px',
             display: 'block',
           }}
         >
@@ -177,9 +178,9 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
         <h2
           style={{
             color: '#fff',
-            fontSize: 'clamp(2rem, 4vw, 3.5rem)',
+            fontSize: 'clamp(1.5rem, 3.8vw, 3.2rem)',
             fontFamily: 'var(--font-display)',
-            marginBottom: '16px',
+            marginBottom: '14px',
             lineHeight: 1.15,
           }}
         >
@@ -192,9 +193,9 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
           as="p"
           style={{
             color: 'rgba(255,255,255,0.9)',
-            fontSize: '1.1rem',
-            maxWidth: '600px',
-            lineHeight: 1.6,
+            fontSize: 'clamp(0.85rem, 1.2vw, 1.05rem)',
+            maxWidth: '560px',
+            lineHeight: 1.55,
             margin: 0,
           }}
         >

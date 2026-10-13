@@ -3,350 +3,611 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, useScroll, useSpring, useTransform, useReducedMotion } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 
-/**
- * Linear interpolation helper clamped to [outMin, outMax]
- */
-const lerp = (p: number, inMin: number, inMax: number, outMin: number, outMax: number) => {
-  if (p <= inMin) return outMin;
-  if (p >= inMax) return outMax;
-  return outMin + ((p - inMin) / (inMax - inMin)) * (outMax - outMin);
-};
+export interface EditorialCampaignProps {
+  watermarkText?: string;
+  leftText?: string;
+  rightText?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  leftImage?: string;
+  centerImage?: string;
+  rightImage?: string;
+  leftAlt?: string;
+  centerAlt?: string;
+  rightAlt?: string;
+  lookTitle?: string;
+  lookSubtitle?: string;
+}
 
-export const EditorialCampaign: React.FC = () => {
+export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
+  watermarkText = 'SILHOUETTE',
+  leftText = 'Performance-driven tailoring—drafted by master artisans in Northern Italy, engineered for effortless drape and winter endurance.',
+  rightText = 'Stay warm, stay refined. Double-faced cashmere and virgin wool blend thermal insulation with fluid flexibility in the toughest conditions.',
+  ctaText = 'Explore Overcoats',
+  ctaLink = '/shop?categorySlug=outerwear',
+  leftImage = '/images/banners/editorial/editorial-left.jpg',
+  centerImage = '/images/banners/editorial/editorial-center.jpg',
+  rightImage = '/images/banners/editorial/editorial-cuff-detail.jpg',
+  leftAlt = 'Cropped Suede Harrington Bomber Jacket',
+  centerAlt = 'Belted Cashmere Wrap Overcoat Florence Salon',
+  rightAlt = 'Italian leather cuff and gloved tailoring detail',
+  lookTitle = 'Look 04 · Florence Salon',
+  lookSubtitle = 'Belted Cashmere Wrap Overcoat',
+}) => {
   const sectionRef = useRef<HTMLElement>(null);
   const shouldReduceMotion = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(false);
+  const [activeMobileCard, setActiveMobileCard] = useState<number>(1); // 0: left, 1: center, 2: right
 
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // Scroll-linked progress from "start 90%" (entering view) to "start 30%" (settled in view)
+  // Subtle parallax effect on scroll
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ['start 90%', 'start 30%'],
+    offset: ['start end', 'end start'],
   });
 
-  // Fluid physics spring that tracks scroll progress and reverses smoothly on scroll up
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 30,
-    mass: 0.4,
-  });
-
-  // 1. Image: scale 1.25 -> 1 (desktop) or 1.12 -> 1 (mobile), x -40px -> 0 (desktop) or 0 (mobile) over [0, 0.6]
-  const imageScale = useTransform(smoothProgress, (p) =>
-    lerp(p, 0, 0.6, isMobile ? 1.12 : 1.25, 1)
-  );
-  const imageX = useTransform(smoothProgress, (p) =>
-    lerp(p, 0, 0.6, isMobile ? 0 : -40, 0)
-  );
-
-  // 2. Headline: split into 3 lines rising from behind masks (y: 110% -> 0%)
-  const line1Y = useTransform(smoothProgress, (p) => `${lerp(p, 0.15, 0.45, 110, 0)}%`);
-  const line2Y = useTransform(smoothProgress, (p) => `${lerp(p, 0.25, 0.55, 110, 0)}%`);
-  const line3Y = useTransform(smoothProgress, (p) => `${lerp(p, 0.35, 0.65, 110, 0)}%`);
-
-  // 3. Paragraphs: opacity 0 -> 1 and y: 24px -> 0 (desktop) or 16px -> 0 (mobile)
-  const p1Opacity = useTransform(smoothProgress, (p) => lerp(p, 0.45, 0.65, 0, 1));
-  const p1Y = useTransform(smoothProgress, (p) => lerp(p, 0.45, 0.65, isMobile ? 16 : 24, 0));
-
-  const p2Opacity = useTransform(smoothProgress, (p) => lerp(p, 0.55, 0.75, 0, 1));
-  const p2Y = useTransform(smoothProgress, (p) => lerp(p, 0.55, 0.75, isMobile ? 16 : 24, 0));
-
-  // 4. "Explore Overcoats" button: opacity 0 -> 1 and y: 24px -> 0 (desktop) or 16px -> 0 (mobile) over [0.7, 0.9]
-  const btnOpacity = useTransform(smoothProgress, (p) => lerp(p, 0.7, 0.9, 0, 1));
-  const btnY = useTransform(smoothProgress, (p) => lerp(p, 0.7, 0.9, isMobile ? 16 : 24, 0));
-
-  // 5. "Look 04" caption card: opacity 0 -> 1 and y: 16px -> 0 over [0.75, 0.95]
-  const captionOpacity = useTransform(smoothProgress, (p) => lerp(p, 0.75, 0.95, 0, 1));
-  const captionY = useTransform(smoothProgress, (p) => lerp(p, 0.75, 0.95, 16, 0));
+  const yCenter = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? [0, 0] : [25, -25]);
+  const yLeft = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? [0, 0] : [-15, 15]);
+  const yRight = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? [0, 0] : [35, -15]);
 
   return (
     <section
       ref={sectionRef}
-      className="editorial-section"
+      className="editorial-banner-section"
       style={{
-        backgroundColor: 'var(--color-black-tie)',
-        color: 'var(--bg-subtle)',
         position: 'relative',
+        backgroundColor: '#EAE8E3',
+        color: 'var(--color-black-tie, #141414)',
+        padding: '90px 24px 100px',
         overflow: 'hidden',
       }}
     >
       <style>{`
-        .editorial-section {
-          padding: 40px 0;
+        .editorial-banner-section {
+          background: radial-gradient(circle at 50% 30%, #F5F4F0 0%, #E9E7E1 100%);
         }
-        .editorial-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-          gap: 64px;
-          align-items: stretch;
-        }
-        .editorial-reveal {
-          position: relative;
-          height: 100%;
-          min-height: 580px;
-        }
-        .editorial-image {
+
+        /* Giant Watermark Background Typography */
+        .editorial-watermark-container {
           position: absolute;
-          top: -40px;
-          bottom: -40px;
-          right: 0;
-          width: calc(50vw - 32px);
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 100%;
+          max-width: 1500px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          pointer-events: none;
+          user-select: none;
+          z-index: 1;
+        }
+
+        .editorial-watermark-text {
+          font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+          font-size: clamp(6.5rem, 16vw, 15rem);
+          font-weight: 300;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          line-height: 1;
+          color: transparent;
+          -webkit-text-stroke: 1.5px rgba(20, 20, 20, 0.12);
+          text-stroke: 1.5px rgba(20, 20, 20, 0.12);
+          opacity: 0.85;
+          white-space: nowrap;
+          text-align: center;
+        }
+
+        /* 3-Column Desktop Grid Layout */
+        .editorial-layout-grid {
+          position: relative;
+          z-index: 2;
+          max-width: 1340px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: 1fr 1.35fr 1fr;
+          gap: 36px;
+          align-items: center;
+        }
+
+        /* Card styling */
+        .editorial-card-wrapper {
+          position: relative;
           overflow: hidden;
-          box-shadow: var(--shadow-editorial);
-          border-radius: 0;
+          background: #D9D7D2;
+          box-shadow: 0 18px 45px -12px rgba(20, 20, 20, 0.14);
+          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .editorial-tag {
-          left: max(24px, calc((100vw - 1280px) / 2 + 24px)) !important;
+
+        .editorial-card-wrapper:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 28px 60px -15px rgba(20, 20, 20, 0.22);
         }
-        .headline-mask-wrapper {
-          display: block;
-          overflow: hidden;
-          padding-bottom: 0.12em;
-          margin-bottom: -0.12em;
+
+        .editorial-card-img-zoom {
+          transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        @media (max-width: 1024px) {
-          .editorial-section {
-            padding: 0 0 60px 0;
+
+        .editorial-card-wrapper:hover .editorial-card-img-zoom {
+          transform: scale(1.05);
+        }
+
+        /* Left Column */
+        .editorial-col-left {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 28px;
+        }
+
+        .editorial-card-left {
+          width: 100%;
+          max-width: 320px;
+          height: 380px;
+          border-radius: 26px;
+        }
+
+        .editorial-copy-bottom-left {
+          font-family: var(--font-body, system-ui, sans-serif);
+          font-size: 0.88rem;
+          line-height: 1.6;
+          color: rgba(30, 30, 30, 0.72);
+          max-width: 250px;
+          margin-top: 4px;
+        }
+
+        /* Center Column (Dominant Hero Card) */
+        .editorial-col-center {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .editorial-card-center {
+          width: 100%;
+          max-width: 440px;
+          height: 540px;
+          border-radius: 32px;
+          box-shadow: 0 26px 65px -15px rgba(20, 20, 20, 0.22);
+        }
+
+        /* Right Column */
+        .editorial-col-right {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 28px;
+          margin-top: 48px; /* Staggered downwards */
+        }
+
+        .editorial-copy-top-right {
+          font-family: var(--font-body, system-ui, sans-serif);
+          font-size: 0.88rem;
+          line-height: 1.6;
+          color: rgba(30, 30, 30, 0.72);
+          max-width: 270px;
+          text-align: left;
+          align-self: flex-start;
+        }
+
+        .editorial-card-right {
+          width: 100%;
+          max-width: 320px;
+          height: 380px;
+          border-radius: 26px;
+        }
+
+        /* Mobile specific carousel styles */
+        .editorial-mobile-carousel {
+          display: none;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1080px) {
+          .editorial-layout-grid {
+            gap: 24px;
           }
-          .editorial-grid {
-            grid-template-columns: 1fr;
-            gap: 40px;
+          .editorial-card-left,
+          .editorial-card-right {
+            height: 330px;
           }
-          .editorial-image {
-            position: relative;
-            top: 0;
-            bottom: 0;
-            right: auto;
-            width: 100%;
-            height: 440px;
+          .editorial-card-center {
+            height: 460px;
           }
-          .editorial-tag {
-            left: 24px !important;
-          }
-          .editorial-reveal {
-            min-height: auto;
+          .editorial-copy-bottom-left,
+          .editorial-copy-top-right {
+            font-size: 0.82rem;
           }
         }
+
         @media (max-width: 768px) {
-          .editorial-section {
-            padding: 0 0 48px 0;
+          .editorial-banner-section {
+            padding: 60px 16px 70px;
           }
-          .editorial-grid {
-            gap: 32px;
+
+          .editorial-layout-grid {
+            display: none;
           }
-          .editorial-reveal {
-            width: 100vw;
-            max-width: 100vw;
-            margin-left: calc(50% - 50vw);
-            margin-right: calc(50% - 50vw);
-            min-height: auto;
-          }
-          .editorial-image {
+
+          .editorial-mobile-carousel {
+            display: block;
             position: relative;
-            top: 0;
-            bottom: 0;
-            right: auto;
+            z-index: 2;
             width: 100%;
-            height: clamp(380px, 100vw, 480px);
-            border-radius: 0;
-            box-shadow: none;
           }
-          .editorial-tag {
-            left: 16px !important;
-            right: auto;
-            bottom: 16px;
-            width: fit-content;
-            max-width: calc(100% - 32px);
+
+          .editorial-mobile-cards-track {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 16px;
+            padding: 10px 4px 20px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
           }
-        }
-        @media (max-width: 480px) {
-          .editorial-image {
-            height: clamp(360px, 105vw, 440px);
+
+          .editorial-mobile-cards-track::-webkit-scrollbar {
+            display: none;
+          }
+
+          .editorial-mobile-card-item {
+            flex: 0 0 82%;
+            scroll-snap-align: center;
+          }
+
+          .editorial-mobile-card-item .editorial-card-wrapper {
+            height: 420px;
+            border-radius: 24px;
+          }
+
+          .editorial-mobile-copy {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.88rem;
+            color: rgba(30, 30, 30, 0.75);
+            line-height: 1.5;
+            padding: 0 16px;
+          }
+
+          .editorial-mobile-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+          }
+
+          .editorial-mobile-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(20, 20, 20, 0.2);
+            transition: all 0.3s ease;
+          }
+
+          .editorial-mobile-dot.active {
+            width: 24px;
+            border-radius: 4px;
+            background: var(--color-black-tie, #141414);
           }
         }
       `}</style>
-      <div className="container">
-        <div className="editorial-grid">
-          {/* Visual Canvas */}
-          <div className="editorial-reveal">
-            <div className="editorial-image">
-              <motion.div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  width: '100%',
-                  height: '100%',
-                  scale: shouldReduceMotion ? 1 : imageScale,
-                  x: shouldReduceMotion ? 0 : imageX,
-                  transformOrigin: 'center center',
-                  willChange: 'transform',
-                }}
-              >
-                <Image
-                  src="/images/categories/cat-outerwear.jpg"
-                  alt="Editorial Campaign Aurelia"
-                  fill
-                  quality={90}
-                  sizes="(max-width: 1024px) 100vw, 55vw"
-                  style={{ objectFit: 'cover', objectPosition: 'center 20%' }}
-                />
-              </motion.div>
+
+      {/* Decorative Ghost Background Typography */}
+      <div className="editorial-watermark-container" aria-hidden="true">
+        <span className="editorial-watermark-text">{watermarkText}</span>
+      </div>
+
+      {/* Desktop 3-Card Staggered Layout */}
+      <div className="editorial-layout-grid">
+        {/* Left Column: Card on top, Micro-copy below */}
+        <motion.div
+          className="editorial-col-left"
+          style={{ y: yLeft }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div className="editorial-card-wrapper editorial-card-left">
+            <div className="editorial-card-img-zoom" style={{ position: 'relative', width: '100%', height: '100%' }}>
+              <Image
+                src={leftImage}
+                alt={leftAlt}
+                fill
+                quality={92}
+                sizes="(max-width: 1080px) 280px, 320px"
+                style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
+              />
               <div
                 style={{
                   position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background:
-                    'linear-gradient(180deg, var(--overlay-black-10) 0%, var(--overlay-scrim) 100%)',
+                  inset: 0,
+                  background: 'linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.3) 100%)',
                   pointerEvents: 'none',
                 }}
               />
-              {/* Tag Overlay ("Look 04" caption card) */}
-              <motion.div
-                className="editorial-tag"
-                style={{
-                  position: 'absolute',
-                  bottom: '24px',
-                  padding: '12px 18px',
-                  backgroundColor: 'rgba(20, 20, 20, 0.8)',
-                  backdropFilter: 'blur(8px)',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '1px solid rgba(224, 224, 224, 0.25)',
-                  opacity: shouldReduceMotion ? 1 : captionOpacity,
-                  y: shouldReduceMotion ? 0 : captionY,
-                  zIndex: 2,
-                  willChange: 'transform, opacity',
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: '0.72rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.12em',
-                    color: 'var(--brand-accent)',
-                    display: 'block',
-                  }}
-                >
-                  Look 04 · Florence Salon
-                </span>
-                <p style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--bg-subtle)', marginTop: '2px' }}>
-                  Belted Cashmere Wrap Overcoat & Tuscan Boots
-                </p>
-              </motion.div>
             </div>
           </div>
 
-          {/* Editorial Copy */}
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ maxWidth: '520px' }}>
-              <h2
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'clamp(2.2rem, 4vw, 3.4rem)',
-                  lineHeight: 1.1,
-                  marginBottom: '24px',
-                  color: 'var(--bg-subtle)',
-                }}
-              >
-                <span className="headline-mask-wrapper">
-                  <motion.span
-                    style={{
-                      display: 'block',
-                      y: shouldReduceMotion ? '0%' : line1Y,
-                      willChange: 'transform',
-                    }}
-                  >
-                    Precision In Drapery,
-                  </motion.span>
-                </span>
-                <span className="headline-mask-wrapper">
-                  <motion.span
-                    style={{
-                      display: 'block',
-                      y: shouldReduceMotion ? '0%' : line2Y,
-                      willChange: 'transform',
-                    }}
-                  >
-                    <span className="text-editorial typography-shimmer">
-                      Unwavering
-                    </span>
-                  </motion.span>
-                </span>
-                <span className="headline-mask-wrapper">
-                  <motion.span
-                    style={{
-                      display: 'block',
-                      y: shouldReduceMotion ? '0%' : line3Y,
-                      willChange: 'transform',
-                    }}
-                  >
-                    In Silhouette.
-                  </motion.span>
-                </span>
-              </h2>
+          <p className="editorial-copy-bottom-left">
+            {leftText}
+          </p>
+        </motion.div>
 
-              <motion.p
+        {/* Center Column: Dominant Hero Card */}
+        <motion.div
+          className="editorial-col-center"
+          style={{ y: yCenter }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.9, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div className="editorial-card-wrapper editorial-card-center">
+            <div className="editorial-card-img-zoom" style={{ position: 'relative', width: '100%', height: '100%' }}>
+              <Image
+                src={centerImage}
+                alt={centerAlt}
+                fill
+                priority
+                quality={95}
+                sizes="(max-width: 1080px) 380px, 440px"
+                style={{ objectFit: 'cover', objectPosition: 'center 18%' }}
+              />
+              <div
                 style={{
-                  fontSize: '1.05rem',
-                  color: 'var(--border-color)',
-                  lineHeight: 1.7,
-                  marginBottom: '20px',
-                  opacity: shouldReduceMotion ? 1 : p1Opacity,
-                  y: shouldReduceMotion ? 0 : p1Y,
-                  willChange: 'transform, opacity',
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.45) 100%)',
+                  pointerEvents: 'none',
                 }}
-              >
-                Every pattern is drafted by master tailors in Northern Italy, respecting the natural grain of
-                virgin wool and weight of double-faced cashmere. We reject seasonal disposability in favor of
-                timeless heirloom construction.
-              </motion.p>
+              />
 
-              <motion.p
+              {/* Floating Look Tag / Caption Pill */}
+              <div
                 style={{
-                  fontSize: '0.9rem',
-                  color: 'rgba(224, 224, 224, 0.7)',
-                  lineHeight: 1.6,
-                  marginBottom: '36px',
-                  opacity: shouldReduceMotion ? 1 : p2Opacity,
-                  y: shouldReduceMotion ? 0 : p2Y,
-                  willChange: 'transform, opacity',
-                }}
-              >
-                Hand-split seam construction eliminates all internal bulk, allowing coats to drape with the
-                weightlessness of silk while providing exceptional thermal insulation.
-              </motion.p>
-
-              <motion.div
-                style={{
+                  position: 'absolute',
+                  bottom: '22px',
+                  left: '22px',
+                  right: '22px',
+                  padding: '14px 20px',
+                  backgroundColor: 'rgba(20, 20, 20, 0.85)',
+                  backdropFilter: 'blur(12px)',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  color: '#FFFFFF',
                   display: 'flex',
-                  gap: '16px',
-                  opacity: shouldReduceMotion ? 1 : btnOpacity,
-                  y: shouldReduceMotion ? 0 : btnY,
-                  willChange: 'transform, opacity',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
                 }}
               >
-                <Link href="/shop?categorySlug=outerwear">
-                  <Button variant="primary" size="lg" rightIcon={<ArrowRight size={16} />}>
-                    Explore Overcoats
-                  </Button>
+                <div>
+                  <span
+                    style={{
+                      fontSize: '0.72rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.14em',
+                      color: 'var(--color-golden, #C29B4C)',
+                      display: 'block',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {lookTitle}
+                  </span>
+                  <p
+                    style={{
+                      fontSize: '0.92rem',
+                      fontWeight: 600,
+                      color: '#F5F5F5',
+                      marginTop: '2px',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {lookSubtitle}
+                  </p>
+                </div>
+
+                <Link
+                  href={ctaLink}
+                  aria-label="View Overcoat Details"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                    color: '#FFFFFF',
+                    flexShrink: 0,
+                    transition: 'background-color 0.2s ease, transform 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--color-golden, #C29B4C)';
+                    e.currentTarget.style.color = '#141414';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.12)';
+                    e.currentTarget.style.color = '#FFFFFF';
+                  }}
+                >
+                  <ArrowRight size={16} />
                 </Link>
-              </motion.div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Right Column: Micro-copy on top, Card shifted downwards */}
+        <motion.div
+          className="editorial-col-right"
+          style={{ y: yRight }}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <p className="editorial-copy-top-right">
+            {rightText}
+          </p>
+
+          <div className="editorial-card-wrapper editorial-card-right">
+            <div className="editorial-card-img-zoom" style={{ position: 'relative', width: '100%', height: '100%' }}>
+              <Image
+                src={rightImage}
+                alt={rightAlt}
+                fill
+                quality={92}
+                sizes="(max-width: 1080px) 280px, 320px"
+                style={{ objectFit: 'cover', objectPosition: 'center 40%' }}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.3) 100%)',
+                  pointerEvents: 'none',
+                }}
+              />
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Mobile Swipeable View */}
+      <div className="editorial-mobile-carousel">
+        <div
+          className="editorial-mobile-cards-track"
+          onScroll={(e) => {
+            const el = e.currentTarget;
+            const index = Math.round(el.scrollLeft / (el.offsetWidth * 0.82));
+            setActiveMobileCard(Math.min(2, Math.max(0, index)));
+          }}
+        >
+          {/* Card 0 (Left Detail) */}
+          <div className="editorial-mobile-card-item">
+            <div className="editorial-card-wrapper">
+              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                <Image
+                  src={leftImage}
+                  alt={leftAlt}
+                  fill
+                  quality={90}
+                  sizes="82vw"
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Card 1 (Center Hero) */}
+          <div className="editorial-mobile-card-item">
+            <div className="editorial-card-wrapper">
+              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                <Image
+                  src={centerImage}
+                  alt={centerAlt}
+                  fill
+                  quality={92}
+                  sizes="82vw"
+                  style={{ objectFit: 'cover' }}
+                />
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '16px',
+                    left: '16px',
+                    right: '16px',
+                    padding: '12px 16px',
+                    backgroundColor: 'rgba(20, 20, 20, 0.88)',
+                    backdropFilter: 'blur(8px)',
+                    borderRadius: '12px',
+                    color: '#FFF',
+                  }}
+                >
+                  <span style={{ fontSize: '0.68rem', color: 'var(--color-golden, #C29B4C)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    {lookTitle}
+                  </span>
+                  <p style={{ fontSize: '0.86rem', fontWeight: 600, color: '#FFF', marginTop: '2px' }}>
+                    {lookSubtitle}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2 (Right Detail) */}
+          <div className="editorial-mobile-card-item">
+            <div className="editorial-card-wrapper">
+              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                <Image
+                  src={rightImage}
+                  alt={rightAlt}
+                  fill
+                  quality={90}
+                  sizes="82vw"
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
             </div>
           </div>
         </div>
+
+        <div className="editorial-mobile-dots">
+          {[0, 1, 2].map((idx) => (
+            <div
+              key={idx}
+              className={`editorial-mobile-dot ${activeMobileCard === idx ? 'active' : ''}`}
+            />
+          ))}
+        </div>
+
+        <p className="editorial-mobile-copy">
+          {activeMobileCard === 0 ? leftText : activeMobileCard === 1 ? rightText : leftText}
+        </p>
       </div>
+
+      {/* Centered Primary CTA Button */}
+      <motion.div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: '56px',
+          position: 'relative',
+          zIndex: 3,
+        }}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+      >
+        <Link href={ctaLink}>
+          <Button
+            variant="primary"
+            size="lg"
+            rightIcon={<ArrowRight size={16} />}
+            style={{
+              padding: '16px 36px',
+              borderRadius: '9999px',
+              backgroundColor: 'var(--color-black-tie, #141414)',
+              color: '#FFFFFF',
+              boxShadow: '0 12px 30px -8px rgba(20, 20, 20, 0.35)',
+              fontWeight: 500,
+              letterSpacing: '0.04em',
+            }}
+          >
+            {ctaText}
+          </Button>
+        </Link>
+      </motion.div>
     </section>
   );
 };
+

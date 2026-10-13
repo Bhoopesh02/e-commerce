@@ -40,14 +40,41 @@
   z-index: 1;
 }
 
+/* Desktop vs Mobile Responsive Image Visibility */
+.desktopImageWrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.mobileImageWrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
 .bannerImage {
   object-fit: cover;
   object-position: right 20% center;
   transition: transform 6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
+.bannerImageMobile {
+  object-fit: cover;
+  object-position: right 5% center;
+  transition: transform 6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
 .slide.active .bannerImage {
   transform: scale(1.035);
+}
+
+.slide.active .bannerImageMobile {
+  transform: scale(1.03);
 }
 
 /* Cinematic Scrim Gradients for Contrast & Legibility */
@@ -224,10 +251,6 @@
   letter-spacing: 0.04em;
 }
 
-
-
-
-
 /* Bottom Progress Track & Dot Indicators */
 .bottomIndicators {
   position: absolute;
@@ -263,36 +286,109 @@
   transition: width 0.1s linear;
 }
 
-/* Responsive Styles */
+/* =========================================================
+   Mobile View Responsiveness (Crop Like Uploaded Image)
+   ========================================================= */
 @media (max-width: 768px) {
   .carouselSection {
-    min-height: 520px;
-    height: auto;
+    min-height: clamp(500px, 120vw, 580px);
+    height: clamp(500px, 120vw, 580px);
+  }
+
+  /* Swap to Portrait Crop with Zero Quality Loss */
+  .desktopImageWrapper {
+    display: none !important;
+  }
+
+  .mobileImageWrapper {
+    display: block !important;
+  }
+
+  /* Mobile Scrim: Dark on Left for Text, Clear on Right for Model */
+  .scrimHorizontal {
+    background: linear-gradient(
+      90deg,
+      rgba(6, 10, 15, 0.94) 0%,
+      rgba(6, 10, 15, 0.84) 42%,
+      rgba(6, 10, 15, 0.28) 72%,
+      rgba(6, 10, 15, 0.02) 100%
+    );
+  }
+
+  .scrimVertical {
+    background: linear-gradient(
+      0deg,
+      rgba(6, 10, 15, 0.8) 0%,
+      transparent 40%,
+      rgba(6, 10, 15, 0.3) 100%
+    );
+  }
+
+  /* Constrain Text Width to Never Overlap Model on Right */
+  .contentLayer {
+    align-items: center;
   }
 
   .contentWrapper {
-    padding: 32px 16px;
-    gap: 12px;
+    max-width: min(310px, 68vw);
+    padding: 24px 16px;
+    gap: 10px;
   }
 
-  .bannerImage {
-    object-position: right 35% center;
+  .badge {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    margin-bottom: -2px;
   }
 
   .headline {
-    font-size: 2rem;
+    font-size: clamp(1.48rem, 5.6vw, 1.95rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
   }
 
   .subtitle {
-    font-size: 0.95rem;
+    font-size: 0.84rem;
+    line-height: 1.35;
   }
 
   .description {
-    font-size: 0.88rem;
-    line-height: 1.55;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  }
+
+  .actions {
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .ctaButton {
+    padding: 10px 20px;
+    font-size: 0.74rem;
+    letter-spacing: 0.05em;
+  }
+
+  .piecesCount {
+    font-size: 0.74rem;
   }
 
   .bottomIndicators {
-    bottom: 16px;
+    bottom: 14px;
+    gap: 6px;
+  }
+
+  .indicatorBar {
+    width: 28px;
+    height: 2.5px;
+  }
+
+  .indicatorBar.activeIndicator {
+    width: 48px;
   }
 }
