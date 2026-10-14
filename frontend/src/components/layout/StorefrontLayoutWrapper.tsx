@@ -15,8 +15,6 @@ const CartDrawer = dynamic(
   { ssr: false }
 );
 
-import { SearchOverlay } from '@/components/search/SearchOverlay';
-
 interface StorefrontLayoutWrapperProps {
   storefrontId?: StorefrontId;
   children: React.ReactNode;
@@ -47,7 +45,6 @@ export const StorefrontLayoutWrapper: React.FC<StorefrontLayoutWrapperProps> = (
   children,
 }) => {
   const { initStorefront, setStorefront } = useStorefrontStore();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -62,13 +59,12 @@ export const StorefrontLayoutWrapper: React.FC<StorefrontLayoutWrapperProps> = (
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', overflowX: 'clip' }}>
-      <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
+      <Navbar />
       <div style={{ flex: 1 }}>{children}</div>
       {showFooter && <Footer />}
 
       {/* Global Interactive Overlays */}
       <CartDrawer />
-      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       <ToastContainer />
     </div>
   );

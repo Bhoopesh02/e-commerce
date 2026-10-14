@@ -98,7 +98,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           width: '100%',
           aspectRatio,
           overflow: 'hidden',
-          borderRadius: 'var(--radius-sm)',
+          borderRadius: '12px',
           backgroundColor: 'var(--color-icy-lake)',
           display: 'block',
         }}
@@ -116,7 +116,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <Skeleton
               width="100%"
               height="100%"
-              borderRadius={variant === 'grid' ? '8px' : 'var(--radius-sm)'}
+              borderRadius="12px"
             />
           </div>
         )}
@@ -174,57 +174,70 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Top Badges */}
         <div
-          className={`scale-[0.75] origin-top-left md:scale-100 ${variant === 'grid' ? 'drop-shadow-sm md:drop-shadow-none' : ''}`}
           style={{
             position: 'absolute',
-            top: '12px',
-            left: '12px',
+            top: '10px',
+            left: '10px',
             display: 'flex',
             flexDirection: 'column',
             gap: '6px',
             zIndex: 2,
           }}
         >
-          {product.isNewArrival && <Badge variant="default">New</Badge>}
+          {product.isNewArrival && (
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                color: 'var(--text-primary)',
+                fontSize: '0.65rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                padding: '3px 8px',
+                borderRadius: '9999px',
+                lineHeight: 1.2,
+                boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)',
+              }}
+            >
+              New
+            </span>
+          )}
         </div>
 
         {/* Wishlist Button (♡/♥) with restrained spring pop */}
         <motion.button
-          className={`hover-fill-btn ${variant === 'grid' ? 'absolute top-2 right-2 z-10 flex shrink-0 items-center justify-center rounded-full bg-[var(--bg-primary)]/90 shadow-sm w-8 h-8 min-w-[32px] min-h-[32px] md:top-[12px] md:right-[12px] md:w-[36px] md:h-[36px]' : ''}`}
           onClick={handleWishlistToggle}
           aria-label={isFavorited ? 'Remove from wishlist' : 'Add to wishlist'}
           animate={heartControls}
           whileTap={shouldReduceMotion ? undefined : { scale: 0.92 }}
-          style={variant === 'grid' ? {
-            '--fill-bg': 'var(--overlay-white-85)',
-            '--fill-hover': 'var(--brand-primary)',
-            '--text-hover': 'var(--color-diamond)',
-            border: 'none',
-            color: isFavorited ? 'var(--brand-primary)' : 'var(--color-black-tie)',
-            cursor: 'pointer',
-          } as React.CSSProperties : {
+          style={{
             position: 'absolute',
-            top: '12px',
-            right: '12px',
-            width: '36px',
-            height: '36px',
-            borderRadius: 'var(--radius-pill)',
-            '--fill-bg': 'var(--overlay-white-85)',
-            '--fill-hover': 'var(--brand-primary)',
-            '--text-hover': 'var(--color-diamond)',
+            top: '10px',
+            right: '10px',
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: 'none',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: isFavorited ? 'var(--brand-primary)' : 'var(--color-black-tie)',
+            color: isFavorited ? 'var(--brand-primary, #244B57)' : 'var(--text-primary, #141414)',
             cursor: 'pointer',
             zIndex: 3,
-          } as React.CSSProperties}
+            boxShadow: '0 1px 5px rgba(0, 0, 0, 0.12)',
+            padding: 0,
+            backdropFilter: 'blur(4px)',
+            WebkitBackdropFilter: 'blur(4px)',
+          }}
         >
           <Heart
-            size={18}
-            className={variant === 'grid' ? 'w-4 h-4 md:w-[18px] md:h-[18px]' : ''}
+            size={16}
             fill={isFavorited ? 'currentColor' : 'transparent'}
             stroke="currentColor"
             strokeWidth={1.8}
@@ -322,46 +335,50 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
       {/* Product Meta */}
       {(variant === 'standard' || variant === 'grid') && (
-        <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <Link href={`/product/${product.slug}`} onClick={onClick} className={variant === 'grid' ? 'min-w-0' : ''}>
-            <h3
-              className={variant === 'grid' ? 'text-[15px] font-serif line-clamp-2 md:text-[1rem] md:font-display md:line-clamp-none' : ''}
-              style={variant === 'grid' ? {
-                fontWeight: 500,
-                color: 'var(--text-primary)',
-                lineHeight: 1.3,
-              } : {
-                fontSize: '1rem',
-                fontWeight: 500,
-                color: 'var(--text-primary)',
-                lineHeight: 1.3,
-                fontFamily: 'var(--font-display)',
+        <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <Link href={`/product/${product.slug}`} onClick={onClick} style={{ textDecoration: 'none', minWidth: 0 }}>
+              <h3
+                style={{
+                  fontSize: 'clamp(0.95rem, 3.8vw, 1.05rem)',
+                  fontWeight: 400,
+                  color: 'var(--text-primary)',
+                  lineHeight: 1.25,
+                  fontFamily: 'var(--font-display)',
+                  margin: 0,
+                }}
+              >
+                {product.name}
+              </h3>
+            </Link>
+          </div>
+
+          {product.subtitle && (
+            <span
+              style={{
+                fontSize: 'clamp(0.78rem, 2.8vw, 0.82rem)',
+                color: 'var(--text-muted)',
+                lineHeight: 1.35,
+                marginTop: '3px',
+                display: 'block',
               }}
             >
-              {product.name}
-            </h3>
-          </Link>
-        </div>
+              {product.subtitle}
+            </span>
+          )}
 
-        {product.subtitle && (
-          <span className={variant === 'grid' ? 'truncate block text-[12px] md:text-[0.8rem]' : ''} style={variant === 'grid' ? { color: 'var(--text-muted)' } : { fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-            {product.subtitle}
-          </span>
-        )}
-
-        <div 
-          className={variant === 'grid' ? 'flex flex-wrap items-center gap-x-2 gap-y-1 min-w-0 mt-2 md:mt-[6px] md:flex-nowrap md:justify-between md:gap-0' : ''}
-          style={variant === 'grid' ? undefined : { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '6px' }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span className={variant === 'grid' ? 'text-[15px] md:text-[0.98rem]' : ''} style={variant === 'grid' ? { fontWeight: 600, color: 'var(--text-primary)' } : { fontSize: '0.98rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+          <div style={{ marginTop: '6px', display: 'flex', alignItems: 'center' }}>
+            <span
+              style={{
+                fontSize: 'clamp(0.95rem, 3.6vw, 1.05rem)',
+                fontWeight: 600,
+                color: 'var(--text-primary)',
+                letterSpacing: '-0.01em',
+              }}
+            >
               {formatPrice(product.price)}
             </span>
           </div>
-
-
-        </div>
         </div>
       )}
     </motion.div>

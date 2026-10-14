@@ -35,12 +35,12 @@ Defined centrally in `src/styles/variables.css`, these tokens form the foundatio
 ## 2. Final Palette (Observed across all code)
 
 ### Brand / Primary
-- **Diamond (`#FFFFFF`)**: Primary background, cards, content surfaces.
+- **Diamond (`#FFFFFF`)**: Primary background, cards, content surfaces, footer text.
 - **Silver (`#E0E0E0`)**: Borders, input borders, disabled controls.
 - **Icy Lake (`#CAD4D6`)**: Secondary sections, soft backgrounds, hover areas.
 - **Golden (`#C29B4C`)**: Luxury accent, primary CTA, active nav indicators.
 - **Sapphire (`#244B57`)**: Major headings, nav accents, secondary buttons, links.
-- **Black Tie (`#141414`)**: Primary text, icons, footer.
+- **Black Tie (`#141414`)**: Primary text, icons, footer background.
 
 ### Overlays
 - **Dark Overlay**: `rgba(20, 20, 20, 0.82)` to `0.86` (Black Tie base, used in `SearchOverlay.tsx` and quick-add buttons).

@@ -30,7 +30,6 @@ import {
   Sparkles,
   ChevronDown,
   ChevronLeft,
-  ArrowRight,
 } from 'lucide-react';
 
 interface ProductDetailViewProps {
@@ -69,7 +68,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-  const { addItem, setBuyNowItem } = useCartStore();
+  const { addItem } = useCartStore();
   const { isInWishlist, toggleItem } = useWishlistStore();
   const { showToast } = useToastStore();
   const router = useRouter();
@@ -197,20 +196,6 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
     }, 400);
   };
 
-  const handleBuyNow = () => {
-    if (!selectedVariant) return;
-    if (selectedVariant.stock < quantity) {
-      showToast('Requested quantity exceeds available atelier reserve.', 'error');
-      return;
-    }
-
-    setIsAddingToCart(true);
-    setBuyNowItem(product, selectedVariant.sku, selectedVariant.size, selectedVariant.color, quantity);
-    setTimeout(() => {
-      setIsAddingToCart(false);
-      router.push('/checkout');
-    }, 300);
-  };
 
   return (
     <div style={{ paddingTop: '110px', paddingBottom: '96px', backgroundColor: 'var(--bg-primary)' }}>
@@ -460,98 +445,154 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
             </div>
 
             {/* Quantity and Actions */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingTop: '8px' }}>
-              <div className="pdp-action-row">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingTop: '6px' }}>
+              {/* Quantity Stepper Row */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingBottom: '2px',
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: '0.82rem',
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em',
+                    color: 'var(--text-secondary)',
+                  }}
+                >
+                  Quantity
+                </span>
                 <div
                   className="pdp-quantity-selector"
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
                     border: '1px solid var(--border-color)',
-                    borderRadius: 'var(--radius-pill)',
-                    padding: '6px 14px',
-                    gap: '14px',
+                    borderRadius: '2px',
+                    padding: '2px 10px',
+                    gap: '12px',
                     backgroundColor: 'var(--bg-surface)',
-                    flexShrink: 0,
-                    height: '48px',
+                    height: '38px',
                     boxSizing: 'border-box',
                   }}
                 >
                   <button
                     type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}
+                    style={{
+                      fontSize: '1.1rem',
+                      color: 'var(--text-secondary)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '0 4px',
+                      lineHeight: 1,
+                    }}
                     aria-label="Decrease quantity"
                   >
                     -
                   </button>
-                  <span style={{ fontSize: '0.92rem', fontWeight: 600, minWidth: '18px', textAlign: 'center' }}>
+                  <span
+                    style={{
+                      fontSize: '0.9rem',
+                      fontWeight: 600,
+                      minWidth: '20px',
+                      textAlign: 'center',
+                      color: 'var(--text-primary)',
+                    }}
+                  >
                     {quantity}
                   </span>
                   <button
                     type="button"
                     onClick={() => setQuantity(Math.min(selectedVariant?.stock || 5, quantity + 1))}
-                    style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}
+                    style={{
+                      fontSize: '1.1rem',
+                      color: 'var(--text-secondary)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '0 4px',
+                      lineHeight: 1,
+                    }}
                     aria-label="Increase quantity"
                   >
                     +
                   </button>
                 </div>
-
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    fullWidth
-                    disabled={isOutOfStock}
-                    isLoading={isAddingToCart}
-                    onClick={handleAddToCart}
-                    leftIcon={<ShoppingBag size={17} />}
-                    disableSheen
-                  >
-                    {isOutOfStock ? 'Sold Out' : 'Add to Atelier Bag'}
-                  </Button>
-                </div>
               </div>
 
-              <div className="pdp-action-row">
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    fullWidth
-                    disabled={isOutOfStock}
-                    onClick={handleBuyNow}
-                    rightIcon={<ArrowRight size={17} />}
-                    style={{ letterSpacing: '0.05em' }}
-                    disableSheen
-                  >
-                    PROCEED TO CHECKOUT
-                  </Button>
-                </div>
+              {/* Action Buttons Stack (Styled after uploaded luxury reference) */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {/* 1. Add to Atelier Bag */}
+                <Button
+                  variant="primary"
+                  size="lg"
+                  fullWidth
+                  disabled={isOutOfStock}
+                  isLoading={isAddingToCart}
+                  onClick={handleAddToCart}
+                  disableSheen
+                  className="pdp-btn-bag"
+                  style={{
+                    borderRadius: '2px',
+                    height: '50px',
+                    minHeight: '50px',
+                    backgroundColor: 'var(--color-black-tie)',
+                    color: 'var(--color-diamond)',
+                    fontSize: '0.88rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.06em',
+                    textTransform: 'uppercase',
+                    border: '1px solid var(--color-black-tie)',
+                  }}
+                >
+                  {isOutOfStock ? 'Sold Out' : 'Add to Atelier Bag'}
+                </Button>
 
+                {/* 2. Add to Wish List (Heart button matching uploaded reference) */}
                 <button
-                  className="hover-fill-btn"
                   type="button"
                   onClick={() => toggleItem(product.id)}
+                  aria-label={isFavorited ? 'Remove from Wish List' : 'Add to Wish List'}
+                  className="pdp-wishlist-action-btn"
                   style={{
-                    width: '48px',
-                    height: '48px',
-                    borderRadius: 'var(--radius-pill)',
-                    border: '1px solid var(--border-color)',
-                    '--fill-bg': 'var(--bg-surface)',
-                    '--fill-hover': 'var(--brand-primary)',
-                    '--text-hover': 'var(--color-diamond)',
+                    position: 'relative',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: isFavorited ? 'var(--brand-primary)' : 'var(--text-primary)',
+                    width: '100%',
+                    height: '50px',
+                    backgroundColor: 'var(--bg-primary)',
+                    border: '1px solid var(--color-black-tie)',
+                    borderRadius: '2px',
+                    color: 'var(--color-black-tie)',
+                    fontSize: '0.88rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.04em',
                     cursor: 'pointer',
-                    flexShrink: 0,
-                  } as React.CSSProperties}
-                  aria-label="Toggle Wishlist"
+                    boxSizing: 'border-box',
+                    padding: '0 24px',
+                    transition: 'all var(--duration-normal) var(--ease-editorial)',
+                  }}
                 >
-                  <Heart size={20} fill={isFavorited ? 'currentColor' : 'transparent'} strokeWidth={1.8} />
+                  <Heart
+                    size={19}
+                    strokeWidth={1.8}
+                    fill={isFavorited ? 'var(--color-black-tie)' : 'none'}
+                    color="var(--color-black-tie)"
+                    style={{
+                      position: 'absolute',
+                      left: '20px',
+                      flexShrink: 0,
+                      transition: 'transform 0.2s ease, fill 0.2s ease',
+                    }}
+                  />
+                  <span>{isFavorited ? 'Saved to Wish List' : 'Add to Wish List'}</span>
                 </button>
               </div>
             </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Search, Heart, ShoppingBag, User, Menu, X } from 'lucide-react';
@@ -12,7 +12,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { BRAND_NAME } from '@/lib/constants';
 
 interface NavbarProps {
-  onOpenSearch: () => void;
+  onOpenSearch?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
@@ -21,6 +21,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const pathname = usePathname();
 
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileToggleRef = useRef<HTMLButtonElement>(null);
+
   const { getCartItemCount, openDrawer } = useCartStore();
   const { productIds } = useWishlistStore();
   const { storefront } = useStorefrontStore();
@@ -28,6 +31,55 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
   const cartCount = getCartItemCount();
   const wishlistCount = productIds.length;
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
+  // Close mobile menu on click/tap outside or Escape key
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Node;
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(target) &&
+        mobileToggleRef.current &&
+        !mobileToggleRef.current.contains(target)
+      ) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mobileMenuOpen]);
+
+  // Close mobile menu when expanding to desktop viewport
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     let isScrolledLocal = typeof window !== 'undefined' ? window.scrollY > 48 : false;
@@ -169,6 +221,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           >
             {/* Mobile Menu Button (48x48px touch target) */}
             <button
+              ref={mobileToggleRef}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               style={{
                 display: 'inline-flex',
@@ -188,6 +241,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 transition: 'filter 350ms var(--ease-luxury), color 350ms var(--ease-luxury)',
               }}
               aria-label="Toggle Navigation Menu"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation-flyout"
               className="mobile-nav-toggle"
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -310,15 +365,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               transition: 'filter 350ms var(--ease-luxury)',
             }}
           >
-            {/* Search Trigger */}
-            <button
-              onClick={onOpenSearch}
+            {/* Search Trigger: Directly navigates to /search on all devices */}
+            <Link
+              href="/search"
               aria-label="Search Collection"
               className="navbar-action-btn nav-icon search"
               style={actionBtnStyle}
             >
               <Search size={20} />
-            </button>
+            </Link>
 
             {/* Wishlist Link */}
             <Link
@@ -366,6 +421,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
+              ref={mobileMenuRef}
+              id="mobile-navigation-flyout"
               data-lenis-prevent
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}

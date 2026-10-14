@@ -1627,6 +1627,34 @@ button.filter-btn:focus-visible,
   }
 }
 
+/* Product Detail Page Action Buttons */
+.pdp-btn-bag:hover:not(:disabled) {
+  background-color: #2b2b2b !important;
+  border-color: #2b2b2b !important;
+}
+
+.pdp-wishlist-action-btn:hover {
+  background-color: var(--color-neutral-100) !important;
+  border-color: var(--color-black-tie) !important;
+}
+
+.pdp-wishlist-action-btn:active {
+  transform: scale(0.99);
+}
+
+.pdp-wishlist-action-btn:focus-visible {
+  outline: 2px solid var(--color-sapphire-700);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .pdp-wishlist-action-btn,
+  .pdp-btn-bag {
+    height: 48px !important;
+    min-height: 48px !important;
+    font-size: 0.82rem !important;
+  }
+}
 
 /* Grid Blowout Fix for PDP */
 .pdp-split-layout > div {

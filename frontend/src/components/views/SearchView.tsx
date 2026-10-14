@@ -5,8 +5,23 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { getProducts, getCategories } from '@/lib/mockApi';
 import { Product, Category } from '@/types';
 import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCard';
-import { Skeleton } from '@/components/ui/Skeleton';
-import { Search, Plus, X, ChevronDown, Check } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { Drawer } from '@/components/ui/Drawer';
+import { RangeSlider } from '@/components/ui/RangeSlider';
+import { smoothScrollService } from '@/services/smooth-scroll';
+import {
+  Search,
+  X,
+  ChevronDown,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  SlidersHorizontal,
+  RotateCcw,
+  ArrowUp,
+} from 'lucide-react';
+
+const PRODUCTS_PER_PAGE = 36;
 
 // Helper to group complex color names into selectable swatches
 const COLOR_GROUPS = [
@@ -18,7 +33,7 @@ const COLOR_GROUPS = [
   { name: 'Ivory / White', hex: '#F8F5F0', matches: ['Ivory', 'Ecru', 'Alabaster', 'Milk', 'Pearl', 'White'] },
   { name: 'Green', hex: '#2E4C38', matches: ['Emerald', 'Forest', 'Sage'] },
   { name: 'Grey', hex: '#4B4B4B', matches: ['Charcoal'] },
-  { name: 'Gold', hex: '#D4AF37', matches: ['Gold', 'Bronze'] }
+  { name: 'Gold', hex: '#D4AF37', matches: ['Gold', 'Bronze'] },
 ];
 
 const COLLECTIONS = [
@@ -26,26 +41,28 @@ const COLLECTIONS = [
   { id: 'signature', label: 'Signature' },
   { id: 'bestseller', label: 'Bestsellers' },
   { id: 'editorial', label: 'Editorial' },
-  { id: 'essential', label: 'Essentials' }
+  { id: 'essential', label: 'Essentials' },
 ];
 
-const PRICE_RANGES = [
-  { id: '0-5000', label: 'Under ₹5,000', min: 0, max: 5000 },
-  { id: '5000-10000', label: '₹5,000 – ₹10,000', min: 5000, max: 10000 },
-  { id: '10000-20000', label: '₹10,000 – ₹20,000', min: 10000, max: 20000 },
-  { id: '20000-40000', label: '₹20,000 – ₹40,000', min: 20000, max: 40000 },
-  { id: '40000-100000', label: '₹40,000+', min: 40000, max: 1000000 },
+const PRICE_PRESETS: { id: string; label: string; range: [number, number] }[] = [
+  { id: 'all', label: 'All Price Tiers', range: [0, 100000] },
+  { id: 'under-20k', label: 'Under ₹20,000', range: [0, 20000] },
+  { id: '20k-35k', label: '₹20,000 - ₹35,000', range: [20000, 35000] },
+  { id: 'above-35k', label: 'Above ₹35,000', range: [35000, 100000] },
 ];
 
 const SORT_OPTIONS = [
   { id: 'recommended', label: 'Recommended' },
   { id: 'newest', label: 'Newest' },
   { id: 'price-asc', label: 'Price: Low to High' },
-  { id: 'price-desc', label: 'Price: High to Low' }
+  { id: 'price-desc', label: 'Price: High to Low' },
 ];
 
 // Reusable hook for detecting click outside
-function useOnClickOutside<T extends HTMLElement = HTMLElement>(ref: React.RefObject<T | null>, handler: () => void) {
+function useOnClickOutside<T extends HTMLElement = HTMLElement>(
+  ref: React.RefObject<T | null>,
+  handler: () => void
+) {
   useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent) => {
       if (!ref.current || ref.current.contains(event.target as Node)) {
@@ -66,33 +83,79 @@ function SearchContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  
+
   const initialQuery = searchParams.get('q') || '';
-  
+  const pageParam = searchParams.get('page');
+  const currentPage = pageParam ? Math.max(1, parseInt(pageParam, 10) || 1) : 1;
+
   const [query, setQuery] = useState(initialQuery);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  // Active Filters
-  const [activeCategories, setActiveCategories] = useState<string[]>([]);
-  const [activeCollections, setActiveCollections] = useState<string[]>([]);
+
+  // Active Applied Filters
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [activeCollection, setActiveCollection] = useState<string>('all');
   const [activeSizes, setActiveSizes] = useState<string[]>([]);
   const [activeColors, setActiveColors] = useState<string[]>([]);
-  const [activePriceRange, setActivePriceRange] = useState<string | null>(null);
+  const [appliedPriceRange, setAppliedPriceRange] = useState<[number, number]>([0, 100000]);
+  const [appliedAvailability, setAppliedAvailability] = useState<'all' | 'in_stock'>('all');
   const [selectedSort, setSelectedSort] = useState<string>('recommended');
 
-  // Popover State
-  const [openPopover, setOpenPopover] = useState<string | null>(null);
-  const filterRef = useRef<HTMLDivElement>(null);
-  useOnClickOutside(filterRef, () => setOpenPopover(null));
+  // Staged Filter State for Drawer
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+  const [stagedCategory, setStagedCategory] = useState<string>('all');
+  const [stagedCollection, setStagedCollection] = useState<string>('all');
+  const [stagedSizes, setStagedSizes] = useState<string[]>([]);
+  const [stagedColors, setStagedColors] = useState<string[]>([]);
+  const [stagedPriceRange, setStagedPriceRange] = useState<[number, number]>([0, 100000]);
+  const [stagedAvailability, setStagedAvailability] = useState<'all' | 'in_stock'>('all');
+
+  // Sticky Bar & Sort Popover
+  const [isStuck, setIsStuck] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
+  const stickyBarRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const sortRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(sortRef, () => setSortOpen(false));
+
+  const priceMilestones = useMemo(
+    () => [
+      { value: 0, label: '₹0' },
+      { value: 20000, label: '₹20K' },
+      { value: 35000, label: '₹35K' },
+      { value: 100000, label: '₹100K+' },
+    ],
+    []
+  );
+
+  // Sticky Filter Bar Sentinel IntersectionObserver
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsStuck(!entry.isIntersecting);
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasSearched]);
 
   // Extract all available sizes from fetched products
   const availableSizes = useMemo(() => {
     const sizes = new Set<string>();
-    products.forEach(p => p.variants.forEach(v => { if (v.size && v.size !== 'undefined') sizes.add(v.size) }));
-    
-    // Sort sizes logically if possible
+    products.forEach((p) =>
+      p.variants.forEach((v) => {
+        if (v.size && v.size !== 'undefined') sizes.add(v.size);
+      })
+    );
+
     const sizeArray = Array.from(sizes);
     const order = ['XS', 'S', 'M', 'L', 'XL', 'One Size'];
     return sizeArray.sort((a, b) => {
@@ -112,7 +175,9 @@ function SearchContent() {
       if (isMounted) setCategories(cats);
     }
     loadCategories();
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   async function performSearch(searchQuery: string) {
@@ -128,38 +193,67 @@ function SearchContent() {
 
   // Parse URL params into state
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuery(initialQuery);
-    
-    if (initialQuery) {
-      performSearch(initialQuery);
-    } else {
-      setProducts([]);
-      setHasSearched(false);
-    }
-    
-    // Sync URL filters to state
+    performSearch(initialQuery);
+
     const cats = searchParams.get('category');
     const cols = searchParams.get('collection');
     const szs = searchParams.get('size');
     const clrs = searchParams.get('color');
-    const price = searchParams.get('price');
-    const sort = searchParams.get('sort');
-    
-    setActiveCategories(cats ? cats.split(',') : []);
-    setActiveCollections(cols ? cols.split(',') : []);
-    setActiveSizes(szs ? szs.split(',') : []);
-    setActiveColors(clrs ? clrs.split(',') : []);
-    setActivePriceRange(price || null);
-    setSelectedSort(sort || 'recommended');
-    
+    const priceParam = searchParams.get('price');
+    const availParam = searchParams.get('availability');
+    const sortParam = searchParams.get('sort');
+
+    const catValue = cats || 'all';
+    setActiveCategory(catValue);
+    setStagedCategory(catValue);
+
+    const colValue = cols || 'all';
+    setActiveCollection(colValue);
+    setStagedCollection(colValue);
+
+    const parsedSizes = szs ? szs.split(',').filter(Boolean) : [];
+    setActiveSizes(parsedSizes);
+    setStagedSizes(parsedSizes);
+
+    const parsedColors = clrs ? clrs.split(',').filter(Boolean) : [];
+    setActiveColors(parsedColors);
+    setStagedColors(parsedColors);
+
+    let initialPriceRange: [number, number] = [0, 100000];
+    if (priceParam) {
+      const parts = priceParam.split('-');
+      if (parts.length === 2) {
+        const min = parseInt(parts[0], 10);
+        const max = parseInt(parts[1], 10);
+        if (!isNaN(min) && !isNaN(max)) {
+          initialPriceRange = [min, max];
+        }
+      } else {
+        const matchedPreset = PRICE_PRESETS.find((p) => p.id === priceParam);
+        if (matchedPreset) {
+          initialPriceRange = matchedPreset.range;
+        }
+      }
+    }
+    setAppliedPriceRange(initialPriceRange);
+    setStagedPriceRange(initialPriceRange);
+
+    const availValue = availParam === 'in_stock' ? 'in_stock' : 'all';
+    setAppliedAvailability(availValue);
+    setStagedAvailability(availValue);
+
+    setSelectedSort(sortParam || 'recommended');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  const updateUrl = (updates: Record<string, string | null>) => {
+  const updateUrl = (updates: Record<string, string | null>, resetPage = true) => {
     const params = new URLSearchParams(searchParams.toString());
+    if (resetPage && !('page' in updates)) {
+      params.delete('page');
+    }
     Object.entries(updates).forEach(([key, value]) => {
-      if (value === null || value === '') {
+      if (value === null || value === '' || value === 'all') {
         params.delete(key);
       } else {
         params.set(key, value);
@@ -168,452 +262,1462 @@ function SearchContent() {
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const toggleFilter = (type: string, value: string) => {
-    const updateArray = (current: string[]) => 
-      current.includes(value) ? current.filter(v => v !== value) : [...current, value];
-      
-    if (type === 'category') {
-      const updated = updateArray(activeCategories);
-      updateUrl({ category: updated.length ? updated.join(',') : null });
-    } else if (type === 'collection') {
-      const updated = updateArray(activeCollections);
-      updateUrl({ collection: updated.length ? updated.join(',') : null });
-    } else if (type === 'size') {
-      const updated = updateArray(activeSizes);
-      updateUrl({ size: updated.length ? updated.join(',') : null });
-    } else if (type === 'color') {
-      const updated = updateArray(activeColors);
-      updateUrl({ color: updated.length ? updated.join(',') : null });
-    }
+  const handlePageChange = (newPage: number) => {
+    updateUrl({ page: newPage > 1 ? String(newPage) : null }, false);
+    smoothScrollService.scrollTo(0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const clearAllFilters = () => {
+  const resetFilters = () => {
+    setActiveCategory('all');
+    setActiveCollection('all');
+    setActiveSizes([]);
+    setActiveColors([]);
+    setAppliedPriceRange([0, 100000]);
+    setAppliedAvailability('all');
+
+    setStagedCategory('all');
+    setStagedCollection('all');
+    setStagedSizes([]);
+    setStagedColors([]);
+    setStagedPriceRange([0, 100000]);
+    setStagedAvailability('all');
+
     updateUrl({
       category: null,
       collection: null,
       size: null,
       color: null,
       price: null,
-      sort: null
+      availability: null,
     });
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const params = new URLSearchParams(searchParams.toString());
     if (query.trim()) {
-      const params = new URLSearchParams(searchParams.toString());
       params.set('q', query.trim());
-      router.push(`${pathname}?${params.toString()}`);
+    } else {
+      params.delete('q');
     }
+    params.delete('page');
+    router.push(`${pathname}?${params.toString()}`);
   };
+
+  const hasActiveFilters = useMemo(() => {
+    return (
+      activeCategory !== 'all' ||
+      activeCollection !== 'all' ||
+      activeSizes.length > 0 ||
+      activeColors.length > 0 ||
+      appliedPriceRange[0] > 0 ||
+      appliedPriceRange[1] < 100000 ||
+      appliedAvailability !== 'all'
+    );
+  }, [
+    activeCategory,
+    activeCollection,
+    activeSizes,
+    activeColors,
+    appliedPriceRange,
+    appliedAvailability,
+  ]);
 
   const filteredProducts = useMemo(() => {
     let list = [...products];
-    
-    if (activeCategories.length > 0) {
-      list = list.filter(p => {
-        const cat = categories.find(c => c.id === p.categoryId);
-        return cat && activeCategories.includes(cat.slug);
+
+    if (activeCategory !== 'all') {
+      list = list.filter((p) => {
+        const cat = categories.find((c) => c.id === p.categoryId);
+        return cat && cat.slug === activeCategory;
       });
     }
-    
-    if (activeCollections.length > 0) {
-      list = list.filter(p => activeCollections.some(c => p.tags.includes(c)));
+
+    if (activeCollection !== 'all') {
+      list = list.filter((p) => p.tags.includes(activeCollection));
     }
-    
+
     if (activeSizes.length > 0) {
-      list = list.filter(p => p.variants.some(v => v.stock > 0 && activeSizes.includes(v.size)));
+      list = list.filter((p) =>
+        p.variants.some((v) => v.stock > 0 && activeSizes.includes(v.size))
+      );
     }
-    
+
     if (activeColors.length > 0) {
-      list = list.filter(p => {
-        return p.variants.some(v => {
-          const matchedGroup = COLOR_GROUPS.find(g => activeColors.includes(g.name));
+      list = list.filter((p) => {
+        return p.variants.some((v) => {
+          const matchedGroup = COLOR_GROUPS.find((g) => activeColors.includes(g.name));
           if (!matchedGroup) return false;
-          return matchedGroup.matches.some(m => v.color.toLowerCase().includes(m.toLowerCase()));
+          return matchedGroup.matches.some((m) =>
+            v.color.toLowerCase().includes(m.toLowerCase())
+          );
         });
       });
     }
-    
-    if (activePriceRange) {
-      const range = PRICE_RANGES.find(r => r.id === activePriceRange);
-      if (range) {
-        list = list.filter(p => p.price >= range.min && p.price <= range.max);
-      }
+
+    if (appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000) {
+      list = list.filter(
+        (p) => p.price >= appliedPriceRange[0] && p.price <= appliedPriceRange[1]
+      );
     }
-    
+
+    if (appliedAvailability === 'in_stock') {
+      list = list.filter((p) => p.variants.some((v) => v.stock > 0));
+    }
+
     switch (selectedSort) {
-      case 'price-asc': list.sort((a, b) => a.price - b.price); break;
-      case 'price-desc': list.sort((a, b) => b.price - a.price); break;
-      case 'newest': list.sort((a, b) => (b.isNewArrival ? 1 : 0) - (a.isNewArrival ? 1 : 0)); break;
+      case 'price-asc':
+        list.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        list.sort((a, b) => b.price - a.price);
+        break;
+      case 'newest':
+        list.sort((a, b) => (b.isNewArrival ? 1 : 0) - (a.isNewArrival ? 1 : 0));
+        break;
       case 'recommended':
-      default: list.sort((a, b) => b.rating.average - a.rating.average); break;
+      default:
+        list.sort((a, b) => b.rating.average - a.rating.average);
+        break;
     }
-    
+
     return list;
-  }, [products, categories, activeCategories, activeCollections, activeSizes, activeColors, activePriceRange, selectedSort]);
+  }, [
+    products,
+    categories,
+    activeCategory,
+    activeCollection,
+    activeSizes,
+    activeColors,
+    appliedPriceRange,
+    appliedAvailability,
+    selectedSort,
+  ]);
 
-  // UI Helpers
-  const renderFilterButton = (label: string, id: string, hasActive: boolean) => (
-    <div style={{ position: 'relative' }}>
-      <button
-        onClick={() => setOpenPopover(openPopover === id ? null : id)}
-        className={`filter-btn ${hasActive ? 'active' : ''}`}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '8px 16px',
-          borderRadius: '6px',
-          border: `1px solid ${hasActive ? 'var(--brand-primary)' : 'var(--border-color)'}`,
-          backgroundColor: hasActive ? 'var(--bg-secondary)' : 'transparent',
-          color: hasActive ? 'var(--brand-primary)' : 'var(--text-primary)',
-          fontSize: '0.85rem',
-          fontWeight: 500,
-          cursor: 'pointer',
-          transition: 'all 200ms ease',
-          outline: 'none',
-        }}
-        onMouseOver={(e) => {
-          if (!hasActive) {
-            e.currentTarget.style.borderColor = 'var(--text-muted)';
-          }
-        }}
-        onMouseOut={(e) => {
-          if (!hasActive) {
-            e.currentTarget.style.borderColor = 'var(--border-color)';
-          }
-        }}
-      >
-        {label} <Plus size={14} style={{ transition: 'transform 200ms', transform: openPopover === id ? 'rotate(45deg)' : 'rotate(0)' }} />
-      </button>
-      
-      {/* Popover */}
-      {openPopover === id && (
-        <div 
-          style={{ 
-            position: 'absolute', 
-            top: 'calc(100% + 8px)', 
-            left: 0, 
-            zIndex: 50,
-            minWidth: '240px',
-            backgroundColor: 'var(--bg-primary)',
-            border: '1px solid var(--border-light)',
-            boxShadow: 'var(--shadow-editorial)',
-            borderRadius: '8px',
-            padding: '16px',
-            animation: 'fadeInUp 200ms ease forwards'
-          }}
-        >
-          {id === 'category' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <div style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: '8px' }}>Category</div>
-              {categories.map(c => (
-                <label key={c.slug} style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-primary)' }}>
-                  <input 
-                    type="checkbox" 
-                    checked={activeCategories.includes(c.slug)}
-                    onChange={() => toggleFilter('category', c.slug)}
-                    style={{ accentColor: 'var(--brand-primary)' }}
-                  />
-                  {c.name}
-                </label>
-              ))}
-            </div>
-          )}
-          
-          {id === 'collection' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <div style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: '8px' }}>Collection</div>
-              {COLLECTIONS.map(c => (
-                <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-primary)' }}>
-                  <input 
-                    type="checkbox" 
-                    checked={activeCollections.includes(c.id)}
-                    onChange={() => toggleFilter('collection', c.id)}
-                    style={{ accentColor: 'var(--brand-primary)' }}
-                  />
-                  {c.label}
-                </label>
-              ))}
-            </div>
-          )}
-          
-          {id === 'size' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>Size</div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                {availableSizes.length > 0 ? availableSizes.map(s => (
-                  <button 
-                    key={s}
-                    onClick={() => toggleFilter('size', s)}
-                    style={{
-                      padding: '6px 12px',
-                      borderRadius: '4px',
-                      border: `1px solid ${activeSizes.includes(s) ? 'var(--brand-primary)' : 'var(--border-color)'}`,
-                      backgroundColor: activeSizes.includes(s) ? 'var(--brand-primary)' : 'var(--color-diamond)',
-                      color: activeSizes.includes(s) ? 'var(--color-diamond)' : 'var(--text-primary)',
-                      fontSize: '0.85rem',
-                      cursor: 'pointer',
-                      transition: 'all 200ms'
-                    }}
-                  >
-                    {s}
-                  </button>
-                )) : <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>No sizes found</span>}
-              </div>
-            </div>
-          )}
-          
-          {id === 'color' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>Color</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                {COLOR_GROUPS.map(g => (
-                  <label key={g.name} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-primary)' }}>
-                    <div style={{ 
-                      width: '18px', height: '18px', borderRadius: '50%', backgroundColor: g.hex, 
-                      border: '1px solid var(--shadow-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' 
-                    }}>
-                      {activeColors.includes(g.name) && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: g.hex === '#F8F5F0' ? '#000' : 'var(--color-diamond)' }} />}
-                    </div>
-                    <span style={{ fontWeight: activeColors.includes(g.name) ? 600 : 400 }}>{g.name}</span>
-                    <input 
-                      type="checkbox" 
-                      checked={activeColors.includes(g.name)}
-                      onChange={() => toggleFilter('color', g.name)}
-                      style={{ display: 'none' }}
-                    />
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
-          
-          {id === 'price' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <div style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: '8px' }}>Price Range</div>
-              {PRICE_RANGES.map(p => (
-                <label key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-primary)' }}>
-                  <input 
-                    type="radio" 
-                    checked={activePriceRange === p.id}
-                    onChange={() => {
-                      updateUrl({ price: activePriceRange === p.id ? null : p.id });
-                    }}
-                    style={{ accentColor: 'var(--brand-primary)' }}
-                  />
-                  {p.label}
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
 
-  const activeChips = [
-    ...activeCategories.map(c => ({ type: 'category', value: c, label: categories.find(cat => cat.slug === c)?.name || c })),
-    ...activeCollections.map(c => ({ type: 'collection', value: c, label: COLLECTIONS.find(col => col.id === c)?.label || c })),
-    ...activeSizes.map(s => ({ type: 'size', value: s, label: s })),
-    ...activeColors.map(c => ({ type: 'color', value: c, label: c })),
-    ...(activePriceRange ? [{ type: 'price', value: activePriceRange, label: PRICE_RANGES.find(p => p.id === activePriceRange)?.label || activePriceRange }] : [])
-  ];
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
+    return filteredProducts.slice(start, start + PRODUCTS_PER_PAGE);
+  }, [filteredProducts, currentPage]);
+
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) {
+      updateUrl({ page: totalPages > 1 ? String(totalPages) : null }, false);
+    }
+  }, [totalPages, currentPage]);
+
+  const getVisiblePageNumbers = (current: number, total: number): (number | string)[] => {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    if (current <= 4) {
+      return [1, 2, 3, 4, 5, '...', total];
+    }
+    if (current >= total - 3) {
+      return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+    }
+    return [1, '...', current - 1, current, current + 1, '...', total];
+  };
+
+  const chipStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '3px 10px',
+    backgroundColor: 'var(--bg-surface)',
+    borderRadius: 'var(--radius-pill)',
+    border: '1px solid var(--border-color)',
+    fontSize: '0.78rem',
+    color: 'var(--text-primary)',
+    whiteSpace: 'nowrap',
+  };
 
   return (
-    <div style={{ paddingTop: '100px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      <style dangerouslySetInnerHTML={{__html: `
+    <div className="search-page-root" style={{ paddingTop: '100px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @media (max-width: 767px) {
+          .search-page-root {
+            padding-top: 80px !important;
+            padding-bottom: 80px !important;
+          }
+          .search-page-container {
+            padding-left: 14px !important;
+            padding-right: 14px !important;
+          }
+          .search-input-wrapper {
+            margin-bottom: 24px !important;
+          }
+        }
       `}} />
-      <div className="container" style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 24px' }}>
-        
+
+      <div className="container search-page-container" style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 24px' }}>
         {/* Search Header */}
-        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <h1 style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--brand-primary)', fontWeight: 600, marginBottom: '16px' }}>SEARCH</h1>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <h1 style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--brand-primary)', fontWeight: 600, marginBottom: '12px' }}>
+            SEARCH
+          </h1>
           {initialQuery && (
-            <>
-              <h2 style={{ fontSize: '14px', fontFamily: 'var(--font-serif)', color: 'var(--text-primary)', fontWeight: 400, marginBottom: '16px' }}>
-                Search results for &quot;{initialQuery}&quot;
-              </h2>
-            </>
+            <h2 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-serif)', color: 'var(--text-primary)', fontWeight: 400, marginBottom: '8px' }}>
+              Search results for &ldquo;{initialQuery}&rdquo;
+            </h2>
           )}
         </div>
 
         {/* Search Input */}
-        <div style={{ maxWidth: '600px', margin: '0 auto 60px auto' }}>
+        <div className="search-input-wrapper" style={{ maxWidth: '580px', margin: '0 auto 40px auto' }}>
           <form onSubmit={handleSearchSubmit} style={{ position: 'relative' }}>
-            <Search size={20} style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-            <input 
-              type="text" 
+            <Search size={18} style={{ position: 'absolute', left: '18px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+            <input
+              type="text"
+              autoFocus={!initialQuery}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search for products..."
+              placeholder="Search by product, category, color..."
               style={{
                 width: '100%',
-                padding: '18px 20px 18px 56px',
-                fontSize: '1rem',
-                borderRadius: '8px',
+                padding: '16px 46px 16px 50px',
+                fontSize: '0.95rem',
+                borderRadius: 'var(--radius-pill)',
                 border: '1px solid var(--border-color)',
                 backgroundColor: 'var(--bg-surface)',
                 outline: 'none',
                 color: 'var(--text-primary)',
-                transition: 'border-color 200ms ease'
+                transition: 'border-color 200ms ease, box-shadow 200ms ease',
               }}
-              onFocus={(e) => e.target.style.borderColor = 'var(--brand-primary)'}
-              onBlur={(e) => e.target.style.borderColor = 'var(--border-color)'}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'var(--text-muted)';
+                e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0,0,0,0.04)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-color)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             />
+            {query && (
+              <button
+                type="button"
+                onClick={() => {
+                  setQuery('');
+                  const params = new URLSearchParams(searchParams.toString());
+                  params.delete('q');
+                  params.delete('page');
+                  router.push(`${pathname}?${params.toString()}`);
+                }}
+                aria-label="Clear search input"
+                style={{
+                  position: 'absolute',
+                  right: '16px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-muted)',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '50%',
+                }}
+              >
+                <X size={16} />
+              </button>
+            )}
           </form>
-
-
         </div>
+      </div>
 
-        {hasSearched && (
-          <>
-            {/* Desktop Filters */}
-            <div className="hidden md:block mb-10" ref={filterRef}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderTop: '1px solid var(--border-light)', borderBottom: activeChips.length === 0 ? '1px solid var(--border-light)' : 'none', padding: '24px 0', paddingBottom: activeChips.length === 0 ? '24px' : '0' }}>
-                
-                {/* Left: Filter Buttons */}
-                <div>
-                  <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)', fontWeight: 600, marginBottom: '16px' }}>
-                    FILTER
-                  </div>
-                  <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    {renderFilterButton('Category', 'category', activeCategories.length > 0)}
-                    {renderFilterButton('Collection', 'collection', activeCollections.length > 0)}
-                    {renderFilterButton('Size', 'size', activeSizes.length > 0)}
-                    {renderFilterButton('Color', 'color', activeColors.length > 0)}
-                    {renderFilterButton('Price', 'price', activePriceRange !== null)}
-                  </div>
+      {hasSearched && (
+        <>
+          {/* Sticky Filter Bar Sentinel */}
+          <div ref={sentinelRef} style={{ height: '1px', marginBottom: '-1px', pointerEvents: 'none' }} aria-hidden="true" />
+
+          {/* Sticky Filter Bar matching New Arrivals */}
+          <div
+            ref={stickyBarRef}
+            className={`sticky-navigation-header ${isStuck ? 'is-stuck' : ''}`}
+            style={{ paddingTop: '8px', paddingBottom: '8px', marginBottom: '28px' }}
+          >
+            <div className="container search-page-container" style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 24px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '16px',
+                  minHeight: '36px',
+                  flexWrap: 'wrap',
+                }}
+              >
+                {/* Active Filters inside the Bar */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    gap: '8px',
+                    minWidth: 0,
+                    flex: 1,
+                  }}
+                >
+                  {hasActiveFilters ? (
+                    <>
+                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                        Active Filters:
+                      </span>
+                      {activeCategory !== 'all' && (
+                        <span style={chipStyle}>
+                          <span>Category: {categories.find((c) => c.slug === activeCategory)?.name || activeCategory}</span>
+                          <X
+                            size={12}
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                              setActiveCategory('all');
+                              setStagedCategory('all');
+                              updateUrl({ category: null });
+                            }}
+                            aria-label="Remove category filter"
+                          />
+                        </span>
+                      )}
+                      {activeCollection !== 'all' && (
+                        <span style={chipStyle}>
+                          <span>Collection: {COLLECTIONS.find((c) => c.id === activeCollection)?.label || activeCollection}</span>
+                          <X
+                            size={12}
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                              setActiveCollection('all');
+                              setStagedCollection('all');
+                              updateUrl({ collection: null });
+                            }}
+                            aria-label="Remove collection filter"
+                          />
+                        </span>
+                      )}
+                      {activeSizes.map((s) => (
+                        <span key={s} style={chipStyle}>
+                          <span>Size: {s}</span>
+                          <X
+                            size={12}
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                              const next = activeSizes.filter((item) => item !== s);
+                              setActiveSizes(next);
+                              setStagedSizes(next);
+                              updateUrl({ size: next.length ? next.join(',') : null });
+                            }}
+                            aria-label={`Remove size ${s} filter`}
+                          />
+                        </span>
+                      ))}
+                      {activeColors.map((c) => (
+                        <span key={c} style={chipStyle}>
+                          <span>Color: {c}</span>
+                          <X
+                            size={12}
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                              const next = activeColors.filter((item) => item !== c);
+                              setActiveColors(next);
+                              setStagedColors(next);
+                              updateUrl({ color: next.length ? next.join(',') : null });
+                            }}
+                            aria-label={`Remove color ${c} filter`}
+                          />
+                        </span>
+                      ))}
+                      {(appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000) && (
+                        <span style={chipStyle}>
+                          <span>
+                            Price: ₹{appliedPriceRange[0].toLocaleString()} - ₹{appliedPriceRange[1].toLocaleString()}
+                          </span>
+                          <X
+                            size={12}
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                              setAppliedPriceRange([0, 100000]);
+                              setStagedPriceRange([0, 100000]);
+                              updateUrl({ price: null });
+                            }}
+                            aria-label="Remove price filter"
+                          />
+                        </span>
+                      )}
+                      {appliedAvailability !== 'all' && (
+                        <span style={chipStyle}>
+                          <span>In Stock Only</span>
+                          <X
+                            size={12}
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                              setAppliedAvailability('all');
+                              setStagedAvailability('all');
+                              updateUrl({ availability: null });
+                            }}
+                            aria-label="Remove availability filter"
+                          />
+                        </span>
+                      )}
+                      <button
+                        onClick={resetFilters}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          background: 'none',
+                          border: 'none',
+                          fontSize: '0.78rem',
+                          color: 'var(--brand-primary)',
+                          cursor: 'pointer',
+                          marginLeft: '4px',
+                          padding: 0,
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        <RotateCcw size={12} /> Reset all
+                      </button>
+                    </>
+                  ) : (
+                    <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', letterSpacing: '0.02em' }}>
+                      {!loading ? (
+                        totalPages > 1
+                          ? `${filteredProducts.length} Results (Page ${currentPage} of ${totalPages})`
+                          : `${filteredProducts.length} Results`
+                      ) : (
+                        'Searching...'
+                      )}
+                    </span>
+                  )}
                 </div>
 
-                {/* Right: Sort By */}
-                <div>
-                  <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)', fontWeight: 600, marginBottom: '16px', textAlign: 'right' }}>
-                    SORT BY
-                  </div>
-                  <div style={{ position: 'relative' }}>
+                {/* Right side: Sort + Filter trigger */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0, marginLeft: 'auto' }}>
+                  {/* Sort Dropdown */}
+                  <div style={{ position: 'relative' }} ref={sortRef}>
                     <button
-                      onClick={() => setOpenPopover(openPopover === 'sort' ? null : 'sort')}
+                      onClick={() => setSortOpen((prev) => !prev)}
+                      aria-label="Sort options"
                       style={{
                         display: 'inline-flex',
                         alignItems: 'center',
-                        justifyContent: 'space-between',
-                        minWidth: '200px',
                         gap: '8px',
-                        padding: '8px 16px',
-                        borderRadius: '6px',
+                        padding: '6px 14px',
+                        borderRadius: 'var(--radius-pill)',
                         border: '1px solid var(--border-color)',
-                        backgroundColor: 'transparent',
+                        backgroundColor: 'var(--bg-surface)',
+                        fontSize: '0.82rem',
                         color: 'var(--text-primary)',
-                        fontSize: '0.85rem',
-                        fontWeight: 500,
                         cursor: 'pointer',
-                        transition: 'border-color 200ms ease',
-                        outline: 'none',
+                        transition: 'border-color 0.2s ease',
                       }}
                     >
-                      {SORT_OPTIONS.find(s => s.id === selectedSort)?.label}
-                      <ChevronDown size={14} style={{ transition: 'transform 200ms', transform: openPopover === 'sort' ? 'rotate(180deg)' : 'rotate(0)' }} />
+                      <span>{SORT_OPTIONS.find((s) => s.id === selectedSort)?.label}</span>
+                      <ChevronDown
+                        size={14}
+                        style={{
+                          transform: sortOpen ? 'rotate(180deg)' : 'rotate(0)',
+                          transition: 'transform 0.2s ease',
+                        }}
+                      />
                     </button>
-                    {openPopover === 'sort' && (
-                      <div style={{ 
-                        position: 'absolute', top: 'calc(100% + 8px)', right: 0, zIndex: 50,
-                        minWidth: '200px', backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border-light)',
-                        boxShadow: 'var(--shadow-editorial)', borderRadius: '8px', padding: '8px 0',
-                        animation: 'fadeInUp 200ms ease forwards'
-                      }}>
-                        {SORT_OPTIONS.map(opt => (
+                    {sortOpen && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: 'calc(100% + 6px)',
+                          right: 0,
+                          zIndex: 60,
+                          minWidth: '190px',
+                          backgroundColor: 'var(--bg-primary)',
+                          border: '1px solid var(--border-light)',
+                          boxShadow: 'var(--shadow-editorial)',
+                          borderRadius: '10px',
+                          padding: '6px 0',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {SORT_OPTIONS.map((opt) => (
                           <button
                             key={opt.id}
-                            onClick={() => { updateUrl({ sort: opt.id }); setOpenPopover(null); }}
-                            style={{
-                              display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
-                              padding: '10px 16px', border: 'none', background: 'transparent', cursor: 'pointer',
-                              color: selectedSort === opt.id ? 'var(--brand-primary)' : 'var(--text-primary)',
-                              fontSize: '0.85rem', fontWeight: selectedSort === opt.id ? 600 : 400,
-                              textAlign: 'left'
+                            onClick={() => {
+                              setSelectedSort(opt.id);
+                              updateUrl({ sort: opt.id });
+                              setSortOpen(false);
                             }}
-                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-surface)'}
-                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              width: '100%',
+                              padding: '8px 16px',
+                              border: 'none',
+                              backgroundColor: 'transparent',
+                              color: selectedSort === opt.id ? 'var(--brand-primary)' : 'var(--text-primary)',
+                              fontSize: '0.82rem',
+                              fontWeight: selectedSort === opt.id ? 600 : 400,
+                              cursor: 'pointer',
+                              textAlign: 'left',
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-surface)')}
+                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                           >
-                            {opt.label}
+                            <span>{opt.label}</span>
                             {selectedSort === opt.id && <Check size={14} />}
                           </button>
                         ))}
                       </div>
                     )}
                   </div>
-                </div>
-              </div>
-              
-              {/* Active Chips Row */}
-              {activeChips.length > 0 && (
-                <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px', paddingBottom: '24px', borderBottom: '1px solid var(--border-light)', marginTop: '24px' }}>
-                  <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)', marginRight: '8px' }}>Active:</span>
-                  {activeChips.map(chip => (
-                    <button
-                      key={`${chip.type}-${chip.value}`}
-                      onClick={() => {
-                        if (chip.type === 'price') updateUrl({ price: null });
-                        else toggleFilter(chip.type, chip.value);
-                      }}
-                      style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '6px',
-                        padding: '4px 12px', borderRadius: '4px',
-                        backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
-                        color: 'var(--brand-primary)', fontSize: '0.8rem', fontWeight: 500,
-                        cursor: 'pointer', transition: 'all 200ms ease'
-                      }}
-                    >
-                      {chip.label} <X size={12} />
-                    </button>
-                  ))}
-                  <button 
-                    onClick={clearAllFilters}
-                    style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.8rem', textDecoration: 'underline', cursor: 'pointer', marginLeft: '8px' }}
+
+                  {/* Divider */}
+                  <div
+                    style={{
+                      width: '1px',
+                      height: '20px',
+                      backgroundColor: 'var(--border-color)',
+                      flexShrink: 0,
+                    }}
+                  />
+
+                  {/* Filters Button */}
+                  <button
+                    onClick={() => {
+                      setStagedCategory(activeCategory);
+                      setStagedCollection(activeCollection);
+                      setStagedSizes(activeSizes);
+                      setStagedColors(activeColors);
+                      setStagedPriceRange(appliedPriceRange);
+                      setStagedAvailability(appliedAvailability);
+                      setFilterDrawerOpen(true);
+                    }}
+                    aria-label="Open Filters"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '7px 0px',
+                      border: 'none',
+                      fontSize: '0.82rem',
+                      fontWeight: 600,
+                      backgroundColor: 'transparent',
+                      color: 'var(--text-primary)',
+                      cursor: 'pointer',
+                      outline: 'none',
+                      boxShadow: 'none',
+                    }}
                   >
-                    Clear All
+                    <SlidersHorizontal size={14} />
+                    <span>Filters</span>
+                    {hasActiveFilters && (
+                      <span
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: '6px',
+                          height: '6px',
+                          borderRadius: '50%',
+                          backgroundColor: 'var(--color-terracotta, var(--color-golden-500))',
+                          marginLeft: '2px',
+                        }}
+                      />
+                    )}
                   </button>
                 </div>
-              )}
-            </div>
-
-
-            {/* Results Header */}
-            <div style={{ marginBottom: '24px' }}>
-              <p style={{ color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: 500, letterSpacing: '0.02em', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
-                {!loading ? `${filteredProducts.length} RESULTS` : '...'}
-              </p>
-            </div>
-
-            {loading ? (
-              <ProductGridSkeleton count={4} />
-            ) : filteredProducts.length > 0 ? (
-              <div className="max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}>
-                {filteredProducts.map(product => (
-                  <ProductCard key={product.id} product={product} variant="standard" />
-                ))}
               </div>
+            </div>
+          </div>
+
+          {/* Results Grid Container */}
+          <div className="container search-page-container" style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 24px' }}>
+            {loading ? (
+              <ProductGridSkeleton count={8} />
+            ) : paginatedProducts.length > 0 ? (
+              <>
+                <div
+                  className="max-md:!grid max-md:!grid-cols-2 max-md:!gap-x-[12px] max-md:!gap-y-[28px]"
+                  style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}
+                >
+                  {paginatedProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} variant="standard" />
+                  ))}
+                </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div
+                    style={{
+                      marginTop: '56px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '20px',
+                      paddingTop: '32px',
+                      borderTop: '1px solid var(--border-light)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: '0.85rem',
+                        color: 'var(--text-muted)',
+                        letterSpacing: '0.04em',
+                      }}
+                    >
+                      Showing {(currentPage - 1) * PRODUCTS_PER_PAGE + 1}–
+                      {Math.min(currentPage * PRODUCTS_PER_PAGE, filteredProducts.length)} of {filteredProducts.length} Results
+                    </div>
+
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        flexWrap: 'wrap',
+                      }}
+                    >
+                      {/* Previous Page Button */}
+                      <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        aria-label="Previous Page"
+                        style={{
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          border: '1px solid var(--border-color)',
+                          backgroundColor: 'var(--bg-surface)',
+                          color: 'var(--text-primary)',
+                          cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                          opacity: currentPage === 1 ? 0.35 : 1,
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        <ChevronLeft size={18} />
+                      </button>
+
+                      {/* Page Numbers */}
+                      {getVisiblePageNumbers(currentPage, totalPages).map((pageNum, idx) => {
+                        if (typeof pageNum === 'string') {
+                          return (
+                            <span
+                              key={`ellipsis-${idx}`}
+                              style={{
+                                width: '32px',
+                                textAlign: 'center',
+                                color: 'var(--text-muted)',
+                                fontSize: '0.9rem',
+                                userSelect: 'none',
+                              }}
+                            >
+                              {pageNum}
+                            </span>
+                          );
+                        }
+
+                        const isActive = currentPage === pageNum;
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => handlePageChange(pageNum)}
+                            aria-label={`Page ${pageNum}`}
+                            aria-current={isActive ? 'page' : undefined}
+                            style={{
+                              width: '40px',
+                              height: '40px',
+                              borderRadius: '50%',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '0.875rem',
+                              fontWeight: isActive ? 600 : 400,
+                              border: isActive ? '1px solid var(--text-primary)' : '1px solid var(--border-color)',
+                              backgroundColor: isActive ? 'var(--text-primary)' : 'var(--bg-surface)',
+                              color: isActive ? 'var(--bg-primary)' : 'var(--text-primary)',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s ease',
+                            }}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      })}
+
+                      {/* Next Page Button */}
+                      <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        aria-label="Next Page"
+                        style={{
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          border: '1px solid var(--border-color)',
+                          backgroundColor: 'var(--bg-surface)',
+                          color: 'var(--text-primary)',
+                          cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                          opacity: currentPage === totalPages ? 0.35 : 1,
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        <ChevronRight size={18} />
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Return to Top Button matching New Arrivals */}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: filteredProducts.length > PRODUCTS_PER_PAGE ? '36px' : '60px',
+                  }}
+                >
+                  <button
+                    onClick={() => {
+                      smoothScrollService.scrollTo(0);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="hover-fill-btn"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '10px 24px',
+                      borderRadius: 'var(--radius-pill)',
+                      border: '1px solid var(--border-color)',
+                      fontSize: '0.85rem',
+                      fontWeight: 500,
+                      backgroundColor: 'var(--bg-surface)',
+                      color: 'var(--text-primary)',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <ArrowUp size={16} />
+                    <span>Return to Top</span>
+                  </button>
+                </div>
+              </>
             ) : (
-              <div style={{ textAlign: 'center', padding: '80px 24px', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)' }}>
-                <h3 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-serif)', marginBottom: '16px', color: 'var(--text-primary)' }}>NO RESULTS</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '1rem', marginBottom: '32px' }}>
-                  We couldn&apos;t find anything matching your filters.<br/>
-                  Try adjusting your selections or explore our collections.
+              <div
+                style={{
+                  textAlign: 'center',
+                  padding: '80px 24px',
+                  backgroundColor: 'var(--bg-surface)',
+                  borderRadius: 'var(--radius-md)',
+                  border: '1px solid var(--border-light)',
+                  margin: '40px 0',
+                }}
+              >
+                <h3 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-serif)', marginBottom: '16px', color: 'var(--text-primary)' }}>
+                  NO RESULTS FOUND
+                </h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '32px', maxWidth: '440px', margin: '0 auto 28px auto' }}>
+                  We couldn&apos;t find anything matching your search and filter criteria. Try adjusting or clearing your filters.
                 </p>
-                <button onClick={clearAllFilters} style={{ display: 'inline-flex', padding: '12px 28px', backgroundColor: 'var(--text-secondary)', color: "var(--text-inverse)", borderRadius: '8px', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', transition: 'background-color 200ms ease', border: 'none', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--brand-primary)'} onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#7c1d35'}>
+                <button
+                  onClick={resetFilters}
+                  style={{
+                    display: 'inline-flex',
+                    padding: '12px 28px',
+                    backgroundColor: 'var(--text-primary)',
+                    color: 'var(--bg-primary)',
+                    borderRadius: 'var(--radius-pill)',
+                    fontSize: '0.82rem',
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    transition: 'opacity 200ms ease',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.85')}
+                  onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+                >
                   Clear All Filters
                 </button>
               </div>
             )}
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
+
+      {/* Slide-over Filter Drawer matching New Arrivals */}
+      <Drawer
+        isOpen={filterDrawerOpen}
+        onClose={() => {
+          setStagedCategory(activeCategory);
+          setStagedCollection(activeCollection);
+          setStagedSizes(activeSizes);
+          setStagedColors(activeColors);
+          setStagedPriceRange(appliedPriceRange);
+          setStagedAvailability(appliedAvailability);
+          setFilterDrawerOpen(false);
+        }}
+        title="REFINE SEARCH"
+        position="right"
+        contentStyle={{ backgroundColor: 'var(--bg-surface)' }}
+        headerStyle={{ borderBottom: '1px solid var(--overlay-black-5)', padding: '24px 32px 16px' }}
+        titleStyle={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', letterSpacing: '0.02em', color: 'var(--text-primary)' }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '16px 8px 120px' }}>
+          {/* Category Filter */}
+          <div>
+            <h4
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontSize: '1.05rem',
+                letterSpacing: '0.06em',
+                marginBottom: '16px',
+                color: 'var(--text-primary)',
+                textTransform: 'uppercase',
+              }}
+            >
+              Category
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  fontSize: '0.95rem',
+                  cursor: 'pointer',
+                  color: 'var(--text-primary)',
+                  padding: '8px 10px',
+                  borderRadius: '8px',
+                  backgroundColor: stagedCategory === 'all' ? 'var(--overlay-black-5)' : 'transparent',
+                  transition: 'background-color 0.2s ease, opacity 0.2s ease',
+                  userSelect: 'none',
+                }}
+              >
+                <div
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    borderRadius: '50%',
+                    border:
+                      stagedCategory === 'all'
+                        ? '1.5px solid var(--color-black-tie)'
+                        : '1.5px solid var(--border-color)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    backgroundColor: stagedCategory === 'all' ? 'var(--color-black-tie)' : 'transparent',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {stagedCategory === 'all' && (
+                    <div
+                      style={{
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        backgroundColor: 'var(--color-diamond)',
+                      }}
+                    />
+                  )}
+                </div>
+                <input
+                  type="radio"
+                  name="search-category"
+                  checked={stagedCategory === 'all'}
+                  onChange={() => setStagedCategory('all')}
+                  style={{ display: 'none' }}
+                />
+                <span
+                  style={{
+                    fontWeight: stagedCategory === 'all' ? 600 : 400,
+                    opacity: stagedCategory === 'all' ? 1 : 0.85,
+                    letterSpacing: '0.01em',
+                  }}
+                >
+                  All Categories
+                </span>
+              </label>
+
+              {categories.map((cat) => {
+                const isSelected = stagedCategory === cat.slug;
+                return (
+                  <label
+                    key={cat.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      fontSize: '0.95rem',
+                      cursor: 'pointer',
+                      color: 'var(--text-primary)',
+                      padding: '8px 10px',
+                      borderRadius: '8px',
+                      backgroundColor: isSelected ? 'var(--overlay-black-5)' : 'transparent',
+                      transition: 'background-color 0.2s ease, opacity 0.2s ease',
+                      userSelect: 'none',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '18px',
+                        height: '18px',
+                        borderRadius: '50%',
+                        border: isSelected
+                          ? '1.5px solid var(--color-black-tie)'
+                          : '1.5px solid var(--border-color)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        backgroundColor: isSelected ? 'var(--color-black-tie)' : 'transparent',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            width: '6px',
+                            height: '6px',
+                            borderRadius: '50%',
+                            backgroundColor: 'var(--color-diamond)',
+                          }}
+                        />
+                      )}
+                    </div>
+                    <input
+                      type="radio"
+                      name="search-category"
+                      checked={isSelected}
+                      onChange={() => setStagedCategory(cat.slug)}
+                      style={{ display: 'none' }}
+                    />
+                    <span
+                      style={{
+                        fontWeight: isSelected ? 600 : 400,
+                        opacity: isSelected ? 1 : 0.85,
+                        letterSpacing: '0.01em',
+                      }}
+                    >
+                      {cat.name}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Collection Filter */}
+          <div>
+            <h4
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontSize: '1.05rem',
+                letterSpacing: '0.06em',
+                marginBottom: '16px',
+                color: 'var(--text-primary)',
+                textTransform: 'uppercase',
+              }}
+            >
+              Collection
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  fontSize: '0.95rem',
+                  cursor: 'pointer',
+                  color: 'var(--text-primary)',
+                  padding: '8px 10px',
+                  borderRadius: '8px',
+                  backgroundColor: stagedCollection === 'all' ? 'var(--overlay-black-5)' : 'transparent',
+                  transition: 'background-color 0.2s ease, opacity 0.2s ease',
+                  userSelect: 'none',
+                }}
+              >
+                <div
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    borderRadius: '50%',
+                    border:
+                      stagedCollection === 'all'
+                        ? '1.5px solid var(--color-black-tie)'
+                        : '1.5px solid var(--border-color)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    backgroundColor: stagedCollection === 'all' ? 'var(--color-black-tie)' : 'transparent',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {stagedCollection === 'all' && (
+                    <div
+                      style={{
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        backgroundColor: 'var(--color-diamond)',
+                      }}
+                    />
+                  )}
+                </div>
+                <input
+                  type="radio"
+                  name="search-collection"
+                  checked={stagedCollection === 'all'}
+                  onChange={() => setStagedCollection('all')}
+                  style={{ display: 'none' }}
+                />
+                <span
+                  style={{
+                    fontWeight: stagedCollection === 'all' ? 600 : 400,
+                    opacity: stagedCollection === 'all' ? 1 : 0.85,
+                    letterSpacing: '0.01em',
+                  }}
+                >
+                  All Collections
+                </span>
+              </label>
+
+              {COLLECTIONS.map((col) => {
+                const isSelected = stagedCollection === col.id;
+                return (
+                  <label
+                    key={col.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      fontSize: '0.95rem',
+                      cursor: 'pointer',
+                      color: 'var(--text-primary)',
+                      padding: '8px 10px',
+                      borderRadius: '8px',
+                      backgroundColor: isSelected ? 'var(--overlay-black-5)' : 'transparent',
+                      transition: 'background-color 0.2s ease, opacity 0.2s ease',
+                      userSelect: 'none',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '18px',
+                        height: '18px',
+                        borderRadius: '50%',
+                        border: isSelected
+                          ? '1.5px solid var(--color-black-tie)'
+                          : '1.5px solid var(--border-color)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        backgroundColor: isSelected ? 'var(--color-black-tie)' : 'transparent',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            width: '6px',
+                            height: '6px',
+                            borderRadius: '50%',
+                            backgroundColor: 'var(--color-diamond)',
+                          }}
+                        />
+                      )}
+                    </div>
+                    <input
+                      type="radio"
+                      name="search-collection"
+                      checked={isSelected}
+                      onChange={() => setStagedCollection(col.id)}
+                      style={{ display: 'none' }}
+                    />
+                    <span
+                      style={{
+                        fontWeight: isSelected ? 600 : 400,
+                        opacity: isSelected ? 1 : 0.85,
+                        letterSpacing: '0.01em',
+                      }}
+                    >
+                      {col.label}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Sizes */}
+          {availableSizes.length > 0 && (
+            <div>
+              <h4
+                style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: '1rem',
+                  letterSpacing: '0.06em',
+                  marginBottom: '16px',
+                  color: 'var(--text-primary)',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Size
+              </h4>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {availableSizes.map((s) => {
+                  const isSelected = stagedSizes.includes(s);
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => {
+                        setStagedSizes((prev) =>
+                          prev.includes(s) ? prev.filter((item) => item !== s) : [...prev, s]
+                        );
+                      }}
+                      style={{
+                        minWidth: '44px',
+                        height: '40px',
+                        padding: '0 14px',
+                        borderRadius: 'var(--radius-pill)',
+                        border: isSelected
+                          ? '1.5px solid var(--color-black-tie)'
+                          : '1px solid var(--border-color)',
+                        backgroundColor: isSelected ? 'var(--color-black-tie)' : 'var(--bg-surface)',
+                        color: isSelected ? 'var(--color-diamond)' : 'var(--text-primary)',
+                        fontSize: '0.85rem',
+                        fontWeight: isSelected ? 600 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      {s}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Colors */}
+          <div>
+            <h4
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontSize: '1rem',
+                letterSpacing: '0.06em',
+                marginBottom: '16px',
+                color: 'var(--text-primary)',
+                textTransform: 'uppercase',
+              }}
+            >
+              Color
+            </h4>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              {COLOR_GROUPS.map((g) => {
+                const isSelected = stagedColors.includes(g.name);
+                return (
+                  <label
+                    key={g.name}
+                    onClick={() => {
+                      setStagedColors((prev) =>
+                        prev.includes(g.name) ? prev.filter((c) => c !== g.name) : [...prev, g.name]
+                      );
+                    }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      padding: '8px 10px',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      backgroundColor: isSelected ? 'var(--overlay-black-5)' : 'transparent',
+                      transition: 'all 0.2s ease',
+                      userSelect: 'none',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '20px',
+                        height: '20px',
+                        borderRadius: '50%',
+                        backgroundColor: g.hex,
+                        border: '1px solid var(--border-color)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            width: '6px',
+                            height: '6px',
+                            borderRadius: '50%',
+                            backgroundColor: g.hex === '#F8F5F0' ? '#000' : 'var(--color-diamond)',
+                          }}
+                        />
+                      )}
+                    </div>
+                    <span
+                      style={{
+                        fontSize: '0.9rem',
+                        color: 'var(--text-primary)',
+                        fontWeight: isSelected ? 600 : 400,
+                        opacity: isSelected ? 1 : 0.85,
+                      }}
+                    >
+                      {g.name}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Price Tier */}
+          <div>
+            <h4
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontSize: '1rem',
+                letterSpacing: '0.06em',
+                marginBottom: '16px',
+                color: 'var(--text-primary)',
+                textTransform: 'uppercase',
+              }}
+            >
+              Price Tier
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', minWidth: 0 }}>
+                {PRICE_PRESETS.map((p) => {
+                  const isChecked = stagedPriceRange[0] === p.range[0] && stagedPriceRange[1] === p.range[1];
+                  return (
+                    <label
+                      key={p.id}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        fontSize: '0.95rem',
+                        cursor: 'pointer',
+                        padding: '8px 10px',
+                        backgroundColor: isChecked && p.id !== 'all' ? 'var(--color-diamond)' : 'transparent',
+                        borderRadius: '8px',
+                        border: isChecked && p.id !== 'all' ? '1px solid var(--overlay-black-5)' : '1px solid transparent',
+                        transition: 'all 0.2s ease',
+                        whiteSpace: 'nowrap',
+                        userSelect: 'none',
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          borderRadius: '50%',
+                          border: isChecked ? '1.5px solid var(--color-black-tie)' : '1.5px solid var(--border-color)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                          backgroundColor: isChecked ? 'var(--color-black-tie)' : 'transparent',
+                        }}
+                      >
+                        {isChecked && (
+                          <div
+                            style={{
+                              width: '6px',
+                              height: '6px',
+                              borderRadius: '50%',
+                              backgroundColor: 'var(--color-diamond)',
+                            }}
+                          />
+                        )}
+                      </div>
+                      <input
+                        type="radio"
+                        name="search-price"
+                        checked={isChecked}
+                        onChange={() => setStagedPriceRange(p.range)}
+                        style={{ display: 'none' }}
+                      />
+                      <span style={{ color: 'var(--text-primary)', fontWeight: isChecked ? 600 : 400 }}>{p.label}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              <div style={{ width: '100%', maxWidth: '420px', boxSizing: 'border-box', minWidth: 0 }}>
+                <RangeSlider
+                  min={0}
+                  max={100000}
+                  step={5000}
+                  value={stagedPriceRange}
+                  onChange={setStagedPriceRange}
+                  milestones={priceMilestones}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Availability */}
+          <div>
+            <h4
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontSize: '1rem',
+                letterSpacing: '0.06em',
+                marginBottom: '16px',
+                color: 'var(--text-primary)',
+                textTransform: 'uppercase',
+              }}
+            >
+              Availability
+            </h4>
+            <label
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                fontSize: '0.95rem',
+                cursor: 'pointer',
+                color: 'var(--text-primary)',
+                padding: '8px 10px',
+                borderRadius: '8px',
+                userSelect: 'none',
+              }}
+            >
+              <div
+                style={{
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '4px',
+                  border:
+                    stagedAvailability === 'in_stock'
+                      ? '1.5px solid var(--color-black-tie)'
+                      : '1.5px solid var(--border-color)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor:
+                    stagedAvailability === 'in_stock' ? 'var(--color-black-tie)' : 'transparent',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {stagedAvailability === 'in_stock' && (
+                  <Check size={12} color="var(--color-diamond)" strokeWidth={3} />
+                )}
+              </div>
+              <input
+                type="checkbox"
+                checked={stagedAvailability === 'in_stock'}
+                onChange={(e) => setStagedAvailability(e.target.checked ? 'in_stock' : 'all')}
+                style={{ display: 'none' }}
+              />
+              <span style={{ fontWeight: stagedAvailability === 'in_stock' ? 600 : 400 }}>
+                In Stock Pieces Only
+              </span>
+            </label>
+          </div>
+        </div>
+
+        {/* Sticky Footer */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: '100%',
+            padding: '24px 32px 32px',
+            display: 'flex',
+            gap: '16px',
+            background: 'linear-gradient(to top, var(--bg-surface) 70%, transparent 100%)',
+            borderTop: 'none',
+            pointerEvents: 'none',
+          }}
+        >
+          <div style={{ display: 'flex', gap: '12px', width: '100%', pointerEvents: 'auto' }}>
+            <Button
+              variant="outline"
+              fullWidth
+              onClick={() => {
+                setStagedCategory('all');
+                setStagedCollection('all');
+                setStagedSizes([]);
+                setStagedColors([]);
+                setStagedPriceRange([0, 100000]);
+                setStagedAvailability('all');
+              }}
+              style={{
+                borderRadius: '30px',
+                borderColor: 'var(--text-accent)',
+                color: 'var(--text-primary)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                fontWeight: 600,
+                height: '48px',
+                backgroundColor: 'transparent',
+              }}
+            >
+              Reset
+            </Button>
+            <Button
+              variant="primary"
+              fullWidth
+              onClick={() => {
+                setActiveCategory(stagedCategory);
+                setActiveCollection(stagedCollection);
+                setActiveSizes(stagedSizes);
+                setActiveColors(stagedColors);
+                setAppliedPriceRange(stagedPriceRange);
+                setAppliedAvailability(stagedAvailability);
+                setFilterDrawerOpen(false);
+                updateUrl({
+                  category: stagedCategory !== 'all' ? stagedCategory : null,
+                  collection: stagedCollection !== 'all' ? stagedCollection : null,
+                  size: stagedSizes.length ? stagedSizes.join(',') : null,
+                  color: stagedColors.length ? stagedColors.join(',') : null,
+                  price:
+                    stagedPriceRange[0] > 0 || stagedPriceRange[1] < 100000
+                      ? `${stagedPriceRange[0]}-${stagedPriceRange[1]}`
+                      : null,
+                  availability: stagedAvailability !== 'all' ? stagedAvailability : null,
+                });
+              }}
+              style={{
+                borderRadius: '30px',
+                backgroundColor: 'var(--text-primary)',
+                color: 'var(--bg-primary)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                fontWeight: 600,
+                height: '48px',
+                boxShadow: '0 8px 16px var(--overlay-golden-35)',
+                border: 'none',
+              }}
+            >
+              Apply Filters
+            </Button>
+          </div>
+        </div>
+      </Drawer>
     </div>
   );
 }
