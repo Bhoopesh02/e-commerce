@@ -29,9 +29,11 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
   const rafIdRef = useRef<number | null>(null);
 
   // Drag interaction state
+  const isPointerDownRef = useRef<boolean>(false);
   const isDraggingRef = useRef<boolean>(false);
   const [isDragging, setIsDragging] = useState(false);
   const dragStartXRef = useRef<number>(0);
+  const dragStartYRef = useRef<number>(0);
   const dragStartTargetXRef = useRef<number>(0);
   const hasMovedRef = useRef<boolean>(false);
   const lastPointerXRef = useRef<number>(0);
@@ -150,24 +152,37 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
   // Pointer / Drag interactions for track
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0) return; // Only primary mouse button
-    isDraggingRef.current = true;
-    setIsDragging(true);
+    isPointerDownRef.current = true;
+    isDraggingRef.current = false;
     hasMovedRef.current = false;
     dragStartXRef.current = e.clientX;
+    dragStartYRef.current = e.clientY;
     dragStartTargetXRef.current = targetXRef.current;
     lastPointerXRef.current = e.clientX;
     lastPointerTimeRef.current = performance.now();
     pointerSpeedRef.current = 0;
-
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDraggingRef.current) return;
+    if (!isPointerDownRef.current) return;
 
     const deltaX = e.clientX - dragStartXRef.current;
-    if (Math.abs(deltaX) > 4) {
-      hasMovedRef.current = true;
+    const deltaY = e.clientY - dragStartYRef.current;
+
+    // Only initiate drag if moved beyond threshold and primarily horizontal
+    if (!isDraggingRef.current) {
+      if (Math.abs(deltaX) > 6 && Math.abs(deltaX) > Math.abs(deltaY)) {
+        isDraggingRef.current = true;
+        setIsDragging(true);
+        hasMovedRef.current = true;
+        try {
+          (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+        } catch {
+          // Ignored
+        }
+      } else {
+        return;
+      }
     }
 
     // Calculate instantaneous pointer drag speed for flick inertia
@@ -183,21 +198,32 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDraggingRef.current) return;
-    isDraggingRef.current = false;
-    setIsDragging(false);
+    if (!isPointerDownRef.current) return;
+    isPointerDownRef.current = false;
 
-    try {
-      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-    } catch {
-      // Ignored if capture already lost
-    }
+    if (isDraggingRef.current) {
+      isDraggingRef.current = false;
+      setIsDragging(false);
 
-    // Add release flick inertia if released with momentum
-    const speed = pointerSpeedRef.current;
-    if (Math.abs(speed) > 0.3) {
-      const inertiaDelta = speed * 120;
-      setTargetX(targetXRef.current + inertiaDelta);
+      try {
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch {
+        // Ignored if capture already lost
+      }
+
+      // Add release flick inertia if released with momentum
+      const speed = pointerSpeedRef.current;
+      if (Math.abs(speed) > 0.25) {
+        const inertiaDelta = speed * 140;
+        setTargetX(targetXRef.current + inertiaDelta);
+      }
+
+      // Suppress any trailing click from drag release
+      setTimeout(() => {
+        hasMovedRef.current = false;
+      }, 80);
+    } else {
+      hasMovedRef.current = false;
     }
   };
 
@@ -206,7 +232,6 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
     if (hasMovedRef.current) {
       e.preventDefault();
       e.stopPropagation();
-      hasMovedRef.current = false;
     }
   };
 
@@ -319,13 +344,14 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
+            onDragStart={(e) => e.preventDefault()}
             onWheel={handleWheel}
             onClickCapture={handleClickCapture}
             style={{
               position: 'relative',
               width: '100%',
               overflow: 'hidden',
-              cursor: isDragging ? 'grabbing' : 'grab',
+              cursor: isDragging ? 'grabbing' : 'auto',
               userSelect: isDragging ? 'none' : 'auto',
               touchAction: 'pan-y',
             }}

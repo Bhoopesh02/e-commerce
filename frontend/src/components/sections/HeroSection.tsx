@@ -11,8 +11,8 @@ import {
   StaggerFadeUp,
   LineReveal,
 } from '@/components/ui/StaggerReveal';
-import heroImg from '../../../public/images/banners/Gemini_Generated_Image_piepdipiepdipiep.png';
-import heroMobileImg from '../../../public/images/banners/hero-mobile.png';
+import heroImg from '../../../public/images/banners/Gemini_Generated_Image_piepdipiepdipiep.webp';
+import heroMobileImg from '../../../public/images/banners/hero-mobile.webp';
 
 export const HeroSection: React.FC = () => {
   const { storefront } = useStorefrontStore();

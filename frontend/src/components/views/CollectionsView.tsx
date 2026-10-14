@@ -30,7 +30,7 @@ const CURATED_EDITS: CuratedEdit[] = [
     subtitle: 'Double-faced virgin wool trench coats, Spanish shearling aviators, and archival silhouettes.',
     tag: 'outerwear',
     categorySlug: 'outerwear',
-    image: '/images/categories/cat-outerwear.jpg',
+    image: '/images/categories/cat-outerwear.webp',
     badge: 'Archival Heritage',
   },
   {
@@ -39,7 +39,7 @@ const CURATED_EDITS: CuratedEdit[] = [
     subtitle: 'Deconstructed wool suiting, razor-sharp peak lapels, and floating canvas bespoke tailoring.',
     tag: 'tailoring',
     categorySlug: 'tailoring',
-    image: '/images/categories/cat-tailoring.jpg',
+    image: '/images/categories/cat-tailoring.webp',
     badge: 'Savile Row Cut',
   },
   {
@@ -48,7 +48,7 @@ const CURATED_EDITS: CuratedEdit[] = [
     subtitle: 'Ultra-fine 15.2-micron Grade-A Mongolian cashmere, brushed mohair, and seamless ribbed jumpers.',
     tag: 'knitwear',
     categorySlug: 'knitwear',
-    image: '/images/categories/cat-knitwear.jpg',
+    image: '/images/categories/cat-knitwear.webp',
     badge: 'Pure Cashmere',
   },
   {
@@ -57,7 +57,7 @@ const CURATED_EDITS: CuratedEdit[] = [
     subtitle: 'Liquid 30-momme mulberry silk charmeuse, floor-grazing puddle trains, and draped formal gala gowns.',
     tag: 'eveningwear',
     categorySlug: 'eveningwear',
-    image: '/images/categories/cat-eveningwear.jpg',
+    image: '/images/categories/cat-eveningwear.webp',
     badge: 'Nocturne Gala',
   },
   {
@@ -97,7 +97,7 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
       title: "The Men's Wardrobe",
       subtitle: 'Architectural silhouettes, Savile Row precision, and noble natural fibers crafted for longevity.',
       href: '/collections/men',
-      image: '/images/banners/gen/men/all.jpg',
+      image: '/images/banners/gen/men/all.webp',
       badge: 'Savile Row Precision',
       tagline: 'Italian tailoring & natural fibers',
       itemCount: initialProducts.filter((p) => p.genders?.includes('men')).length,
@@ -108,7 +108,7 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
       title: "The Women's Collection",
       subtitle: 'Sculptural drapery, liquid mulberry silks, and tactile tailoring designed with quiet authority.',
       href: '/collections/women',
-      image: '/images/banners/gen/women/all.jpg',
+      image: '/images/banners/gen/women/all.webp',
       badge: 'Sculptural Drapery',
       tagline: 'Mulberry silks & tactile tailoring',
       itemCount: initialProducts.filter((p) => p.genders?.includes('women')).length,

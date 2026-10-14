@@ -29,7 +29,7 @@ const BANNER_DATA: BannerSlideItem[] = [
   },
   {
     src: '/images/banners/new-arrivals/new-arrivals-hero.webp',
-    mobileSrc: '/images/banners/new-arrivals/new-arrivals-hero-mobile.jpg',
+    mobileSrc: '/images/banners/new-arrivals/new-arrivals-hero-mobile.webp',
     mobileObjectPosition: 'right 5% center',
     alt: 'Autumn Winter Collection',
     heading: 'The Outerwear Edit',

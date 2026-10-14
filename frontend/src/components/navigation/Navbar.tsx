@@ -646,7 +646,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   style={{ position: 'relative', width: '100%', paddingBottom: '80%', overflow: 'hidden', backgroundColor: 'var(--bg-subtle)', display: 'block' }}
                 >
                   <img 
-                    src="/images/categories/cat-tailoring.jpg" 
+                    src="/images/categories/cat-tailoring.webp" 
                     alt="The New-Season Collections" 
                     style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                   />

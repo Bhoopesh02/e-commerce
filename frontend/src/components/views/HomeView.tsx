@@ -22,16 +22,15 @@ import Link from 'next/link';
 import Image, { StaticImageData } from 'next/image';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import {
   StaggerContainer,
   StaggerFadeUp,
   LineReveal,
 } from '@/components/ui/StaggerReveal';
-import heritageBannerImg from '../../../public/images/banners/new/Gemini_Generated_Image_wi5d5owi5d5owi5d.png';
-import heritageBannerMobileImg from '../../../public/images/banners/new/Gemini_Generated_Image_n4wph0n4wph0n4wp.png';
-import newArrivalsBannerImg from '../../../public/images/banners/new/Gemini_Generated_Image_8hy0gw8hy0gw8hy0.png';
-import newArrivalsBannerMobileImg from '../../../public/images/banners/new/Gemini_Generated_Image_lo7saulo7saulo7s.png';
+import heritageBannerImg from '../../../public/images/banners/new/Gemini_Generated_Image_wi5d5owi5d5owi5d.webp';
+import heritageBannerMobileImg from '../../../public/images/banners/new/Gemini_Generated_Image_n4wph0n4wph0n4wp.webp';
+import newArrivalsBannerImg from '../../../public/images/banners/new/Gemini_Generated_Image_8hy0gw8hy0gw8hy0.webp';
+import newArrivalsBannerMobileImg from '../../../public/images/banners/new/Gemini_Generated_Image_lo7saulo7saulo7s.webp';
 
 interface HomeBannerCardProps {
   imageSrc: StaticImageData;
@@ -285,46 +284,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         return <HeroSection key={id} />;
 
       case 'brand_intro':
-        return (
-          <section
-            key={id}
-            id="house-philosophy"
-            className="brand-intro-section"
-            style={{ padding: '80px 0 20px', backgroundColor: 'var(--bg-primary)', scrollMarginTop: '80px' }}
-          >
-            <div id="brand-story" style={{ position: 'relative', top: '-80px' }} aria-hidden="true" />
-            <div className="container" style={{ maxWidth: '880px', textAlign: 'center' }}>
-              <ScrollReveal duration={0.6}>
-                <span
-                  style={{
-                    fontSize: '0.78rem',
-                    fontWeight: 600,
-                    letterSpacing: '0.14em',
-                    textTransform: 'uppercase',
-                    color: 'var(--brand-primary)',
-                    display: 'block',
-                    marginBottom: '12px',
-                  }}
-                >
-                  The House Philosophy
-                </span>
-                <h2
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 'clamp(1.9rem, 3.5vw, 2.7rem)',
-                    lineHeight: 1.25,
-                    marginBottom: '20px',
-                  }}
-                >
-                  Couture is not merely garment construction; it is the physical manifestation of discipline and form.
-                </h2>
-                <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', lineHeight: 1.7, margin: 0 }}>
-                  At Aurelia, each edition is produced in numbered runs to maintain exacting craftsmanship. We source our virgin wool from Biella, silk from Lake Como, and box calf from artisanal tanneries in Tuscany.
-                </p>
-              </ScrollReveal>
-            </div>
-          </section>
-        );
+        return null;
 
       case 'category_showcase':
         return (

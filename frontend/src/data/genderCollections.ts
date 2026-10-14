@@ -26,7 +26,7 @@ export const GENDER_COLLECTIONS: Record<"men" | "women", GenderCollectionConfig>
     title: "The Men’s Wardrobe",
     subtitle:
       "Architectural silhouettes, Savile Row precision, and noble natural fibers crafted for longevity.",
-    defaultBanner: "/images/banners/gen/men/all.jpg",
+    defaultBanner: "/images/banners/gen/men/all.webp",
     promoBanners: [
       {
         imageSrc: "/images/banners/promo/men_banner_1.webp",
@@ -88,7 +88,7 @@ export const GENDER_COLLECTIONS: Record<"men" | "women", GenderCollectionConfig>
     title: "The Women’s Collection",
     subtitle:
       "Sculptural drapery, liquid mulberry silks, and tactile tailoring designed with quiet authority.",
-    defaultBanner: "/images/banners/gen/women/all.jpg",
+    defaultBanner: "/images/banners/gen/women/all.webp",
     promoBanners: [
       {
         imageSrc: "/images/banners/promo/women_banner_1.webp",

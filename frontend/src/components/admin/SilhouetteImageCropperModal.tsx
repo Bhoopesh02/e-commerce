@@ -477,15 +477,15 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
       targetHeight
     );
 
-    const croppedDataUrl = offscreenCanvas.toDataURL('image/jpeg', 0.92);
+    const croppedDataUrl = offscreenCanvas.toDataURL('image/webp', 0.92);
 
     offscreenCanvas.toBlob(
       (blob) => {
         if (!blob) return;
 
         const cleanName = currentItem.name.replace(/\.[^/.]+$/, '');
-        const croppedFile = new File([blob], `${cleanName}-silhouette-3x4.jpg`, {
-          type: 'image/jpeg',
+        const croppedFile = new File([blob], `${cleanName}-silhouette-3x4.webp`, {
+          type: 'image/webp',
           lastModified: Date.now(),
         });
 

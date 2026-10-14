@@ -30,7 +30,7 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
       'Architectural suiting, handcrafted Italian leather duffels, and refined knitwear designed for sovereign presence.',
     ctaText: 'Explore Silhouettes',
     image: '/images/banners/new-arrivals/new-arrivals-hero.webp',
-    mobileImage: '/images/banners/new-arrivals/new-arrivals-hero-mobile.jpg',
+    mobileImage: '/images/banners/new-arrivals/new-arrivals-hero-mobile.webp',
   },
   {
     id: 'outerwear',
@@ -42,8 +42,8 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     description:
       'Architectural virgin wool trench coats, double-faced heavy overcoats, and Milanese nappa leather jackets designed for climate resilience.',
     ctaText: 'Explore Outerwear',
-    image: '/images/banners/new-arrivals/new-arrivals-outerwear.jpg',
-    mobileImage: '/images/banners/new-arrivals/new-arrivals-outerwear-mobile.jpg',
+    image: '/images/banners/new-arrivals/new-arrivals-outerwear.webp',
+    mobileImage: '/images/banners/new-arrivals/new-arrivals-outerwear-mobile.webp',
   },
   {
     id: 'eveningwear',
@@ -55,8 +55,8 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     description:
       'Floor-sweeping liquid silk charmeuse, bias-cut drapery, and midnight obsidian velvet tailored for after-dark distinction.',
     ctaText: 'Explore Eveningwear',
-    image: '/images/banners/new-arrivals/new-arrivals-eveningwear.jpg',
-    mobileImage: '/images/banners/new-arrivals/new-arrivals-eveningwear-mobile.png',
+    image: '/images/banners/new-arrivals/new-arrivals-eveningwear.webp',
+    mobileImage: '/images/banners/new-arrivals/new-arrivals-eveningwear-mobile.webp',
   },
   {
     id: 'leather-goods',
@@ -68,8 +68,8 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     description:
       'Full-grain French box calfskin totes, structured saddle crossbodies, and weekend luggage hand-stitched with waxed cord.',
     ctaText: 'Explore Leather Goods',
-    image: '/images/banners/new-arrivals/new-arrivals-leather.jpg',
-    mobileImage: '/images/banners/new-arrivals/new-arrivals-leather-mobile.jpg',
+    image: '/images/banners/new-arrivals/new-arrivals-leather.webp',
+    mobileImage: '/images/banners/new-arrivals/new-arrivals-leather-mobile.webp',
   },
 ];
 
