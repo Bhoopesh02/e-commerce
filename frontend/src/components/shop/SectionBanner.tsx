@@ -1,11 +1,15 @@
-"use client";
-
 import React, { useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Category } from "@/types";
 import { GENDER_COLLECTIONS } from "@/data/genderCollections";
 import { useRevealOnView } from "@/hooks/useRevealOnView";
+import {
+  useBannerAnimation,
+  isBannerAnimationInScope,
+} from "./bannerAnimation";
+import "./banner-animation.css";
 
 interface SectionBannerProps {
   category: Category;
@@ -22,14 +26,66 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
   gender,
   activeCategorySlug,
 }) => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const categorySlugParam = searchParams.get("categorySlug");
+
   const bannerRef = useRef<HTMLDivElement>(null);
+  const imageWrapperRef = useRef<HTMLDivElement>(null);
+  const tagRef = useRef<HTMLParagraphElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const footerRef = useRef<HTMLParagraphElement>(null);
+
   const isVisible = useRevealOnView(bannerRef, { threshold: 0.25, triggerOnMount: true });
 
-  // ── Gender-aware mode ──────────────────────────────────────────────────────
-  if (gender) {
-    const cfg = GENDER_COLLECTIONS[gender];
-    const isAll = !activeCategorySlug || activeCategorySlug === "all";
+  const inScope = isBannerAnimationInScope(pathname, categorySlugParam);
 
+  // ── Compute slot text for top-level hook call ─────────────────────────────
+  const isGenderMode = Boolean(gender);
+  const cfg = gender ? GENDER_COLLECTIONS[gender] : null;
+  const isAll = !activeCategorySlug || activeCategorySlug === "all";
+
+  const genderEyebrow = cfg ? cfg.eyebrow : "";
+  const genderHeadline = cfg
+    ? isAll
+      ? cfg.title
+      : (cfg.categories[activeCategorySlug ?? ""]?.title ?? cfg.title)
+    : "";
+  const genderSubtitle = cfg
+    ? isAll
+      ? cfg.subtitle
+      : (cfg.categories[activeCategorySlug ?? ""]?.subtitle ?? cfg.subtitle)
+    : "";
+
+  const isOuterwear = category.slug === "outerwear";
+  const shopSmallText = isOuterwear
+    ? "HEAVY-DUTY WARMTH"
+    : `${category.name} COLLECTION`;
+  const shopLargeText = isOuterwear ? "That Shearling Feeling" : category.name;
+
+  const currentTagText = isGenderMode ? genderEyebrow : shopSmallText;
+  const currentTitleText = isGenderMode ? genderHeadline : shopLargeText;
+  const currentFooterText = isGenderMode ? genderSubtitle : null;
+
+  const identityKey = isGenderMode
+    ? `${pathname}-${gender}-${activeCategorySlug || "all"}`
+    : `${pathname}?categorySlug=${categorySlugParam || category.slug}`;
+
+  useBannerAnimation({
+    containerRef: bannerRef,
+    imageWrapperRef,
+    tagRef,
+    titleRef,
+    footerRef: isGenderMode ? footerRef : undefined,
+    isInScope: inScope,
+    identityKey,
+    tagText: currentTagText,
+    titleText: currentTitleText,
+    footerText: currentFooterText,
+  });
+
+  // ── Gender-aware mode ──────────────────────────────────────────────────────
+  if (gender && cfg) {
     const eyebrow = cfg.eyebrow;
     const headline = isAll
       ? cfg.title
@@ -51,7 +107,11 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
           overflow: "hidden",
           boxShadow: "0 4px 24px rgba(0,0,0,0.05)",
         }}
-        className={`section-banner-split reveal-banner ${isVisible ? "is-visible" : ""}`}
+        className={`section-banner-split ${
+          inScope
+            ? "aurelia-banner-in-scope"
+            : `reveal-banner ${isVisible ? "is-visible" : ""}`
+        }`}
       >
         <noscript>
           <style>{`
@@ -85,6 +145,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
               className="reveal-banner__text"
             >
               <p
+                ref={tagRef}
                 style={
                   {
                     "--i": 0,
@@ -96,10 +157,12 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
                     marginBottom: "16px",
                   } as React.CSSProperties
                 }
+                className="banner-tag-slot"
               >
                 {isAll ? cfg.eyebrow : eyebrow}
               </p>
               <h2
+                ref={titleRef}
                 style={
                   {
                     "--i": 1,
@@ -116,6 +179,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
                 {isAll ? cfg.title : headline}
               </h2>
               <p
+                ref={footerRef}
                 style={
                   {
                     "--i": 2,
@@ -135,8 +199,9 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
 
         {/* Right side: fixed gender image */}
         <div
+          ref={imageWrapperRef}
           style={{ flex: "1 1 50%", position: "relative", minHeight: "400px", overflow: "hidden" }}
-          className="banner-image-container reveal-banner__media"
+          className="banner-image-container reveal-banner__media aurelia-banner-image-wrapper"
         >
           <Image
             src={cfg.defaultBanner}
@@ -181,12 +246,6 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
     ? `/images/banners/gen/${category.slug}.jpg`
     : category.bannerImage || category.image;
 
-  const isOuterwear = category.slug === "outerwear";
-  const smallText = isOuterwear
-    ? "HEAVY-DUTY WARMTH"
-    : `${category.name} COLLECTION`;
-  const largeText = isOuterwear ? "That Shearling Feeling" : category.name;
-
   return (
     <div
       ref={bannerRef}
@@ -202,7 +261,11 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
         overflow: "hidden",
         boxShadow: "0 4px 24px rgba(0,0,0,0.05)",
       }}
-      className={`section-banner-split reveal-banner ${isVisible ? "is-visible" : ""}`}
+      className={`section-banner-split ${
+        inScope
+          ? "aurelia-banner-in-scope"
+          : `reveal-banner ${isVisible ? "is-visible" : ""}`
+      }`}
     >
       <noscript>
         <style>{`
@@ -228,6 +291,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
       >
         <div className="reveal-banner__text" style={{ textAlign: "center", maxWidth: "400px" }}>
           <p
+            ref={tagRef}
             style={
               {
                 "--i": 0,
@@ -239,10 +303,12 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
                 marginBottom: "16px",
               } as React.CSSProperties
             }
+            className="banner-tag-slot"
           >
-            {smallText}
+            {shopSmallText}
           </p>
           <h2
+            ref={titleRef}
             style={
               {
                 "--i": 1,
@@ -255,20 +321,21 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
               } as React.CSSProperties
             }
           >
-            {largeText}
+            {shopLargeText}
           </h2>
         </div>
       </div>
 
       {/* Right side: Image */}
       <div
+        ref={imageWrapperRef}
         style={{
           flex: "1 1 50%",
           position: "relative",
           minHeight: "400px",
           overflow: "hidden",
         }}
-        className="banner-image-container reveal-banner__media"
+        className="banner-image-container reveal-banner__media aurelia-banner-image-wrapper"
       >
         <Image
           src={bannerSrc}

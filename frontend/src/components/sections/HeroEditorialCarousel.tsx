@@ -78,13 +78,15 @@ interface HeroEditorialCarouselProps {
   scrollToGridTop?: () => void;
   totalProductsCount?: number;
   autoScrollSeconds?: number;
+  pauseOnHover?: boolean;
 }
 
 export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
   onSelectCategory,
   scrollToGridTop,
   totalProductsCount = 53,
-  autoScrollSeconds = 4.5,
+  autoScrollSeconds = 7,
+  pauseOnHover = false,
 }) => {
   const slides = NEW_ARRIVALS_BANNERS;
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -109,9 +111,9 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
     goToSlide((currentIndex - 1 + slides.length) % slides.length);
   }, [currentIndex, goToSlide, slides.length]);
 
-  // Smooth Auto-Scroll Countdown Loop
+  // Smooth Auto-Scroll Countdown Loop (keeps playing across hovers)
   useEffect(() => {
-    if (isHovered || autoScrollSeconds <= 0) {
+    if ((pauseOnHover && isHovered) || autoScrollSeconds <= 0) {
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
       return;
     }
@@ -136,7 +138,7 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
     return () => {
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
     };
-  }, [currentIndex, isHovered, autoScrollSeconds, goToSlide, slides.length]);
+  }, [currentIndex, isHovered, pauseOnHover, autoScrollSeconds, goToSlide, slides.length]);
 
   // Touch Swipe for Mobile
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -168,8 +170,12 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
   return (
     <section
       className={styles.carouselSection}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => {
+        if (pauseOnHover) setIsHovered(true);
+      }}
+      onMouseLeave={() => {
+        if (pauseOnHover) setIsHovered(false);
+      }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       aria-label="New Arrivals Full-Width Editorial Banners"

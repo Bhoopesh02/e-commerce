@@ -131,6 +131,9 @@ export const PageTransitionOverlay: React.FC = () => {
                     overlay.style.clipPath = 'inset(0 100% 0 0)';
                     unlockScroll();
                     isBusyRef.current = false;
+                    try {
+                      window.dispatchEvent(new CustomEvent('aurelia:page-transition-complete'));
+                    } catch {}
                   },
                 });
               }, 400);
@@ -223,6 +226,9 @@ export const PageTransitionOverlay: React.FC = () => {
 
                 unlockScroll();
                 isBusyRef.current = false;
+                try {
+                  window.dispatchEvent(new CustomEvent('aurelia:page-transition-complete'));
+                } catch {}
               },
             },
             '+=0.20'
@@ -292,6 +298,9 @@ export const PageTransitionOverlay: React.FC = () => {
                   yPercent: 110,
                 });
                 unlockScroll();
+                try {
+                  window.dispatchEvent(new CustomEvent('aurelia:page-transition-complete'));
+                } catch {}
               },
             },
             '+=0.20'

@@ -1,0 +1,62 @@
+/* ==========================================================================
+   Aurelia Top Banner GSAP Entrance Animation Styles
+   ========================================================================== */
+
+/* Suppress previous CSS keyframes when GSAP timeline is in scope */
+.aurelia-banner-in-scope.reveal-banner .reveal-banner__img,
+.aurelia-banner-in-scope .reveal-banner__img {
+  opacity: 1 !important;
+  animation: none !important;
+}
+
+.aurelia-banner-in-scope.reveal-banner .reveal-banner__text > *,
+.aurelia-banner-in-scope .reveal-banner__text > * {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Slot 1: Image Wrapper (anchored left, clip-path driven reveal) */
+.aurelia-banner-image-wrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Slot 2: Tag Pill / Eyebrow */
+.banner-tag-slot {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Slot 3: Title Line Mask */
+.banner-title-line-mask {
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+  display: block;
+}
+
+.banner-title-line-inner {
+  display: block;
+}
+
+/* Slot 4: Footer Word Span */
+.banner-footer-word {
+  display: inline-block;
+}
+
+/* Prefers-reduced-motion fallback */
+@media (prefers-reduced-motion: reduce) {
+  .aurelia-banner-image-wrapper {
+    clip-path: none !important;
+  }
+  .aurelia-banner-image-wrapper img,
+  .aurelia-banner-in-scope .reveal-banner__img {
+    transform: none !important;
+  }
+  .banner-title-line-inner {
+    transform: none !important;
+  }
+}

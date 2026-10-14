@@ -19,7 +19,7 @@
   display: flex;
   width: 100%;
   height: 100%;
-  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+  transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
   will-change: transform;
 }
 
@@ -63,13 +63,13 @@
 .bannerImage {
   object-fit: cover;
   object-position: right 20% center;
-  transition: transform 6s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 8s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .bannerImageMobile {
   object-fit: cover;
   object-position: right 5% center;
-  transition: transform 6s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 8s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .slide.active .bannerImage {
