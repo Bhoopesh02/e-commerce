@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Image from 'next/image';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useScrollLock } from '@/hooks/useScrollLock';
 
@@ -12,6 +11,7 @@ export interface ProductImageLightboxProps {
   productName: string;
   initialIndex?: number;
   onIndexChange?: (index: number) => void;
+  returnFocusElement?: HTMLElement | null;
 }
 
 export const ProductImageLightbox: React.FC<ProductImageLightboxProps> = ({
@@ -21,483 +21,575 @@ export const ProductImageLightbox: React.FC<ProductImageLightboxProps> = ({
   productName,
   initialIndex = 0,
   onIndexChange,
+  returnFocusElement,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [zoom, setZoom] = useState(1);
-  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState(false);
+  const [isRendered, setIsRendered] = useState(isOpen);
+  const [isZoomed, setIsZoomed] = useState(false);
 
-  // Touch handling references
+  // High-res decode and zero-flash swap state
+  const [displaySrc, setDisplaySrc] = useState(images[initialIndex] || images[0] || '');
+
+  // DOM Refs
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const centerStageRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const triggerFocusRef = useRef<HTMLElement | null>(null);
+
+  // Animation values for scale and transform-origin (normalized 0.0 to 1.0)
+  const currentScale = useRef<number>(1);
+  const targetScale = useRef<number>(1);
+  const currentOriginX = useRef<number>(0.5);
+  const currentOriginY = useRef<number>(0.5);
+  const targetOriginX = useRef<number>(0.5);
+  const targetOriginY = useRef<number>(0.5);
+
+  const rafId = useRef<number | null>(null);
+  const isLoopRunning = useRef<boolean>(false);
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Touch tracking references
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
-  const lastTapRef = useRef<number>(0);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const touchDragOriginStart = useRef<{ originX: number; originY: number } | null>(null);
 
-  // Helper to clamp pan offsets so the image NEVER shifts into blank views
-  const clampPan = useCallback(
-    (newX: number, newY: number, currentZoom: number) => {
-      if (currentZoom <= 1 || !containerRef.current) {
-        return { x: 0, y: 0 };
+  // Lock body scroll while open or animating
+  useScrollLock(isRendered);
+
+  // Lerp loop for smooth transform-origin and scale animations
+  const updateAnimation = useCallback(() => {
+    const LERP_FACTOR = 0.12;
+    const THRESHOLD = 0.002;
+
+    const scaleDiff = targetScale.current - currentScale.current;
+    currentScale.current += scaleDiff * LERP_FACTOR;
+
+    const originXDiff = targetOriginX.current - currentOriginX.current;
+    currentOriginX.current += originXDiff * LERP_FACTOR;
+
+    const originYDiff = targetOriginY.current - currentOriginY.current;
+    currentOriginY.current += originYDiff * LERP_FACTOR;
+
+    const isScaleSettled = Math.abs(scaleDiff) < THRESHOLD;
+    const isOriginXSettled = Math.abs(originXDiff) < THRESHOLD;
+    const isOriginYSettled = Math.abs(originYDiff) < THRESHOLD;
+
+    if (isScaleSettled && isOriginXSettled && isOriginYSettled) {
+      currentScale.current = targetScale.current;
+      currentOriginX.current = targetOriginX.current;
+      currentOriginY.current = targetOriginY.current;
+
+      if (imageRef.current) {
+        imageRef.current.style.transformOrigin = `${(currentOriginX.current * 100).toFixed(3)}% ${(currentOriginY.current * 100).toFixed(3)}%`;
+        imageRef.current.style.transform = `scale(${currentScale.current.toFixed(4)})`;
       }
 
-      const clientWidth = containerRef.current.clientWidth;
-      const clientHeight = containerRef.current.clientHeight;
+      isLoopRunning.current = false;
+      rafId.current = null;
+      return;
+    }
 
-      // Max allowable pan in screen pixels before image edge pulls away from container
-      const maxX = Math.max(0, (clientWidth * (currentZoom - 1)) / 2);
-      const maxY = Math.max(0, (clientHeight * (currentZoom - 1)) / 2);
+    if (imageRef.current) {
+      imageRef.current.style.transformOrigin = `${(currentOriginX.current * 100).toFixed(3)}% ${(currentOriginY.current * 100).toFixed(3)}%`;
+      imageRef.current.style.transform = `scale(${currentScale.current.toFixed(4)})`;
+    }
 
-      return {
-        x: Math.max(-maxX, Math.min(maxX, newX)),
-        y: Math.max(-maxY, Math.min(maxY, newY)),
-      };
-    },
-    []
-  );
+    rafId.current = requestAnimationFrame(updateAnimation);
+  }, []);
 
-  // Sync initial index when modal opens
+  const startAnimationLoop = useCallback(() => {
+    if (!isLoopRunning.current) {
+      isLoopRunning.current = true;
+      rafId.current = requestAnimationFrame(updateAnimation);
+    }
+  }, [updateAnimation]);
+
+  const resetZoomImmediate = useCallback(() => {
+    if (rafId.current) {
+      cancelAnimationFrame(rafId.current);
+      rafId.current = null;
+    }
+    isLoopRunning.current = false;
+
+    currentScale.current = 1;
+    targetScale.current = 1;
+    currentOriginX.current = 0.5;
+    targetOriginX.current = 0.5;
+    currentOriginY.current = 0.5;
+    targetOriginY.current = 0.5;
+
+    if (imageRef.current) {
+      imageRef.current.style.transformOrigin = '50% 50%';
+      imageRef.current.style.transform = 'scale(1)';
+    }
+    setIsZoomed(false);
+  }, []);
+
+  // Handle open / close synchronization
   useEffect(() => {
     if (isOpen) {
-      setCurrentIndex(Math.max(0, Math.min(initialIndex, images.length - 1)));
-      setZoom(1);
-      setPanOffset({ x: 0, y: 0 });
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+        closeTimeoutRef.current = null;
+      }
+
+      // Record element to return focus to upon closing
+      triggerFocusRef.current = returnFocusElement || (document.activeElement as HTMLElement) || null;
+
+      const safeIndex = Math.max(0, Math.min(initialIndex, images.length - 1));
+      setCurrentIndex(safeIndex);
+      setIsRendered(true);
+
+      // Trigger .3s fade-in and scale(.96) -> 1 animation
+      requestAnimationFrame(() => {
+        setIsVisible(true);
+      });
+    } else {
+      setIsVisible(false);
+      resetZoomImmediate();
+      closeTimeoutRef.current = setTimeout(() => {
+        setIsRendered(false);
+      }, 300);
     }
-  }, [isOpen, initialIndex, images.length]);
 
-  // Lock body & html scroll while open
-  useScrollLock(isOpen);
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, [isOpen, initialIndex, images.length, returnFocusElement, resetZoomImmediate]);
 
-  // Navigation handlers
-  const handlePrev = useCallback(() => {
-    if (images.length <= 1) return;
-    setCurrentIndex((prev) => {
-      const nextIndex = prev === 0 ? images.length - 1 : prev - 1;
+  // Decode high-res image and swap seamlessly with no flash
+  useEffect(() => {
+    if (!images[currentIndex]) return;
+    const targetSrc = images[currentIndex];
+
+    // Maintain current thumbnail/image as display fallback while full-res loads
+    setDisplaySrc(targetSrc);
+
+    if (typeof window !== 'undefined') {
+      const img = new window.Image();
+      img.src = targetSrc;
+      if ('decode' in img) {
+        img.decode().catch(() => {});
+      }
+    }
+  }, [currentIndex, images]);
+
+  // Close handler with 0.3s fade-out, scroll unlock, and return-focus
+  const handleClose = useCallback(() => {
+    setIsVisible(false);
+    resetZoomImmediate();
+
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+
+    closeTimeoutRef.current = setTimeout(() => {
+      setIsRendered(false);
+      onClose();
+
+      // Return focus to thumbnail or element that opened it
+      if (triggerFocusRef.current && typeof triggerFocusRef.current.focus === 'function') {
+        triggerFocusRef.current.focus();
+      }
+    }, 300);
+  }, [onClose, resetZoomImmediate]);
+
+  // Navigation handlers with end-looping
+  const goToSlide = useCallback(
+    (index: number) => {
+      if (images.length <= 1) return;
+      const nextIndex = (index + images.length) % images.length;
+      resetZoomImmediate();
+      setCurrentIndex(nextIndex);
       onIndexChange?.(nextIndex);
-      return nextIndex;
-    });
-    setZoom(1);
-    setPanOffset({ x: 0, y: 0 });
-  }, [images.length, onIndexChange]);
+    },
+    [images.length, onIndexChange, resetZoomImmediate]
+  );
+
+  const handlePrev = useCallback(() => {
+    goToSlide(currentIndex - 1);
+  }, [currentIndex, goToSlide]);
 
   const handleNext = useCallback(() => {
-    if (images.length <= 1) return;
-    setCurrentIndex((prev) => {
-      const nextIndex = prev === images.length - 1 ? 0 : prev + 1;
-      onIndexChange?.(nextIndex);
-      return nextIndex;
-    });
-    setZoom(1);
-    setPanOffset({ x: 0, y: 0 });
-  }, [images.length, onIndexChange]);
+    goToSlide(currentIndex + 1);
+  }, [currentIndex, goToSlide]);
 
-  // Zoom handlers
-  const handleResetZoom = useCallback(() => {
-    setZoom(1);
-    setPanOffset({ x: 0, y: 0 });
-  }, []);
-
-  const toggleZoom = useCallback(() => {
-    setZoom((prev) => {
-      const nextZoom = prev > 1 ? 1 : 2;
-      setPanOffset({ x: 0, y: 0 });
-      return nextZoom;
-    });
-  }, []);
-
-  // Keyboard navigation & accessibility
+  // Keyboard navigation: Escape to close, ArrowLeft / ArrowRight to navigate
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isRendered) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
-        onClose();
+        handleClose();
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
         handlePrev();
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
         handleNext();
-      } else if (e.key === '+' || e.key === '=') {
-        e.preventDefault();
-        setZoom((prev) => {
-          const next = Math.min(3, +(prev + 0.5).toFixed(1));
-          setPanOffset((cur) => clampPan(cur.x, cur.y, next));
-          return next;
-        });
-      } else if (e.key === '-' || e.key === '_') {
-        e.preventDefault();
-        setZoom((prev) => {
-          const next = Math.max(1, +(prev - 0.5).toFixed(1));
-          if (next === 1) {
-            setPanOffset({ x: 0, y: 0 });
-          } else {
-            setPanOffset((cur) => clampPan(cur.x, cur.y, next));
-          }
-          return next;
-        });
-      } else if (e.key === '0') {
-        e.preventDefault();
-        handleResetZoom();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, handlePrev, handleNext, handleResetZoom, clampPan, onClose]);
+  }, [isRendered, handleClose, handlePrev, handleNext]);
 
-  // Mouse pan handling when zoomed (desktop)
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (zoom <= 1) return;
-    setIsDragging(true);
-    setDragStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
+  // Zoom logic: Click toggles scale 1 <-> 2 around cursor position
+  const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!frameRef.current) return;
+    const rect = frameRef.current.getBoundingClientRect();
+    const clickX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const clickY = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+
+    if (targetScale.current === 1) {
+      // Zooming in: set current and target origin to the click point first so there's no jump
+      currentOriginX.current = clickX;
+      currentOriginY.current = clickY;
+      targetOriginX.current = clickX;
+      targetOriginY.current = clickY;
+
+      if (imageRef.current) {
+        imageRef.current.style.transformOrigin = `${(clickX * 100).toFixed(3)}% ${(clickY * 100).toFixed(3)}%`;
+      }
+
+      targetScale.current = 2;
+      setIsZoomed(true);
+      startAnimationLoop();
+    } else {
+      // Zooming out: reset scale to 1 and origin to center (0.5, 0.5)
+      targetScale.current = 1;
+      targetOriginX.current = 0.5;
+      targetOriginY.current = 0.5;
+      setIsZoomed(false);
+      startAnimationLoop();
+    }
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || zoom <= 1) return;
-    const rawX = e.clientX - dragStart.x;
-    const rawY = e.clientY - dragStart.y;
-    setPanOffset(clampPan(rawX, rawY, zoom));
+  // Pan logic: Mouse move while zoomed sets target transform-origin (clamped 0 to 1)
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (targetScale.current <= 1 || !frameRef.current) return;
+    const rect = frameRef.current.getBoundingClientRect();
+    const mouseX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const mouseY = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+
+    targetOriginX.current = mouseX;
+    targetOriginY.current = mouseY;
+    startAnimationLoop();
   };
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  // Touch handling for mobile: swipe between images & drag to pan & double-tap to zoom
-  const handleTouchStart = (e: React.TouchEvent) => {
+  // Touch logic: Tap toggles zoom, one-finger drag pans when zoomed, swipe at scale 1 changes slide
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length === 1) {
       const touch = e.touches[0];
-      const now = Date.now();
-
-      // Double-tap to zoom toggle
-      if (now - lastTapRef.current < 320) {
-        toggleZoom();
-        lastTapRef.current = 0;
-        touchStartRef.current = null;
-        return;
-      }
-      lastTapRef.current = now;
-
       touchStartRef.current = {
         x: touch.clientX,
         y: touch.clientY,
-        time: now,
+        time: Date.now(),
       };
-
-      if (zoom > 1) {
-        setIsDragging(true);
-        setDragStart({ x: touch.clientX - panOffset.x, y: touch.clientY - panOffset.y });
-      }
+      touchDragOriginStart.current = {
+        originX: currentOriginX.current,
+        originY: currentOriginY.current,
+      };
     }
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 1 && isDragging && zoom > 1) {
-      const touch = e.touches[0];
-      const rawX = touch.clientX - dragStart.x;
-      const rawY = touch.clientY - dragStart.y;
-      setPanOffset(clampPan(rawX, rawY, zoom));
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!touchStartRef.current || e.touches.length !== 1 || !frameRef.current) return;
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - touchStartRef.current.x;
+    const deltaY = touch.clientY - touchStartRef.current.y;
+
+    if (targetScale.current > 1 && touchDragOriginStart.current) {
+      const rect = frameRef.current.getBoundingClientRect();
+      const newOriginX = Math.max(0, Math.min(1, touchDragOriginStart.current.originX - deltaX / rect.width));
+      const newOriginY = Math.max(0, Math.min(1, touchDragOriginStart.current.originY - deltaY / rect.height));
+
+      targetOriginX.current = newOriginX;
+      targetOriginY.current = newOriginY;
+      startAnimationLoop();
     }
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    setIsDragging(false);
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!touchStartRef.current || !frameRef.current) return;
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - touchStartRef.current.x;
+    const deltaY = touch.clientY - touchStartRef.current.y;
+    const elapsed = Date.now() - touchStartRef.current.time;
 
-    // If zoomed, ensure strictly clamped within image boundaries
-    if (zoom > 1) {
-      setPanOffset((cur) => clampPan(cur.x, cur.y, zoom));
-    }
+    // Detect tap: small movement and brief touch duration
+    if (Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10 && elapsed < 350) {
+      const rect = frameRef.current.getBoundingClientRect();
+      const tapX = Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width));
+      const tapY = Math.max(0, Math.min(1, (touch.clientY - rect.top) / rect.height));
 
-    // If not zoomed, detect clean horizontal swipe to navigate photos
-    if (zoom <= 1 && touchStartRef.current && e.changedTouches.length === 1) {
-      const touch = e.changedTouches[0];
-      const deltaX = touch.clientX - touchStartRef.current.x;
-      const deltaY = touch.clientY - touchStartRef.current.y;
-      const deltaTime = Date.now() - touchStartRef.current.time;
+      if (targetScale.current === 1) {
+        currentOriginX.current = tapX;
+        currentOriginY.current = tapY;
+        targetOriginX.current = tapX;
+        targetOriginY.current = tapY;
 
-      if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4 && deltaTime < 400) {
-        if (deltaX < 0) {
-          handleNext();
-        } else {
-          handlePrev();
+        if (imageRef.current) {
+          imageRef.current.style.transformOrigin = `${(tapX * 100).toFixed(3)}% ${(tapY * 100).toFixed(3)}%`;
         }
+
+        targetScale.current = 2;
+        setIsZoomed(true);
+        startAnimationLoop();
+      } else {
+        targetScale.current = 1;
+        targetOriginX.current = 0.5;
+        targetOriginY.current = 0.5;
+        setIsZoomed(false);
+        startAnimationLoop();
+      }
+    } else if (targetScale.current === 1 && Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      // Swipe left or right at scale 1 changes the slide
+      if (deltaX > 0) {
+        handlePrev();
+      } else {
+        handleNext();
       }
     }
+
     touchStartRef.current = null;
+    touchDragOriginStart.current = null;
   };
 
-  if (!isOpen) return null;
-
-  const currentImage = images[currentIndex] || images[0];
+  if (!isRendered) return null;
 
   return (
     <div
-      ref={containerRef}
+      ref={overlayRef}
       role="dialog"
       aria-modal="true"
       aria-label={`${productName} image viewer`}
       data-lenis-prevent
+      onClick={(e) => {
+        // Clicking on the empty white area closes the viewer
+        if (e.target === overlayRef.current || e.target === centerStageRef.current) {
+          handleClose();
+        }
+      }}
       style={{
         position: 'fixed',
         inset: 0,
-        zIndex: 99999,
-        backgroundColor: 'var(--overlay-lightbox)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
+        zIndex: 100000,
+        backgroundColor: '#ffffff',
+        opacity: isVisible ? 1 : 0,
+        transition: 'opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        userSelect: 'none',
+        alignItems: 'center',
+        justifyContent: 'center',
         overflow: 'hidden',
-        color: "var(--text-inverse)",
-      }}
-      onClick={(e) => {
-        if (zoom > 1) {
-          handleResetZoom();
-        } else if (e.target === e.currentTarget) {
-          onClose();
-        }
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
       }}
     >
-      {/* Floating Minimalist Close Button */}
+      {/* "×" Close button at the top left */}
       <button
         type="button"
-        onClick={onClose}
-        aria-label="Close full screen view"
+        onClick={handleClose}
+        aria-label="Close viewer (Esc)"
         title="Close (Esc)"
         style={{
           position: 'absolute',
-          top: 'clamp(14px, 3vw, 24px)',
-          right: 'clamp(14px, 3vw, 24px)',
+          top: 'clamp(16px, 3vw, 28px)',
+          left: 'clamp(16px, 3vw, 28px)',
           zIndex: 60,
-          width: 44,
-          height: 44,
-          borderRadius: '50%',
-          backgroundColor: 'rgba(20, 20, 20, 0.75)',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.22)',
-          color: "var(--text-inverse)",
+          background: 'none',
+          border: 'none',
+          padding: '8px',
           cursor: 'pointer',
+          color: '#111111',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          transition: 'all 0.2s ease',
-          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.45)',
+          transition: 'transform 0.15s ease, opacity 0.15s ease',
         }}
       >
-        <X size={20} />
+        <X size={26} strokeWidth={1.5} />
       </button>
 
-      {/* Main Stage: Center Image & Navigation Chevrons */}
-      <main
+      {/* "‹" Left Arrow navigation button */}
+      {images.length > 1 && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePrev();
+          }}
+          aria-label="Previous image"
+          style={{
+            position: 'absolute',
+            left: 'clamp(12px, 3vw, 32px)',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            zIndex: 60,
+            background: 'rgba(255, 255, 255, 0.9)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            borderRadius: '50%',
+            width: 'clamp(44px, 4.5vw, 54px)',
+            height: 'clamp(44px, 4.5vw, 54px)',
+            color: '#111111',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+            transition: 'transform 0.15s ease, background-color 0.15s ease',
+          }}
+        >
+          <ChevronLeft size={28} strokeWidth={1.5} />
+        </button>
+      )}
+
+      {/* "›" Right Arrow navigation button */}
+      {images.length > 1 && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleNext();
+          }}
+          aria-label="Next image"
+          style={{
+            position: 'absolute',
+            right: 'clamp(12px, 3vw, 32px)',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            zIndex: 60,
+            background: 'rgba(255, 255, 255, 0.9)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            borderRadius: '50%',
+            width: 'clamp(44px, 4.5vw, 54px)',
+            height: 'clamp(44px, 4.5vw, 54px)',
+            color: '#111111',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+            transition: 'transform 0.15s ease, background-color 0.15s ease',
+          }}
+        >
+          <ChevronRight size={28} strokeWidth={1.5} />
+        </button>
+      )}
+
+      {/* Centered Image Container with .3s scale(.96) -> 1 entrance ease */}
+      <div
+        ref={centerStageRef}
         style={{
-          position: 'relative',
-          flex: 1,
+          width: '100%',
+          height: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          overflow: 'hidden',
-          width: '100%',
-          height: '100%',
-          cursor: zoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
-        }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onClick={(e) => {
-          if (zoom > 1) {
-            handleResetZoom();
-          } else if (e.target === e.currentTarget) {
-            onClose();
-          }
+          transform: isVisible ? 'scale(1)' : 'scale(0.96)',
+          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+          pointerEvents: 'auto',
         }}
       >
-        {/* Previous Image Chevron */}
-        {images.length > 1 && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePrev();
-            }}
-            aria-label="Previous image"
-            style={{
-              position: 'absolute',
-              left: 'clamp(12px, 3vw, 36px)',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              zIndex: 20,
-              width: 'clamp(44px, 5vw, 56px)',
-              height: 'clamp(44px, 5vw, 56px)',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(10, 10, 10, 0.65)',
-              border: '1px solid var(--overlay-white-20)',
-              color: "var(--text-inverse)",
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
-              transition: 'all 0.25s ease',
-            }}
-          >
-            <ChevronLeft size={24} />
-          </button>
-        )}
-
-        {/* Next Image Chevron */}
-        {images.length > 1 && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleNext();
-            }}
-            aria-label="Next image"
-            style={{
-              position: 'absolute',
-              right: 'clamp(12px, 3vw, 36px)',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              zIndex: 20,
-              width: 'clamp(44px, 5vw, 56px)',
-              height: 'clamp(44px, 5vw, 56px)',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(10, 10, 10, 0.65)',
-              border: '1px solid var(--overlay-white-20)',
-              color: "var(--text-inverse)",
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
-              transition: 'all 0.25s ease',
-            }}
-          >
-            <ChevronRight size={24} />
-          </button>
-        )}
-
-        {/* High-Resolution Centered Product Image */}
+        {/* Fixed-Size Frame with overflow hidden (frame never resizes) */}
         <div
+          ref={frameRef}
+          onClick={handleImageClick}
+          onMouseMove={handleMouseMove}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
           style={{
             position: 'relative',
-            width: '100%',
-            height: '100%',
-            maxWidth: '100vw',
-            maxHeight: images.length > 1 ? 'calc(100vh - 100px)' : '100vh',
+            maxWidth: '92vw',
+            maxHeight: '86vh',
+            width: 'min(92vw, calc(86vh * 3 / 4))',
+            height: 'min(86vh, calc(92vw * 4 / 3))',
+            aspectRatio: '3 / 4',
+            overflow: 'hidden',
+            cursor: isZoomed ? 'zoom-out' : 'zoom-in',
+            backgroundColor: '#ffffff',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            overflow: 'hidden',
-          }}
-          onDoubleClick={(e) => {
-            e.stopPropagation();
-            toggleZoom();
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
+            touchAction: isZoomed ? 'none' : 'pan-y',
           }}
         >
-          <div
+          <img
+            ref={imageRef}
+            src={displaySrc}
+            alt={`${productName} view ${currentIndex + 1}`}
+            draggable={false}
             style={{
-              position: 'relative',
               width: '100%',
               height: '100%',
-              transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoom})`,
-              transformOrigin: 'center center',
-              transition: isDragging ? 'none' : 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-              willChange: 'transform',
+              objectFit: 'contain',
+              objectPosition: 'center',
+              willChange: 'transform, transform-origin',
+              transform: 'scale(1)',
+              transformOrigin: '50% 50%',
+              pointerEvents: 'none',
             }}
-          >
-            <Image
-              src={currentImage}
-              alt={`${productName} view ${currentIndex + 1}`}
-              fill
-              priority
-              sizes="100vw"
-              unoptimized
-              style={{
-                objectFit: 'contain',
-                objectPosition: 'center',
-              }}
-            />
-          </div>
+          />
         </div>
-      </main>
+      </div>
 
-      {/* Bottom Thumbnail Strip (if multiple images) */}
+      {/* Dot Indicators at bottom center */}
       {images.length > 1 && (
-        <footer
+        <div
           style={{
-            padding: '12px 20px',
+            position: 'absolute',
+            bottom: 'clamp(18px, 3.5vw, 36px)',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 60,
             display: 'flex',
-            justifyContent: 'center',
             alignItems: 'center',
-            background: 'linear-gradient(0deg, var(--overlay-black-85) 0%, rgba(0, 0, 0, 0) 100%)',
-            zIndex: 10,
-            flexShrink: 0,
+            gap: '8px',
+            padding: '6px 14px',
+            backgroundColor: 'rgba(255, 255, 255, 0.85)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            borderRadius: '20px',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.04)',
           }}
         >
-          <div
-            data-lenis-prevent
-            style={{
-              display: 'flex',
-              gap: '12px',
-              overflowX: 'auto',
-              padding: '4px 8px',
-              maxWidth: '94vw',
-              scrollbarWidth: 'none',
-            }}
-          >
-            {images.map((img, idx) => {
-              const isActive = idx === currentIndex;
-              return (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setCurrentIndex(idx);
-                    onIndexChange?.(idx);
-                    setZoom(1);
-                    setPanOffset({ x: 0, y: 0 });
-                  }}
-                  aria-label={`View photo ${idx + 1}`}
-                  style={{
-                    position: 'relative',
-                    width: 54,
-                    height: 68,
-                    borderRadius: '6px',
-                    overflow: 'hidden',
-                    flexShrink: 0,
-                    cursor: 'pointer',
-                    border: isActive
-                      ? '2px solid var(--color-golden, var(--color-golden-500))'
-                      : '1px solid var(--overlay-white-20)',
-                    boxShadow: isActive ? '0 0 12px rgba(194, 155, 76, 0.5)' : 'none',
-                    transform: isActive ? 'scale(1.05)' : 'scale(1)',
-                    transition: 'all 0.2s ease',
-                    opacity: isActive ? 1 : 0.65,
-                    backgroundColor: 'rgba(20, 20, 20, 0.8)',
-                  }}
-                >
-                  <Image
-                    src={img}
-                    alt={`${productName} thumbnail ${idx + 1}`}
-                    fill
-                    sizes="54px"
-                    unoptimized
-                    style={{ objectFit: 'cover' }}
-                  />
-                </button>
-              );
-            })}
-          </div>
-        </footer>
+          {images.map((_, idx) => {
+            const isActive = idx === currentIndex;
+            return (
+              <button
+                key={idx}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToSlide(idx);
+                }}
+                aria-label={`Go to slide ${idx + 1}`}
+                style={{
+                  width: isActive ? '20px' : '7px',
+                  height: '7px',
+                  borderRadius: '4px',
+                  backgroundColor: isActive ? '#111111' : 'rgba(0, 0, 0, 0.22)',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                  transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
+              />
+            );
+          })}
+        </div>
       )}
     </div>
   );

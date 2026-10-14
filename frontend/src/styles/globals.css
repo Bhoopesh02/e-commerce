@@ -1533,6 +1533,10 @@ button.filter-btn:focus-visible,
   cursor: zoom-in;
   transition: transform var(--duration-fast) var(--ease-editorial), box-shadow var(--duration-fast) var(--ease-editorial);
   outline-offset: 4px;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .pdp-main-image-container:focus-visible {
@@ -1546,13 +1550,6 @@ button.filter-btn:focus-visible,
 @media (hover: hover) and (pointer: fine) {
   .pdp-main-image-container:hover img {
     transform: scale(1.03);
-  }
-
-  .pdp-main-image-container:hover .pdp-fullscreen-badge {
-    background-color: rgba(10, 10, 10, 0.9) !important;
-    border-color: var(--brand-accent) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35) !important;
   }
 }
 

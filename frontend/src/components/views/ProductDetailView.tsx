@@ -31,7 +31,6 @@ import {
   ChevronDown,
   ChevronLeft,
   ArrowRight,
-  Maximize2,
 } from 'lucide-react';
 
 interface ProductDetailViewProps {
@@ -77,6 +76,34 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
 
   // Server pre-fetched data for this slug — skip redundant first-mount fetch
   const isInitialMount = useRef(true);
+
+  // Gallery references for accessibility focus return
+  const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const mainImageRef = useRef<HTMLDivElement | null>(null);
+
+  // Track touch position for tap-to-view interaction (differentiates taps from scrolls)
+  const touchStartPos = useRef<{ x: number; y: number } | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      touchStartPos.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY,
+      };
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartPos.current && e.changedTouches.length === 1) {
+      const deltaX = Math.abs(e.changedTouches[0].clientX - touchStartPos.current.x);
+      const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartPos.current.y);
+      // Minimal movement (<10px) represents a deliberate touch-to-view tap rather than scrolling
+      if (deltaX < 10 && deltaY < 10) {
+        setIsLightboxOpen(true);
+      }
+    }
+    touchStartPos.current = null;
+  };
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -214,12 +241,16 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
         <div className="pdp-split-layout">
           {/* Left: Multi-Image Gallery */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {/* Primary Main Image */}
+            {/* Primary Main Image - touch or click to view full screen */}
             <div
+              ref={mainImageRef}
               role="button"
               tabIndex={0}
               aria-label={`View ${product.name} in full screen`}
+              title="Touch or click to view full screen"
               onClick={() => setIsLightboxOpen(true)}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
@@ -236,6 +267,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 backgroundColor: 'var(--bg-surface)',
                 boxShadow: 'var(--shadow-editorial)',
                 cursor: 'zoom-in',
+                touchAction: 'pan-y',
+                WebkitTapHighlightColor: 'transparent',
+                userSelect: 'none',
               }}
             >
               <Image
@@ -256,35 +290,6 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                   <Badge variant="warning">Low Atelier Reserve</Badge>
                 </div>
               )}
-
-              {/* Floating Full Screen Trigger Pill */}
-              <div
-                className="pdp-fullscreen-badge"
-                style={{
-                  position: 'absolute',
-                  bottom: '14px',
-                  right: '14px',
-                  zIndex: 2,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '6px 12px',
-                  backgroundColor: 'var(--overlay-black-70)',
-                  backdropFilter: 'blur(10px)',
-                  WebkitBackdropFilter: 'blur(10px)',
-                  color: "var(--text-inverse)",
-                  borderRadius: 'var(--radius-pill)',
-                  border: '1px solid var(--overlay-white-20)',
-                  fontSize: '0.74rem',
-                  fontWeight: 600,
-                  letterSpacing: '0.04em',
-                  boxShadow: '0 4px 12px var(--shadow-sm)',
-                  pointerEvents: 'none',
-                }}
-              >
-                <Maximize2 size={13} style={{ color: 'var(--brand-accent)' }} />
-                <span>Full Screen</span>
-              </div>
             </div>
 
             {/* Thumbnail Rail */}
@@ -293,7 +298,17 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 {product.images.map((img, idx) => (
                   <button
                     key={idx}
-                    onClick={() => setActiveImageIndex(idx)}
+                    ref={(el) => {
+                      thumbnailRefs.current[idx] = el;
+                    }}
+                    onClick={() => {
+                      if (activeImageIndex === idx) {
+                        setIsLightboxOpen(true);
+                      } else {
+                        setActiveImageIndex(idx);
+                      }
+                    }}
+                    aria-label={`Select photo ${idx + 1}`}
                     style={{
                       position: 'relative',
                       width: '76px',
@@ -773,6 +788,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
         productName={product.name}
         initialIndex={activeImageIndex}
         onIndexChange={(newIdx) => setActiveImageIndex(newIdx)}
+        returnFocusElement={thumbnailRefs.current[activeImageIndex] || mainImageRef.current}
       />
     </div>
   );
