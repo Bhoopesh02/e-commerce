@@ -243,7 +243,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
   ];
 
   const bannerSrc = generatedCategories.includes(category.slug)
-    ? `/images/banners/gen/${category.slug}.jpg`
+    ? `/images/banners/gen/${category.slug}.webp`
     : category.bannerImage || category.image;
 
   return (
