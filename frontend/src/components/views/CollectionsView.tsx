@@ -441,7 +441,7 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
                   <div
                     className="extending-underline-link"
                     style={{
-                      color: 'var(--color-golden-600)',
+                      color: 'var(--color-black-tie)',
                       fontSize: '0.8rem',
                       fontWeight: 600,
                       letterSpacing: '0.06em',

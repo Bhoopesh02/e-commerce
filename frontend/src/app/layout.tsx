@@ -3,6 +3,7 @@ import Script from 'next/script';
 import '@/styles/globals.css';
 import { BRAND_NAME, BRAND_TAGLINE } from '@/lib/constants';
 import { SmoothScrollProvider } from '@/components/common/SmoothScrollProvider';
+import { PageTransitionOverlay } from '@/components/transition/PageTransitionOverlay';
 
 export const metadata: Metadata = {
   title: `${BRAND_NAME} Atelier | Luxury Haute Couture & Ready-to-Wear`,
@@ -49,6 +50,7 @@ export default function RootLayout({
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: antiFlashScript }}
         />
+        <PageTransitionOverlay />
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>

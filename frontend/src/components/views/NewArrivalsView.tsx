@@ -213,7 +213,7 @@ export const NewArrivalsView: React.FC = () => {
   };
 
   return (
-    <div style={{ paddingTop: '76px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+    <div style={{ paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       {/* Editorial Hold-to-Expand Hero Banner Carousel with Category Themes */}
       <HeroEditorialCarousel
         onSelectCategory={(categorySlug) => {

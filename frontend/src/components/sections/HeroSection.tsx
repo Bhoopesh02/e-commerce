@@ -33,7 +33,8 @@ export const HeroSection: React.FC = () => {
       style={{
         position: 'relative',
         width: '100%',
-        minHeight: '100vh',
+        minHeight: '100dvh',
+        height: '100dvh',
         overflow: 'hidden',
         backgroundColor: '#2b241d',
       }}

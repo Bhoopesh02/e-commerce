@@ -4,9 +4,12 @@
   overflow: hidden;
   background-color: #0c1218;
   border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
-  min-height: clamp(460px, 50vw, 620px);
-  height: clamp(460px, 50vw, 620px);
-  margin-bottom: 28px;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin-bottom: 40px;
+  box-shadow: 0 24px 48px -12px rgba(12, 10, 20, 0.35);
   user-select: none;
   -webkit-user-select: none;
 }
@@ -114,6 +117,7 @@
   align-items: center;
   width: 100%;
   pointer-events: none;
+  padding-top: var(--navbar-height, 76px);
 }
 
 .contentWrapper {
@@ -291,8 +295,11 @@
    ========================================================= */
 @media (max-width: 768px) {
   .carouselSection {
-    min-height: clamp(500px, 120vw, 580px);
-    height: clamp(500px, 120vw, 580px);
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin-bottom: 24px;
   }
 
   /* Swap to Portrait Crop with Zero Quality Loss */
@@ -327,6 +334,7 @@
   /* Constrain Text Width to Never Overlap Model on Right */
   .contentLayer {
     align-items: center;
+    padding-top: var(--navbar-height, 64px);
   }
 
   .contentWrapper {

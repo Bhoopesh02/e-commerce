@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
@@ -28,118 +28,98 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
   const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
 
-  // Outer container refs
+  // Container refs
   const sectionRef = useRef<HTMLElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const cardElementsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const overlayElementsRef = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Cached layout measurements
-  const maxScrollRef = useRef<number>(0);
-  const viewportWidthRef = useRef<number>(0);
-  const cardOffsetsRef = useRef<{ left: number; width: number }[]>([]);
+  // Layout measurements
+  const viewportWidthRef = useRef<number>(800);
+  const cardWidthRef = useRef<number>(280);
+  const strideRef = useRef<number>(304);
+  const totalLengthRef = useRef<number>(0);
+  const [containerHeight, setContainerHeight] = useState<number>(0);
   const [imageHeight, setImageHeight] = useState<number>(0);
 
-  // Motion & Animation state
-  const targetXRef = useRef<number>(0);
-  const scrollXRef = useRef<number>(0);
+  // Motion & Animation state (infinite continuous offsets)
+  const targetOffsetRef = useRef<number>(0);
+  const currentOffsetRef = useRef<number>(0);
   const rafIdRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number>(performance.now());
-  const autoplayDirRef = useRef<1 | -1>(1);
-  const pauseAtEndRef = useRef<number | null>(null);
-  const pauseAtStartRef = useRef<number | null>(null);
 
-  // Playback & Interaction state
+  // Interaction state
   const isPlayingRef = useRef<boolean>(true);
   const isHoveredRef = useRef<boolean>(false);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
   const isDraggingRef = useRef<boolean>(false);
   const isPointerDownRef = useRef<boolean>(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   const lastInteractionTimeRef = useRef<number>(performance.now());
 
-  // Drag calculation refs
+  // Drag physics tracking
   const dragStartXRef = useRef<number>(0);
   const dragStartYRef = useRef<number>(0);
-  const dragStartTargetXRef = useRef<number>(0);
+  const dragStartOffsetRef = useRef<number>(0);
   const lastPointerXRef = useRef<number>(0);
   const lastPointerTimeRef = useRef<number>(0);
   const pointerSpeedRef = useRef<number>(0);
   const hasMovedRef = useRef<boolean>(false);
 
-  // Chevron UI state
-  const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
-  const [canScrollRight, setCanScrollRight] = useState<boolean>(true);
-
-  // Update button visibility based on targetX
-  const updateArrowButtons = useCallback((target: number) => {
-    const max = maxScrollRef.current;
-    setCanScrollLeft(target > 5);
-    setCanScrollRight(target < max - 5);
-  }, []);
-
-  // Measure track & cards
-  const updateBounds = useCallback(() => {
-    if (!viewportRef.current || !trackRef.current) return;
-
-    const viewportWidth = viewportRef.current.clientWidth;
-    viewportWidthRef.current = viewportWidth;
-
-    const trackWidth = trackRef.current.scrollWidth;
-    const max = Math.max(0, trackWidth - viewportWidth);
-    maxScrollRef.current = max;
-
-    // Cache card offsets for zero-layout-thrash reads in RAF
-    const offsets: { left: number; width: number }[] = [];
-    cardElementsRef.current.forEach((el) => {
-      if (el) {
-        offsets.push({ left: el.offsetLeft, width: el.offsetWidth });
-      }
-    });
-    cardOffsetsRef.current = offsets;
-
-    // Measure product image height for arrow positioning
-    const firstImg = trackRef.current.querySelector('img');
-    if (firstImg && firstImg.clientHeight > 0) {
-      setImageHeight(firstImg.clientHeight);
+  // Generate seamless loop item array
+  const loopItems = useMemo(() => {
+    if (!products || products.length === 0) return [];
+    // Ensure sufficient items around the cylinder ring (at least 12 cards)
+    const repeatCount = Math.max(3, Math.ceil(14 / Math.max(1, products.length)));
+    const repeated: { product: Product; key: string }[] = [];
+    for (let r = 0; r < repeatCount; r++) {
+      products.forEach((p, i) => {
+        repeated.push({ product: p, key: `${p.id}-cyl-${r}-${i}` });
+      });
     }
+    return repeated;
+  }, [products]);
 
-    // Clamp current targetX within updated bounds
-    targetXRef.current = Math.max(0, Math.min(max, targetXRef.current));
-    updateArrowButtons(targetXRef.current);
-  }, [updateArrowButtons]);
+  // Update layout bounds and card measurements
+  const updateBounds = useCallback(() => {
+    if (!viewportRef.current) return;
 
-  // Handle image load
+    const vpWidth = viewportRef.current.clientWidth || 800;
+    viewportWidthRef.current = vpWidth;
+
+    const firstCard = cardElementsRef.current[0];
+    if (firstCard) {
+      const measuredCardW = firstCard.offsetWidth || 280;
+      cardWidthRef.current = measuredCardW;
+      const stride = measuredCardW + 24; // 24px gap
+      strideRef.current = stride;
+      totalLengthRef.current = loopItems.length * stride;
+
+      const cardH = firstCard.offsetHeight;
+      if (cardH > 0) {
+        setContainerHeight(cardH + 32);
+      }
+
+      const imgEl = firstCard.querySelector('img');
+      if (imgEl && imgEl.clientHeight > 0) {
+        setImageHeight(imgEl.clientHeight);
+      }
+    } else {
+      strideRef.current = 304;
+      totalLengthRef.current = loopItems.length * 304;
+    }
+  }, [loopItems.length]);
+
   const handleImageLoad = () => {
     updateBounds();
   };
 
-  // Find and snap to nearest card center
-  const snapToNearestCard = useCallback(() => {
-    if (cardOffsetsRef.current.length === 0 || maxScrollRef.current <= 0) return;
-    const currentTarget = targetXRef.current;
-    const viewportWidth = viewportWidthRef.current || 600;
-
-    let closestDist = Infinity;
-    let closestTarget = currentTarget;
-
-    cardOffsetsRef.current.forEach((offset) => {
-      // Position that centers this card in viewport
-      const cardCenterScroll = (offset.left + offset.width / 2) - viewportWidth / 2;
-      const clamped = Math.max(0, Math.min(maxScrollRef.current, cardCenterScroll));
-      const dist = Math.abs(clamped - currentTarget);
-      if (dist < closestDist) {
-        closestDist = dist;
-        closestTarget = clamped;
-      }
-    });
-
-    targetXRef.current = closestTarget;
-    updateArrowButtons(closestTarget);
-  }, [updateArrowButtons]);
-
-  // Main RAF animation loop: Move track, Lerp, Position decides card look, Update progress
+  // Main RAF animation loop: Continuous smooth lerp + 2D/3D cylindrical projection
   useEffect(() => {
+    if (loopItems.length === 0) return;
+
     let active = true;
+    lastTimeRef.current = performance.now();
 
     const animate = (timestamp: number) => {
       if (!active) return;
@@ -147,102 +127,119 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
       const dt = Math.min(50, timestamp - lastTimeRef.current);
       lastTimeRef.current = timestamp;
 
-      const maxScroll = maxScrollRef.current;
       const now = performance.now();
-
-      // 1. Movement & Autoplay
-      const isInactive = now - lastInteractionTimeRef.current >= 1500;
+      const isInactive = now - lastInteractionTimeRef.current >= 1800;
       const shouldAutoplay =
         isPlayingRef.current &&
         !isHoveredRef.current &&
         !isDraggingRef.current &&
-        isInactive &&
-        maxScroll > 0;
+        isInactive;
 
+      // 1. Continuous Autoplay rotation in circular loop
       if (shouldAutoplay) {
-        const speed = 42; // px per second
-        if (autoplayDirRef.current === 1) {
-          targetXRef.current += speed * (dt / 1000);
-          if (targetXRef.current >= maxScroll) {
-            targetXRef.current = maxScroll;
-            if (!pauseAtEndRef.current) {
-              pauseAtEndRef.current = now;
-            } else if (now - pauseAtEndRef.current > 1500) {
-              autoplayDirRef.current = -1;
-              pauseAtEndRef.current = null;
-            }
-          }
-        } else {
-          targetXRef.current -= speed * (dt / 1000);
-          if (targetXRef.current <= 0) {
-            targetXRef.current = 0;
-            if (!pauseAtStartRef.current) {
-              pauseAtStartRef.current = now;
-            } else if (now - pauseAtStartRef.current > 1500) {
-              autoplayDirRef.current = 1;
-              pauseAtStartRef.current = null;
-            }
-          }
+        const speed = 36; // px per second
+        targetOffsetRef.current += speed * (dt / 1000);
+      }
+
+      // 2. Smooth Lerp
+      const targetOffset = targetOffsetRef.current;
+      let currentOffset = currentOffsetRef.current;
+      const lerpSpeed = isDraggingRef.current ? 0.2 : 0.08;
+      currentOffset += (targetOffset - currentOffset) * lerpSpeed;
+      currentOffsetRef.current = currentOffset;
+
+      // 3. Keep offset bounded to prevent floating-point drift over hours
+      const L = totalLengthRef.current;
+      if (L > 0) {
+        if (currentOffsetRef.current > L * 10) {
+          currentOffsetRef.current -= L;
+          targetOffsetRef.current -= L;
+        } else if (currentOffsetRef.current < -L * 10) {
+          currentOffsetRef.current += L;
+          targetOffsetRef.current += L;
         }
-        updateArrowButtons(targetXRef.current);
       }
 
-      // 2. Ease toward target: scrollX += (targetX - scrollX) * 0.08
-      const targetX = targetXRef.current;
-      let scrollX = scrollXRef.current;
-      scrollX += (targetX - scrollX) * 0.08;
-      scrollXRef.current = scrollX;
-
-      // Move track: transform: translate3d(-scrollX, 0, 0)
-      if (trackRef.current) {
-        trackRef.current.style.transform = `translate3d(${-scrollX.toFixed(2)}px, 0, 0)`;
-      }
-
-      // 3. Position decides the look (per card, each frame)
-      // Read card centers -> map to flat transforms: scale, opacity, subtle translateY/skew
-      const viewportWidth = viewportWidthRef.current || 600;
-      const viewportCenterX = viewportWidth / 2;
-      const offsets = cardOffsetsRef.current;
-      const count = cardElementsRef.current.length;
-
-      // Pre-compute batch styles to avoid layout thrashing
-      const stylesToApply: { scale: number; opacity: number; translateY: number; skewX: number }[] = [];
+      // 4. Cylindrical projection per card
+      const count = loopItems.length;
+      const S = strideRef.current || 304;
+      const vpWidth = viewportWidthRef.current || 800;
+      // Cylinder radius tuned for natural luxury curvature
+      const radius = Math.max(700, vpWidth * 0.95);
+      const halfL = L / 2;
 
       for (let i = 0; i < count; i++) {
         const cardEl = cardElementsRef.current[i];
         if (!cardEl) continue;
 
-        const offset = offsets[i];
-        const cardLeft = offset ? offset.left : cardEl.offsetLeft;
-        const cardWidth = offset ? offset.width : cardEl.offsetWidth;
+        // Base linear position
+        const basePos = i * S;
+        const rawDiff = basePos - currentOffset;
 
-        // Visual center of card in viewport
-        const cardCenterX = (cardLeft + cardWidth / 2) - scrollX;
+        // Modulo distance wrapped into [-L / 2, L / 2)
+        let dist = ((rawDiff % L) + L) % L;
+        if (dist > halfL) {
+          dist -= L;
+        }
 
-        // d = (cardCenterX - viewportCenterX) / viewportWidth
-        // 0 at center, about ±0.5 to ±1 near edges
-        const d = (cardCenterX - viewportCenterX) / (viewportWidth * 0.5);
-        const absD = Math.min(1.8, Math.abs(d));
+        // If card is far beyond visible cylinder horizon, cull it
+        const maxVisibleDist = vpWidth * 0.9 + S;
+        if (Math.abs(dist) > maxVisibleDist) {
+          cardEl.style.opacity = '0';
+          cardEl.style.pointerEvents = 'none';
+          cardEl.style.visibility = 'hidden';
+          continue;
+        }
+
+        cardEl.style.visibility = 'visible';
 
         if (shouldReduceMotion) {
-          stylesToApply.push({ scale: 1, opacity: 1, translateY: 0, skewX: 0 });
+          // Flat accessible fallback for reduced motion
+          cardEl.style.transform = `translate3d(calc(-50% + ${dist.toFixed(1)}px), 0, 0)`;
+          cardEl.style.opacity = '1';
+          cardEl.style.zIndex = '1';
+          cardEl.style.pointerEvents = 'auto';
         } else {
-          // Center card is largest (scale 1.0) and brightest (opacity 1.0)
-          const scale = Math.max(0.85, 1 - absD * 0.15);
-          const opacity = Math.max(0.55, 1 - absD * 0.4);
-          const translateY = absD * 4;
-          const skewX = Math.max(-1.8, Math.min(1.8, -d * 1.0));
-          stylesToApply.push({ scale, opacity, translateY, skewX });
-        }
-      }
+          // 2D & 3D Cylindrical Geometry:
+          // Arc angle theta:
+          const theta = dist / radius;
+          const sinTheta = Math.sin(theta);
+          const cosTheta = Math.cos(theta);
 
-      // Write all styles in batch
-      for (let i = 0; i < count; i++) {
-        const cardEl = cardElementsRef.current[i];
-        const style = stylesToApply[i];
-        if (cardEl && style) {
-          cardEl.style.transform = `scale(${style.scale.toFixed(3)}) translateY(${style.translateY.toFixed(1)}px) skewX(${style.skewX.toFixed(2)}deg)`;
-          cardEl.style.opacity = style.opacity.toFixed(3);
+          // Horizontal position along cylinder arc
+          const cylX = radius * sinTheta;
+
+          // Receding depth into Z space (<= 0)
+          const cylZ = radius * (cosTheta - 1);
+
+          // Tangential angle facing cylinder center
+          const rotY = -theta * (180 / Math.PI) * 0.72;
+
+          // Scale: 1.0 at center, gracefully down to ~0.84 at cylinder periphery
+          const distRatio = Math.min(1.2, Math.abs(dist) / (vpWidth * 0.5));
+          const scale = Math.max(0.82, 1 - distRatio * 0.16);
+
+          // Opacity: 1.0 in center, fading smoothly as cards curve around sides
+          const opacity = Math.max(
+            0,
+            Math.min(1, 1 - Math.max(0, (Math.abs(dist) - vpWidth * 0.28) / (vpWidth * 0.45)))
+          );
+
+          // Layer ordering: center cards are on top
+          const zIndex = Math.max(1, Math.round(50 - Math.min(45, distRatio * 35)));
+
+          // Depth shading overlay on card edges
+          const dimOpacity = Math.min(0.3, distRatio * 0.28);
+
+          cardEl.style.transform = `translate3d(calc(-50% + ${cylX.toFixed(1)}px), 0, ${cylZ.toFixed(1)}px) rotateY(${rotY.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+          cardEl.style.opacity = opacity.toFixed(3);
+          cardEl.style.zIndex = String(zIndex);
+          cardEl.style.pointerEvents = opacity < 0.25 ? 'none' : 'auto';
+
+          const overlayEl = overlayElementsRef.current[i];
+          if (overlayEl) {
+            overlayEl.style.opacity = dimOpacity.toFixed(2);
+          }
         }
       }
 
@@ -257,13 +254,13 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
         cancelAnimationFrame(rafIdRef.current);
       }
     };
-  }, [shouldReduceMotion, updateArrowButtons]);
+  }, [loopItems, shouldReduceMotion]);
 
   // Window resize observer
   useEffect(() => {
     updateBounds();
     window.addEventListener('resize', updateBounds);
-    const timer = setTimeout(updateBounds, 200);
+    const timer = setTimeout(updateBounds, 150);
 
     let ro: ResizeObserver | null = null;
     if (viewportRef.current && typeof ResizeObserver !== 'undefined') {
@@ -276,44 +273,31 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
       clearTimeout(timer);
       if (ro) ro.disconnect();
     };
-  }, [products, isLoading, updateBounds]);
+  }, [updateBounds]);
 
-  // Navigation Arrow clicks (Previous / Next)
+  // Infinite Arrow clicks: Snap & move to previous or next card
   const scroll = (direction: 'left' | 'right') => {
     lastInteractionTimeRef.current = performance.now();
-    const maxScroll = maxScrollRef.current;
-    if (maxScroll <= 0) return;
+    const S = strideRef.current || 304;
 
-    const currentScroll = targetXRef.current;
-    const viewportWidth = viewportWidthRef.current || 600;
-
-    // Find card centers
-    const cardCenters = cardOffsetsRef.current.map(
-      (c) => Math.max(0, Math.min(maxScroll, (c.left + c.width / 2) - viewportWidth / 2))
-    );
-
+    // Snap to nearest stride, then advance
+    const currentSnapped = Math.round(targetOffsetRef.current / S) * S;
     if (direction === 'right') {
-      const next = cardCenters.find((pos) => pos > currentScroll + 12);
-      targetXRef.current = next !== undefined ? next : maxScroll;
-      autoplayDirRef.current = 1;
+      targetOffsetRef.current = currentSnapped + S;
     } else {
-      const prev = [...cardCenters].reverse().find((pos) => pos < currentScroll - 12);
-      targetXRef.current = prev !== undefined ? prev : 0;
-      autoplayDirRef.current = -1;
+      targetOffsetRef.current = currentSnapped - S;
     }
-
-    updateArrowButtons(targetXRef.current);
   };
 
-  // Drag interaction on Track
+  // Drag interaction with cylinder
   const handleTrackPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.button !== 0 || maxScrollRef.current <= 0) return;
+    if (e.button !== 0 || loopItems.length === 0) return;
     isPointerDownRef.current = true;
     isDraggingRef.current = false;
     hasMovedRef.current = false;
     dragStartXRef.current = e.clientX;
     dragStartYRef.current = e.clientY;
-    dragStartTargetXRef.current = targetXRef.current;
+    dragStartOffsetRef.current = targetOffsetRef.current;
     lastPointerXRef.current = e.clientX;
     lastPointerTimeRef.current = performance.now();
     pointerSpeedRef.current = 0;
@@ -326,9 +310,8 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
     const deltaX = e.clientX - dragStartXRef.current;
     const deltaY = e.clientY - dragStartYRef.current;
 
-    // Only initiate drag if movement exceeds 8px horizontally and is primarily horizontal
     if (!isDraggingRef.current) {
-      if (Math.abs(deltaX) > 8 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (Math.abs(deltaX) > 6 && Math.abs(deltaX) > Math.abs(deltaY)) {
         isDraggingRef.current = true;
         setIsDragging(true);
         hasMovedRef.current = true;
@@ -350,10 +333,8 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
     lastPointerTimeRef.current = now;
     lastInteractionTimeRef.current = now;
 
-    // Inverse delta for intuitive dragging
-    const newTarget = dragStartTargetXRef.current - deltaX;
-    targetXRef.current = Math.max(0, Math.min(maxScrollRef.current, newTarget));
-    updateArrowButtons(targetXRef.current);
+    // Dragging left advances cylinder right; dragging right advances cylinder left
+    targetOffsetRef.current = dragStartOffsetRef.current - deltaX;
   };
 
   const handleTrackPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -371,17 +352,17 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
         // Ignored
       }
 
-      // Add flick momentum
+      // Apply flick inertia
       const speed = pointerSpeedRef.current;
-      if (Math.abs(speed) > 0.25) {
-        const inertiaDelta = -speed * 150;
-        targetXRef.current = Math.max(0, Math.min(maxScrollRef.current, targetXRef.current + inertiaDelta));
+      if (Math.abs(speed) > 0.18) {
+        const inertiaDelta = -speed * 200;
+        targetOffsetRef.current += inertiaDelta;
       }
 
-      // Snap to nearest card
-      snapToNearestCard();
+      // Snap to nearest card center
+      const S = strideRef.current || 304;
+      targetOffsetRef.current = Math.round(targetOffsetRef.current / S) * S;
 
-      // Keep hasMovedRef true briefly to swallow the drag-end click
       setTimeout(() => {
         hasMovedRef.current = false;
       }, 80);
@@ -390,7 +371,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
     }
   };
 
-  // Prevent link navigation only if actual drag took place
+  // Prevent link navigation if drag occurred
   const handleClickCapture = (e: React.MouseEvent) => {
     if (hasMovedRef.current) {
       e.preventDefault();
@@ -408,20 +389,18 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
     lastInteractionTimeRef.current = performance.now();
   };
 
-  // Mouse wheel / Horizontal trackpad swipe
+  // Wheel / Trackpad swipe
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    if (maxScrollRef.current <= 0) return;
+    if (loopItems.length === 0) return;
     const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY);
     if (isHorizontal || e.shiftKey) {
       e.preventDefault();
       const delta = e.shiftKey ? e.deltaY : e.deltaX;
-      targetXRef.current = Math.max(0, Math.min(maxScrollRef.current, targetXRef.current + delta * 1.1));
+      targetOffsetRef.current += delta * 1.1;
       lastInteractionTimeRef.current = performance.now();
-      updateArrowButtons(targetXRef.current);
     }
   };
 
-  const items = products;
   const isSectionInView = useInView(sectionRef, { once: true, amount: 0.1 });
 
   const headerVariants = {
@@ -458,7 +437,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
           flexWrap: 'wrap',
         }}
       >
-        {/* Left Column: Text & CTA (Preserved exactly) */}
+        {/* Left Column: Heading, Subtitle & Shop Now CTA */}
         <motion.div
           initial="hidden"
           animate={isSectionInView ? 'visible' : 'hidden'}
@@ -538,42 +517,40 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
           </div>
         </motion.div>
 
-        {/* Right Column: Flat Horizontal Product Scroll */}
+        {/* Right Column: Circular Cylindrical 3D/2D Loop Carousel */}
         <div style={{ flex: '999 1 600px', minWidth: '0', position: 'relative' }}>
           {/* Circular Left Arrow Button */}
           <button
             type="button"
             onClick={() => scroll('left')}
-            aria-label="Scroll left"
+            aria-label="Scroll left in loop"
             style={{
               position: 'absolute',
               left: '16px',
-              top: imageHeight > 0 ? `${imageHeight / 2}px` : 'clamp(133px, 13.33vw, 186.5px)',
+              top: imageHeight > 0 ? `${imageHeight / 2 + 16}px` : 'clamp(150px, 15vw, 210px)',
               transform: 'translateY(-50%)',
-              zIndex: 10,
+              zIndex: 100,
               width: '44px',
               height: '44px',
               borderRadius: '50%',
               backgroundColor: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(4px)',
+              backdropFilter: 'blur(6px)',
               border: '1px solid rgba(0, 0, 0, 0.08)',
               boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              cursor: canScrollLeft ? 'pointer' : 'default',
+              cursor: !isLoading && loopItems.length > 0 ? 'pointer' : 'default',
               color: 'var(--text-primary)',
-              opacity: canScrollLeft ? 1 : 0,
-              pointerEvents: canScrollLeft ? 'auto' : 'none',
+              opacity: !isLoading && loopItems.length > 0 ? 1 : 0,
+              pointerEvents: !isLoading && loopItems.length > 0 ? 'auto' : 'none',
               transition:
                 'opacity 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease',
             }}
             onMouseEnter={(e) => {
-              if (canScrollLeft) {
-                e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
-                e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.18)';
-                e.currentTarget.style.backgroundColor = '#ffffff';
-              }
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.18)';
+              e.currentTarget.style.backgroundColor = '#ffffff';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
@@ -588,36 +565,34 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
           <button
             type="button"
             onClick={() => scroll('right')}
-            aria-label="Scroll right"
+            aria-label="Scroll right in loop"
             style={{
               position: 'absolute',
               right: '16px',
-              top: imageHeight > 0 ? `${imageHeight / 2}px` : 'clamp(133px, 13.33vw, 186.5px)',
+              top: imageHeight > 0 ? `${imageHeight / 2 + 16}px` : 'clamp(150px, 15vw, 210px)',
               transform: 'translateY(-50%)',
-              zIndex: 10,
+              zIndex: 100,
               width: '44px',
               height: '44px',
               borderRadius: '50%',
               backgroundColor: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(4px)',
+              backdropFilter: 'blur(6px)',
               border: '1px solid rgba(0, 0, 0, 0.08)',
               boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              cursor: canScrollRight && !isLoading && products.length > 0 ? 'pointer' : 'default',
+              cursor: !isLoading && loopItems.length > 0 ? 'pointer' : 'default',
               color: 'var(--text-primary)',
-              opacity: canScrollRight && !isLoading && products.length > 0 ? 1 : 0,
-              pointerEvents: canScrollRight && !isLoading && products.length > 0 ? 'auto' : 'none',
+              opacity: !isLoading && loopItems.length > 0 ? 1 : 0,
+              pointerEvents: !isLoading && loopItems.length > 0 ? 'auto' : 'none',
               transition:
                 'opacity 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease',
             }}
             onMouseEnter={(e) => {
-              if (canScrollRight) {
-                e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
-                e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.18)';
-                e.currentTarget.style.backgroundColor = '#ffffff';
-              }
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.18)';
+              e.currentTarget.style.backgroundColor = '#ffffff';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
@@ -628,7 +603,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
             <ChevronRight size={22} strokeWidth={1.5} />
           </button>
 
-          {/* Viewport container */}
+          {/* Viewport container with perspective & subtle edge fade */}
           <div
             ref={viewportRef}
             onMouseEnter={handleMouseEnter}
@@ -640,7 +615,14 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
               position: 'relative',
               userSelect: 'none',
               touchAction: 'pan-y',
-              cursor: isDragging ? 'grabbing' : 'auto',
+              cursor: isDragging ? 'grabbing' : 'grab',
+              perspective: '1200px',
+              perspectiveOrigin: '50% 50%',
+              height: containerHeight > 0 ? `${containerHeight}px` : 'clamp(380px, 38vw, 490px)',
+              maskImage:
+                'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)',
+              WebkitMaskImage:
+                'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)',
             }}
           >
             {isLoading || products.length === 0 ? (
@@ -666,25 +648,22 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
               </div>
             ) : (
               <div
-                ref={trackRef}
+                ref={stageRef}
                 onPointerDown={handleTrackPointerDown}
                 onPointerMove={handleTrackPointerMove}
                 onPointerUp={handleTrackPointerUp}
                 onPointerCancel={handleTrackPointerUp}
                 onClickCapture={handleClickCapture}
                 style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '24px',
-                  width: 'max-content',
-                  willChange: 'transform',
-                  paddingTop: '16px',
-                  paddingBottom: '16px',
+                  position: 'relative',
+                  width: '100%',
+                  height: '100%',
+                  transformStyle: 'preserve-3d',
                 }}
               >
-                {items.map((product, index) => (
+                {loopItems.map(({ product, key }, index) => (
                   <div
-                    key={`${product.id}-${index}`}
+                    key={key}
                     ref={(el) => {
                       cardElementsRef.current[index] = el;
                     }}
@@ -694,13 +673,17 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                       }
                     }}
                     style={{
+                      position: 'absolute',
+                      left: '50%',
+                      top: '16px',
                       width: 'clamp(220px, 22vw, 300px)',
-                      flexShrink: 0,
                       display: 'flex',
                       flexDirection: 'column',
-                      willChange: 'transform, opacity',
                       transformOrigin: 'center center',
+                      transformStyle: 'preserve-3d',
+                      willChange: 'transform, opacity',
                       cursor: 'pointer',
+                      userSelect: 'none',
                     }}
                   >
                     <div style={{ position: 'relative' }}>
@@ -740,8 +723,24 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                             e.currentTarget.style.transform = 'scale(1)';
                           }}
                         />
+
+                        {/* Cylinder lighting & curvature depth shade */}
+                        <div
+                          ref={(el) => {
+                            overlayElementsRef.current[index] = el;
+                          }}
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            backgroundColor: '#000',
+                            opacity: 0,
+                            pointerEvents: 'none',
+                            transition: 'opacity 0.08s linear',
+                          }}
+                        />
                       </Link>
                     </div>
+
                     <div style={{ textAlign: 'center', marginTop: '16px' }}>
                       <Link
                         href={`/product/${product.slug}`}

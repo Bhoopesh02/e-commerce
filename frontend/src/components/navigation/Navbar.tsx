@@ -31,9 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
   useEffect(() => {
     let isScrolledLocal = typeof window !== 'undefined' ? window.scrollY > 48 : false;
-    if (isScrolledLocal) {
-      setIsScrolled(true);
-    }
+    setIsScrolled(isScrolledLocal);
 
     const handleScroll = () => {
       const y = window.scrollY;
@@ -49,13 +47,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [pathname]);
 
   const newArrivalsHref = '/new-arrivals';
   const accountHref = !user ? '/signin' : user.role === 'admin' ? '/admin/dashboard' : '/account';
 
-  const isHomePage = pathname === '/';
-  const isLightNav = isHomePage && !isScrolled;
+  const normalizedPath = pathname ? pathname.replace(/\/+$/, '') || '/' : '/';
+  const isHeroBannerPage =
+    normalizedPath === '/' ||
+    normalizedPath === '/collections' ||
+    normalizedPath === '/new-arrivals' ||
+    normalizedPath.startsWith('/new-arrivals/');
+
+  const isMegaMenuOpen = Boolean(hoveredNav && hoveredNav !== 'home');
+  const isSolidNav = isScrolled || isMegaMenuOpen;
+  const isLightNav = isHeroBannerPage && !isSolidNav;
 
   const navLinkStyle: React.CSSProperties = {
     fontSize: '0.82rem',
@@ -69,7 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     justifyContent: 'center',
     lineHeight: 1,
     padding: '0 6px',
-    color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
+    color: isLightNav ? '#ffffff' : 'var(--text-primary)',
     textShadow: isLightNav ? '0 1px 8px var(--overlay-black-70)' : 'none',
     transition: 'color 350ms var(--ease-luxury), text-shadow 350ms var(--ease-luxury)',
     position: 'relative',
@@ -86,7 +92,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     minWidth: '48px',
     minHeight: '48px',
     padding: 0,
-    color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
+    color: isLightNav ? '#ffffff' : 'var(--text-primary)',
     background: 'transparent',
     border: 'none',
     cursor: 'pointer',
@@ -131,16 +137,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           willChange: 'transform',
           transition:
             'background 250ms ease, background-color 250ms ease, color 250ms ease',
-          background: isScrolled
+          background: isSolidNav
             ? 'rgba(255, 255, 255, 0.95)'
-            : isHomePage
+            : isHeroBannerPage
               ? 'linear-gradient(180deg, var(--overlay-black-50) 0%, var(--overlay-black-30) 60%, transparent 100%)'
               : 'transparent',
-          backdropFilter: isScrolled ? 'blur(6px)' : 'none',
-          WebkitBackdropFilter: isScrolled ? 'blur(6px)' : 'none',
-          borderBottom: isScrolled ? '1px solid var(--border-color)' : 'none',
-          boxShadow: isScrolled ? '0 2px 10px rgba(0, 0, 0, 0.03)' : 'none',
-          color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
+          backdropFilter: isSolidNav ? 'blur(6px)' : 'none',
+          WebkitBackdropFilter: isSolidNav ? 'blur(6px)' : 'none',
+          borderBottom: isSolidNav ? '1px solid var(--border-color)' : 'none',
+          boxShadow: isSolidNav ? '0 2px 10px rgba(0, 0, 0, 0.03)' : 'none',
+          color: isLightNav ? '#ffffff' : 'var(--text-primary)',
         }}
       >
         <div
@@ -173,7 +179,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 minWidth: '48px',
                 minHeight: '48px',
                 padding: 0,
-                color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
+                color: isLightNav ? '#ffffff' : 'var(--text-primary)',
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
@@ -275,7 +281,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   fontWeight: 600,
                   letterSpacing: '0.22em',
                   lineHeight: 1,
-                  color: isLightNav ? 'var(--bg-subtle)' : 'var(--text-primary)',
+                  color: isLightNav ? '#ffffff' : 'var(--text-primary)',
                   display: 'inline-flex',
                   alignItems: 'center',
                   transform: isScrolled ? 'scale(0.92)' : 'scale(0.92)',
@@ -657,10 +663,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
       {/* Style block for responsive navigation layout & touch target sizing */}
       <style jsx global>{`
-        header {
-          border-bottom: none !important;
-          box-shadow: none !important;
-        }
         .navbar-action-btn:hover {
           background-color: var(--bg-surface-hover, var(--overlay-white-5));
         }

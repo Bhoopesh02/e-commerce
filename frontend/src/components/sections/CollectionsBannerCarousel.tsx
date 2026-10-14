@@ -7,9 +7,21 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 const AUTOPLAY_INTERVAL_MS = 2000;
 const TRANSITION_DURATION_MS = 600;
 
-const BANNER_DATA = [
+interface BannerSlideItem {
+  src: string;
+  mobileSrc?: string;
+  mobileObjectPosition?: string;
+  alt: string;
+  heading: string;
+  description: string;
+  tags: string[];
+}
+
+const BANNER_DATA: BannerSlideItem[] = [
   {
     src: '/images/banners/photo-1483985988355-763728e1935b.webp',
+    mobileSrc: '/images/banners/photo-1483985988355-763728e1935b.webp',
+    mobileObjectPosition: 'center 26%',
     alt: 'New Collections Campaign',
     heading: 'Collections',
     description: 'Explore our full collections of outerwear, Italian tailoring, cashmere knitwear, and artisanal accessories.',
@@ -17,6 +29,8 @@ const BANNER_DATA = [
   },
   {
     src: '/images/banners/new-arrivals/new-arrivals-hero.webp',
+    mobileSrc: '/images/banners/new-arrivals/new-arrivals-hero-mobile.jpg',
+    mobileObjectPosition: 'right 5% center',
     alt: 'Autumn Winter Collection',
     heading: 'The Outerwear Edit',
     description: 'Sculpted coats and hand-stitched leather, cut for the colder months and made to last for years.',
@@ -24,6 +38,8 @@ const BANNER_DATA = [
   },
   {
     src: '/images/banners/banner-permanent-wardrobe.webp',
+    mobileSrc: '/images/banners/banner-permanent-wardrobe.webp',
+    mobileObjectPosition: 'center center',
     alt: 'Permanent Wardrobe',
     heading: 'Cashmere, Refined',
     description: 'Featherlight knitwear in the softest Mongolian cashmere, finished by hand in small batches.',
@@ -127,7 +143,8 @@ export function CollectionsBannerCarousel() {
         overflow: 'hidden',
         touchAction: 'pan-y pinch-zoom',
         marginBottom: '40px',
-        height: 'calc(100dvh - 76px)',
+        height: '100dvh',
+        minHeight: '100dvh',
         width: '100%',
         boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',
         backgroundColor: '#0c0a14',
@@ -164,40 +181,49 @@ export function CollectionsBannerCarousel() {
                 zIndex: 1,
               }}
             >
-              <Image
-                src={slide.src}
-                alt={slide.alt}
-                fill
-                priority={index === 1 || index === 2 || index === 0}
-                quality={92}
-                sizes="100vw"
-                style={{
-                  objectFit: 'cover',
-                  objectPosition: 'center 26%',
-                  transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-                }}
-                className="group-hover:scale-105"
-              />
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background:
-                    'linear-gradient(90deg, rgba(12, 10, 20, 0.8) 0%, rgba(12, 10, 20, 0.6) 42%, rgba(12, 10, 20, 0.2) 75%, rgba(12, 10, 20, 0.4) 100%)',
-                }}
-              />
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background:
-                    'linear-gradient(0deg, rgba(12, 10, 20, 0.7) 0%, transparent 65%)',
-                }}
-              />
+              {/* Desktop Landscape Crop */}
+              <div className="collections-desktop-banner-wrapper">
+                <Image
+                  src={slide.src}
+                  alt={slide.alt}
+                  fill
+                  priority={index === 1 || index === 2 || index === 0}
+                  quality={92}
+                  sizes="(max-width: 768px) 1px, 100vw"
+                  style={{
+                    objectFit: 'cover',
+                    objectPosition: 'center 26%',
+                    transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+                  }}
+                  className="group-hover:scale-105"
+                />
+              </div>
+
+              {/* Mobile Portrait Crop (Show person on right half of screen) */}
+              <div className="collections-mobile-banner-wrapper">
+                <Image
+                  src={slide.mobileSrc || slide.src}
+                  alt={slide.alt}
+                  fill
+                  priority={index === 1 || index === 2 || index === 0}
+                  quality={92}
+                  sizes="(max-width: 768px) 100vw, 1px"
+                  style={{
+                    objectFit: 'cover',
+                    objectPosition: slide.mobileObjectPosition || 'right 5% center',
+                    transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+                  }}
+                  className="group-hover:scale-105"
+                />
+              </div>
+
+              {/* Scrim Gradients */}
+              <div className="collections-scrim-horizontal" />
+              <div className="collections-scrim-vertical" />
             </div>
 
             <div
-              className="container"
+              className="container collections-banner-container"
               style={{
                 position: 'relative',
                 zIndex: 2,
@@ -208,6 +234,7 @@ export function CollectionsBannerCarousel() {
               }}
             >
               <div
+                className="collections-banner-content"
                 style={{
                   padding: 'clamp(36px, 5vw, 60px) 0',
                   maxWidth: '740px',
@@ -363,6 +390,103 @@ export function CollectionsBannerCarousel() {
           );
         })}
       </div>
+
+      {/* Responsive layout styles for mobile crop and right-side subject focus */}
+      <style jsx global>{`
+        .collections-desktop-banner-wrapper {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          display: block;
+        }
+        .collections-mobile-banner-wrapper {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          display: none;
+        }
+        .collections-scrim-horizontal {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            90deg,
+            rgba(12, 10, 20, 0.85) 0%,
+            rgba(12, 10, 20, 0.65) 42%,
+            rgba(12, 10, 20, 0.25) 75%,
+            rgba(12, 10, 20, 0.4) 100%
+          );
+          pointer-events: none;
+        }
+        .collections-scrim-vertical {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(0deg, rgba(12, 10, 20, 0.7) 0%, transparent 65%);
+          pointer-events: none;
+        }
+        .hero-master-banner {
+          height: 100vh;
+          height: 100dvh;
+          min-height: 100vh;
+          min-height: 100dvh;
+          width: 100%;
+        }
+        .collections-banner-container {
+          padding-top: var(--navbar-height, 76px);
+        }
+        @media (max-width: 768px) {
+          .hero-master-banner {
+            height: 100vh !important;
+            height: 100dvh !important;
+            min-height: 100vh !important;
+            min-height: 100dvh !important;
+            margin-bottom: 24px !important;
+          }
+          .collections-desktop-banner-wrapper {
+            display: none !important;
+          }
+          .collections-mobile-banner-wrapper {
+            display: block !important;
+          }
+          .collections-scrim-horizontal {
+            background: linear-gradient(
+              90deg,
+              rgba(6, 10, 15, 0.94) 0%,
+              rgba(6, 10, 15, 0.84) 42%,
+              rgba(6, 10, 15, 0.28) 72%,
+              rgba(6, 10, 15, 0.02) 100%
+            ) !important;
+          }
+          .collections-scrim-vertical {
+            background: linear-gradient(
+              0deg,
+              rgba(6, 10, 15, 0.8) 0%,
+              transparent 40%,
+              rgba(6, 10, 15, 0.3) 100%
+            ) !important;
+          }
+          .collections-banner-container {
+            align-items: center !important;
+            padding-top: var(--navbar-height, 64px) !important;
+          }
+          .collections-banner-content {
+            max-width: min(310px, 68vw) !important;
+            padding: 24px 0 !important;
+          }
+          .collections-banner-content h1,
+          .collections-banner-content h2 {
+            font-size: clamp(1.75rem, 6.5vw, 2.35rem) !important;
+            line-height: 1.15 !important;
+            margin-bottom: 12px !important;
+          }
+          .collections-banner-content p {
+            font-size: 0.82rem !important;
+            line-height: 1.45 !important;
+            margin-bottom: 16px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
@@ -374,7 +498,8 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
         position: 'relative',
         overflow: 'hidden',
         marginBottom: '40px',
-        height: 'calc(100dvh - 76px)',
+        height: '100dvh',
+        minHeight: '100dvh',
         width: '100%',
         display: 'flex',
         alignItems: 'center',
@@ -390,40 +515,45 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
           zIndex: 1,
         }}
       >
-        <Image
-          src={banner.src}
-          alt={banner.alt}
-          fill
-          priority
-          quality={92}
-          sizes="100vw"
-          style={{
-            objectFit: 'cover',
-            objectPosition: 'center 26%',
-            transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-          }}
-          className="group-hover:scale-105"
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'linear-gradient(90deg, rgba(12, 10, 20, 0.8) 0%, rgba(12, 10, 20, 0.6) 42%, rgba(12, 10, 20, 0.2) 75%, rgba(12, 10, 20, 0.4) 100%)',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'linear-gradient(0deg, rgba(12, 10, 20, 0.7) 0%, transparent 65%)',
-          }}
-        />
+        <div className="collections-desktop-banner-wrapper">
+          <Image
+            src={banner.src}
+            alt={banner.alt}
+            fill
+            priority
+            quality={92}
+            sizes="(max-width: 768px) 1px, 100vw"
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center 26%',
+              transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
+            className="group-hover:scale-105"
+          />
+        </div>
+        <div className="collections-mobile-banner-wrapper">
+          <Image
+            src={banner.mobileSrc || banner.src}
+            alt={banner.alt}
+            fill
+            priority
+            quality={92}
+            sizes="(max-width: 768px) 100vw, 1px"
+            style={{
+              objectFit: 'cover',
+              objectPosition: banner.mobileObjectPosition || 'right 5% center',
+              transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
+            className="group-hover:scale-105"
+          />
+        </div>
+        <div className="collections-scrim-horizontal" />
+        <div className="collections-scrim-vertical" />
       </div>
 
-      <div className="container" style={{ position: 'relative', zIndex: 2, width: '100%' }}>
+      <div className="container collections-banner-container" style={{ position: 'relative', zIndex: 2, width: '100%' }}>
         <div
+          className="collections-banner-content"
           style={{
             padding: 'clamp(36px, 5vw, 60px) 0',
             maxWidth: '740px',

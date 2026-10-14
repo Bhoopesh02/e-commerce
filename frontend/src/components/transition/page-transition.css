@@ -1,0 +1,76 @@
+/* ==========================================================================
+   AURELIA PAGE TRANSITION OVERLAY
+   Full-screen clip-path curtain wipe with editorial typography reveal
+   ========================================================================== */
+
+.page-transition-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 999999;
+  background-color: #f4f5f7; /* Diamond white */
+  pointer-events: none;
+  clip-path: inset(0 100% 0 0);
+  -webkit-clip-path: inset(0 100% 0 0);
+  opacity: 1;
+  visibility: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.page-transition-overlay.is-active {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Exact label markup requested */
+.pt-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.pt-line {
+  display: block;
+  overflow: hidden;
+  padding: 0.14em 0.08em;
+  line-height: 1.1;
+}
+
+.pt-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.3em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(28px, 6vw, 72px);
+  font-weight: 500;
+  color: #1b1b1b;
+  opacity: 1;
+}
+
+.pt-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.pt-char {
+  display: inline-block;
+  transform: translateY(110%);
+  will-change: transform;
+}
+
+/* Body lock during transition */
+body.page-transition-locked {
+  overflow: hidden !important;
+  touch-action: none;
+}
