@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -704,25 +705,33 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                           cursor: 'pointer',
                         }}
                       >
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          onLoad={handleImageLoad}
-                          draggable={false}
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            pointerEvents: 'none',
-                            transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'scale(1.04)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'scale(1)';
-                          }}
-                        />
+                        {isSectionInView ? (
+                          <Image
+                            src={product.images[0]}
+                            alt={product.name}
+                            fill
+                            sizes="(max-width: 640px) 70vw, (max-width: 1024px) 35vw, 280px"
+                            quality={85}
+                            loading="lazy"
+                            onLoad={() => {
+                              if (index === 0) handleImageLoad();
+                            }}
+                            draggable={false}
+                            style={{
+                              objectFit: 'cover',
+                              pointerEvents: 'none',
+                              transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+                            }}
+                          />
+                        ) : (
+                          <div
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              backgroundColor: '#f5f5f5',
+                            }}
+                          />
+                        )}
 
                         {/* Cylinder lighting & curvature depth shade */}
                         <div

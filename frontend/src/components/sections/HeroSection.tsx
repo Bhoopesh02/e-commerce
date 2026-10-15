@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { getImageProps } from 'next/image';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { Button } from '@/components/ui/Button';
 import { ArrowRight } from 'lucide-react';
@@ -27,6 +27,28 @@ export const HeroSection: React.FC = () => {
     }
   }, []);
 
+  const common = {
+    alt: 'Aurelia Luxury Campaign - The Winter Collection',
+    fill: true,
+    priority: true,
+    quality: 90,
+    sizes: '100vw',
+  };
+
+  const {
+    props: { srcSet: desktopSrcSet, ...desktopRest },
+  } = getImageProps({
+    ...common,
+    src: heroImg,
+  });
+
+  const {
+    props: { srcSet: mobileSrcSet },
+  } = getImageProps({
+    ...common,
+    src: heroMobileImg,
+  });
+
   return (
     <section
       className="relative w-full min-h-screen min-h-[100svh] overflow-hidden flex flex-col hero-section"
@@ -39,9 +61,9 @@ export const HeroSection: React.FC = () => {
         backgroundColor: '#2b241d',
       }}
     >
-      {/* Background Image Container - Mobile Portrait Crop (<768px) */}
-      <div
-        className="hero-image-mobile-wrapper block md:hidden absolute inset-0 z-0 w-full h-full pointer-events-none overflow-hidden"
+      {/* Background Image Container - Responsive Art Direction via HTML5 <picture> */}
+      <picture
+        className="hero-image-picture absolute inset-0 z-0 w-full h-full pointer-events-none overflow-hidden"
         style={{
           position: 'absolute',
           top: 0,
@@ -51,50 +73,21 @@ export const HeroSection: React.FC = () => {
           zIndex: 0,
         }}
       >
-        <Image
-          src={heroMobileImg}
-          alt="Aurelia Luxury Campaign - The Winter Collection"
-          fill
-          priority
-          quality={90}
-          sizes="(max-width: 767px) 100vw, 1px"
-          onLoad={() => setLoaded(true)}
-          className="object-cover object-center hero-image-mobile"
-          style={{
-            objectFit: 'cover',
-            objectPosition: 'center center',
-          }}
-        />
-      </div>
-
-      {/* Background Image Container - Desktop Landscape Banner (>=768px) */}
-      <div
-        className="hero-image-desktop-wrapper hidden md:block absolute inset-0 z-0 w-full h-full pointer-events-none overflow-hidden"
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 0,
-        }}
-      >
-        <Image
+        <source media="(max-width: 767px)" srcSet={mobileSrcSet} />
+        <source media="(min-width: 768px)" srcSet={desktopSrcSet} />
+        <img
+          {...desktopRest}
           ref={imgRef}
-          src={heroImg}
-          alt="Aurelia Luxury Campaign - The Winter Collection"
-          fill
-          priority
-          quality={90}
-          sizes="(min-width: 768px) 100vw, 1px"
+          fetchPriority="high"
           onLoad={() => setLoaded(true)}
-          className="object-cover md:object-center hero-image"
+          className="object-cover object-center hero-image w-full h-full"
           style={{
+            ...desktopRest.style,
             objectFit: 'cover',
             objectPosition: 'center center',
           }}
         />
-      </div>
+      </picture>
 
       {/* Dark gradient overlay behind text on mobile for readability */}
       <div className="hero-mobile-overlay" aria-hidden="true" />
@@ -308,33 +301,22 @@ export const HeroSection: React.FC = () => {
           background-color: #2b241d;
         }
 
-        .hero-image-mobile-wrapper {
-          display: block;
-        }
-
-        .hero-image-desktop-wrapper {
-          display: none;
-        }
-
-        .hero-image-mobile {
-          object-fit: cover !important;
-          object-position: center center !important;
-          filter: none !important;
+        .hero-image-picture {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          overflow: hidden;
+          z-index: 0;
         }
 
         .hero-image {
+          width: 100%;
+          height: 100%;
           object-fit: cover !important;
           object-position: center center !important;
           filter: none !important;
-        }
-
-        @media (min-width: 768px) {
-          .hero-image-mobile-wrapper {
-            display: none !important;
-          }
-          .hero-image-desktop-wrapper {
-            display: block !important;
-          }
         }
 
         .hero-content-container {

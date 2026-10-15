@@ -184,9 +184,7 @@ export const CategoryShowcaseSection: React.FC<CategoryShowcaseSectionProps> = (
             alt={`${config.headline} - 4K High Clarity Banner`}
             fill
             sizes="(max-width: 1280px) 100vw, 1440px"
-            quality={92}
-            priority={sectionId.includes('new-arrivals')}
-            loading={sectionId.includes('new-arrivals') ? 'eager' : 'lazy'}
+            quality={88}
             onLoad={() => setIsBannerLoaded(true)}
             onError={() => {
               setIsBannerLoaded(true);

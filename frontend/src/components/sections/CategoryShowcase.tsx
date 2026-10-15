@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -65,14 +65,96 @@ export const CategoryShowcaseSkeleton: React.FC<CategoryShowcaseSkeletonProps> =
   );
 };
 
+const CategoryCardItem: React.FC<{ category: Category }> = ({ category }) => {
+  const router = useRouter();
+  const [isLoaded, setIsLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (imgRef.current?.complete) {
+      setIsLoaded(true);
+    }
+  }, []);
+
+  return (
+    <div 
+      onClick={() => router.push(`/shop?categorySlug=${category.slug}`)}
+      className="category-card group"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        cursor: 'pointer'
+      }}
+    >
+      <div 
+        className="category-image-container"
+        style={{
+          backgroundColor: '#f4f5f7',
+          borderRadius: '12px',
+          aspectRatio: '1/1',
+          position: 'relative',
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        {!isLoaded && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              zIndex: 1,
+              pointerEvents: 'none',
+            }}
+          >
+            <Skeleton width="100%" height="100%" borderRadius="12px" />
+          </div>
+        )}
+
+        <Image
+          ref={imgRef}
+          src={category.image}
+          alt={category.name}
+          fill
+          loading="lazy"
+          quality={85}
+          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+          onLoad={() => setIsLoaded(true)}
+          onError={() => setIsLoaded(true)}
+          style={{
+            objectFit: 'cover',
+            opacity: isLoaded ? 1 : 0,
+            transition: 'opacity 350ms ease, transform 0.5s ease'
+          }}
+          className="category-card-image"
+        />
+      </div>
+      
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        textTransform: 'uppercase',
+        fontSize: '0.85rem',
+        letterSpacing: '0.05em',
+        color: 'var(--text-secondary)',
+        fontWeight: 500,
+        transition: 'color 0.3s ease'
+      }} className="category-card-title">
+        {category.name} <ChevronRight size={14} />
+      </div>
+    </div>
+  );
+};
+
 export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   categories = [],
   title = 'Shop by category',
   subtitle = '',
   isLoading = false,
 }) => {
-  const router = useRouter();
-
   if (isLoading || !categories || categories.length === 0) {
     return <CategoryShowcaseSkeleton title={title} subtitle={subtitle} />;
   }
@@ -94,59 +176,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
         <div className="category-grid">
           {categories.map((cat, idx) => (
             <ScrollReveal key={cat.id} delay={idx * 0.1} duration={0.6}>
-              <div 
-                onClick={() => router.push(`/shop?categorySlug=${cat.slug}`)}
-                className="category-card group"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '16px',
-                  cursor: 'pointer'
-                }}
-              >
-                <div 
-                  className="category-image-container"
-                  style={{
-                    backgroundColor: '#f4f5f7',
-                    borderRadius: '12px',
-                    aspectRatio: '1/1',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <Image
-                    src={cat.image}
-                    alt={cat.name}
-                    fill
-                    quality={90}
-                    priority
-                    loading="eager"
-                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                    style={{
-                      objectFit: 'cover',
-                      transition: 'transform 0.5s ease'
-                    }}
-                    className="category-card-image"
-                  />
-                </div>
-                
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  textTransform: 'uppercase',
-                  fontSize: '0.85rem',
-                  letterSpacing: '0.05em',
-                  color: 'var(--text-secondary)',
-                  fontWeight: 500,
-                  transition: 'color 0.3s ease'
-                }} className="category-card-title">
-                  {cat.name} <ChevronRight size={14} />
-                </div>
-              </div>
+              <CategoryCardItem category={cat} />
             </ScrollReveal>
           ))}
         </div>

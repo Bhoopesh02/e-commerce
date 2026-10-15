@@ -53,6 +53,7 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const desktopImgRef = useRef<HTMLImageElement>(null);
   const mobileImgRef = useRef<HTMLImageElement>(null);
+  const hasEntered = useInView(containerRef, { once: true, margin: '200px' });
   const isInView = useInView(containerRef, { once: true, amount: 0.25 });
   const shouldReduceMotion = useReducedMotion();
 
@@ -60,7 +61,7 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
     if (desktopImgRef.current?.complete || mobileImgRef.current?.complete) {
       setLoaded(true);
     }
-  }, []);
+  }, [hasEntered]);
 
   const isReady = isInView && loaded;
 
@@ -97,47 +98,46 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
           zIndex: 1,
         }}
       >
-        {mobileImageSrc ? (
-          <>
-            <div className="home-banner-img-mobile">
-              <Image
-                ref={mobileImgRef}
-                src={mobileImageSrc}
-                alt={alt}
-                fill
-                quality={92}
-                sizes="(max-width: 767px) 100vw, 1px"
-                placeholder="blur"
-                onLoad={() => setLoaded(true)}
-                style={{ objectFit: 'cover', objectPosition: 'center' }}
-              />
-            </div>
-            <div className="home-banner-img-desktop">
-              <Image
-                ref={desktopImgRef}
-                src={imageSrc}
-                alt={alt}
-                fill
-                quality={92}
-                sizes="(max-width: 767px) 1px, 100vw"
-                placeholder="blur"
-                onLoad={() => setLoaded(true)}
-                style={{ objectFit: 'cover', objectPosition: 'center' }}
-              />
-            </div>
-          </>
-        ) : (
-          <Image
-            ref={desktopImgRef}
-            src={imageSrc}
-            alt={alt}
-            fill
-            quality={92}
-            sizes="100vw"
-            placeholder="blur"
-            onLoad={() => setLoaded(true)}
-            style={{ objectFit: 'cover', objectPosition: 'center' }}
-          />
+        {hasEntered && (
+          mobileImageSrc ? (
+            <>
+              <div className="home-banner-img-mobile">
+                <Image
+                  ref={mobileImgRef}
+                  src={mobileImageSrc}
+                  alt={alt}
+                  fill
+                  quality={88}
+                  sizes="(max-width: 767px) 100vw, 1px"
+                  onLoad={() => setLoaded(true)}
+                  style={{ objectFit: 'cover', objectPosition: 'center' }}
+                />
+              </div>
+              <div className="home-banner-img-desktop">
+                <Image
+                  ref={desktopImgRef}
+                  src={imageSrc}
+                  alt={alt}
+                  fill
+                  quality={88}
+                  sizes="(max-width: 767px) 1px, 100vw"
+                  onLoad={() => setLoaded(true)}
+                  style={{ objectFit: 'cover', objectPosition: 'center' }}
+                />
+              </div>
+            </>
+          ) : (
+            <Image
+              ref={desktopImgRef}
+              src={imageSrc}
+              alt={alt}
+              fill
+              quality={88}
+              sizes="100vw"
+              onLoad={() => setLoaded(true)}
+              style={{ objectFit: 'cover', objectPosition: 'center' }}
+            />
+          )
         )}
       </motion.div>
 

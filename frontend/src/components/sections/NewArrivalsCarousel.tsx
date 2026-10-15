@@ -391,7 +391,7 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
                       className="carousel-product-inner"
                       style={{ willChange: 'transform' }}
                     >
-                      <ProductCard product={product} priority={idx < 8} />
+                      <ProductCard product={product} />
                     </div>
                   </div>
                 ))

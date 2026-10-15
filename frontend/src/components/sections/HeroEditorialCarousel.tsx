@@ -204,8 +204,7 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
                     src={slide.image}
                     alt={`${slide.title} — ${slide.subtitle}`}
                     fill
-                    priority={index === 0}
-                    quality={88}
+                    quality={85}
                     sizes="(max-width: 767px) 1px, 100vw"
                     className={styles.bannerImage}
                   />
@@ -217,8 +216,7 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
                     src={slide.mobileImage}
                     alt={`${slide.title} — ${slide.subtitle}`}
                     fill
-                    priority={index === 0}
-                    quality={92}
+                    quality={85}
                     sizes="(max-width: 767px) 100vw, 1px"
                     className={styles.bannerImageMobile}
                   />

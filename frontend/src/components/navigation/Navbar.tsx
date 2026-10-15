@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Search, Heart, ShoppingBag, User, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -116,9 +117,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const isLightNav = isHeroBannerPage && !isSolidNav;
 
   const navLinkStyle: React.CSSProperties = {
-    fontSize: '0.82rem',
+    fontSize: 'clamp(0.68rem, 0.45rem + 0.32vw, 0.82rem)',
     fontWeight: 500,
-    letterSpacing: '0.12em',
+    letterSpacing: 'clamp(0.06em, 0.02em + 0.07vw, 0.12em)',
     textTransform: 'uppercase',
     height: '48px',
     minHeight: '48px',
@@ -126,7 +127,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     alignItems: 'center',
     justifyContent: 'center',
     lineHeight: 1,
-    padding: '0 6px',
+    padding: '0 clamp(3px, 0.3vw, 6px)',
     color: isLightNav ? '#ffffff' : 'var(--text-primary)',
     textShadow: isLightNav ? '0 1px 8px var(--overlay-black-70)' : 'none',
     transition: 'color 350ms var(--ease-luxury), text-shadow 350ms var(--ease-luxury)',
@@ -253,7 +254,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               style={{
                 display: 'none',
                 alignItems: 'center',
-                gap: '24px',
+                gap: 'clamp(10px, 0.5rem + 1vw, 24px)',
                 height: '48px',
               }}
               className="desktop-nav-links"
@@ -332,9 +333,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 className="navbar-brand-text"
                 style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: '1.75rem',
+                  fontSize: 'clamp(1.15rem, 0.6rem + 1.15vw, 1.75rem)',
                   fontWeight: 600,
-                  letterSpacing: '0.22em',
+                  letterSpacing: 'clamp(0.12em, 0.04em + 0.1vw, 0.22em)',
                   lineHeight: 1,
                   color: isLightNav ? '#ffffff' : 'var(--text-primary)',
                   display: 'inline-flex',
@@ -360,7 +361,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               display: 'flex',
               alignItems: 'center',
               height: '48px',
-              gap: '12px',
+              gap: 'clamp(6px, 0.4rem + 0.5vw, 12px)',
               filter: isLightNav ? 'drop-shadow(0 1px 6px var(--overlay-black-70))' : 'none',
               transition: 'filter 350ms var(--ease-luxury)',
             }}
@@ -613,11 +614,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               pointerEvents: 'auto',
             }}
           >
-            <div className="container" style={{ display: 'grid', gridTemplateColumns: 'minmax(140px, 0.6fr) 1.5fr 1fr 1.3fr', gap: '32px' }}>
+            <div className="container" style={{ display: 'grid', gridTemplateColumns: 'minmax(120px, 0.6fr) 1.5fr 1fr 1.3fr', gap: 'clamp(16px, 1rem + 1vw, 32px)' }}>
               
               {/* Column 1: Shop by Department */}
               <div>
-                <h4 style={{ fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                <h4 style={{ fontSize: 'clamp(0.72rem, 0.6rem + 0.15vw, 0.8rem)', letterSpacing: 'clamp(0.06em, 0.03em + 0.05vw, 0.1em)', textTransform: 'uppercase', marginBottom: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>
                   Shop by Department
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -625,7 +626,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     href="/collections" 
                     onClick={() => setHoveredNav(null)} 
                     style={{ 
-                      fontSize: '0.95rem', 
+                      fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', 
                       color: pathname === '/collections' ? 'var(--text-primary)' : 'var(--text-primary)',
                       fontWeight: pathname === '/collections' ? 600 : 400,
                       textDecoration: pathname === '/collections' ? 'underline' : 'none',
@@ -637,7 +638,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     href="/collections/men" 
                     onClick={() => setHoveredNav(null)} 
                     style={{ 
-                      fontSize: '0.95rem', 
+                      fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', 
                       color: pathname === '/collections/men' ? 'var(--text-primary)' : 'var(--text-primary)',
                       fontWeight: pathname === '/collections/men' ? 600 : 400,
                       textDecoration: pathname === '/collections/men' ? 'underline' : 'none',
@@ -649,7 +650,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     href="/collections/women" 
                     onClick={() => setHoveredNav(null)} 
                     style={{ 
-                      fontSize: '0.95rem', 
+                      fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', 
                       color: pathname === '/collections/women' ? 'var(--text-primary)' : 'var(--text-primary)',
                       fontWeight: pathname === '/collections/women' ? 600 : 400,
                       textDecoration: pathname === '/collections/women' ? 'underline' : 'none',
@@ -662,36 +663,36 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
               {/* Column 2: Categories */}
               <div>
-                <h4 style={{ fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                <h4 style={{ fontSize: 'clamp(0.72rem, 0.6rem + 0.15vw, 0.8rem)', letterSpacing: 'clamp(0.06em, 0.03em + 0.05vw, 0.1em)', textTransform: 'uppercase', marginBottom: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>
                   Shop by Category
                 </h4>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <Link href="/shop?categorySlug=outerwear" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Outerwear</Link>
-                    <Link href="/shop?categorySlug=tailoring" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Tailoring</Link>
-                    <Link href="/shop?categorySlug=eveningwear" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Eveningwear</Link>
-                    <Link href="/shop?categorySlug=knitwear" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Knitwear</Link>
+                    <Link href="/shop?categorySlug=outerwear" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>Outerwear</Link>
+                    <Link href="/shop?categorySlug=tailoring" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>Tailoring</Link>
+                    <Link href="/shop?categorySlug=eveningwear" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>Eveningwear</Link>
+                    <Link href="/shop?categorySlug=knitwear" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>Knitwear</Link>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <Link href="/shop?categorySlug=leather-goods" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Leather Goods</Link>
-                    <Link href="/shop?categorySlug=footwear" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Footwear</Link>
-                    <Link href="/shop?categorySlug=fine-jewelry" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Fine Jewelry</Link>
-                    <Link href="/shop?categorySlug=fragrances" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Fragrances</Link>
+                    <Link href="/shop?categorySlug=leather-goods" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>Leather Goods</Link>
+                    <Link href="/shop?categorySlug=footwear" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>Footwear</Link>
+                    <Link href="/shop?categorySlug=fine-jewelry" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>Fine Jewelry</Link>
+                    <Link href="/shop?categorySlug=fragrances" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>Fragrances</Link>
                   </div>
                 </div>
               </div>
 
               {/* Column 3: Trends/Featured */}
               <div>
-                <h4 style={{ fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                <h4 style={{ fontSize: 'clamp(0.72rem, 0.6rem + 0.15vw, 0.8rem)', letterSpacing: 'clamp(0.06em, 0.03em + 0.05vw, 0.1em)', textTransform: 'uppercase', marginBottom: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>
                   Shop by Edit
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <Link href="/shop?categorySlug=outerwear" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Heritage Styles</Link>
-                  <Link href="/shop?categorySlug=tailoring" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Sartorial Elegance</Link>
-                  <Link href="/shop?categorySlug=leather-goods" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Monochrome</Link>
-                  <Link href="/shop?categorySlug=knitwear" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>Cashmere Essentials</Link>
-                  <Link href="/shop?categorySlug=eveningwear" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>The Evening Edit</Link>
+                  <Link href="/shop?categorySlug=outerwear" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>Heritage Styles</Link>
+                  <Link href="/shop?categorySlug=tailoring" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>Sartorial Elegance</Link>
+                  <Link href="/shop?categorySlug=leather-goods" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>Monochrome</Link>
+                  <Link href="/shop?categorySlug=knitwear" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>Cashmere Essentials</Link>
+                  <Link href="/shop?categorySlug=eveningwear" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>The Evening Edit</Link>
                 </div>
               </div>
 
@@ -702,13 +703,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   onClick={() => setHoveredNav(null)}
                   style={{ position: 'relative', width: '100%', paddingBottom: '80%', overflow: 'hidden', backgroundColor: 'var(--bg-subtle)', display: 'block' }}
                 >
-                  <img 
+                  <Image 
                     src="/images/categories/cat-tailoring.webp" 
                     alt="The New-Season Collections" 
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                    fill
+                    sizes="280px"
+                    quality={85}
+                    loading="lazy"
+                    style={{ objectFit: 'cover' }}
                   />
                 </Link>
-                <Link href="/collections" onClick={() => setHoveredNav(null)} style={{ fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--text-primary)', textDecoration: 'none' }}>
+                <Link href="/collections" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.72rem, 0.62rem + 0.15vw, 0.8rem)', letterSpacing: 'clamp(0.06em, 0.03em + 0.05vw, 0.1em)', textTransform: 'uppercase', fontWeight: 600, color: 'var(--text-primary)', textDecoration: 'none' }}>
                   The New-Season Collections
                 </Link>
               </div>
@@ -733,6 +738,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           }
           .desktop-nav-links {
             display: flex !important;
+          }
+          .desktop-nav-links .nav-link-expand {
+            font-size: clamp(0.68rem, 0.45rem + 0.32vw, 0.82rem) !important;
+            letter-spacing: clamp(0.06em, 0.02em + 0.07vw, 0.12em) !important;
+            padding: 0 clamp(3px, 0.3vw, 6px) !important;
+          }
+          .navbar-brand-text {
+            font-size: clamp(1.15rem, 0.6rem + 1.15vw, 1.75rem) !important;
+            letter-spacing: clamp(0.12em, 0.04em + 0.1vw, 0.22em) !important;
+          }
+        }
+        @media (min-width: 768px) and (max-width: 1100px) {
+          .desktop-nav-links {
+            gap: clamp(10px, 1.2vw, 16px) !important;
+          }
+          .navbar-actions {
+            gap: clamp(4px, 0.6vw, 8px) !important;
           }
         }
         @media (max-width: 767px) {

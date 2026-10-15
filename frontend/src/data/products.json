@@ -1610,9 +1610,7 @@
     "categoryId": "cat_knitwear",
     "price": 19499,
     "images": [
-      "/images/sections/products/knitwear/open-back-cashmere-wrap-knit-1.webp",
-      "/images/sections/products/knitwear/open-back-cashmere-wrap-knit-2.webp",
-      "/images/sections/products/knitwear/open-back-cashmere-wrap-knit-3.webp"
+      "/images/sections/products/knitwear/open-back-cashmere-wrap-knit-1.webp"
     ],
     "variants": [
       {
@@ -3974,11 +3972,11 @@
   {
     "id": "prod_knt_008",
     "slug": "oversized-boucle-fisherman-sweater",
-    "name": "Oversized BouclÃ© Fisherman Sweater",
+    "name": "Oversized Bouclé Fisherman Sweater",
     "subtitle": "Raw Undyed Donegal Wool",
-    "description": "Textural rustic luxury woven from chunky undyed Irish Donegal wool bouclÃ© yarn. Relaxed dropped shoulders and deep ribbed crew neck create an effortless cocoon feel.",
+    "description": "Textural rustic luxury woven from chunky undyed Irish Donegal wool bouclé yarn. Relaxed dropped shoulders and deep ribbed crew neck create an effortless cocoon feel.",
     "details": [
-      "100% natural undyed Donegal flecked wool bouclÃ©",
+      "100% natural undyed Donegal flecked wool bouclé",
       "Traditional fisherman rib stitches with modern relaxed proportions",
       "Chunky seamless circular knit body",
       "Ribbed collar and turn-back cuff hems"

@@ -6,70 +6,12 @@ import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { Product, Category } from '@/types';
 import { ProductCard } from '@/components/product/ProductCard';
-import { CollectionsBannerCarousel } from '@/components/sections/CollectionsBannerCarousel';
+import { CuratedEditsHeroBanner } from '@/components/sections/CuratedEditsHeroBanner';
 
 interface CollectionsViewProps {
   initialProducts: Product[];
   initialCategories: Category[];
 }
-
-interface CuratedEdit {
-  id: string;
-  title: string;
-  subtitle: string;
-  tag: string;
-  categorySlug: string;
-  image: string;
-  badge: string;
-}
-
-const CURATED_EDITS: CuratedEdit[] = [
-  {
-    id: 'heritage',
-    title: 'Heritage Styles',
-    subtitle: 'Double-faced virgin wool trench coats, Spanish shearling aviators, and archival silhouettes.',
-    tag: 'outerwear',
-    categorySlug: 'outerwear',
-    image: '/images/categories/cat-outerwear.webp',
-    badge: 'Archival Heritage',
-  },
-  {
-    id: 'sartorial',
-    title: 'Sartorial Elegance',
-    subtitle: 'Deconstructed wool suiting, razor-sharp peak lapels, and floating canvas bespoke tailoring.',
-    tag: 'tailoring',
-    categorySlug: 'tailoring',
-    image: '/images/categories/cat-tailoring.webp',
-    badge: 'Savile Row Cut',
-  },
-  {
-    id: 'cashmere',
-    title: 'Cashmere Essentials',
-    subtitle: 'Ultra-fine 15.2-micron Grade-A Mongolian cashmere, brushed mohair, and seamless ribbed jumpers.',
-    tag: 'knitwear',
-    categorySlug: 'knitwear',
-    image: '/images/categories/cat-knitwear.webp',
-    badge: 'Pure Cashmere',
-  },
-  {
-    id: 'evening',
-    title: 'The Evening Edit',
-    subtitle: 'Liquid 30-momme mulberry silk charmeuse, floor-grazing puddle trains, and draped formal gala gowns.',
-    tag: 'eveningwear',
-    categorySlug: 'eveningwear',
-    image: '/images/categories/cat-eveningwear.webp',
-    badge: 'Nocturne Gala',
-  },
-  {
-    id: 'monochrome',
-    title: 'Monochrome Atelier',
-    subtitle: 'Pebbled leather weekenders, obsidian calfskin folios, and structured saddle silhouettes.',
-    tag: 'leather-goods',
-    categorySlug: 'leather-goods',
-    image: '/images/categories/cat-leather-goods.webp',
-    badge: 'Atelier Leather',
-  },
-];
 
 export const CollectionsView: React.FC<CollectionsViewProps> = ({
   initialProducts,
@@ -128,8 +70,8 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
 
   return (
     <div style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', minHeight: '100vh', paddingBottom: '96px' }}>
-      {/* Top Banner Carousel */}
-      <CollectionsBannerCarousel />
+      {/* Top Banner: Curated Edits Editorial Campaign Banner */}
+      <CuratedEditsHeroBanner />
 
       {/* Main Container */}
       <div className="container" style={{ maxWidth: '1440px', margin: '0 auto', padding: '48px 24px 0' }}>
@@ -356,110 +298,7 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
           </div>
         </section>
 
-        {/* Section 3: Curated Edits */}
-        <section style={{ marginBottom: '88px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '28px', borderBottom: '1px solid var(--border-color)', paddingBottom: '14px' }}>
-            <div>
-              <span style={{ fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-golden-600)', fontWeight: 600 }}>
-                Curated Stylings
-              </span>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 400, marginTop: '4px' }}>
-                Shop by Edit
-              </h2>
-            </div>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-              {CURATED_EDITS.length} Curated Edits
-            </span>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
-            {CURATED_EDITS.map((edit) => (
-              <Link
-                key={edit.id}
-                href={`/shop?categorySlug=${edit.categorySlug}`}
-                className="group"
-                style={{
-                  position: 'relative',
-                  borderRadius: '2px',
-                  overflow: 'hidden',
-                  backgroundColor: 'var(--bg-surface)',
-                  border: '1px solid var(--border-color)',
-                  textDecoration: 'none',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  transition: 'transform 0.3s ease, border-color 0.3s ease',
-                }}
-              >
-                <div style={{ position: 'relative', width: '100%', aspectRatio: '16 / 11', overflow: 'hidden', backgroundColor: 'var(--bg-subtle)' }}>
-                  <Image
-                    src={edit.image}
-                    alt={edit.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 20vw"
-                    style={{
-                      objectFit: 'cover',
-                      transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-                    }}
-                    className="group-hover:scale-105"
-                  />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      inset: 0,
-                      background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%)',
-                    }}
-                  />
-                  <div style={{ position: 'absolute', top: '12px', left: '12px', zIndex: 2 }}>
-                    <span
-                      style={{
-                        display: 'inline-block',
-                        padding: '3px 8px',
-                        borderRadius: '3px',
-                        backgroundColor: 'rgba(20, 20, 20, 0.75)',
-                        backdropFilter: 'blur(6px)',
-                        color: '#fff',
-                        fontSize: '0.68rem',
-                        fontWeight: 600,
-                        letterSpacing: '0.06em',
-                        textTransform: 'uppercase',
-                      }}
-                    >
-                      {edit.badge}
-                    </span>
-                  </div>
-                </div>
-
-                <div style={{ padding: '18px 20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <div>
-                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', fontWeight: 400, marginBottom: '6px', color: 'var(--text-primary)' }}>
-                      {edit.title}
-                    </h3>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '16px' }}>
-                      {edit.subtitle}
-                    </p>
-                  </div>
-                  <div
-                    className="extending-underline-link"
-                    style={{
-                      color: 'var(--color-black-tie)',
-                      fontSize: '0.8rem',
-                      fontWeight: 600,
-                      letterSpacing: '0.06em',
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    <span>View Edit</span>
-                    <span className="arrow-micro">
-                      <ArrowRight size={14} />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* Section 4: Most Coveted Runway Highlights */}
+        {/* Section 3: Most Coveted Runway Highlights */}
         <section style={{ marginTop: '48px', paddingTop: '48px', borderTop: '1px solid var(--border-color)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '32px' }}>
             <div>

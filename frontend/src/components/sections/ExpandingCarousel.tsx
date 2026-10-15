@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { Product } from '@/types';
 
 interface ExpandingCarouselProps {
@@ -43,10 +44,21 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState<boolean>(false);
-  const [isInView, setIsInView] = useState<boolean>(true);
+  const [isInView, setIsInView] = useState<boolean>(false);
+  const [hasEnteredView, setHasEnteredView] = useState<boolean>(false);
   const [isTouchPaused, setIsTouchPaused] = useState<boolean>(false);
   const [isTabHidden, setIsTabHidden] = useState<boolean>(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(false);
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const handleImageLoad = useCallback((productId: string) => {
+    setLoadedImages((prev) => (prev[productId] ? prev : { ...prev, [productId]: true }));
+  }, []);
 
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -103,8 +115,11 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsInView(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setHasEnteredView(true);
+        }
       },
-      { threshold: 0.15 }
+      { threshold: 0.05, rootMargin: '200px' }
     );
 
     observer.observe(sectionRef.current);
@@ -255,8 +270,12 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
   }, [activeIndex, isPaused, prefersReducedMotion, items.length]);
 
   return (
-    <section
+    <motion.section
       ref={sectionRef}
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.12 }}
+      transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
       className="expanding-carousel-section"
       style={{
         padding: '48px 0 40px',
@@ -292,7 +311,6 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
             alt="Atelier Tailoring & Architecture Insignia"
             width={72}
             height={40}
-            priority
             style={{
               width: 'auto',
               height: '38px',
@@ -317,12 +335,13 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           ref={containerRef}
           role="tablist"
           aria-label={title}
-          className={`expanding-carousel-container ${isTransitioning ? 'is-animating' : ''}`}
+          className={`expanding-carousel-container ${isMounted ? 'is-mounted' : ''} ${isTransitioning ? 'is-animating' : ''}`}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
         >
           {items.map((product, index) => {
             const isActive = activeIndex === index;
+            const isLoaded = !!loadedImages[product.id];
             const indexFormatted = String(index + 1).padStart(3, '0');
             const primaryMaterial = product.materials?.[0] || '100% MULBERRY SILK';
             const primaryDetail = product.details?.[0] || 'HAND-TAILORED ATELIER PIECE';
@@ -341,16 +360,26 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 className={`carousel-panel ${isActive ? 'panel-active' : 'panel-inactive'}`}
               >
-                {/* Background Image with Fixed-Dimension Settle Effect */}
-                <Image
-                  src={product.images[0]}
-                  alt={product.name}
-                  fill
-                  quality={95}
-                  priority={index === 0}
-                  sizes="(max-width: 768px) 100vw, 75vw"
-                  className="carousel-panel-img"
-                />
+                {/* Luxury Shimmer Skeleton until image completes loading */}
+                {!isLoaded && (
+                  <div className="carousel-panel-skeleton" aria-hidden="true">
+                    <div className="carousel-skeleton-shimmer" />
+                  </div>
+                )}
+
+                {/* Background Image: only open panel renders before section enters viewport */}
+                {(isActive || hasEnteredView) && (
+                  <Image
+                    src={product.images[0]}
+                    alt={product.name}
+                    fill
+                    quality={85}
+                    sizes="(max-width: 767px) 100vw, (max-width: 1200px) 60vw, 800px"
+                    onLoad={() => handleImageLoad(product.id)}
+                    onError={() => handleImageLoad(product.id)}
+                    className={`carousel-panel-img ${isLoaded ? 'is-loaded' : 'is-loading'}`}
+                  />
+                )}
 
                 {/* Cinematic Vignette & Scrim Gradient */}
                 <div className="carousel-vignette-scrim" />
@@ -473,6 +502,39 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           will-change: transform, filter;
         }
 
+        /* Skeleton placeholder with luxury shimmer */
+        .carousel-panel-skeleton {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, #141219 0%, #1c1824 50%, #141219 100%);
+          z-index: 1;
+          overflow: hidden;
+          pointer-events: none;
+        }
+
+        .carousel-skeleton-shimmer {
+          position: absolute;
+          inset: 0;
+          transform: translateX(-100%);
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(201, 169, 110, 0.08) 50%,
+            transparent 100%
+          );
+          animation: carouselSkeletonShimmer 2s infinite ease-in-out;
+        }
+
+        @keyframes carouselSkeletonShimmer {
+          100% {
+            transform: translateX(100%);
+          }
+        }
+
+        .expanding-carousel-container:not(.is-mounted) :global(.carousel-panel-img) {
+          transition: none !important;
+        }
+
         /* Image: Fixed dimension to eliminate squashing/stretching */
         :global(.carousel-panel-img) {
           position: absolute !important;
@@ -480,6 +542,12 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           pointer-events: none;
           backface-visibility: hidden;
           transform-style: preserve-3d;
+          opacity: 0;
+          transition: opacity 0.5s ease-out;
+        }
+
+        :global(.carousel-panel-img.is-loaded) {
+          opacity: 1 !important;
         }
 
         @media (min-width: 768px) {
@@ -488,10 +556,12 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
             width: var(--full-w, 680px) !important;
             max-width: none !important;
             left: 50% !important;
+            right: auto !important;
             top: 0 !important;
+            bottom: auto !important;
             filter: grayscale(0.5) brightness(0.65) contrast(1.1);
             transform: translateX(-50%) scale(1.08) !important;
-            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease !important;
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease, opacity 0.5s ease !important;
           }
 
           .panel-active :global(.carousel-panel-img) {
@@ -750,10 +820,12 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
             height: var(--full-h, 350px) !important;
             max-height: none !important;
             left: 0 !important;
+            right: 0 !important;
             top: 50% !important;
+            bottom: auto !important;
             filter: grayscale(0.5) brightness(0.65);
             transform: translateY(-50%) scale(1.08) !important;
-            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease !important;
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease, opacity 0.5s ease !important;
           }
 
           .panel-active :global(.carousel-panel-img) {
@@ -848,6 +920,6 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           }
         }
       `}</style>
-    </section>
+    </motion.section>
   );
 };

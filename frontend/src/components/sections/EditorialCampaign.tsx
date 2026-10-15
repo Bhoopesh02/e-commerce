@@ -532,8 +532,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
                 src={centerImage}
                 alt={centerAlt}
                 fill
-                priority
-                quality={95}
+                quality={88}
                 sizes="(max-width: 1080px) 380px, 440px"
                 style={{ objectFit: 'cover', objectPosition: 'center 18%' }}
               />

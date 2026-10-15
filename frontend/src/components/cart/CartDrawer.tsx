@@ -51,6 +51,10 @@ export const CartDrawer: React.FC = () => {
     router.push('/checkout');
   };
 
+  if (!isDrawerOpen) {
+    return null;
+  }
+
   return (
     <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} title="Your Atelier Bag" width="480px">
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>

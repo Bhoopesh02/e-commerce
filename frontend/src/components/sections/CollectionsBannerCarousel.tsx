@@ -187,8 +187,7 @@ export function CollectionsBannerCarousel() {
                   src={slide.src}
                   alt={slide.alt}
                   fill
-                  priority={index === 1 || index === 2 || index === 0}
-                  quality={92}
+                  quality={88}
                   sizes="(max-width: 768px) 1px, 100vw"
                   style={{
                     objectFit: 'cover',
@@ -205,8 +204,7 @@ export function CollectionsBannerCarousel() {
                   src={slide.mobileSrc || slide.src}
                   alt={slide.alt}
                   fill
-                  priority={index === 1 || index === 2 || index === 0}
-                  quality={92}
+                  quality={88}
                   sizes="(max-width: 768px) 100vw, 1px"
                   style={{
                     objectFit: 'cover',
@@ -520,8 +518,7 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
             src={banner.src}
             alt={banner.alt}
             fill
-            priority
-            quality={92}
+            quality={88}
             sizes="(max-width: 768px) 1px, 100vw"
             style={{
               objectFit: 'cover',
@@ -536,8 +533,7 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
             src={banner.mobileSrc || banner.src}
             alt={banner.alt}
             fill
-            priority
-            quality={92}
+            quality={88}
             sizes="(max-width: 768px) 100vw, 1px"
             style={{
               objectFit: 'cover',
