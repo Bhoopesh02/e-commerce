@@ -170,6 +170,14 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
   return (
     <section
       className={styles.carouselSection}
+      style={{
+        position: 'relative',
+        width: '100%',
+        marginTop: 'var(--announcement-bar-height, 37px)',
+        minHeight: 'calc(100dvh - var(--announcement-bar-height, 37px))',
+        height: 'calc(100dvh - var(--announcement-bar-height, 37px))',
+        overflow: 'hidden',
+      }}
       onMouseEnter={() => {
         if (pauseOnHover) setIsHovered(true);
       }}

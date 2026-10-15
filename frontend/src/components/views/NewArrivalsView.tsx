@@ -37,7 +37,7 @@ export const NewArrivalsView: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    category: true,
+    category: false,
     price: false,
     availability: false,
   });
@@ -49,16 +49,10 @@ export const NewArrivalsView: React.FC = () => {
     }));
   };
 
-  const allSectionsOpen = Object.values(openSections).every(Boolean);
-
-  const toggleAllSections = () => {
-    const nextState = !allSectionsOpen;
-    setOpenSections({
-      category: nextState,
-      price: nextState,
-      availability: nextState,
-    });
-  };
+  // Alphabetically sorted categories
+  const sortedCategories = useMemo(() => {
+    return [...categories].sort((a, b) => a.name.localeCompare(b.name));
+  }, [categories]);
 
   // Offload sticky state detection to an IntersectionObserver to eliminate main-thread layout thrashing
   useEffect(() => {
@@ -504,11 +498,6 @@ export const NewArrivalsView: React.FC = () => {
                   setStagedCategory(activeCategory);
                   setPriceRange(appliedPriceRange);
                   setSelectedAvailability(appliedAvailability);
-                  setOpenSections((prev) => ({
-                    category: prev.category ?? true,
-                    price: appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000 ? true : prev.price,
-                    availability: appliedAvailability === 'in_stock' ? true : prev.availability,
-                  }));
                   setMobileFiltersOpen(true);
                 }}
                 aria-label="Open Filters"
@@ -728,51 +717,6 @@ export const NewArrivalsView: React.FC = () => {
         titleStyle={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', letterSpacing: '0.02em', color: 'var(--text-primary)' }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px 8px 120px' }}>
-          {/* Quick Expand / Collapse All Header */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '2px 6px 12px 6px',
-              borderBottom: '1px solid var(--overlay-black-5)',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '0.75rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                color: 'var(--text-muted)',
-                fontWeight: 500,
-              }}
-            >
-              Filter Sections
-            </span>
-            <button
-              type="button"
-              onClick={toggleAllSections}
-              style={{
-                background: 'none',
-                border: 'none',
-                fontSize: '0.74rem',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-                color: 'var(--text-primary)',
-                cursor: 'pointer',
-                opacity: 0.75,
-                padding: '2px 6px',
-                borderRadius: '4px',
-                transition: 'opacity 0.2s ease',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.75')}
-            >
-              {allSectionsOpen ? 'Collapse All' : 'Expand All'}
-            </button>
-          </div>
-
           {/* Category Filter Dropdown */}
           <FilterDropdownSection
             title="Category"
@@ -780,7 +724,15 @@ export const NewArrivalsView: React.FC = () => {
             onToggle={() => toggleFilterSection('category')}
             badge={stagedCategory !== 'all' ? (categories.find((c) => c.slug === stagedCategory)?.name || stagedCategory) : null}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div
+              className="filter-scroll-container"
+              style={{
+                height: '210px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+              }}
+            >
               <label
                 style={{
                   display: 'flex',
@@ -841,7 +793,7 @@ export const NewArrivalsView: React.FC = () => {
                 </span>
               </label>
 
-              {categories.map((cat) => {
+              {sortedCategories.map((cat) => {
                 const isSelected = stagedCategory === cat.slug;
                 return (
                   <label

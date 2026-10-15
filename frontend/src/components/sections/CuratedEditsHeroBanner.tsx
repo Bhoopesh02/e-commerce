@@ -17,6 +17,7 @@ export interface CuratedEditSlide {
   image: string;
   mobileImage?: string;
   objectPosition?: string;
+  mobileObjectPosition?: string;
 }
 
 export const CURATED_EDIT_SLIDES: CuratedEditSlide[] = [
@@ -30,7 +31,9 @@ export const CURATED_EDIT_SLIDES: CuratedEditSlide[] = [
     description: 'Double-faced virgin wool trench coats, Spanish shearling aviators, and archival silhouettes.',
     ctaText: 'Shop the edit',
     image: '/images/banners/all-collections/curated-warmup.webp',
+    mobileImage: '/images/banners/all-collections/curated-warmup-mobile.webp',
     objectPosition: 'center 26%',
+    mobileObjectPosition: 'center 20%',
   },
   {
     id: 'sartorial',
@@ -42,7 +45,9 @@ export const CURATED_EDIT_SLIDES: CuratedEditSlide[] = [
     description: 'Deconstructed wool suiting, razor-sharp peak lapels, and floating canvas bespoke tailoring.',
     ctaText: 'Shop the edit',
     image: '/images/banners/all-collections/curated-sartorial.webp',
+    mobileImage: '/images/banners/all-collections/curated-sartorial-mobile.webp',
     objectPosition: 'center 18%',
+    mobileObjectPosition: 'center 16%',
   },
   {
     id: 'cashmere',
@@ -54,7 +59,9 @@ export const CURATED_EDIT_SLIDES: CuratedEditSlide[] = [
     description: 'Ultra-fine 15.2-micron Grade-A Mongolian cashmere, brushed mohair, and seamless ribbed jumpers.',
     ctaText: 'Shop the edit',
     image: '/images/banners/all-collections/curated-cashmere.webp',
+    mobileImage: '/images/banners/all-collections/curated-cashmere-mobile.webp',
     objectPosition: 'center 20%',
+    mobileObjectPosition: 'center 18%',
   },
   {
     id: 'evening',
@@ -66,7 +73,9 @@ export const CURATED_EDIT_SLIDES: CuratedEditSlide[] = [
     description: 'Liquid 30-momme mulberry silk charmeuse, floor-grazing puddle trains, and draped formal gala gowns.',
     ctaText: 'Shop the edit',
     image: '/images/banners/all-collections/curated-evening.webp',
+    mobileImage: '/images/banners/all-collections/curated-evening-mobile.webp',
     objectPosition: 'center 32%',
+    mobileObjectPosition: 'center 24%',
   },
   {
     id: 'monochrome',
@@ -78,7 +87,9 @@ export const CURATED_EDIT_SLIDES: CuratedEditSlide[] = [
     description: 'Pebbled leather weekenders, obsidian calfskin folios, and structured saddle silhouettes.',
     ctaText: 'Shop the edit',
     image: '/images/banners/all-collections/curated-leather.webp',
+    mobileImage: '/images/banners/all-collections/curated-leather-mobile.webp',
     objectPosition: 'center 32%',
+    mobileObjectPosition: 'center 24%',
   },
 ];
 
@@ -198,6 +209,14 @@ export const CuratedEditsHeroBanner: React.FC = () => {
       aria-roledescription="carousel"
       aria-label="Curated Edits Banner Carousel"
       className={styles.heroBanner}
+      style={{
+        position: 'relative',
+        width: '100%',
+        marginTop: 'var(--announcement-bar-height, 37px)',
+        minHeight: 'calc(100dvh - var(--announcement-bar-height, 37px))',
+        height: 'calc(100dvh - var(--announcement-bar-height, 37px))',
+        overflow: 'hidden',
+      }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onFocus={() => setIsPaused(true)}
@@ -225,16 +244,33 @@ export const CuratedEditsHeroBanner: React.FC = () => {
           >
             {/* Background Editorial Image */}
             <div className={styles.imageWrapper}>
-              <Image
-                src={slide.image}
-                alt={`${slide.title} - ${slide.badge}`}
-                fill
-                priority={index <= 2}
-                quality={88}
-                sizes="100vw"
-                className={styles.bannerImage}
-                style={{ objectPosition: slide.objectPosition || 'center 26%' }}
-              />
+              {/* Desktop Landscape Crop */}
+              <div className={styles.desktopImageWrapper}>
+                <Image
+                  src={slide.image}
+                  alt={`${slide.title} - ${slide.badge}`}
+                  fill
+                  priority={index <= 2}
+                  quality={90}
+                  sizes="(max-width: 767px) 1px, 100vw"
+                  className={styles.bannerImage}
+                  style={{ objectPosition: slide.objectPosition || 'center 26%' }}
+                />
+              </div>
+
+              {/* Mobile Portrait Crop with zero quality loss */}
+              <div className={styles.mobileImageWrapper}>
+                <Image
+                  src={slide.mobileImage || slide.image}
+                  alt={`${slide.title} - ${slide.badge}`}
+                  fill
+                  priority={index <= 2}
+                  quality={90}
+                  sizes="(max-width: 767px) 100vw, 1px"
+                  className={styles.bannerImageMobile}
+                  style={{ objectPosition: slide.mobileObjectPosition || 'center center' }}
+                />
+              </div>
             </div>
 
             {/* Atmosphere Scrim Overlays */}

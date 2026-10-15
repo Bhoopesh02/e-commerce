@@ -207,7 +207,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
             src={cfg.defaultBanner}
             alt={cfg.title}
             fill
-            quality={88}
+            quality={90}
             sizes="(max-width: 768px) 100vw, 50vw"
             style={{ objectFit: "cover", objectPosition: "center" }}
             className="reveal-banner__img"

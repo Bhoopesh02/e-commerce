@@ -95,6 +95,19 @@ const PRICE_MILESTONES = [
   { value: 100000, label: '₹100K+' },
 ];
 
+// Helper to group complex color names into selectable luxury swatches (Alphabetical order)
+const COLOR_GROUPS = [
+  { name: 'Black', hex: '#1A1A1A', matches: ['Black', 'Noir', 'Abyss', 'Nocturne'] },
+  { name: 'Brown', hex: '#4A3728', matches: ['Brown', 'Cognac', 'Espresso', 'Chocolate', 'Havana'] },
+  { name: 'Burgundy', hex: '#4A1C20', matches: ['Burgundy', 'Aubergine'] },
+  { name: 'Camel / Beige', hex: '#C19A6B', matches: ['Camel', 'Sand', 'Tan', 'Khaki', 'Oatmeal', 'Vicuna', 'Taupe'] },
+  { name: 'Gold', hex: '#D4AF37', matches: ['Gold', 'Bronze'] },
+  { name: 'Green', hex: '#2E4C38', matches: ['Emerald', 'Forest', 'Sage'] },
+  { name: 'Grey', hex: '#4B4B4B', matches: ['Charcoal'] },
+  { name: 'Ivory / White', hex: '#F8F5F0', matches: ['Ivory', 'Ecru', 'Alabaster', 'Milk', 'Pearl', 'White'] },
+  { name: 'Navy', hex: '#1B2431', matches: ['Navy'] },
+];
+
 export const ShopView: React.FC<ShopViewProps> = ({
   initialProducts,
   initialCategories,
@@ -120,10 +133,33 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [appliedPriceRange, setAppliedPriceRange] = useState<[number, number]>([0, 100000]);
   const [selectedAvailability, setSelectedAvailability] = useState<string>('all');
   const [appliedAvailability, setAppliedAvailability] = useState<string>('all');
+
+  // Size filter states
+  const [stagedSizes, setStagedSizes] = useState<string[]>(() => {
+    const s = searchParams.get('size');
+    return s ? s.split(',').filter(Boolean) : [];
+  });
+  const [appliedSizes, setAppliedSizes] = useState<string[]>(() => {
+    const s = searchParams.get('size');
+    return s ? s.split(',').filter(Boolean) : [];
+  });
+
+  // Color filter states
+  const [stagedColors, setStagedColors] = useState<string[]>(() => {
+    const c = searchParams.get('color');
+    return c ? c.split(',').filter(Boolean) : [];
+  });
+  const [appliedColors, setAppliedColors] = useState<string[]>(() => {
+    const c = searchParams.get('color');
+    return c ? c.split(',').filter(Boolean) : [];
+  });
+
   const [selectedSort, setSelectedSort] = useState<string>('popularity');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    category: true,
+    category: false,
+    size: false,
+    color: false,
     price: false,
     availability: false,
   });
@@ -135,16 +171,48 @@ export const ShopView: React.FC<ShopViewProps> = ({
     }));
   };
 
-  const allSectionsOpen = Object.values(openSections).every(Boolean);
+  // Helper to sync size and color filters to URL search parameters
+  const syncFilterParamsToUrl = useCallback((newSizes: string[], newColors: string[]) => {
+    if (typeof window === 'undefined') return;
+    const url = new URL(window.location.href);
+    if (newSizes.length > 0) {
+      url.searchParams.set('size', newSizes.join(','));
+    } else {
+      url.searchParams.delete('size');
+    }
+    if (newColors.length > 0) {
+      url.searchParams.set('color', newColors.join(','));
+    } else {
+      url.searchParams.delete('color');
+    }
+    window.history.replaceState(null, '', url.pathname + url.search);
+  }, []);
 
-  const toggleAllSections = () => {
-    const nextState = !allSectionsOpen;
-    setOpenSections({
-      category: nextState,
-      price: nextState,
-      availability: nextState,
+  // Extract all available sizes from catalog products
+  const availableSizes = useMemo(() => {
+    const sizes = new Set<string>();
+    products.forEach((p) =>
+      p.variants?.forEach((v) => {
+        if (v.size && v.size !== 'undefined') sizes.add(v.size);
+      })
+    );
+
+    const sizeArray = Array.from(sizes);
+    const order = ['XS', 'S', 'M', 'L', 'XL', 'One Size'];
+    return sizeArray.sort((a, b) => {
+      const idxA = order.indexOf(a);
+      const idxB = order.indexOf(b);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      return a.localeCompare(b);
     });
-  };
+  }, [products]);
+
+  // Alphabetically sorted categories
+  const sortedCategories = useMemo(() => {
+    return [...categories].sort((a, b) => a.name.localeCompare(b.name));
+  }, [categories]);
 
   const [isStuck, setIsStuck] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -208,7 +276,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
   // Reset to page 1 on active category, filter, sort, or search query change
   useEffect(() => {
     handlePageChange(1, false);
-  }, [activeCategory, appliedPriceRange, appliedAvailability, selectedSort, searchQuery, handlePageChange]);
+  }, [activeCategory, appliedPriceRange, appliedAvailability, appliedSizes, appliedColors, selectedSort, searchQuery, handlePageChange]);
 
   // Track sticky state via off-thread IntersectionObserver to avoid scroll jank
   useEffect(() => {
@@ -309,6 +377,26 @@ export const ShopView: React.FC<ShopViewProps> = ({
       list = list.filter((p) => p.availability !== 'out_of_stock');
     }
 
+    // Size filter
+    if (appliedSizes.length > 0) {
+      list = list.filter((p) =>
+        p.variants?.some((v) => v.stock > 0 && appliedSizes.includes(v.size))
+      );
+    }
+
+    // Color filter
+    if (appliedColors.length > 0) {
+      list = list.filter((p) => {
+        return p.variants?.some((v) => {
+          const matchedGroup = COLOR_GROUPS.find((g) => appliedColors.includes(g.name));
+          if (!matchedGroup) return false;
+          return matchedGroup.matches.some((m) =>
+            v.color?.toLowerCase().includes(m.toLowerCase())
+          );
+        });
+      });
+    }
+
     // Sorting
     switch (selectedSort) {
       case 'price-asc':
@@ -330,7 +418,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
     }
 
     return list;
-  }, [genderProducts, searchParams, searchQuery, appliedPriceRange, appliedAvailability, selectedSort]);
+  }, [genderProducts, searchParams, searchQuery, appliedPriceRange, appliedAvailability, appliedSizes, appliedColors, selectedSort]);
 
   // In gender mode with activeCategory='all', currentCategory is null (we show all categories)
   const currentCategory = useMemo(() => {
@@ -438,15 +526,22 @@ export const ShopView: React.FC<ShopViewProps> = ({
     setAppliedPriceRange([0, 100000]);
     setSelectedAvailability('all');
     setAppliedAvailability('all');
+    setStagedSizes([]);
+    setAppliedSizes([]);
+    setStagedColors([]);
+    setAppliedColors([]);
     setSelectedSort('popularity');
     setSearchQuery('');
     setStagedCategory(defaultCategory);
     handleCategorySelect(defaultCategory);
+    syncFilterParamsToUrl([], []);
   };
 
   const hasActiveFilters =
     appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000 ||
     appliedAvailability !== 'all' ||
+    appliedSizes.length > 0 ||
+    appliedColors.length > 0 ||
     searchQuery.trim().length > 0;
 
   // In gender mode the banner is always shown (either "all" hero or category swap)
@@ -587,11 +682,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   setStagedCategory(activeCategory);
                   setPriceRange(appliedPriceRange);
                   setSelectedAvailability(appliedAvailability);
-                  setOpenSections((prev) => ({
-                    category: prev.category ?? true,
-                    price: appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000 ? true : prev.price,
-                    availability: appliedAvailability === 'in_stock' ? true : prev.availability,
-                  }));
+                  setStagedSizes(appliedSizes);
+                  setStagedColors(appliedColors);
                   setMobileFiltersOpen(true);
                 }}
                 className="mobile-filter-btn"
@@ -670,6 +762,66 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       />
                     </span>
                   )}
+                  {appliedSizes.map((s) => (
+                    <span
+                      key={s}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '3px 10px',
+                        backgroundColor: 'var(--bg-surface)',
+                        borderRadius: 'var(--radius-pill)',
+                        border: '1px solid var(--border-color)',
+                        fontSize: '0.78rem',
+                        color: 'var(--text-primary)',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <span>Size: {s}</span>
+                      <X
+                        size={12}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          const updated = appliedSizes.filter((item) => item !== s);
+                          setAppliedSizes(updated);
+                          setStagedSizes(updated);
+                          syncFilterParamsToUrl(updated, appliedColors);
+                        }}
+                        aria-label={`Remove ${s} size filter`}
+                      />
+                    </span>
+                  ))}
+                  {appliedColors.map((c) => (
+                    <span
+                      key={c}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '3px 10px',
+                        backgroundColor: 'var(--bg-surface)',
+                        borderRadius: 'var(--radius-pill)',
+                        border: '1px solid var(--border-color)',
+                        fontSize: '0.78rem',
+                        color: 'var(--text-primary)',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <span>Color: {c}</span>
+                      <X
+                        size={12}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          const updated = appliedColors.filter((item) => item !== c);
+                          setAppliedColors(updated);
+                          setStagedColors(updated);
+                          syncFilterParamsToUrl(appliedSizes, updated);
+                        }}
+                        aria-label={`Remove ${c} color filter`}
+                      />
+                    </span>
+                  ))}
                   {(appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000) && (
                     <span
                       style={{
@@ -933,6 +1085,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
           setStagedCategory(activeCategory);
           setPriceRange(appliedPriceRange);
           setSelectedAvailability(appliedAvailability);
+          setStagedSizes(appliedSizes);
+          setStagedColors(appliedColors);
           setMobileFiltersOpen(false);
         }}
         title="REFINE COLLECTION"
@@ -950,51 +1104,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px 8px 120px' }}>
-          {/* Quick Expand / Collapse All Header */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '2px 6px 12px 6px',
-              borderBottom: '1px solid var(--overlay-black-5)',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '0.75rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                color: 'var(--text-muted)',
-                fontWeight: 500,
-              }}
-            >
-              Filter Sections
-            </span>
-            <button
-              type="button"
-              onClick={toggleAllSections}
-              style={{
-                background: 'none',
-                border: 'none',
-                fontSize: '0.74rem',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-                color: 'var(--text-primary)',
-                cursor: 'pointer',
-                opacity: 0.75,
-                padding: '2px 6px',
-                borderRadius: '4px',
-                transition: 'opacity 0.2s ease',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.75')}
-            >
-              {allSectionsOpen ? 'Collapse All' : 'Expand All'}
-            </button>
-          </div>
-
           {/* Category Filter Dropdown */}
           <FilterDropdownSection
             title="Category"
@@ -1002,8 +1111,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
             onToggle={() => toggleFilterSection('category')}
             badge={stagedCategory !== 'all' ? (categories.find((c) => c.slug === stagedCategory)?.name || stagedCategory) : null}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {categories.map((cat) => {
+            <div
+              className="filter-scroll-container"
+              style={{
+                height: '210px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+              }}
+            >
+              {sortedCategories.map((cat) => {
                 const isSelected = stagedCategory === cat.slug;
                 return (
                   <label
@@ -1064,6 +1181,139 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       }}
                     >
                       {cat.name}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </FilterDropdownSection>
+
+          {/* Size Filter Dropdown */}
+          {availableSizes.length > 0 && (
+            <FilterDropdownSection
+              title="Size"
+              isOpen={openSections.size}
+              onToggle={() => toggleFilterSection('size')}
+              badge={stagedSizes.length > 0 ? `${stagedSizes.length} selected` : null}
+            >
+              <div
+                className="filter-scroll-container"
+                style={{
+                  height: '130px',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '8px',
+                  alignContent: 'flex-start',
+                }}
+              >
+                {availableSizes.map((s) => {
+                  const isSelected = stagedSizes.includes(s);
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => {
+                        setStagedSizes((prev) =>
+                          prev.includes(s) ? prev.filter((item) => item !== s) : [...prev, s]
+                        );
+                      }}
+                      style={{
+                        minWidth: '44px',
+                        height: '40px',
+                        padding: '0 14px',
+                        borderRadius: 'var(--radius-pill)',
+                        border: isSelected
+                          ? '1.5px solid var(--color-black-tie)'
+                          : '1px solid var(--border-color)',
+                        backgroundColor: isSelected ? 'var(--color-black-tie)' : 'var(--bg-surface)',
+                        color: isSelected ? 'var(--color-diamond)' : 'var(--text-primary)',
+                        fontSize: '0.85rem',
+                        fontWeight: isSelected ? 600 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      {s}
+                    </button>
+                  );
+                })}
+              </div>
+            </FilterDropdownSection>
+          )}
+
+          {/* Color Filter Dropdown */}
+          <FilterDropdownSection
+            title="Color"
+            isOpen={openSections.color}
+            onToggle={() => toggleFilterSection('color')}
+            badge={stagedColors.length > 0 ? `${stagedColors.length} selected` : null}
+          >
+            <div
+              className="filter-scroll-container"
+              style={{
+                height: '210px',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '10px',
+                alignContent: 'flex-start',
+              }}
+            >
+              {COLOR_GROUPS.map((g) => {
+                const isSelected = stagedColors.includes(g.name);
+                return (
+                  <label
+                    key={g.name}
+                    onClick={() => {
+                      setStagedColors((prev) =>
+                        prev.includes(g.name) ? prev.filter((c) => c !== g.name) : [...prev, g.name]
+                      );
+                    }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      padding: '8px 10px',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      backgroundColor: isSelected ? 'var(--overlay-black-5)' : 'transparent',
+                      transition: 'all 0.2s ease',
+                      userSelect: 'none',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '20px',
+                        height: '20px',
+                        borderRadius: '50%',
+                        backgroundColor: g.hex,
+                        border: '1px solid var(--border-color)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            width: '6px',
+                            height: '6px',
+                            borderRadius: '50%',
+                            backgroundColor: g.hex === '#F8F5F0' ? '#000' : 'var(--color-diamond)',
+                          }}
+                        />
+                      )}
+                    </div>
+                    <span
+                      style={{
+                        fontSize: '0.9rem',
+                        color: 'var(--text-primary)',
+                        fontWeight: isSelected ? 600 : 400,
+                        opacity: isSelected ? 1 : 0.85,
+                      }}
+                    >
+                      {g.name}
                     </span>
                   </label>
                 );
@@ -1250,6 +1500,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 setStagedCategory(defaultCategory);
                 setPriceRange([0, 100000]);
                 setSelectedAvailability('all');
+                setStagedSizes([]);
+                setStagedColors([]);
               }}
               style={{
                 borderRadius: '30px',
@@ -1273,6 +1525,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 }
                 setAppliedPriceRange(priceRange);
                 setAppliedAvailability(selectedAvailability);
+                setAppliedSizes(stagedSizes);
+                setAppliedColors(stagedColors);
+                syncFilterParamsToUrl(stagedSizes, stagedColors);
                 setMobileFiltersOpen(false);
               }}
               style={{

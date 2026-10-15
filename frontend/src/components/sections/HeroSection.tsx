@@ -51,12 +51,13 @@ export const HeroSection: React.FC = () => {
 
   return (
     <section
-      className="relative w-full min-h-screen min-h-[100svh] overflow-hidden flex flex-col hero-section"
+      className="relative w-full overflow-hidden flex flex-col hero-section"
       style={{
         position: 'relative',
         width: '100%',
-        minHeight: '100dvh',
-        height: '100dvh',
+        marginTop: 'var(--announcement-bar-height, 37px)',
+        minHeight: 'calc(100dvh - var(--announcement-bar-height, 37px))',
+        height: 'calc(100dvh - var(--announcement-bar-height, 37px))',
         overflow: 'hidden',
         backgroundColor: '#2b241d',
       }}
@@ -94,13 +95,15 @@ export const HeroSection: React.FC = () => {
 
       {/* Hero Content Wrapper */}
       <div
-        className={`relative z-10 flex flex-col justify-center text-left w-full min-h-screen min-h-[100svh] px-6 sm:px-10 md:px-16 lg:px-24 hero-content-container ${isEditorial ? 'editorial-layout' : 'refined-layout'
+        className={`relative z-10 flex flex-col justify-center text-left w-full h-full px-6 sm:px-10 md:px-16 lg:px-24 hero-content-container ${isEditorial ? 'editorial-layout' : 'refined-layout'
           }`}
         style={{
           position: 'relative',
           zIndex: 10,
           color: 'var(--bg-subtle)',
           width: '100%',
+          minHeight: 'calc(100dvh - var(--announcement-bar-height, 37px))',
+          height: '100%',
         }}
       >
         {isEditorial ? (
@@ -291,8 +294,9 @@ export const HeroSection: React.FC = () => {
         .hero-section {
           position: relative;
           width: 100%;
-          min-height: 100vh;
-          min-height: 100svh;
+          margin-top: var(--announcement-bar-height, 37px);
+          min-height: calc(100vh - var(--announcement-bar-height, 37px));
+          min-height: calc(100dvh - var(--announcement-bar-height, 37px));
           box-sizing: border-box;
           display: flex;
           flex-direction: column;
@@ -325,8 +329,8 @@ export const HeroSection: React.FC = () => {
           flex-direction: column;
           justify-content: center !important;
           width: 100%;
-          min-height: 100vh;
-          min-height: 100svh;
+          min-height: calc(100vh - var(--announcement-bar-height, 37px));
+          min-height: calc(100dvh - var(--announcement-bar-height, 37px));
           box-sizing: border-box;
           text-align: left;
           padding-left: 24px;

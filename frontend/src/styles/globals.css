@@ -246,6 +246,31 @@ button.filter-btn:focus-visible,
   background: var(--brand-primary);
 }
 
+/* Filter Dropdown Scrollable Sections */
+.filter-scroll-container {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+  padding-right: 6px;
+}
+
+.filter-scroll-container::-webkit-scrollbar {
+  width: 5px;
+}
+
+.filter-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.filter-scroll-container::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 9999px;
+}
+
+.filter-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
 /* Screen reader only utility for accessible heading hierarchy */
 .sr-only {
   position: absolute;

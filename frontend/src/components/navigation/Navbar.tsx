@@ -193,9 +193,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             'background 250ms ease, background-color 250ms ease, color 250ms ease',
           background: isSolidNav
             ? 'rgba(255, 255, 255, 0.95)'
-            : isHeroBannerPage
-              ? 'linear-gradient(180deg, var(--overlay-black-50) 0%, var(--overlay-black-30) 60%, transparent 100%)'
-              : 'transparent',
+            : 'transparent',
           backdropFilter: isSolidNav ? 'blur(6px)' : 'none',
           WebkitBackdropFilter: isSolidNav ? 'blur(6px)' : 'none',
           borderBottom: isSolidNav ? '1px solid var(--border-color)' : 'none',
@@ -204,6 +202,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         }}
       >
         <AnnouncementBar isScrolled={isScrolled} />
+        <div
+          className="navbar-main-row"
+          style={{
+            background: isSolidNav
+              ? 'transparent'
+              : isHeroBannerPage
+                ? 'linear-gradient(180deg, var(--overlay-black-50) 0%, var(--overlay-black-30) 60%, transparent 100%)'
+                : 'transparent',
+            transition: 'background 250ms ease',
+          }}
+        >
         <div
           className="container navbar-container"
           style={{
@@ -441,6 +450,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             </div>
           </div>
         </div>
+        </div>
 
         {/* Mobile Flyout Navigation */}
         <AnimatePresence>
@@ -641,7 +651,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             onMouseLeave={() => setHoveredNav(null)}
             style={{
               position: 'fixed',
-              top: '76px', // height of the navbar
+              top: isScrolled
+                ? 'var(--navbar-height, 76px)'
+                : 'calc(var(--announcement-bar-height, 37px) + var(--navbar-height, 76px))',
               left: 0,
               right: 0,
               backgroundColor: 'var(--bg-surface)',

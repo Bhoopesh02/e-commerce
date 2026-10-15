@@ -23,7 +23,7 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] Product cards with images, name and price
 - [x] Hover image / alternate product image
 - [x] Search with suggestions and empty results *(Implemented on /search page with rotating placeholders, trending chips, live autocomplete popover with product previews, and luxury empty state with curated suggestions and fallback product grid; unmounted SearchOverlay removed)*
-- [ ] Filters: size, colour, price, category and availability *(Price, Category & Availability present; Size & Colour filters missing from /shop)*
+- [x] Filters: size, colour, price, category and availability *(Implemented across /shop and /search: Category, Size pills, Luxury Colour swatches, Price range with presets & slider, and In-Stock availability with active filter chips, individual removal, and clear-all action)*
 - [x] Sorting: featured, newest, price
 - [x] Active filter chips and clear-all action
 - [x] Pagination or load-more behaviour

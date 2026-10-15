@@ -55,17 +55,17 @@ const TRENDING_SEARCHES = [
 const LOCAL_STORAGE_RECENT_SEARCHES_KEY = 'aurelia_recent_searches';
 const MAX_RECENT_SEARCHES = 5;
 
-// Helper to group complex color names into selectable swatches
+// Helper to group complex color names into selectable swatches (Alphabetical order)
 const COLOR_GROUPS = [
   { name: 'Black', hex: '#1A1A1A', matches: ['Black', 'Noir', 'Abyss', 'Nocturne'] },
-  { name: 'Navy', hex: '#1B2431', matches: ['Navy'] },
-  { name: 'Burgundy', hex: '#4A1C20', matches: ['Burgundy', 'Aubergine'] },
   { name: 'Brown', hex: '#4A3728', matches: ['Brown', 'Cognac', 'Espresso', 'Chocolate', 'Havana'] },
+  { name: 'Burgundy', hex: '#4A1C20', matches: ['Burgundy', 'Aubergine'] },
   { name: 'Camel / Beige', hex: '#C19A6B', matches: ['Camel', 'Sand', 'Tan', 'Khaki', 'Oatmeal', 'Vicuna', 'Taupe'] },
-  { name: 'Ivory / White', hex: '#F8F5F0', matches: ['Ivory', 'Ecru', 'Alabaster', 'Milk', 'Pearl', 'White'] },
+  { name: 'Gold', hex: '#D4AF37', matches: ['Gold', 'Bronze'] },
   { name: 'Green', hex: '#2E4C38', matches: ['Emerald', 'Forest', 'Sage'] },
   { name: 'Grey', hex: '#4B4B4B', matches: ['Charcoal'] },
-  { name: 'Gold', hex: '#D4AF37', matches: ['Gold', 'Bronze'] },
+  { name: 'Ivory / White', hex: '#F8F5F0', matches: ['Ivory', 'Ecru', 'Alabaster', 'Milk', 'Pearl', 'White'] },
+  { name: 'Navy', hex: '#1B2431', matches: ['Navy'] },
 ];
 
 const COLLECTIONS = [
@@ -134,6 +134,11 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(initialProducts.length > 0 || !!initialQuery);
 
+  // Alphabetically sorted categories for filter dropdown
+  const sortedCategories = useMemo(() => {
+    return [...categories].sort((a, b) => a.name.localeCompare(b.name));
+  }, [categories]);
+
   // Suggestions & Autocomplete state
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -175,9 +180,9 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
   const [stagedPriceRange, setStagedPriceRange] = useState<[number, number]>([0, 100000]);
   const [stagedAvailability, setStagedAvailability] = useState<'all' | 'in_stock'>('all');
 
-  // Collapsible Dropdown Sections State
+  // Collapsible Dropdown Sections State (All collapsed by default)
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    category: true,
+    category: false,
     collection: false,
     size: false,
     color: false,
@@ -190,20 +195,6 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
       ...prev,
       [key]: !prev[key],
     }));
-  };
-
-  const allSectionsOpen = Object.values(openSections).every(Boolean);
-
-  const toggleAllSections = () => {
-    const nextState = !allSectionsOpen;
-    setOpenSections({
-      category: nextState,
-      collection: nextState,
-      size: nextState,
-      color: nextState,
-      price: nextState,
-      availability: nextState,
-    });
   };
 
   // Sticky Bar & Sort Popover
@@ -1506,14 +1497,6 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                       setStagedColors(activeColors);
                       setStagedPriceRange(appliedPriceRange);
                       setStagedAvailability(appliedAvailability);
-                      setOpenSections((prev) => ({
-                        category: prev.category ?? true,
-                        collection: activeCollection !== 'all' ? true : prev.collection,
-                        size: activeSizes.length > 0 ? true : prev.size,
-                        color: activeColors.length > 0 ? true : prev.color,
-                        price: appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000 ? true : prev.price,
-                        availability: appliedAvailability === 'in_stock' ? true : prev.availability,
-                      }));
                       setFilterDrawerOpen(true);
                     }}
                     aria-label="Open Filters"
@@ -1984,51 +1967,6 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
         titleStyle={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', letterSpacing: '0.02em', color: 'var(--text-primary)' }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px 8px 120px' }}>
-          {/* Quick Expand / Collapse All Header */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '2px 6px 12px 6px',
-              borderBottom: '1px solid var(--overlay-black-5)',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '0.75rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                color: 'var(--text-muted)',
-                fontWeight: 500,
-              }}
-            >
-              Filter Sections
-            </span>
-            <button
-              type="button"
-              onClick={toggleAllSections}
-              style={{
-                background: 'none',
-                border: 'none',
-                fontSize: '0.74rem',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-                color: 'var(--text-primary)',
-                cursor: 'pointer',
-                opacity: 0.75,
-                padding: '2px 6px',
-                borderRadius: '4px',
-                transition: 'opacity 0.2s ease',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.75')}
-            >
-              {allSectionsOpen ? 'Collapse All' : 'Expand All'}
-            </button>
-          </div>
-
           {/* Category Filter Dropdown */}
           <FilterDropdownSection
             title="Category"
@@ -2036,7 +1974,15 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
             onToggle={() => toggleFilterSection('category')}
             badge={stagedCategory !== 'all' ? (categories.find((c) => c.slug === stagedCategory)?.name || stagedCategory) : null}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div
+              className="filter-scroll-container"
+              style={{
+                height: '210px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+              }}
+            >
               <label
                 style={{
                   display: 'flex',
@@ -2098,7 +2044,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                 </span>
               </label>
 
-              {categories.map((cat) => {
+              {sortedCategories.map((cat) => {
                 const isSelected = stagedCategory === cat.slug;
                 return (
                   <label
@@ -2311,7 +2257,16 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
               onToggle={() => toggleFilterSection('size')}
               badge={stagedSizes.length > 0 ? `${stagedSizes.length} selected` : null}
             >
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              <div
+                className="filter-scroll-container"
+                style={{
+                  height: '130px',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '8px',
+                  alignContent: 'flex-start',
+                }}
+              >
                 {availableSizes.map((s) => {
                   const isSelected = stagedSizes.includes(s);
                   return (
@@ -2354,7 +2309,16 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
             onToggle={() => toggleFilterSection('color')}
             badge={stagedColors.length > 0 ? `${stagedColors.length} selected` : null}
           >
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <div
+              className="filter-scroll-container"
+              style={{
+                height: '210px',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '10px',
+                alignContent: 'flex-start',
+              }}
+            >
               {COLOR_GROUPS.map((g) => {
                 const isSelected = stagedColors.includes(g.name);
                 return (
