@@ -241,11 +241,11 @@ export function CollectionsBannerCarousel() {
                 {currentIndex === index ? (
                   <h1
                     style={{
-                      fontSize: 'clamp(2.25rem, 5.5vw, 4rem)',
+                      fontSize: 'clamp(1.9rem, 1.1rem + 2vw, 4rem)',
                       fontFamily: 'var(--font-display)',
                       fontWeight: 400,
                       color: 'var(--bg-subtle)',
-                      letterSpacing: '0',
+                      letterSpacing: 'clamp(-0.01em, 0.01vw, 0)',
                       lineHeight: 1.15,
                       marginBottom: '14px',
                       textShadow: '0 2px 18px rgba(16, 33, 39, 0.5)',
@@ -256,11 +256,11 @@ export function CollectionsBannerCarousel() {
                 ) : (
                   <h2
                     style={{
-                      fontSize: 'clamp(2.25rem, 5.5vw, 4rem)',
+                      fontSize: 'clamp(1.9rem, 1.1rem + 2vw, 4rem)',
                       fontFamily: 'var(--font-display)',
                       fontWeight: 400,
                       color: 'var(--bg-subtle)',
-                      letterSpacing: '0',
+                      letterSpacing: 'clamp(-0.01em, 0.01vw, 0)',
                       lineHeight: 1.15,
                       marginBottom: '14px',
                       textShadow: '0 2px 18px rgba(16, 33, 39, 0.5)',
@@ -273,7 +273,7 @@ export function CollectionsBannerCarousel() {
                 <p
                   style={{
                     color: 'rgba(245, 248, 248, 0.9)',
-                    fontSize: 'clamp(0.95rem, 1.2vw, 1.1rem)',
+                    fontSize: 'clamp(0.85rem, 0.65rem + 0.3vw, 1.1rem)',
                     lineHeight: 1.65,
                     marginBottom: '22px',
                     maxWidth: '620px',
@@ -296,11 +296,11 @@ export function CollectionsBannerCarousel() {
                       style={{
                         display: 'inline-flex',
                         alignItems: 'center',
-                        padding: '5px 14px',
+                        padding: 'clamp(4px, 0.3vw, 6px) clamp(10px, 0.8vw, 14px)',
                         borderRadius: '6px',
                         backgroundColor: 'rgba(255, 255, 255, 0.22)',
                         border: '1px solid rgba(255, 255, 255, 0.28)',
-                        fontSize: '0.75rem',
+                        fontSize: 'clamp(0.68rem, 0.56rem + 0.15vw, 0.78rem)',
                         color: 'var(--bg-subtle)',
                         fontWeight: 500,
                         letterSpacing: '0.04em',
@@ -557,11 +557,11 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
         >
           <h1
             style={{
-              fontSize: 'clamp(2.25rem, 5.5vw, 4rem)',
+              fontSize: 'clamp(1.9rem, 1.1rem + 2vw, 4rem)',
               fontFamily: 'var(--font-display)',
               fontWeight: 400,
               color: 'var(--bg-subtle)',
-              letterSpacing: '0',
+              letterSpacing: 'clamp(-0.01em, 0.01vw, 0)',
               lineHeight: 1.15,
               marginBottom: '14px',
               textShadow: '0 2px 18px rgba(16, 33, 39, 0.5)',
@@ -573,7 +573,7 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
           <p
             style={{
               color: 'rgba(245, 248, 248, 0.9)',
-              fontSize: 'clamp(0.95rem, 1.2vw, 1.1rem)',
+              fontSize: 'clamp(0.85rem, 0.65rem + 0.3vw, 1.1rem)',
               lineHeight: 1.65,
               marginBottom: '22px',
               maxWidth: '620px',
@@ -596,11 +596,11 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  padding: '5px 14px',
+                  padding: 'clamp(4px, 0.3vw, 6px) clamp(10px, 0.8vw, 14px)',
                   borderRadius: '6px',
                   backgroundColor: 'rgba(255, 255, 255, 0.22)',
                   border: '1px solid rgba(255, 255, 255, 0.28)',
-                  fontSize: '0.75rem',
+                  fontSize: 'clamp(0.68rem, 0.56rem + 0.15vw, 0.78rem)',
                   color: 'var(--bg-subtle)',
                   fontWeight: 500,
                   letterSpacing: '0.04em',

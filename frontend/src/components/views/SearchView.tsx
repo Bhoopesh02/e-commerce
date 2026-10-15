@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
 import { RangeSlider } from '@/components/ui/RangeSlider';
 import { smoothScrollService } from '@/services/smooth-scroll';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   Search,
   X,
@@ -79,7 +80,13 @@ function useOnClickOutside<T extends HTMLElement = HTMLElement>(
   }, [ref, handler]);
 }
 
-function SearchContent() {
+export interface SearchViewProps {
+  initialProducts?: Product[];
+  initialCategories?: Category[];
+}
+
+function SearchContent({ initialProducts = [], initialCategories = [] }: SearchViewProps) {
+  const shouldReduceMotion = useReducedMotion();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -89,10 +96,10 @@ function SearchContent() {
   const currentPage = pageParam ? Math.max(1, parseInt(pageParam, 10) || 1) : 1;
 
   const [query, setQuery] = useState(initialQuery);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [loading, setLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [hasSearched, setHasSearched] = useState(initialProducts.length > 0 || !!initialQuery);
 
   // Active Applied Filters
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -171,6 +178,7 @@ function SearchContent() {
   useEffect(() => {
     let isMounted = true;
     async function loadCategories() {
+      if (initialCategories.length > 0) return;
       const cats = await getCategories();
       if (isMounted) setCategories(cats);
     }
@@ -178,9 +186,14 @@ function SearchContent() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [initialCategories]);
 
   async function performSearch(searchQuery: string) {
+    if (!searchQuery && initialProducts.length > 0) {
+      setProducts(initialProducts);
+      setHasSearched(true);
+      return;
+    }
     setLoading(true);
     setHasSearched(true);
     try {
@@ -378,7 +391,12 @@ function SearchContent() {
         break;
       case 'recommended':
       default:
-        list.sort((a, b) => b.rating.average - a.rating.average);
+        list.sort((a, b) => {
+          if (b.rating.count !== a.rating.count) {
+            return b.rating.count - a.rating.count;
+          }
+          return b.rating.average - a.rating.average;
+        });
         break;
     }
 
@@ -842,11 +860,20 @@ function SearchContent() {
             ) : paginatedProducts.length > 0 ? (
               <>
                 <div
-                  className="max-md:!grid max-md:!grid-cols-2 max-md:!gap-x-[12px] max-md:!gap-y-[28px]"
+                  className="product-grid max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]"
                   style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}
                 >
-                  {paginatedProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} variant="standard" />
+                  {paginatedProducts.map((product, idx) => (
+                    <motion.div
+                      key={product.id}
+                      className="product-card-wrapper"
+                      initial={shouldReduceMotion ? undefined : { opacity: 0, y: 16 }}
+                      whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: '-20px' }}
+                      transition={shouldReduceMotion ? undefined : { duration: 0.4, delay: (idx % 4) * 0.05 }}
+                    >
+                      <ProductCard product={product} />
+                    </motion.div>
                   ))}
                 </div>
 
@@ -1722,10 +1749,10 @@ function SearchContent() {
   );
 }
 
-export const SearchView: React.FC = () => {
+export const SearchView: React.FC<SearchViewProps> = (props) => {
   return (
-    <Suspense fallback={<div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}></div>}>
-      <SearchContent />
+    <Suspense fallback={<div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}><ProductGridSkeleton count={8} /></div>}>
+      <SearchContent {...props} />
     </Suspense>
   );
 };

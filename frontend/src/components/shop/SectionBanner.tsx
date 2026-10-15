@@ -149,10 +149,10 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
                 style={
                   {
                     "--i": 0,
-                    fontSize: "0.8rem",
+                    fontSize: "clamp(0.68rem, 0.56rem + 0.18vw, 0.82rem)",
                     fontWeight: 600,
                     textTransform: "uppercase",
-                    letterSpacing: "0.12em",
+                    letterSpacing: "clamp(0.08em, 0.04em + 0.06vw, 0.12em)",
                     color: "#333",
                     marginBottom: "16px",
                   } as React.CSSProperties
@@ -166,7 +166,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
                 style={
                   {
                     "--i": 1,
-                    fontSize: "clamp(2.5rem, 4vw, 4rem)",
+                    fontSize: "clamp(1.85rem, 1.1rem + 1.8vw, 3.8rem)",
                     fontFamily: "var(--font-serif)",
                     fontWeight: 400,
                     color: "#000",
@@ -183,7 +183,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
                 style={
                   {
                     "--i": 2,
-                    fontSize: "clamp(0.85rem, 1.1vw, 1rem)",
+                    fontSize: "clamp(0.82rem, 0.65rem + 0.25vw, 1rem)",
                     color: "#555",
                     lineHeight: 1.6,
                     maxWidth: "340px",
@@ -294,10 +294,10 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
             style={
               {
                 "--i": 0,
-                fontSize: "0.8rem",
+                fontSize: "clamp(0.68rem, 0.56rem + 0.18vw, 0.82rem)",
                 fontWeight: 600,
                 textTransform: "uppercase",
-                letterSpacing: "0.12em",
+                letterSpacing: "clamp(0.08em, 0.04em + 0.06vw, 0.12em)",
                 color: "#333",
                 marginBottom: "16px",
               } as React.CSSProperties
@@ -311,7 +311,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
             style={
               {
                 "--i": 1,
-                fontSize: "clamp(2.5rem, 4vw, 4rem)",
+                fontSize: "clamp(1.85rem, 1.1rem + 1.8vw, 3.8rem)",
                 fontFamily: "var(--font-serif)",
                 fontWeight: 400,
                 color: "#000",

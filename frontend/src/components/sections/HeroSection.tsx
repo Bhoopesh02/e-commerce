@@ -123,9 +123,9 @@ export const HeroSection: React.FC = () => {
               as="span"
               className="hero-eyebrow text-left block mb-4"
               style={{
-                fontSize: 'clamp(0.75rem, 1.5vw, 0.85rem)',
+                fontSize: 'clamp(0.72rem, 0.58rem + 0.18vw, 0.85rem)',
                 fontWeight: 600,
-                letterSpacing: '0.18em',
+                letterSpacing: 'clamp(0.12em, 0.08em + 0.08vw, 0.18em)',
                 textTransform: 'uppercase',
                 color: 'var(--bg-subtle)',
                 marginBottom: '16px',
@@ -140,7 +140,7 @@ export const HeroSection: React.FC = () => {
               className="hero-heading text-left"
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(2.25rem, 7vw, 5rem)',
+                fontSize: 'clamp(2.1rem, 1.2rem + 2.5vw, 5rem)',
                 lineHeight: 1.05,
                 fontWeight: 500,
                 letterSpacing: '-0.02em',
@@ -160,7 +160,7 @@ export const HeroSection: React.FC = () => {
               as="p"
               className="hero-description text-left max-w-[38ch] mb-6"
               style={{
-                fontSize: 'clamp(0.875rem, 1.4vw, 1.05rem)',
+                fontSize: 'clamp(0.85rem, 0.65rem + 0.32vw, 1.05rem)',
                 color: 'var(--bg-subtle)',
                 lineHeight: 1.6,
                 maxWidth: '38ch',
@@ -210,9 +210,9 @@ export const HeroSection: React.FC = () => {
               as="span"
               className="hero-eyebrow text-left block mb-4"
               style={{
-                fontSize: 'clamp(0.75rem, 1.5vw, 0.85rem)',
+                fontSize: 'clamp(0.72rem, 0.58rem + 0.18vw, 0.85rem)',
                 fontWeight: 600,
-                letterSpacing: '0.18em',
+                letterSpacing: 'clamp(0.12em, 0.08em + 0.08vw, 0.18em)',
                 textTransform: 'uppercase',
                 color: 'var(--brand-accent)',
                 marginBottom: '16px',
@@ -227,7 +227,7 @@ export const HeroSection: React.FC = () => {
               className="hero-heading text-left"
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(2.25rem, 7vw, 5rem)',
+                fontSize: 'clamp(2.1rem, 1.2rem + 2.5vw, 5rem)',
                 lineHeight: 1.1,
                 fontWeight: 500,
                 marginBottom: '20px',
@@ -245,7 +245,7 @@ export const HeroSection: React.FC = () => {
               as="p"
               className="hero-description text-left max-w-[38ch] mb-8"
               style={{
-                fontSize: 'clamp(0.9rem, 1.4vw, 1.1rem)',
+                fontSize: 'clamp(0.85rem, 0.65rem + 0.32vw, 1.05rem)',
                 color: 'var(--border-color)',
                 lineHeight: 1.6,
                 maxWidth: '38ch',

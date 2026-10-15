@@ -106,10 +106,10 @@ export const PromoBanner: React.FC<PromoBannerProps> = ({
       <div style={{ maxWidth: '400px' }}>
         <p
           style={{
-            fontSize: '0.8rem',
+            fontSize: 'clamp(0.68rem, 0.56rem + 0.18vw, 0.82rem)',
             fontWeight: 600,
             textTransform: 'uppercase',
-            letterSpacing: '0.12em',
+            letterSpacing: 'clamp(0.08em, 0.04em + 0.06vw, 0.12em)',
             color: 'var(--text-secondary)',
             marginBottom: '16px',
           }}
@@ -118,7 +118,7 @@ export const PromoBanner: React.FC<PromoBannerProps> = ({
         </p>
         <h3
           style={{
-            fontSize: 'clamp(2rem, 3vw, 2.5rem)',
+            fontSize: 'clamp(1.65rem, 1.1rem + 1.4vw, 2.5rem)',
             fontFamily: 'var(--font-display)',
             fontWeight: 400,
             color: 'var(--text-primary)',
@@ -129,7 +129,7 @@ export const PromoBanner: React.FC<PromoBannerProps> = ({
         </h3>
         <p
           style={{
-            fontSize: '1.1rem',
+            fontSize: 'clamp(0.88rem, 0.7rem + 0.3vw, 1.1rem)',
             color: 'var(--text-muted)',
             fontStyle: 'italic',
             lineHeight: 1.6,

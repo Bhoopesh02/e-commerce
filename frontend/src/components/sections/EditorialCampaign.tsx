@@ -199,7 +199,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
 
         .editorial-watermark-text {
           font-family: var(--font-display, 'Playfair Display', Georgia, serif);
-          font-size: clamp(6.5rem, 16vw, 15rem);
+          font-size: clamp(4.5rem, 1.5rem + 8vw, 14rem);
           font-weight: 300;
           letter-spacing: 0.12em;
           text-transform: uppercase;
@@ -247,7 +247,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
 
         .editorial-copy-bottom-left {
           font-family: var(--font-body, system-ui, sans-serif);
-          font-size: 0.88rem;
+          font-size: clamp(0.74rem, 0.6rem + 0.22vw, 0.88rem);
           line-height: 1.6;
           color: rgba(30, 30, 30, 0.72);
           max-width: 260px;
@@ -285,7 +285,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
 
         .editorial-copy-top-right {
           font-family: var(--font-body, system-ui, sans-serif);
-          font-size: 0.88rem;
+          font-size: clamp(0.74rem, 0.6rem + 0.22vw, 0.88rem);
           line-height: 1.6;
           color: rgba(30, 30, 30, 0.72);
           max-width: 270px;

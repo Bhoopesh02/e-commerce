@@ -98,12 +98,12 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.72rem;
+  font-size: clamp(0.66rem, 0.52rem + 0.16vw, 0.76rem);
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: clamp(0.1em, 0.06em + 0.08vw, 0.16em);
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 12px;
+  margin-bottom: clamp(8px, 0.6vw, 12px);
 }
 
 .kickerDot {
@@ -116,21 +116,21 @@
 
 .headline {
   font-family: var(--font-display), 'Playfair Display', Georgia, serif;
-  font-size: clamp(2.4rem, 4.8vw, 4.2rem);
+  font-size: clamp(1.9rem, 1.1rem + 2.1vw, 4.2rem);
   font-weight: 400;
   line-height: 1.12;
   letter-spacing: -0.015em;
   color: #ffffff;
-  margin: 0 0 10px 0;
+  margin: 0 0 clamp(6px, 0.6vw, 10px) 0;
   text-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
 }
 
 .subtitle {
-  font-size: clamp(0.95rem, 1.35vw, 1.15rem);
+  font-size: clamp(0.85rem, 0.65rem + 0.35vw, 1.15rem);
   font-weight: 300;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.94);
-  margin: 0 0 24px 0;
+  margin: 0 0 clamp(16px, 1.4vw, 24px) 0;
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
 }
 
@@ -140,10 +140,10 @@
   justify-content: center;
   background-color: #ffffff;
   color: #111111;
-  font-size: 0.88rem;
+  font-size: clamp(0.76rem, 0.64rem + 0.18vw, 0.88rem);
   font-weight: 600;
-  letter-spacing: 0.04em;
-  padding: 13px 32px;
+  letter-spacing: clamp(0.03em, 0.02em + 0.02vw, 0.05em);
+  padding: clamp(10px, 0.6rem + 0.4vw, 14px) clamp(20px, 1rem + 1vw, 32px);
   border-radius: 2px;
   text-decoration: none;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);

@@ -134,8 +134,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
+  font-size: clamp(0.68rem, 0.54rem + 0.16vw, 0.78rem);
+  letter-spacing: clamp(0.12em, 0.08em + 0.08vw, 0.2em);
   text-transform: uppercase;
   color: var(--color-gold, #c9a96e);
   font-weight: 600;
@@ -151,7 +151,7 @@
 
 /* Main Headline */
 .headline {
-  font-size: clamp(2.2rem, 4.6vw, 3.8rem);
+  font-size: clamp(1.85rem, 1.1rem + 2vw, 3.8rem);
   font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
   font-weight: 400;
   color: #ffffff;
@@ -171,7 +171,7 @@
 
 /* Subtitle */
 .subtitle {
-  font-size: clamp(0.95rem, 1.15vw, 1.12rem);
+  font-size: clamp(0.84rem, 0.65rem + 0.3vw, 1.12rem);
   font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
   font-style: italic;
   color: rgba(240, 245, 250, 0.95);
@@ -189,7 +189,7 @@
 
 /* Editorial Description */
 .description {
-  font-size: clamp(0.9rem, 1.08vw, 1.05rem);
+  font-size: clamp(0.82rem, 0.65rem + 0.25vw, 1.05rem);
   font-family: var(--font-body, system-ui, sans-serif);
   color: rgba(235, 240, 245, 0.88);
   line-height: 1.65;
@@ -210,7 +210,7 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: clamp(10px, 0.6rem + 0.4vw, 16px);
   margin-top: 6px;
   flex-wrap: wrap;
   opacity: 0;
@@ -227,14 +227,14 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 13px 28px;
+  padding: clamp(10px, 0.6rem + 0.4vw, 14px) clamp(18px, 0.9rem + 0.9vw, 28px);
   border-radius: 0px;
   background-color: #ffffff;
   color: #0a1016;
-  font-size: 0.82rem;
+  font-size: clamp(0.74rem, 0.64rem + 0.15vw, 0.84rem);
   font-weight: 600;
   font-family: var(--font-body, system-ui, sans-serif);
-  letter-spacing: 0.06em;
+  letter-spacing: clamp(0.04em, 0.02em + 0.02vw, 0.06em);
   text-transform: uppercase;
   border: 1px solid #ffffff;
   cursor: pointer;
