@@ -386,9 +386,7 @@ export const NewArrivalsView: React.FC = () => {
                 </>
               ) : (
                 <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', letterSpacing: '0.02em' }}>
-                  {totalPages > 1
-                    ? `${filteredProducts.length} Silhouettes (Page ${currentPage} of ${totalPages})`
-                    : `${filteredProducts.length} Silhouettes`}
+                  {filteredProducts.length} Silhouettes
                 </span>
               )}
             </div>

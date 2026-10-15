@@ -11,6 +11,7 @@ import { useWishlistStore } from '@/store/useWishlistStore';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { BRAND_NAME } from '@/lib/constants';
+import { AnnouncementBar } from './AnnouncementBar';
 
 interface NavbarProps {
   onOpenSearch?: () => void;
@@ -202,6 +203,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           color: isLightNav ? '#ffffff' : 'var(--text-primary)',
         }}
       >
+        <AnnouncementBar isScrolled={isScrolled} />
         <div
           className="container navbar-container"
           style={{
@@ -298,6 +300,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 style={navLinkStyle}
               >
                 New Arrivals
+              </Link>
+              <Link
+                href="/about"
+                className="nav-link-expand"
+                onMouseEnter={() => setHoveredNav(null)}
+                style={navLinkStyle}
+              >
+                About
               </Link>
             </nav>
           </div>
@@ -569,6 +579,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   }}
                 >
                   Private Client Offers
+                </Link>
+                <Link
+                  href="/about"
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.08em',
+                    minHeight: '44px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  About Us
                 </Link>
                 <Link
                   href="/wishlist"

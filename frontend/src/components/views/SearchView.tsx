@@ -2,13 +2,17 @@
 
 import React, { useState, useEffect, useMemo, Suspense, useRef } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { getProducts, getCategories } from '@/lib/mockApi';
+import Link from 'next/link';
+import Image from 'next/image';
+import { getProducts, getCategories, getNewArrivals } from '@/lib/mockApi';
 import { Product, Category } from '@/types';
 import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCard';
 import { Button } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
 import { RangeSlider } from '@/components/ui/RangeSlider';
+import { FilterDropdownSection } from '@/components/ui/FilterDropdownSection';
 import { smoothScrollService } from '@/services/smooth-scroll';
+import { formatPrice } from '@/lib/formatPrice';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
   Search,
@@ -20,9 +24,37 @@ import {
   SlidersHorizontal,
   RotateCcw,
   ArrowUp,
+  Sparkles,
+  Clock,
+  TrendingUp,
+  ArrowRight,
+  CornerDownLeft,
 } from 'lucide-react';
 
 const PRODUCTS_PER_PAGE = 36;
+
+const ROTATING_QUERIES = [
+  'Cashmere Coat',
+  'Mulberry Silk Gown',
+  'Double-Breasted Wool',
+  'Tuscan Leather Chelsea',
+  'Sculptural Gold Cuff',
+  'Tabac Vanille Extrait',
+  'Chunky Cable-Knit Merino',
+];
+
+const TRENDING_SEARCHES = [
+  'Cashmere',
+  'Mulberry Silk',
+  'Double-Breasted Wool',
+  'Tuscan Leather',
+  'Gold Cuff',
+  'Tabac Vanille',
+  'Palazzo Trousers',
+];
+
+const LOCAL_STORAGE_RECENT_SEARCHES_KEY = 'aurelia_recent_searches';
+const MAX_RECENT_SEARCHES = 5;
 
 // Helper to group complex color names into selectable swatches
 const COLOR_GROUPS = [
@@ -97,9 +129,34 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
 
   const [query, setQuery] = useState(initialQuery);
   const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [allCatalog, setAllCatalog] = useState<Product[]>(initialProducts);
+  const [curatedFallback, setCuratedFallback] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(initialProducts.length > 0 || !!initialQuery);
+
+  // Suggestions & Autocomplete state
+  const [placeholderIdx, setPlaceholderIdx] = useState(0);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const stored = window.localStorage.getItem(LOCAL_STORAGE_RECENT_SEARCHES_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [highlightedSuggestionIdx, setHighlightedSuggestionIdx] = useState<number>(-1);
+
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useOnClickOutside(searchContainerRef, () => {
+    setShowSuggestions(false);
+    setHighlightedSuggestionIdx(-1);
+  });
 
   // Active Applied Filters
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -119,6 +176,37 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
   const [stagedPriceRange, setStagedPriceRange] = useState<[number, number]>([0, 100000]);
   const [stagedAvailability, setStagedAvailability] = useState<'all' | 'in_stock'>('all');
 
+  // Collapsible Dropdown Sections State
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    category: true,
+    collection: false,
+    size: false,
+    color: false,
+    price: false,
+    availability: false,
+  });
+
+  const toggleFilterSection = (key: string) => {
+    setOpenSections((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
+  const allSectionsOpen = Object.values(openSections).every(Boolean);
+
+  const toggleAllSections = () => {
+    const nextState = !allSectionsOpen;
+    setOpenSections({
+      category: nextState,
+      collection: nextState,
+      size: nextState,
+      color: nextState,
+      price: nextState,
+      availability: nextState,
+    });
+  };
+
   // Sticky Bar & Sort Popover
   const [isStuck, setIsStuck] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
@@ -127,6 +215,40 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
   const sortRef = useRef<HTMLDivElement>(null);
 
   useOnClickOutside(sortRef, () => setSortOpen(false));
+
+  // Rotating placeholder cycle every 2.8s when query is empty and input is not focused
+  useEffect(() => {
+    if (query || isInputFocused) return;
+    const interval = setInterval(() => {
+      setPlaceholderIdx((prev) => (prev + 1) % ROTATING_QUERIES.length);
+    }, 2800);
+    return () => clearInterval(interval);
+  }, [query, isInputFocused]);
+
+
+
+  // Load full catalog and fallback recommendations
+  useEffect(() => {
+    let isMounted = true;
+    async function loadCatalogAndFallback() {
+      try {
+        const [allProds, arrivals] = await Promise.all([
+          getProducts(),
+          getNewArrivals(),
+        ]);
+        if (isMounted) {
+          setAllCatalog(allProds);
+          setCuratedFallback(arrivals.slice(0, 4));
+        }
+      } catch (err) {
+        console.error('Failed to load search catalog:', err);
+      }
+    }
+    loadCatalogAndFallback();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const priceMilestones = useMemo(
     () => [
@@ -206,7 +328,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
 
   // Parse URL params into state
   useEffect(() => {
-    setQuery(initialQuery);
+    setQuery((prev) => (prev !== initialQuery ? initialQuery : prev));
     performSearch(initialQuery);
 
     const cats = searchParams.get('category');
@@ -306,16 +428,143 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
     });
   };
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSaveRecentSearch = (term: string) => {
+    const trimmed = term.trim();
+    if (!trimmed || typeof window === 'undefined') return;
+    try {
+      const updated = [
+        trimmed,
+        ...recentSearches.filter((item) => item.toLowerCase() !== trimmed.toLowerCase()),
+      ].slice(0, MAX_RECENT_SEARCHES);
+      setRecentSearches(updated);
+      window.localStorage.setItem(LOCAL_STORAGE_RECENT_SEARCHES_KEY, JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleRemoveRecentSearch = (term: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (typeof window === 'undefined') return;
+    try {
+      const updated = recentSearches.filter((item) => item !== term);
+      setRecentSearches(updated);
+      window.localStorage.setItem(LOCAL_STORAGE_RECENT_SEARCHES_KEY, JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleClearAllRecentSearches = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (typeof window === 'undefined') return;
+    try {
+      setRecentSearches([]);
+      window.localStorage.removeItem(LOCAL_STORAGE_RECENT_SEARCHES_KEY);
+    } catch {
+      // ignore
+    }
+  };
+
+  const applySearchQuery = (term: string) => {
+    const trimmed = term.trim();
+    setQuery(trimmed);
+    setShowSuggestions(false);
+    setHighlightedSuggestionIdx(-1);
+    if (trimmed) {
+      handleSaveRecentSearch(trimmed);
+    }
     const params = new URLSearchParams(searchParams.toString());
-    if (query.trim()) {
-      params.set('q', query.trim());
+    if (trimmed) {
+      params.set('q', trimmed);
     } else {
       params.delete('q');
     }
     params.delete('page');
     router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    applySearchQuery(query);
+  };
+
+  // Autocomplete matching computation
+  const autocompleteData = useMemo(() => {
+    const cleanQuery = query.trim().toLowerCase();
+    const pool = allCatalog.length > 0 ? allCatalog : products;
+
+    if (!cleanQuery) {
+      return {
+        queryMatches: [],
+        productMatches: [],
+        categoryMatches: [],
+      };
+    }
+
+    const matchedPhrases = new Set<string>();
+
+    pool.forEach((p) => {
+      if (p.name.toLowerCase().includes(cleanQuery)) {
+        matchedPhrases.add(p.name);
+      }
+      p.tags?.forEach((t) => {
+        if (t.toLowerCase().includes(cleanQuery)) {
+          matchedPhrases.add(t);
+        }
+      });
+    });
+
+    const matchingCats = categories.filter((c) =>
+      c.name.toLowerCase().includes(cleanQuery)
+    );
+
+    const matchingProds = pool
+      .filter(
+        (p) =>
+          p.name.toLowerCase().includes(cleanQuery) ||
+          p.description.toLowerCase().includes(cleanQuery) ||
+          p.tags?.some((t) => t.toLowerCase().includes(cleanQuery))
+      )
+      .slice(0, 4);
+
+    return {
+      queryMatches: Array.from(matchedPhrases).slice(0, 5),
+      productMatches: matchingProds,
+      categoryMatches: matchingCats.slice(0, 3),
+    };
+  }, [query, allCatalog, products, categories]);
+
+  // Flatten suggestions for keyboard navigation
+  const flatSuggestionItems = useMemo(() => {
+    if (!query.trim()) {
+      return recentSearches.concat(ROTATING_QUERIES);
+    }
+    return autocompleteData.queryMatches;
+  }, [query, recentSearches, autocompleteData.queryMatches]);
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!showSuggestions) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setHighlightedSuggestionIdx((prev) =>
+        prev < flatSuggestionItems.length - 1 ? prev + 1 : 0
+      );
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setHighlightedSuggestionIdx((prev) =>
+        prev > 0 ? prev - 1 : flatSuggestionItems.length - 1
+      );
+    } else if (e.key === 'Enter') {
+      if (highlightedSuggestionIdx >= 0 && flatSuggestionItems[highlightedSuggestionIdx]) {
+        e.preventDefault();
+        applySearchQuery(flatSuggestionItems[highlightedSuggestionIdx]);
+      }
+    } else if (e.key === 'Escape') {
+      setShowSuggestions(false);
+      setHighlightedSuggestionIdx(-1);
+    }
   };
 
   const hasActiveFilters = useMemo(() => {
@@ -476,7 +725,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
 
       <div className="container search-page-container" style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 24px' }}>
         {/* Search Header */}
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
           <h1 style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--brand-primary)', fontWeight: 600, marginBottom: '12px' }}>
             SEARCH
           </h1>
@@ -487,34 +736,67 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
           )}
         </div>
 
-        {/* Search Input */}
-        <div className="search-input-wrapper" style={{ maxWidth: '580px', margin: '0 auto 40px auto' }}>
+        {/* Search Input & Interactive Suggestions Container */}
+        <div
+          ref={searchContainerRef}
+          className="search-input-wrapper"
+          style={{
+            maxWidth: '620px',
+            margin: '0 auto 16px auto',
+            position: 'relative',
+          }}
+        >
           <form onSubmit={handleSearchSubmit} style={{ position: 'relative' }}>
-            <Search size={18} style={{ position: 'absolute', left: '18px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+            <Search
+              size={18}
+              style={{
+                position: 'absolute',
+                left: '20px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: isInputFocused ? 'var(--brand-primary)' : 'var(--text-muted)',
+                pointerEvents: 'none',
+                transition: 'color 200ms ease',
+              }}
+            />
             <input
+              ref={searchInputRef}
               type="text"
               autoFocus={!initialQuery}
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by product, category, color..."
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setShowSuggestions(true);
+              }}
+              onFocus={() => {
+                setIsInputFocused(true);
+                setShowSuggestions(true);
+              }}
+              onBlur={() => {
+                setIsInputFocused(false);
+              }}
+              onKeyDown={handleInputKeyDown}
+              placeholder={
+                isInputFocused
+                  ? 'Search by product, category, color...'
+                  : `Search for "${ROTATING_QUERIES[placeholderIdx]}"...`
+              }
+              aria-label="Search Aurelia Atelier Catalogue"
               style={{
                 width: '100%',
-                padding: '16px 46px 16px 50px',
+                padding: '16px 50px 16px 52px',
                 fontSize: '0.95rem',
                 borderRadius: 'var(--radius-pill)',
-                border: '1px solid var(--border-color)',
+                border: isInputFocused
+                  ? '1px solid var(--brand-primary)'
+                  : '1px solid var(--border-color)',
                 backgroundColor: 'var(--bg-surface)',
                 outline: 'none',
                 color: 'var(--text-primary)',
+                boxShadow: isInputFocused
+                  ? '0 6px 24px rgba(0,0,0,0.06)'
+                  : '0 2px 8px rgba(0,0,0,0.02)',
                 transition: 'border-color 200ms ease, box-shadow 200ms ease',
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = 'var(--text-muted)';
-                e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0,0,0,0.04)';
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = 'var(--border-color)';
-                e.currentTarget.style.boxShadow = 'none';
               }}
             />
             {query && (
@@ -522,6 +804,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                 type="button"
                 onClick={() => {
                   setQuery('');
+                  searchInputRef.current?.focus();
                   const params = new URLSearchParams(searchParams.toString());
                   params.delete('q');
                   params.delete('page');
@@ -530,7 +813,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                 aria-label="Clear search input"
                 style={{
                   position: 'absolute',
-                  right: '16px',
+                  right: '18px',
                   top: '50%',
                   transform: 'translateY(-50%)',
                   background: 'none',
@@ -542,12 +825,461 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: '50%',
+                  transition: 'color 150ms ease',
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--text-primary)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
               >
                 <X size={16} />
               </button>
             )}
           </form>
+
+          {/* Interactive Suggestions Popover Dropdown */}
+          {showSuggestions && (
+            <div
+              className="search-suggestions-dropdown"
+              style={{
+                position: 'absolute',
+                top: 'calc(100% + 10px)',
+                left: 0,
+                right: 0,
+                zIndex: 90,
+                backgroundColor: 'var(--bg-primary)',
+                border: '1px solid var(--border-color)',
+                borderRadius: '16px',
+                boxShadow: '0 16px 36px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04)',
+                overflow: 'hidden',
+                maxHeight: 'min(500px, 68vh)',
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <div style={{ overflowY: 'auto', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {/* Mode 1: Empty Query - Show Recents, Trending & Categories */}
+                {!query.trim() ? (
+                  <>
+                    {/* Recent Searches */}
+                    {recentSearches.length > 0 && (
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                          <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <Clock size={12} /> Recent Inquiries
+                          </span>
+                          <button
+                            type="button"
+                            onClick={handleClearAllRecentSearches}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              fontSize: '0.72rem',
+                              color: 'var(--brand-primary)',
+                              cursor: 'pointer',
+                              fontWeight: 600,
+                              padding: 0,
+                            }}
+                          >
+                            Clear all
+                          </button>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                          {recentSearches.map((term, idx) => (
+                            <div
+                              key={term}
+                              onClick={() => applySearchQuery(term)}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                padding: '8px 12px',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                fontSize: '0.86rem',
+                                color: 'var(--text-primary)',
+                                backgroundColor: highlightedSuggestionIdx === idx ? 'var(--surface-brand)' : 'transparent',
+                                transition: 'background-color 150ms ease',
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--surface-brand)')}
+                              onMouseLeave={(e) => {
+                                if (highlightedSuggestionIdx !== idx) {
+                                  e.currentTarget.style.backgroundColor = 'transparent';
+                                }
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <Clock size={14} style={{ color: 'var(--text-muted)' }} />
+                                <span>{term}</span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={(e) => handleRemoveRecentSearch(term, e)}
+                                aria-label={`Remove ${term}`}
+                                style={{
+                                  background: 'none',
+                                  border: 'none',
+                                  color: 'var(--text-muted)',
+                                  cursor: 'pointer',
+                                  padding: '2px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                <X size={14} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Trending Searches */}
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+                        <TrendingUp size={13} style={{ color: 'var(--brand-primary)' }} />
+                        <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)' }}>
+                          Trending Suggestions
+                        </span>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '6px' }}>
+                        {ROTATING_QUERIES.map((item, idx) => {
+                          const itemIndex = recentSearches.length + idx;
+                          return (
+                            <button
+                              key={item}
+                              type="button"
+                              onClick={() => applySearchQuery(item)}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                padding: '8px 12px',
+                                borderRadius: '8px',
+                                border: 'none',
+                                backgroundColor: highlightedSuggestionIdx === itemIndex ? 'var(--surface-brand)' : 'var(--bg-surface)',
+                                color: 'var(--text-primary)',
+                                fontSize: '0.84rem',
+                                textAlign: 'left',
+                                cursor: 'pointer',
+                                transition: 'all 150ms ease',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = 'var(--surface-brand)';
+                                e.currentTarget.style.color = 'var(--brand-primary)';
+                              }}
+                              onMouseLeave={(e) => {
+                                if (highlightedSuggestionIdx !== itemIndex) {
+                                  e.currentTarget.style.backgroundColor = 'var(--bg-surface)';
+                                  e.currentTarget.style.color = 'var(--text-primary)';
+                                }
+                              }}
+                            >
+                              <Search size={13} style={{ color: 'var(--brand-primary)', flexShrink: 0 }} />
+                              <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Quick Category Jump */}
+                    <div>
+                      <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '10px' }}>
+                        Explore by Category
+                      </span>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        {categories.slice(0, 6).map((cat) => (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            onClick={() => {
+                              setActiveCategory(cat.slug);
+                              setStagedCategory(cat.slug);
+                              updateUrl({ category: cat.slug });
+                              setShowSuggestions(false);
+                            }}
+                            style={{
+                              padding: '5px 12px',
+                              borderRadius: 'var(--radius-pill)',
+                              border: '1px solid var(--border-color)',
+                              backgroundColor: 'transparent',
+                              color: 'var(--text-secondary)',
+                              fontSize: '0.78rem',
+                              cursor: 'pointer',
+                              transition: 'all 150ms ease',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.borderColor = 'var(--brand-primary)';
+                              e.currentTarget.style.color = 'var(--brand-primary)';
+                              e.currentTarget.style.backgroundColor = 'var(--surface-brand)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.borderColor = 'var(--border-color)';
+                              e.currentTarget.style.color = 'var(--text-secondary)';
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                            }}
+                          >
+                            {cat.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  /* Mode 2: Query Active - Phrase Completions & Matching Products */
+                  <>
+                    {/* Matching Phrase Suggestions */}
+                    {autocompleteData.queryMatches.length > 0 && (
+                      <div>
+                        <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '8px' }}>
+                          Suggested Inquiries
+                        </span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                          {autocompleteData.queryMatches.map((phrase, idx) => (
+                            <button
+                              key={phrase}
+                              type="button"
+                              onClick={() => applySearchQuery(phrase)}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                padding: '8px 12px',
+                                borderRadius: '8px',
+                                border: 'none',
+                                textAlign: 'left',
+                                backgroundColor: highlightedSuggestionIdx === idx ? 'var(--surface-brand)' : 'transparent',
+                                color: 'var(--text-primary)',
+                                fontSize: '0.86rem',
+                                cursor: 'pointer',
+                                transition: 'background-color 150ms ease',
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--surface-brand)')}
+                              onMouseLeave={(e) => {
+                                if (highlightedSuggestionIdx !== idx) {
+                                  e.currentTarget.style.backgroundColor = 'transparent';
+                                }
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <Search size={14} style={{ color: 'var(--brand-primary)' }} />
+                                <span>{phrase}</span>
+                              </div>
+                              <CornerDownLeft size={13} style={{ color: 'var(--text-muted)' }} />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Matching Categories */}
+                    {autocompleteData.categoryMatches.length > 0 && (
+                      <div>
+                        <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '8px' }}>
+                          Matching Categories
+                        </span>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                          {autocompleteData.categoryMatches.map((cat) => (
+                            <button
+                              key={cat.id}
+                              type="button"
+                              onClick={() => {
+                                setActiveCategory(cat.slug);
+                                setStagedCategory(cat.slug);
+                                updateUrl({ category: cat.slug });
+                                setShowSuggestions(false);
+                              }}
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                padding: '6px 12px',
+                                borderRadius: 'var(--radius-pill)',
+                                border: '1px solid var(--border-brand)',
+                                backgroundColor: 'var(--surface-brand)',
+                                color: 'var(--brand-primary)',
+                                fontSize: '0.8rem',
+                                fontWeight: 500,
+                                cursor: 'pointer',
+                              }}
+                            >
+                              <span>{cat.name}</span>
+                              <ArrowRight size={12} />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Matching Product Previews */}
+                    {autocompleteData.productMatches.length > 0 && (
+                      <div>
+                        <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '10px' }}>
+                          Preview Pieces ({autocompleteData.productMatches.length})
+                        </span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          {autocompleteData.productMatches.map((prod) => (
+                            <Link
+                              key={prod.id}
+                              href={`/product/${prod.slug || prod.id}`}
+                              onClick={() => {
+                                handleSaveRecentSearch(prod.name);
+                                setShowSuggestions(false);
+                              }}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '12px',
+                                padding: '6px 10px',
+                                borderRadius: '10px',
+                                textDecoration: 'none',
+                                color: 'var(--text-primary)',
+                                transition: 'background-color 150ms ease',
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--surface-brand)')}
+                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                            >
+                              <div
+                                style={{
+                                  position: 'relative',
+                                  width: '42px',
+                                  height: '52px',
+                                  borderRadius: '6px',
+                                  overflow: 'hidden',
+                                  flexShrink: 0,
+                                  backgroundColor: 'var(--bg-surface)',
+                                }}
+                              >
+                                {prod.images?.[0] && (
+                                  <Image
+                                    src={prod.images[0]}
+                                    alt={prod.name}
+                                    fill
+                                    sizes="42px"
+                                    style={{ objectFit: 'cover' }}
+                                  />
+                                )}
+                              </div>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontSize: '0.86rem', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                  {prod.name}
+                                </div>
+                                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                                  {categories.find((c) => c.id === prod.categoryId)?.name || 'Atelier Collection'}
+                                </div>
+                              </div>
+                              <div style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--brand-primary)', flexShrink: 0 }}>
+                                {formatPrice(prod.price)}
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {/* Suggestions Footer */}
+              <div
+                onClick={() => applySearchQuery(query)}
+                style={{
+                  padding: '12px 20px',
+                  backgroundColor: 'var(--bg-surface)',
+                  borderTop: '1px solid var(--border-light)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  cursor: 'pointer',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  color: 'var(--brand-primary)',
+                  transition: 'background-color 150ms ease',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--surface-brand)')}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-surface)')}
+              >
+                <span>
+                  {query.trim()
+                    ? `View all catalog results for "${query.trim()}"`
+                    : 'Explore all Aurelia catalog pieces'}
+                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 400 }}>Press Enter</span>
+                  <ArrowRight size={14} />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Curated Trending Suggestions Pills */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+            gap: '8px',
+            marginBottom: '32px',
+          }}
+        >
+          <span
+            style={{
+              fontSize: '0.74rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              color: 'var(--text-muted)',
+              fontWeight: 600,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '5px',
+            }}
+          >
+            <Sparkles size={13} style={{ color: 'var(--brand-primary)' }} />
+            Trending:
+          </span>
+          {TRENDING_SEARCHES.map((item) => (
+            <button
+              key={item}
+              type="button"
+              onClick={() => applySearchQuery(item)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 12px',
+                borderRadius: 'var(--radius-pill)',
+                border:
+                  query.toLowerCase() === item.toLowerCase()
+                    ? '1px solid var(--brand-primary)'
+                    : '1px solid var(--border-color)',
+                backgroundColor:
+                  query.toLowerCase() === item.toLowerCase()
+                    ? 'var(--surface-brand)'
+                    : 'var(--bg-surface)',
+                color:
+                  query.toLowerCase() === item.toLowerCase()
+                    ? 'var(--brand-primary)'
+                    : 'var(--text-secondary)',
+                fontSize: '0.78rem',
+                fontWeight: query.toLowerCase() === item.toLowerCase() ? 600 : 400,
+                cursor: 'pointer',
+                transition: 'all 180ms ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--brand-primary)';
+                e.currentTarget.style.color = 'var(--brand-primary)';
+              }}
+              onMouseLeave={(e) => {
+                if (query.toLowerCase() !== item.toLowerCase()) {
+                  e.currentTarget.style.borderColor = 'var(--border-color)';
+                  e.currentTarget.style.color = 'var(--text-secondary)';
+                }
+              }}
+            >
+              <span>{item}</span>
+            </button>
+          ))}
         </div>
       </div>
 
@@ -704,13 +1436,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                     </>
                   ) : (
                     <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', letterSpacing: '0.02em' }}>
-                      {!loading ? (
-                        totalPages > 1
-                          ? `${filteredProducts.length} Results (Page ${currentPage} of ${totalPages})`
-                          : `${filteredProducts.length} Results`
-                      ) : (
-                        'Searching...'
-                      )}
+                      {!loading ? `${filteredProducts.length} Results` : 'Searching...'}
                     </span>
                   )}
                 </div>
@@ -813,6 +1539,14 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                       setStagedColors(activeColors);
                       setStagedPriceRange(appliedPriceRange);
                       setStagedAvailability(appliedAvailability);
+                      setOpenSections((prev) => ({
+                        category: prev.category ?? true,
+                        collection: activeCollection !== 'all' ? true : prev.collection,
+                        size: activeSizes.length > 0 ? true : prev.size,
+                        color: activeColors.length > 0 ? true : prev.color,
+                        price: appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000 ? true : prev.price,
+                        availability: appliedAvailability === 'in_stock' ? true : prev.availability,
+                      }));
                       setFilterDrawerOpen(true);
                     }}
                     aria-label="Open Filters"
@@ -1040,43 +1774,224 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                 </div>
               </>
             ) : (
-              <div
-                style={{
-                  textAlign: 'center',
-                  padding: '80px 24px',
-                  backgroundColor: 'var(--bg-surface)',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid var(--border-light)',
-                  margin: '40px 0',
-                }}
-              >
-                <h3 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-serif)', marginBottom: '16px', color: 'var(--text-primary)' }}>
-                  NO RESULTS FOUND
-                </h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '32px', maxWidth: '440px', margin: '0 auto 28px auto' }}>
-                  We couldn&apos;t find anything matching your search and filter criteria. Try adjusting or clearing your filters.
-                </p>
-                <button
-                  onClick={resetFilters}
+              <div style={{ marginTop: '24px', marginBottom: '60px' }}>
+                {/* Empty State Luxury Card */}
+                <div
                   style={{
-                    display: 'inline-flex',
-                    padding: '12px 28px',
-                    backgroundColor: 'var(--text-primary)',
-                    color: 'var(--bg-primary)',
-                    borderRadius: 'var(--radius-pill)',
-                    fontSize: '0.82rem',
-                    fontWeight: 600,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    transition: 'opacity 200ms ease',
-                    border: 'none',
-                    cursor: 'pointer',
+                    textAlign: 'center',
+                    padding: '56px 24px',
+                    backgroundColor: 'var(--bg-surface)',
+                    borderRadius: '16px',
+                    border: '1px solid var(--border-light)',
+                    maxWidth: '820px',
+                    margin: '0 auto 64px auto',
+                    boxShadow: 'var(--shadow-editorial)',
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.85')}
-                  onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
                 >
-                  Clear All Filters
-                </button>
+                  {/* Luxury Search Compass Icon */}
+                  <div
+                    style={{
+                      width: '64px',
+                      height: '64px',
+                      borderRadius: '50%',
+                      backgroundColor: 'var(--surface-brand)',
+                      border: '1px solid var(--border-brand)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 20px auto',
+                      color: 'var(--brand-primary)',
+                    }}
+                  >
+                    <Search size={28} strokeWidth={1.75} />
+                  </div>
+
+                  <h3
+                    style={{
+                      fontSize: '1.5rem',
+                      fontFamily: 'var(--font-serif)',
+                      marginBottom: '12px',
+                      color: 'var(--text-primary)',
+                      letterSpacing: '0.02em',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    {query.trim()
+                      ? `No Results Found for "${query.trim()}"`
+                      : 'No Products Match Selected Filters'}
+                  </h3>
+
+                  <p
+                    style={{
+                      color: 'var(--text-muted)',
+                      fontSize: '0.95rem',
+                      lineHeight: 1.6,
+                      maxWidth: '520px',
+                      margin: '0 auto 28px auto',
+                    }}
+                  >
+                    {query.trim()
+                      ? `We couldn't find any atelier items matching your search term. Check your spelling, try broader keywords, or select one of our curated inquiries below.`
+                      : `No products match your current combination of filters. Try clearing or relaxing some of your criteria to view the collection.`}
+                  </p>
+
+                  {/* Curated Inquiries Suggestions within Empty State */}
+                  <div style={{ marginBottom: '32px' }}>
+                    <div
+                      style={{
+                        fontSize: '0.72rem',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em',
+                        color: 'var(--brand-primary)',
+                        fontWeight: 700,
+                        marginBottom: '12px',
+                      }}
+                    >
+                      Try searching for
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        maxWidth: '560px',
+                        margin: '0 auto',
+                      }}
+                    >
+                      {TRENDING_SEARCHES.map((item) => (
+                        <button
+                          key={item}
+                          type="button"
+                          onClick={() => applySearchQuery(item)}
+                          style={{
+                            padding: '6px 14px',
+                            borderRadius: 'var(--radius-pill)',
+                            border: '1px solid var(--border-color)',
+                            backgroundColor: 'var(--bg-primary)',
+                            color: 'var(--text-primary)',
+                            fontSize: '0.8rem',
+                            fontWeight: 500,
+                            cursor: 'pointer',
+                            transition: 'all 200ms ease',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = 'var(--brand-primary)';
+                            e.currentTarget.style.color = 'var(--brand-primary)';
+                            e.currentTarget.style.backgroundColor = 'var(--surface-brand)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = 'var(--border-color)';
+                            e.currentTarget.style.color = 'var(--text-primary)';
+                            e.currentTarget.style.backgroundColor = 'var(--bg-primary)';
+                          }}
+                        >
+                          {item}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Reset Actions */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                    {hasActiveFilters && (
+                      <button
+                        onClick={resetFilters}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '12px 24px',
+                          backgroundColor: 'var(--surface-brand)',
+                          color: 'var(--brand-primary)',
+                          border: '1px solid var(--border-brand)',
+                          borderRadius: 'var(--radius-pill)',
+                          fontSize: '0.82rem',
+                          fontWeight: 600,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.06em',
+                          cursor: 'pointer',
+                          transition: 'all 200ms ease',
+                        }}
+                      >
+                        <RotateCcw size={14} />
+                        Clear Applied Filters
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => {
+                        resetFilters();
+                        applySearchQuery('');
+                      }}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '12px 28px',
+                        backgroundColor: 'var(--text-primary)',
+                        color: 'var(--bg-primary)',
+                        borderRadius: 'var(--radius-pill)',
+                        fontSize: '0.82rem',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.06em',
+                        transition: 'opacity 200ms ease',
+                        border: 'none',
+                        cursor: 'pointer',
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
+                      onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+                    >
+                      Explore All Atelier Pieces
+                    </button>
+                  </div>
+                </div>
+
+                {/* Curated Atelier Highlights (Fallback Recommendations) */}
+                {curatedFallback.length > 0 && (
+                  <div style={{ marginTop: '48px' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                      <span
+                        style={{
+                          fontSize: '0.72rem',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.14em',
+                          color: 'var(--brand-primary)',
+                          fontWeight: 700,
+                          display: 'block',
+                          marginBottom: '8px',
+                        }}
+                      >
+                        You May Appreciate
+                      </span>
+                      <h4
+                        style={{
+                          fontSize: '1.4rem',
+                          fontFamily: 'var(--font-serif)',
+                          color: 'var(--text-primary)',
+                          letterSpacing: '0.02em',
+                          margin: 0,
+                        }}
+                      >
+                        Curated Atelier Highlights
+                      </h4>
+                    </div>
+
+                    <div
+                      className="product-grid max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]"
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                        gap: '32px',
+                      }}
+                    >
+                      {curatedFallback.map((prod) => (
+                        <ProductCard key={`fallback-${prod.id}`} product={prod} />
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -1101,21 +2016,59 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
         headerStyle={{ borderBottom: '1px solid var(--overlay-black-5)', padding: '24px 32px 16px' }}
         titleStyle={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', letterSpacing: '0.02em', color: 'var(--text-primary)' }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '16px 8px 120px' }}>
-          {/* Category Filter */}
-          <div>
-            <h4
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px 8px 120px' }}>
+          {/* Quick Expand / Collapse All Header */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '2px 6px 12px 6px',
+              borderBottom: '1px solid var(--overlay-black-5)',
+            }}
+          >
+            <span
               style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: '1.05rem',
-                letterSpacing: '0.06em',
-                marginBottom: '16px',
-                color: 'var(--text-primary)',
+                fontSize: '0.75rem',
                 textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                color: 'var(--text-muted)',
+                fontWeight: 500,
               }}
             >
-              Category
-            </h4>
+              Filter Sections
+            </span>
+            <button
+              type="button"
+              onClick={toggleAllSections}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontSize: '0.74rem',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                color: 'var(--text-primary)',
+                cursor: 'pointer',
+                opacity: 0.75,
+                padding: '2px 6px',
+                borderRadius: '4px',
+                transition: 'opacity 0.2s ease',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.75')}
+            >
+              {allSectionsOpen ? 'Collapse All' : 'Expand All'}
+            </button>
+          </div>
+
+          {/* Category Filter Dropdown */}
+          <FilterDropdownSection
+            title="Category"
+            isOpen={openSections.category}
+            onToggle={() => toggleFilterSection('category')}
+            badge={stagedCategory !== 'all' ? (categories.find((c) => c.slug === stagedCategory)?.name || stagedCategory) : null}
+          >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <label
                 style={{
@@ -1244,22 +2197,15 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                 );
               })}
             </div>
-          </div>
+          </FilterDropdownSection>
 
-          {/* Collection Filter */}
-          <div>
-            <h4
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: '1.05rem',
-                letterSpacing: '0.06em',
-                marginBottom: '16px',
-                color: 'var(--text-primary)',
-                textTransform: 'uppercase',
-              }}
-            >
-              Collection
-            </h4>
+          {/* Collection Filter Dropdown */}
+          <FilterDropdownSection
+            title="Collection"
+            isOpen={openSections.collection}
+            onToggle={() => toggleFilterSection('collection')}
+            badge={stagedCollection !== 'all' ? (COLLECTIONS.find((c) => c.id === stagedCollection)?.label || stagedCollection) : null}
+          >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <label
                 style={{
@@ -1388,23 +2334,16 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                 );
               })}
             </div>
-          </div>
+          </FilterDropdownSection>
 
-          {/* Sizes */}
+          {/* Size Filter Dropdown */}
           {availableSizes.length > 0 && (
-            <div>
-              <h4
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontSize: '1rem',
-                  letterSpacing: '0.06em',
-                  marginBottom: '16px',
-                  color: 'var(--text-primary)',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Size
-              </h4>
+            <FilterDropdownSection
+              title="Size"
+              isOpen={openSections.size}
+              onToggle={() => toggleFilterSection('size')}
+              badge={stagedSizes.length > 0 ? `${stagedSizes.length} selected` : null}
+            >
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {availableSizes.map((s) => {
                   const isSelected = stagedSizes.includes(s);
@@ -1438,23 +2377,16 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                   );
                 })}
               </div>
-            </div>
+            </FilterDropdownSection>
           )}
 
-          {/* Colors */}
-          <div>
-            <h4
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: '1rem',
-                letterSpacing: '0.06em',
-                marginBottom: '16px',
-                color: 'var(--text-primary)',
-                textTransform: 'uppercase',
-              }}
-            >
-              Color
-            </h4>
+          {/* Color Filter Dropdown */}
+          <FilterDropdownSection
+            title="Color"
+            isOpen={openSections.color}
+            onToggle={() => toggleFilterSection('color')}
+            badge={stagedColors.length > 0 ? `${stagedColors.length} selected` : null}
+          >
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               {COLOR_GROUPS.map((g) => {
                 const isSelected = stagedColors.includes(g.name);
@@ -1517,22 +2449,20 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                 );
               })}
             </div>
-          </div>
+          </FilterDropdownSection>
 
-          {/* Price Tier */}
-          <div>
-            <h4
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: '1rem',
-                letterSpacing: '0.06em',
-                marginBottom: '16px',
-                color: 'var(--text-primary)',
-                textTransform: 'uppercase',
-              }}
-            >
-              Price Tier
-            </h4>
+          {/* Price Tier Dropdown */}
+          <FilterDropdownSection
+            title="Price Tier"
+            isOpen={openSections.price}
+            onToggle={() => toggleFilterSection('price')}
+            badge={
+              stagedPriceRange[0] > 0 || stagedPriceRange[1] < 100000
+                ? (PRICE_PRESETS.find((p) => p.range[0] === stagedPriceRange[0] && p.range[1] === stagedPriceRange[1])?.label ||
+                   `₹${(stagedPriceRange[0] / 1000).toFixed(0)}k - ₹${(stagedPriceRange[1] / 1000).toFixed(0)}k`)
+                : null
+            }
+          >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', minWidth: 0 }}>
                 {PRICE_PRESETS.map((p) => {
@@ -1602,22 +2532,15 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                 />
               </div>
             </div>
-          </div>
+          </FilterDropdownSection>
 
-          {/* Availability */}
-          <div>
-            <h4
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: '1rem',
-                letterSpacing: '0.06em',
-                marginBottom: '16px',
-                color: 'var(--text-primary)',
-                textTransform: 'uppercase',
-              }}
-            >
-              Availability
-            </h4>
+          {/* Availability Dropdown */}
+          <FilterDropdownSection
+            title="Availability"
+            isOpen={openSections.availability}
+            onToggle={() => toggleFilterSection('availability')}
+            badge={stagedAvailability === 'in_stock' ? 'In Stock' : null}
+          >
             <label
               style={{
                 display: 'flex',
@@ -1662,7 +2585,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                 In Stock Pieces Only
               </span>
             </label>
-          </div>
+          </FilterDropdownSection>
         </div>
 
         {/* Sticky Footer */}

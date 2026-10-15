@@ -7,12 +7,12 @@ This document tracks the feature status, completed deliverables, and remaining a
 ## 1. Feature Checklist & Audit Status
 
 ### A. Homepage
-- [ ] Announcement bar / promotional message *(Missing: top-level marquee/promo bar above Navbar)*
+- [x] Announcement bar / promotional message *(Implemented: top-level luxury continuous marquee bar above Navbar with interactive promo code copy, pause/play accessibility controls, and smooth dismissal)*
 - [x] Header with logo, navigation, search, account and cart
 - [x] Hero banner with campaign imagery and CTA
 - [x] Featured collections / categories
 - [x] New arrivals and bestsellers
-- [ ] Editorial / brand story section *(Partially present in EditorialCampaign, but brand_intro and brand_story are stubbed as null in HomeView)*
+- [x] Editorial / brand story section *(Implemented: bespoke asymmetric magazine-layout BrandStory section with manifesto headline, narrative columns, "Read more" link to /about, and contact-sheet lookbook indicators)*
 - [x] Featured products carousel or grid
 - [x] Promotional or seasonal campaign sections
 - [x] Newsletter subscription *(Implemented in Footer with private ledger validation)*
@@ -22,7 +22,7 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] Category and collection listing pages
 - [x] Product cards with images, name and price
 - [x] Hover image / alternate product image
-- [ ] Search with suggestions and empty results *(SearchOverlay with rotating suggestions exists but is unmounted)*
+- [x] Search with suggestions and empty results *(Implemented on /search page with rotating placeholders, trending chips, live autocomplete popover with product previews, and luxury empty state with curated suggestions and fallback product grid; unmounted SearchOverlay removed)*
 - [ ] Filters: size, colour, price, category and availability *(Price, Category & Availability present; Size & Colour filters missing from /shop)*
 - [x] Sorting: featured, newest, price
 - [x] Active filter chips and clear-all action
@@ -158,9 +158,9 @@ This document tracks the feature status, completed deliverables, and remaining a
   - **Files**: `frontend/src/components/product/ReviewForm.tsx`, `frontend/src/components/views/ProductDetailView.tsx`, `frontend/src/components/views/OrderDetailView.tsx`
   - **Goal**: Mount the review form on verified purchased orders or in an expandable modal on the PDP.
 
-- [ ] **Task 11: Mount Live Search Overlay on Header Trigger**
-  - **Files**: `frontend/src/components/navigation/Navbar.tsx`, `frontend/src/components/search/SearchOverlay.tsx`
-  - **Goal**: Allow clicking the search icon to open the interactive `SearchOverlay` with rotating suggestions and live query previews.
+- [x] **Task 11: Search with Suggestions & Empty Results on Search Page**
+  - **Files**: `frontend/src/components/views/SearchView.tsx`, `frontend/src/app/(storefront)/search/page.tsx`
+  - **Goal**: Integrated dynamic rotating placeholders, trending inquiry chips, keyboard-navigable autocomplete popover with live previews, and luxury empty state with recommendations directly on the dedicated search page. Deleted deprecated unmounted `SearchOverlay.tsx`.
 
 - [ ] **Task 12: Help Centre & FAQs Page**
   - **Files**: `frontend/src/components/views/SupportView.tsx`, `frontend/src/app/(storefront)/faq/page.tsx`

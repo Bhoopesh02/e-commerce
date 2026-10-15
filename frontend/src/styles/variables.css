@@ -122,6 +122,7 @@
   --bg-secondary: var(--bg-muted);
   --bg-surface-elevated: var(--bg-surface);
   --nav-backdrop: var(--overlay-white-85);
+  --announcement-bar-height: 36px;
   --navbar-height: 76px;
 
   /* ===== Typography ===== */
@@ -177,6 +178,7 @@
 
 @media (max-width: 767px) {
   :root {
+    --announcement-bar-height: 32px;
     --navbar-height: 64px;
   }
 }

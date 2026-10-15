@@ -1,0 +1,435 @@
+/* Luxury Editorial About Us Page - Maison Aurelia Haute Couture & Ready-to-Wear */
+
+.pageRoot {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f7f4ee;
+  color: #171513;
+  padding-top: 110px;
+  padding-bottom: 96px;
+  overflow-x: clip;
+}
+
+.container {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4.5vw, 64px);
+}
+
+/* =========================================================================
+   SECTION 1: THE HOUSE OF AURELIA / HERITAGE & PHILOSOPHY
+   ========================================================================= */
+
+.heroHeader {
+  text-align: center;
+  padding: clamp(32px, 5vw, 64px) 0 clamp(40px, 6vw, 72px);
+}
+
+.mainTitle {
+  font-size: clamp(2.4rem, 6vw, 6.2rem);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: #171513;
+  text-transform: uppercase;
+  margin: 0;
+  font-family: var(--font-display, var(--font-serif, sans-serif));
+}
+
+/* Two-column Asymmetric Heritage Grid */
+.heritageGrid {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(360px, 1.3fr);
+  column-gap: clamp(36px, 6vw, 84px);
+  row-gap: 48px;
+  align-items: start;
+  margin-bottom: clamp(64px, 10vw, 130px);
+}
+
+.heritageLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.portraitWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-color: #eae5dc;
+  box-shadow: 0 16px 36px -12px rgba(23, 21, 19, 0.08);
+}
+
+.portraitImage {
+  object-fit: cover;
+  transition: transform 1200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.portraitWrapper:hover .portraitImage {
+  transform: scale(1.025);
+}
+
+.leftCaption {
+  font-size: clamp(0.74rem, 0.7rem + 0.12vw, 0.82rem);
+  line-height: 1.6;
+  color: #55504a;
+  max-width: 380px;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.heritageRight {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 4vw, 48px);
+}
+
+.heritageRightTop {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 540px;
+}
+
+.philosophyStory {
+  font-size: clamp(0.82rem, 0.78rem + 0.14vw, 0.94rem);
+  line-height: 1.65;
+  color: #55504a;
+  margin: 0;
+}
+
+.subHeadline {
+  font-size: clamp(1.6rem, 2.5vw, 2.8rem);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  text-transform: uppercase;
+  color: #171513;
+  margin: 0;
+}
+
+.atelierBadge {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #888177;
+  font-family: var(--font-mono, monospace);
+  margin-bottom: -16px;
+}
+
+.runwayWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background-color: #eae5dc;
+  box-shadow: 0 16px 40px -12px rgba(23, 21, 19, 0.1);
+}
+
+.runwayImage {
+  object-fit: cover;
+  transition: transform 1200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.runwayWrapper:hover .runwayImage {
+  transform: scale(1.025);
+}
+
+/* =========================================================================
+   SECTION 2: CRAFTSMANSHIP DISCIPLINES & THE DRESSING RITUAL
+   ========================================================================= */
+
+.craftsmanshipSection {
+  position: relative;
+  width: 100%;
+  padding: clamp(48px, 8vw, 100px) 0;
+  border-top: 1px solid rgba(23, 21, 19, 0.08);
+}
+
+.craftsmanshipNavRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #55504a;
+  font-family: var(--font-mono, monospace);
+}
+
+/* Monumental Typography Canvas with Floating Tailored Silhouette */
+.craftsmanshipCanvas {
+  position: relative;
+  width: 100%;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: clamp(24px, 4vw, 56px) 0;
+}
+
+/* The 3-Item Discipline Triptych (Top Left of Big Text) */
+.triptychRow {
+  display: inline-flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  z-index: 2;
+}
+
+.triptychItem {
+  position: relative;
+  width: clamp(72px, 8vw, 104px);
+  height: clamp(72px, 8vw, 104px);
+  overflow: hidden;
+  background-color: #eae5dc;
+  box-shadow: 0 6px 16px -4px rgba(23, 21, 19, 0.12);
+}
+
+.triptychImg {
+  object-fit: cover;
+  transition: transform 800ms ease;
+}
+
+.triptychItem:hover .triptychImg {
+  transform: scale(1.06);
+}
+
+/* Monumental Big Text: "THE DRESSING RITUAL" */
+.monumentalHeadline {
+  font-size: clamp(2.8rem, 7.8vw, 8.6rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: #171513;
+  margin: 0;
+  white-space: nowrap;
+  user-select: none;
+  font-family: var(--font-display, var(--font-serif, sans-serif));
+  z-index: 1;
+}
+
+/* Floating Tailored Coat Silhouette Protruding Over Monumental Text */
+.silhouetteWrapper {
+  position: absolute;
+  top: 50%;
+  left: 56%;
+  transform: translate(-50%, -50%);
+  width: clamp(240px, 32vw, 440px);
+  aspect-ratio: 3 / 4;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.silhouetteImg {
+  object-fit: contain;
+  filter: drop-shadow(0 28px 48px rgba(23, 21, 19, 0.28));
+  transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.silhouetteWrapper:hover .silhouetteImg {
+  transform: translateY(-8px) scale(1.02);
+}
+
+/* Bottom Copy & Action on the Right */
+.craftsmanshipFooter {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 32px;
+  align-items: flex-end;
+  margin-top: 24px;
+}
+
+.craftsmanshipNarrative {
+  max-width: 440px;
+  margin-left: auto;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+  z-index: 4;
+}
+
+.missionCopy {
+  font-size: clamp(0.82rem, 0.78rem + 0.12vw, 0.92rem);
+  line-height: 1.6;
+  color: #55504a;
+  margin: 0;
+}
+
+.exploreButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border: 1px solid rgba(23, 21, 19, 0.3);
+  background-color: transparent;
+  color: #171513;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 250ms ease;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.exploreButton:hover,
+.exploreButton:focus-visible {
+  background-color: #171513;
+  color: #f7f4ee;
+  border-color: #171513;
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* =========================================================================
+   SECTION 3: MONUMENTAL ATELIER DOSSIER & BOTTOM SIGNATURE
+   ========================================================================= */
+
+.atelierDossierSection {
+  margin-top: clamp(64px, 9vw, 120px);
+  padding-top: clamp(48px, 6vw, 72px);
+  border-top: 1px solid rgba(23, 21, 19, 0.12);
+}
+
+.dossierMetaGrid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: baseline;
+  gap: 24px;
+  font-size: clamp(0.75rem, 0.7rem + 0.12vw, 0.85rem);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #171513;
+  margin-bottom: clamp(32px, 5vw, 64px);
+}
+
+.dossierMetaMiddle {
+  text-align: center;
+  color: #55504a;
+  letter-spacing: 0.14em;
+}
+
+.dossierMetaRight {
+  text-align: right;
+  letter-spacing: 0.16em;
+}
+
+/* Massive Edge-to-Edge Brand Signature: "AURELIA" */
+.monumentalSignatureWrapper {
+  width: 100%;
+  overflow: hidden;
+  line-height: 0.82;
+  text-align: center;
+}
+
+.monumentalSignature {
+  display: block;
+  font-size: clamp(5rem, 17.5vw, 20rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #171513;
+  text-transform: uppercase;
+  line-height: 0.82;
+  margin: 0;
+  font-family: var(--font-display, var(--font-serif, sans-serif));
+  user-select: none;
+}
+
+/* =========================================================================
+   RESPONSIVE DESIGN BREAKPOINTS
+   ========================================================================= */
+
+@media (max-width: 1024px) {
+  .heritageGrid {
+    grid-template-columns: 1fr;
+    row-gap: 40px;
+  }
+
+  .portraitWrapper {
+    max-height: 520px;
+  }
+
+  .runwayWrapper {
+    max-height: 480px;
+  }
+
+  .silhouetteWrapper {
+    left: 60%;
+    width: 320px;
+  }
+}
+
+@media (max-width: 767px) {
+  .pageRoot {
+    padding-top: 90px;
+  }
+
+  .monumentalHeadline {
+    white-space: normal;
+    font-size: clamp(2.4rem, 11vw, 3.8rem);
+    line-height: 1.05;
+  }
+
+  .craftsmanshipCanvas {
+    min-height: 380px;
+  }
+
+  .silhouetteWrapper {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: 220px;
+    margin: 24px auto;
+  }
+
+  .triptychRow {
+    gap: 8px;
+  }
+
+  .triptychItem {
+    width: 68px;
+    height: 68px;
+  }
+
+  .craftsmanshipFooter {
+    grid-template-columns: 1fr;
+  }
+
+  .craftsmanshipNarrative {
+    text-align: left;
+    align-items: flex-start;
+    margin-left: 0;
+  }
+
+  .dossierMetaGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    text-align: left;
+  }
+
+  .dossierMetaMiddle,
+  .dossierMetaRight {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portraitImage,
+  .runwayImage,
+  .triptychImg,
+  .silhouetteImg,
+  .exploreButton {
+    transition: none !important;
+    transform: none !important;
+  }
+}

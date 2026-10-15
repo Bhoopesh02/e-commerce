@@ -417,14 +417,26 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
                   </span>
                 </div>
 
-                {/* Active Panel: Centered Title & Subtitle */}
+                {/* Active Panel: Centered Title & Subtitle with Stagger Reveal */}
                 <div className="cinematic-center-content">
                   <span className="cinematic-eyebrow">
                     {product.subtitle || 'ATELIER SIGNATURE ARCHITECTURE'}
                   </span>
 
                   <h3 className="cinematic-title">
-                    {product.name}
+                    {(product.name || '').trim().split(/\s+/).map((word, wordIdx, arr) => (
+                      <React.Fragment key={`${product.id}-w-${wordIdx}`}>
+                        <span className="cinematic-word-mask">
+                          <span
+                            className="cinematic-word"
+                            style={{ '--word-idx': wordIdx } as React.CSSProperties}
+                          >
+                            {word}
+                          </span>
+                        </span>
+                        {wordIdx < arr.length - 1 ? ' ' : null}
+                      </React.Fragment>
+                    ))}
                   </h3>
                 </div>
 
@@ -663,7 +675,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
         }
 
         /* =========================================================
-           ACTIVE CENTERED CONTENT: Eyebrow + Large Title + Button
+           ACTIVE CENTERED CONTENT: Eyebrow + Large Title Stagger Reveal
            ========================================================= */
         .cinematic-center-content {
           position: absolute;
@@ -678,19 +690,18 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           box-sizing: border-box;
           opacity: 0;
           pointer-events: none;
-          transform: translateY(16px);
-          transition: opacity 0.25s ease 0s, transform 0.25s ease 0s;
+          transition: opacity 0.25s ease 0s;
         }
 
         .panel-active .cinematic-center-content {
           opacity: 1;
           pointer-events: auto;
-          transform: translateY(0);
-          transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.32s,
-                      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.32s;
+          transition: opacity 0.4s ease 0.2s;
         }
 
+        /* Stagger Item 1: Eyebrow */
         .cinematic-eyebrow {
+          display: inline-block;
           font-size: 0.75rem;
           font-weight: 600;
           letter-spacing: 0.22em;
@@ -698,17 +709,54 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           color: var(--brand-accent, #c9a96e);
           margin-bottom: 14px;
           text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+          opacity: 0;
+          transform: translateY(20px);
+          will-change: transform, opacity;
+          transition: opacity 0.2s ease 0s, transform 0.2s ease 0s;
         }
 
+        .panel-active .cinematic-eyebrow {
+          opacity: 1;
+          transform: translateY(0);
+          transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.32s,
+                      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.32s;
+        }
+
+        /* Stagger Item 2: Masked Words of the Headline */
         .cinematic-title {
           font-family: var(--font-display, 'Playfair Display', serif);
           font-size: clamp(2.2rem, 4.2vw, 4.2rem);
           font-weight: 400;
           color: #ffffff;
-          line-height: 1.12;
+          line-height: 1.14;
           margin: 0;
           text-shadow: 0 4px 30px rgba(0, 0, 0, 0.85);
           max-width: 820px;
+        }
+
+        .cinematic-word-mask {
+          display: inline-block;
+          overflow: hidden;
+          vertical-align: bottom;
+          padding-bottom: 0.12em;
+          margin-bottom: -0.12em;
+          line-height: inherit;
+        }
+
+        .cinematic-word {
+          display: inline-block;
+          transform: translateY(115%);
+          opacity: 0;
+          will-change: transform, opacity;
+          transition: transform 0.2s ease 0s, opacity 0.2s ease 0s;
+        }
+
+        .panel-active .cinematic-word {
+          transform: translateY(0%);
+          opacity: 1;
+          transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+          transition-delay: calc(0.42s + var(--word-idx, 0) * 0.075s);
         }
 
         /* =========================================================
@@ -736,8 +784,8 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
         .panel-active .cinematic-bottom-credits {
           opacity: 1;
           transform: translateY(0);
-          transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.45s,
-                      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.45s;
+          transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.76s,
+                      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.76s;
         }
 
         .credit-line-primary {
@@ -775,6 +823,9 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           :global(.carousel-panel-img),
           .carousel-progress-line,
           .cinematic-center-content,
+          .cinematic-eyebrow,
+          .cinematic-word-mask,
+          .cinematic-word,
           .cinematic-bottom-credits,
           .carousel-collapsed-strip {
             transition-duration: 0.2s !important;

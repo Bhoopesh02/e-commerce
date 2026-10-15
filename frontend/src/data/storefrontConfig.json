@@ -57,9 +57,9 @@
       {
         "id": "sec_story",
         "type": "brand_story",
-        "title": "Craftsmanship Without Compromise",
-        "subtitle": "100% Traceable European Materials",
-        "visible": false
+        "title": "The Dressing Ritual",
+        "subtitle": "Craftsmanship Without Compromise",
+        "visible": true
       },
       {
         "id": "sec_newsletter",
@@ -114,9 +114,9 @@
       {
         "id": "sec_story",
         "type": "brand_story",
-        "title": "Artisanal Integrity",
-        "subtitle": "Every garment tailored with longevity in mind.",
-        "visible": false
+        "title": "The Dressing Ritual",
+        "subtitle": "Artisanal Integrity",
+        "visible": true
       },
       {
         "id": "sec_newsletter",

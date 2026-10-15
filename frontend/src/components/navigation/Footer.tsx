@@ -208,6 +208,11 @@ export const Footer: React.FC = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/about" className="footer-link">
+                    About Us
+                  </Link>
+                </li>
+                <li>
                   <Link href="/#house-philosophy" className="footer-link">
                     House Philosophy
                   </Link>
@@ -435,6 +440,11 @@ export const Footer: React.FC = () => {
             <h3 className="footer-column-heading">The House</h3>
             <div className="footer-links-list">
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <li>
+                  <Link href="/about" className="footer-link">
+                    About Us & Journey
+                  </Link>
+                </li>
                 <li>
                   <Link href="/#house-philosophy" className="footer-link">
                     The House Philosophy

@@ -18,7 +18,7 @@ import { smoothScrollService } from '@/services/smooth-scroll';
 
 export const ShopViewSkeleton: React.FC = () => {
   return (
-    <div style={{ minHeight: '100vh', paddingBottom: '96px', paddingTop: '76px' }} aria-busy="true">
+    <div style={{ minHeight: '100vh', paddingBottom: '96px', paddingTop: '110px' }} aria-busy="true">
       {/* Banner Skeleton */}
       <div
         style={{
@@ -414,7 +414,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const bannerKey = gender ? `${gender}-${activeCategory}` : (currentCategory?.id ?? 'none');
 
   return (
-    <div style={{ paddingTop: '76px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+    <div style={{ paddingTop: '110px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       {/* Category Hero Banner */}
       <AnimatePresence mode="wait">
         {(gender || currentCategory) && (

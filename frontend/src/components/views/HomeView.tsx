@@ -6,6 +6,7 @@ import { HeroSection } from '@/components/sections/HeroSection';
 import { ExpandingCarousel } from '@/components/sections/ExpandingCarousel';
 import { CategoryShowcase } from '@/components/sections/CategoryShowcase';
 import { EditorialCampaign } from '@/components/sections/EditorialCampaign';
+import { BrandStory } from '@/components/sections/BrandStory';
 import { MostCovetedSilhouettes } from '@/components/sections/MostCovetedSilhouettes';
 import { NewArrivalsCarousel } from '@/components/sections/NewArrivalsCarousel';
 import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCard';
@@ -284,7 +285,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         return <HeroSection key={id} />;
 
       case 'brand_intro':
-        return null;
+        return <BrandStory key={id} />;
 
       case 'category_showcase':
         return (
@@ -387,7 +388,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         );
 
       case 'brand_story':
-        return null;
+        return <BrandStory key={id} />;
 
 
       default:

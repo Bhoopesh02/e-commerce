@@ -1,0 +1,160 @@
+/* Luxury Announcement & Promotional Marquee Bar */
+
+.announcementBar {
+  position: relative;
+  width: 100%;
+  background: #101418;
+  color: #f4f7f8;
+  border-bottom: 1px solid rgba(194, 155, 76, 0.22);
+  overflow: hidden;
+  z-index: 101;
+  transition: max-height 350ms cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 280ms ease,
+              border-color 280ms ease;
+  will-change: max-height, opacity;
+}
+
+.announcementBar.open {
+  max-height: 38px;
+  opacity: 1;
+}
+
+.announcementBar.collapsed {
+  max-height: 0px;
+  opacity: 0;
+  border-bottom-color: transparent;
+  pointer-events: none;
+}
+
+.marqueeContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  width: 100%;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Gradient edge fades for luxury atmosphere */
+.marqueeContainer::before,
+.marqueeContainer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.marqueeContainer::before {
+  left: 0;
+  background: linear-gradient(90deg, #101418 0%, rgba(16, 20, 24, 0) 100%);
+}
+
+.marqueeContainer::after {
+  right: 0;
+  background: linear-gradient(270deg, #101418 0%, rgba(16, 20, 24, 0) 100%);
+}
+
+.marqueeTrack {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  animation: marqueeContinuous 42s linear infinite;
+  will-change: transform;
+}
+
+.marqueeContainer:hover .marqueeTrack,
+.marqueeContainer:focus-within .marqueeTrack,
+.marqueeTrack.paused {
+  animation-play-state: paused;
+}
+
+.marqueeGroup {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.marqueeItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+  font-size: clamp(0.68rem, 0.62rem + 0.14vw, 0.74rem);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f1f4f6;
+  line-height: 1;
+}
+
+.starSeparator {
+  color: #c29b4c;
+  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 4px rgba(194, 155, 76, 0.4));
+  transform: translateY(-0.5px);
+}
+
+.promoLink {
+  color: #f1f4f6;
+  text-decoration: none;
+  transition: color 200ms ease, opacity 200ms ease;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.promoLink:hover,
+.promoLink:focus-visible {
+  color: #eed7a1;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  outline: none;
+}
+
+@keyframes marqueeContinuous {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (max-width: 767px) {
+  .announcementBar.open {
+    max-height: 32px;
+  }
+
+  .marqueeContainer {
+    height: 32px;
+  }
+
+  .marqueeItem {
+    gap: 8px;
+    padding: 0 16px;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marqueeTrack {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .marqueeContainer {
+    justify-content: center;
+  }
+}
+
