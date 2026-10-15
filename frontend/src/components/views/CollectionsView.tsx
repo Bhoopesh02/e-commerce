@@ -74,6 +74,10 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
     },
   ];
 
+  // Primary 2 departments (Men & Women)
+  const primaryDepartments = departmentCollections.filter((d) => d.id !== 'runway');
+  const runwayDepartment = departmentCollections.find((d) => d.id === 'runway');
+
   return (
     <div style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', minHeight: '100vh', paddingBottom: '96px' }}>
       {/* Top Banner: Curated Edits Editorial Campaign Banner */}
@@ -95,8 +99,9 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
             </span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '36px' }}>
-            {departmentCollections.map((dept) => (
+          {/* Row 1: Men's & Women's Collections in a 2-Column Row */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '36px' }}>
+            {primaryDepartments.map((dept) => (
               <Link
                 key={dept.id}
                 href={dept.href}
@@ -122,7 +127,7 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
                     src={dept.image}
                     alt={dept.title}
                     fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     style={{
                       objectFit: 'cover',
                       objectPosition: dept.objectPosition || 'center',
@@ -158,25 +163,101 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
                   </p>
                   <div>
                     <span
+                      className="extending-underline-link"
                       style={{
                         fontSize: '0.85rem',
                         fontWeight: 500,
                         letterSpacing: '0.02em',
-                        textDecoration: 'underline',
-                        textUnderlineOffset: '5px',
                         color: 'var(--text-primary)',
-                        display: 'inline-block',
-                        transition: 'opacity 0.2s ease',
                       }}
-                      className="group-hover:opacity-70"
                     >
-                      {dept.cta}
+                      <span>{dept.cta}</span>
                     </span>
                   </div>
                 </div>
               </Link>
             ))}
           </div>
+
+          {/* Row 2: The New-Season Drop / Runway below them in 16:9 ratio */}
+          {runwayDepartment && (
+            <div style={{ marginTop: '56px' }}>
+              <Link
+                href={runwayDepartment.href}
+                className="group"
+                style={{
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  textDecoration: 'none',
+                  backgroundColor: 'transparent',
+                }}
+              >
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '100%',
+                    aspectRatio: '16 / 9',
+                    overflow: 'hidden',
+                    backgroundColor: 'var(--bg-subtle)',
+                  }}
+                >
+                  <Image
+                    src={runwayDepartment.image}
+                    alt={runwayDepartment.title}
+                    fill
+                    sizes="(max-width: 1200px) 100vw, 1440px"
+                    style={{
+                      objectFit: 'cover',
+                      objectPosition: 'center',
+                      transition: 'transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
+                    }}
+                    className="group-hover:scale-105"
+                  />
+                </div>
+
+                <div style={{ paddingTop: '20px', display: 'flex', flexDirection: 'column' }}>
+                  <h3
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '1.5rem',
+                      fontWeight: 400,
+                      color: 'var(--text-primary)',
+                      margin: '0 0 8px 0',
+                      lineHeight: 1.25,
+                      letterSpacing: '-0.01em',
+                    }}
+                  >
+                    {runwayDepartment.title}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: '0.94rem',
+                      color: 'var(--text-secondary)',
+                      lineHeight: 1.55,
+                      margin: '0 0 16px 0',
+                      maxWidth: '720px',
+                    }}
+                  >
+                    {runwayDepartment.subtitle}
+                  </p>
+                  <div>
+                    <span
+                      className="extending-underline-link"
+                      style={{
+                        fontSize: '0.85rem',
+                        fontWeight: 500,
+                        letterSpacing: '0.02em',
+                        color: 'var(--text-primary)',
+                      }}
+                    >
+                      <span>{runwayDepartment.cta}</span>
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          )}
         </section>
 
         {/* Section 2: Wardrobe Disciplines (The 8 Categories) */}

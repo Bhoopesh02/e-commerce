@@ -2645,28 +2645,29 @@
   },
   {
     "id": "prod_frag_1",
-    "slug": "italian-leather-jacket",
+    "slug": "oud-noir-extrait-de-parfum",
     "name": "Oud Noir Extrait de Parfum",
-    "subtitle": "Milanese Full-Grain Nappa",
-    "description": "Artisanal distilled scent with rare botanical extracts.",
+    "subtitle": "Smoky Agarwood, Dark Amber & Incense",
+    "description": "An enigmatic and commanding composition centered around rare wild agarwood. Smoked birch, charred amber resin, and Moroccan saffron yield a deep, opulent olfactory journey.",
     "details": [
-      "100% full-grain calfskin leather",
-      "Hand-burnished edges and bespoke palladium zips",
-      "Internal chest welt pocket and tailored cuff gussets",
-      "Made in Italy by master leather artisans"
+      "32% Extrait de Parfum high oil concentration",
+      "Naturally sourced wild Assam agarwood extract",
+      "Top: Cardamom, Pink Pepper, Moroccan Saffron",
+      "Heart: Smoked Birch, Incense Smoke, Damask Rose",
+      "Base: Wild Assam Oud, Dark Amber, Patchouli Heart"
     ],
     "materials": [
-      "Full-grain Italian calfskin",
-      "100% Japanese Bemberg cupro lining"
+      "Rare Botanical Resins & Distillates",
+      "50ml / 1.7 fl.oz Heavy Jet-Black Flacon"
     ],
     "careGuide": [
-      "Specialist leather clean only",
-      "Store on wide wooden hanger away from direct sunlight"
+      "Protect from heat and direct sunlight to preserve aromatic oils",
+      "Store upright in original presentation box"
     ],
     "categoryId": "cat_fragrances",
     "price": 24500,
     "images": [
-      "/images/products/fragrances/prod-fragrance-1.webp"
+      "/images/products/fragrances/oud-noir-extrait-de-parfum.webp"
     ],
     "variants": [
       {
@@ -2676,7 +2677,7 @@
         },
         "price": 24500,
         "stock": 10,
-        "image": "/images/products/fragrances/prod-fragrance-1.webp"
+        "image": "/images/products/fragrances/oud-noir-extrait-de-parfum.webp"
       },
       {
         "sku": "prod_frag_1-100ml",
@@ -2685,7 +2686,7 @@
         },
         "price": 36750,
         "stock": 5,
-        "image": "/images/products/fragrances/prod-fragrance-1.webp"
+        "image": "/images/products/fragrances/oud-noir-extrait-de-parfum.webp"
       }
     ],
     "availability": "low_stock",
@@ -2697,37 +2698,41 @@
     "isNewArrival": true,
     "isTrending": true,
     "tags": [
-      "new-arrival",
-      "outerwear",
-      "iconic"
+      "fragrances",
+      "oud",
+      "woody",
+      "oriental",
+      "luxury"
     ],
     "storefronts": [
       "a",
       "b"
     ],
     "genders": [
-      "men"
+      "men",
+      "women"
     ]
   },
   {
     "id": "prod_frag_2",
-    "slug": "italian-leather-jacket",
+    "slug": "bergamot-blanc-eau-de-parfum",
     "name": "Bergamot Blanc Eau de Parfum",
-    "subtitle": "Milanese Full-Grain Nappa",
-    "description": "Artisanal distilled scent with rare botanical extracts.",
+    "subtitle": "Calabrian Citrus, White Tea & Dewy Neroli",
+    "description": "A luminous, refreshing opening of sun-drenched Calabrian bergamot infused with tender white tea leaves, sparkling petitgrain, and a crisp clean amber dry-down.",
     "details": [
-      "100% full-grain calfskin leather",
-      "Hand-burnished edges and bespoke palladium zips",
-      "Internal chest welt pocket and tailored cuff gussets",
-      "Made in Italy by master leather artisans"
+      "24% Eau de Parfum concentration",
+      "Cold-pressed organic Calabrian bergamot essence",
+      "Top: Italian Bergamot, Lemon Zest, Petitgrain",
+      "Heart: White Tea Buds, Orange Blossom, Jasmine",
+      "Base: White Amber, Clean Musk, Blonde Woods"
     ],
     "materials": [
-      "Full-grain Italian calfskin",
-      "100% Japanese Bemberg cupro lining"
+      "Natural Citrus Extractions & Plant Distillates",
+      "50ml / 1.7 fl.oz Frosted Crystal Flacon"
     ],
     "careGuide": [
-      "Specialist leather clean only",
-      "Store on wide wooden hanger away from direct sunlight"
+      "Store in a cool, dry place away from direct sunlight",
+      "Avoid high humidity environments"
     ],
     "categoryId": "cat_fragrances",
     "price": 16000,
@@ -2742,7 +2747,7 @@
         },
         "price": 16000,
         "stock": 10,
-        "image": "/images/products/fragrances/prod-fragrance-2.webp"
+        "image": "/images/products/fragrances/bergamot-blanc-eau-de-parfum.webp"
       },
       {
         "sku": "prod_frag_2-100ml",
@@ -2751,7 +2756,7 @@
         },
         "price": 24000,
         "stock": 5,
-        "image": "/images/products/fragrances/prod-fragrance-2.webp"
+        "image": "/images/products/fragrances/bergamot-blanc-eau-de-parfum.webp"
       }
     ],
     "availability": "low_stock",
@@ -2763,9 +2768,11 @@
     "isNewArrival": true,
     "isTrending": true,
     "tags": [
-      "new-arrival",
-      "outerwear",
-      "iconic"
+      "fragrances",
+      "citrus",
+      "fresh",
+      "clean",
+      "luxury"
     ],
     "storefronts": [
       "a",
@@ -2778,23 +2785,24 @@
   },
   {
     "id": "prod_frag_3",
-    "slug": "italian-leather-jacket",
+    "slug": "santal-vanille-parfum",
     "name": "Santal Vanille Parfum",
-    "subtitle": "Milanese Full-Grain Nappa",
-    "description": "Artisanal distilled scent with rare botanical extracts.",
+    "subtitle": "Mysore Sandalwood, Bourbon Vanilla & Spiced Cardamom",
+    "description": "A creamy, sophisticated marriage of sustainably harvested Mysore sandalwood and smoky bourbon vanilla bean. Accented with warm spiced cardamom and powdery iris.",
     "details": [
-      "100% full-grain calfskin leather",
-      "Hand-burnished edges and bespoke palladium zips",
-      "Internal chest welt pocket and tailored cuff gussets",
-      "Made in Italy by master leather artisans"
+      "28% Pure Parfum concentration",
+      "Sustainably sourced Indian sandalwood essence",
+      "Top: Cardamom, Violet Leaf, Papyrus",
+      "Heart: Iris, Cedarwood, Warm Amber",
+      "Base: Mysore Sandalwood, Bourbon Vanilla, Cashmere Musk"
     ],
     "materials": [
-      "Full-grain Italian calfskin",
-      "100% Japanese Bemberg cupro lining"
+      "Hand-Distilled Sandalwood Oil & Vanilla Resins",
+      "50ml / 1.7 fl.oz Heavy Glass Flacon"
     ],
     "careGuide": [
-      "Specialist leather clean only",
-      "Store on wide wooden hanger away from direct sunlight"
+      "Store upright in a temperature-controlled environment",
+      "Avoid direct heat and exposure to light"
     ],
     "categoryId": "cat_fragrances",
     "price": 19000,
@@ -2830,9 +2838,11 @@
     "isNewArrival": true,
     "isTrending": true,
     "tags": [
-      "new-arrival",
-      "outerwear",
-      "iconic"
+      "fragrances",
+      "sandalwood",
+      "gourmand",
+      "warm",
+      "luxury"
     ],
     "storefronts": [
       "a",
@@ -2845,23 +2855,24 @@
   },
   {
     "id": "prod_frag_4",
-    "slug": "italian-leather-jacket",
+    "slug": "rose-absolute-eau-de-parfum",
     "name": "Rose Absolute Eau de Parfum",
-    "subtitle": "Milanese Full-Grain Nappa",
-    "description": "Artisanal distilled scent with rare botanical extracts.",
+    "subtitle": "Centifolia Rose, Lychee & Velvet Woods",
+    "description": "A modern, dewy romantic tribute to the Grasse Rose de Mai. Fresh lychee and pink pepper illuminate thousand-petaled May rose steeped in creamy cedarwood and crystalline musk.",
     "details": [
-      "100% full-grain calfskin leather",
-      "Hand-burnished edges and bespoke palladium zips",
-      "Internal chest welt pocket and tailored cuff gussets",
-      "Made in Italy by master leather artisans"
+      "22% Eau de Parfum concentration",
+      "Hand-picked May roses distilled at dawn in Grasse",
+      "Top: Pink Pepper, Dewy Lychee, Mandarin",
+      "Heart: Grasse Centifolia Rose, Peony, Bulgarian Rose",
+      "Base: Velvet Woods, Ambergris, Crystalline Musk"
     ],
     "materials": [
-      "Full-grain Italian calfskin",
-      "100% Japanese Bemberg cupro lining"
+      "Steam-Distilled Rose Absolute",
+      "50ml / 1.7 fl.oz Blown Glass Flacon"
     ],
     "careGuide": [
-      "Specialist leather clean only",
-      "Store on wide wooden hanger away from direct sunlight"
+      "Keep away from direct heat and sunlight",
+      "Store in a cool dry space"
     ],
     "categoryId": "cat_fragrances",
     "price": 18500,
@@ -2897,9 +2908,11 @@
     "isNewArrival": true,
     "isTrending": true,
     "tags": [
-      "new-arrival",
-      "outerwear",
-      "iconic"
+      "fragrances",
+      "floral",
+      "rose",
+      "romantic",
+      "luxury"
     ],
     "storefronts": [
       "a",

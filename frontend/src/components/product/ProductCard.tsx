@@ -12,6 +12,7 @@ import { useCartStore } from '@/store/useCartStore';
 import { RatingStars } from '@/components/ui/RatingStars';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { getLuxuryColorStyle } from '@/lib/colorUtils';
 
 export { ProductCardSkeleton, ProductGridSkeleton } from './ProductCardSkeleton';
 
@@ -38,19 +39,47 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [activeColor, setActiveColor] = useState<string | null>(null);
   const heartControls = useAnimationControls();
   const { isInWishlist, toggleItem } = useWishlistStore();
   const { addItem } = useCartStore();
 
   const isFavorited = isInWishlist(product.id);
-  const hasSecondaryImage = product.images.length > 1;
+
+  // Extract unique colors for this product
+  const availableColors = React.useMemo(() => {
+    if (!product?.variants) return [];
+    const colors: string[] = [];
+    product.variants.forEach((v) => {
+      if (v.color && !colors.includes(v.color)) {
+        colors.push(v.color);
+      }
+    });
+    return colors;
+  }, [product?.variants]);
+
+  // Resolve image based on selected color
+  const currentImage = React.useMemo(() => {
+    if (activeColor && product.variants) {
+      const variantWithColor = product.variants.find((v) => v.color === activeColor && v.image);
+      if (variantWithColor?.image) return variantWithColor.image;
+
+      const colorIdx = availableColors.indexOf(activeColor);
+      if (colorIdx !== -1 && product.images[colorIdx]) {
+        return product.images[colorIdx];
+      }
+    }
+    return product.images[0];
+  }, [activeColor, product.variants, product.images, availableColors]);
+
+  const hasSecondaryImage = product.images.length > 1 && !activeColor;
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsAdding(true);
-    // Add default first available variant
-    const variant = product.variants.find((v) => v.stock > 0) || product.variants[0];
+    // Add selected color variant if chosen, otherwise default first in-stock variant
+    const variant = (activeColor ? product.variants.find((v) => v.color === activeColor && v.stock > 0) : null) || product.variants.find((v) => v.stock > 0) || product.variants[0];
     addItem(product, variant.sku, variant.size, variant.color, 1);
     setTimeout(() => setIsAdding(false), 1200);
   };
@@ -123,7 +152,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Primary Product Image */}
         <Image
-          src={product.images[0]}
+          src={currentImage}
           alt={product.name}
           fill={variant !== 'grid'}
           width={variant === 'grid' ? 1200 : undefined}
@@ -379,6 +408,68 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               {formatPrice(product.price)}
             </span>
           </div>
+
+          {/* Color Swatches: ONLY rendered if product has MORE THAN ONE color */}
+          {availableColors.length > 1 && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginTop: '10px',
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
+              {availableColors.map((colorName) => {
+                const isSelected = (activeColor || availableColors[0]) === colorName;
+                const { background, isLight } = getLuxuryColorStyle(colorName);
+
+                return (
+                  <button
+                    key={colorName}
+                    type="button"
+                    aria-label={`Select ${colorName}`}
+                    title={colorName}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setActiveColor(colorName);
+                    }}
+                    style={{
+                      width: '18px',
+                      height: '18px',
+                      borderRadius: '50%',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: 0,
+                      background: 'transparent',
+                      border: isSelected ? '1px solid var(--text-primary)' : '1px solid transparent',
+                      cursor: 'pointer',
+                      transition: 'border-color 0.15s ease',
+                      outline: 'none',
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: '12px',
+                        height: '12px',
+                        borderRadius: '50%',
+                        background,
+                        boxShadow: isLight
+                          ? 'inset 0 0 0 1px rgba(0, 0, 0, 0.18)'
+                          : 'inset 0 0 0 1px rgba(255, 255, 255, 0.12)',
+                        display: 'block',
+                      }}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
     </motion.div>

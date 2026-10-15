@@ -374,6 +374,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               style={actionBtnStyle}
             >
               <Search size={20} />
+              <span className="nav-tooltip" aria-hidden="true">Search</span>
             </Link>
 
             {/* Wishlist Link */}
@@ -389,6 +390,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   {wishlistCount}
                 </span>
               )}
+              <span className="nav-tooltip" aria-hidden="true">Wishlist</span>
             </Link>
 
             {/* Account / Admin Portal Link (Visible on desktop/tablet, in drawer on mobile) */}
@@ -399,6 +401,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               style={actionBtnStyle}
             >
               <User size={20} />
+              <span className="nav-tooltip" aria-hidden="true">
+                {!user ? 'Sign In' : user.role === 'admin' ? 'Admin Portal' : 'Account'}
+              </span>
             </Link>
 
             {/* Shopping Bag Trigger */}
@@ -414,6 +419,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   {cartCount}
                 </span>
               )}
+              <span className="nav-tooltip" aria-hidden="true">Shopping Bag</span>
             </button>
           </div>
         </div>
@@ -731,6 +737,50 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         .navbar-action-btn svg {
           display: block !important;
           flex-shrink: 0 !important;
+        }
+        .nav-tooltip {
+          position: absolute;
+          top: calc(100% + 6px);
+          left: 50%;
+          transform: translateX(-50%) translateY(-3px);
+          background: rgba(18, 18, 18, 0.94);
+          color: #ffffff !important;
+          font-size: 0.65rem !important;
+          font-weight: 600 !important;
+          letter-spacing: 0.08em !important;
+          text-transform: uppercase !important;
+          text-shadow: none !important;
+          white-space: nowrap !important;
+          padding: 4px 8px !important;
+          border-radius: 4px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          pointer-events: none;
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 160ms cubic-bezier(0.16, 1, 0.3, 1),
+                      transform 160ms cubic-bezier(0.16, 1, 0.3, 1),
+                      visibility 160ms cubic-bezier(0.16, 1, 0.3, 1);
+          z-index: 120;
+          line-height: 1.2;
+        }
+        .nav-tooltip::before {
+          content: '';
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          border-width: 4px;
+          border-style: solid;
+          border-color: transparent transparent rgba(18, 18, 18, 0.94) transparent;
+        }
+        @media (hover: hover) and (pointer: fine) {
+          .navbar-action-btn:hover .nav-tooltip,
+          .navbar-action-btn:focus-visible .nav-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+          }
         }
         @media (min-width: 768px) {
           .mobile-nav-toggle {
