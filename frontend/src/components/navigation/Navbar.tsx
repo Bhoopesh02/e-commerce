@@ -367,60 +367,68 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             }}
           >
             {/* Search Trigger: Directly navigates to /search on all devices */}
-            <Link
-              href="/search"
-              aria-label="Search Collection"
-              className="navbar-action-btn nav-icon search"
-              style={actionBtnStyle}
-            >
-              <Search size={20} />
+            <div className="navbar-action-item">
+              <Link
+                href="/search"
+                aria-label="Search Collection"
+                className="navbar-action-btn nav-icon search"
+                style={actionBtnStyle}
+              >
+                <Search size={20} />
+              </Link>
               <span className="nav-tooltip" aria-hidden="true">Search</span>
-            </Link>
+            </div>
 
             {/* Wishlist Link */}
-            <Link
-              href="/wishlist"
-              aria-label="Wishlist"
-              className="navbar-action-btn nav-icon heart"
-              style={actionBtnStyle}
-            >
-              <Heart size={20} />
-              {wishlistCount > 0 && (
-                <span className="badge" style={badgeStyle}>
-                  {wishlistCount}
-                </span>
-              )}
+            <div className="navbar-action-item">
+              <Link
+                href="/wishlist"
+                aria-label="Wishlist"
+                className="navbar-action-btn nav-icon heart"
+                style={actionBtnStyle}
+              >
+                <Heart size={20} />
+                {wishlistCount > 0 && (
+                  <span className="badge" style={badgeStyle}>
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
               <span className="nav-tooltip" aria-hidden="true">Wishlist</span>
-            </Link>
+            </div>
 
             {/* Account / Admin Portal Link (Visible on desktop/tablet, in drawer on mobile) */}
-            <Link
-              href={accountHref}
-              aria-label={user?.role === 'admin' ? 'Admin Control' : 'Account'}
-              className="navbar-action-btn navbar-account-link nav-icon profile"
-              style={actionBtnStyle}
-            >
-              <User size={20} />
+            <div className="navbar-action-item navbar-account-item">
+              <Link
+                href={accountHref}
+                aria-label={user?.role === 'admin' ? 'Admin Control' : 'Account'}
+                className="navbar-action-btn navbar-account-link nav-icon profile"
+                style={actionBtnStyle}
+              >
+                <User size={20} />
+              </Link>
               <span className="nav-tooltip" aria-hidden="true">
                 {!user ? 'Sign In' : user.role === 'admin' ? 'Admin Portal' : 'Account'}
               </span>
-            </Link>
+            </div>
 
             {/* Shopping Bag Trigger */}
-            <button
-              onClick={openDrawer}
-              aria-label="Shopping Bag"
-              className="navbar-action-btn nav-icon bag"
-              style={actionBtnStyle}
-            >
-              <ShoppingBag size={20} />
-              {cartCount > 0 && (
-                <span className="badge" style={badgeStyle}>
-                  {cartCount}
-                </span>
-              )}
+            <div className="navbar-action-item">
+              <button
+                onClick={openDrawer}
+                aria-label="Shopping Bag"
+                className="navbar-action-btn nav-icon bag"
+                style={actionBtnStyle}
+              >
+                <ShoppingBag size={20} />
+                {cartCount > 0 && (
+                  <span className="badge" style={badgeStyle}>
+                    {cartCount}
+                  </span>
+                )}
+              </button>
               <span className="nav-tooltip" aria-hidden="true">Shopping Bag</span>
-            </button>
+            </div>
           </div>
         </div>
 
@@ -731,6 +739,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
       {/* Style block for responsive navigation layout & touch target sizing */}
       <style jsx global>{`
+        .navbar-action-item {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 48px;
+          height: 48px;
+          min-width: 48px;
+          min-height: 48px;
+        }
         .navbar-action-btn:hover {
           background-color: var(--bg-surface-hover, var(--overlay-white-5));
         }
@@ -740,27 +758,25 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         }
         .nav-tooltip {
           position: absolute;
-          top: calc(100% + 6px);
+          top: calc(100% + 5px);
           left: 50%;
-          transform: translateX(-50%) translateY(-3px);
+          transform: translateX(-50%) !important;
           background: rgba(18, 18, 18, 0.94);
           color: #ffffff !important;
-          font-size: 0.65rem !important;
+          font-size: 0.58rem !important;
           font-weight: 600 !important;
-          letter-spacing: 0.08em !important;
+          letter-spacing: 0.06em !important;
           text-transform: uppercase !important;
           text-shadow: none !important;
           white-space: nowrap !important;
-          padding: 4px 8px !important;
-          border-radius: 4px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+          padding: 2.5px 6px !important;
+          border-radius: 3px;
+          box-shadow: 0 3px 8px rgba(0, 0, 0, 0.22);
           border: 1px solid rgba(255, 255, 255, 0.12);
           pointer-events: none;
           opacity: 0;
           visibility: hidden;
-          transition: opacity 160ms cubic-bezier(0.16, 1, 0.3, 1),
-                      transform 160ms cubic-bezier(0.16, 1, 0.3, 1),
-                      visibility 160ms cubic-bezier(0.16, 1, 0.3, 1);
+          transition: opacity 120ms ease, visibility 120ms ease;
           z-index: 120;
           line-height: 1.2;
         }
@@ -770,16 +786,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           bottom: 100%;
           left: 50%;
           transform: translateX(-50%);
-          border-width: 4px;
+          border-width: 3.5px;
           border-style: solid;
           border-color: transparent transparent rgba(18, 18, 18, 0.94) transparent;
         }
         @media (hover: hover) and (pointer: fine) {
-          .navbar-action-btn:hover .nav-tooltip,
-          .navbar-action-btn:focus-visible .nav-tooltip {
+          .navbar-action-item:hover .nav-tooltip,
+          .navbar-action-item:focus-within .nav-tooltip {
             opacity: 1;
             visibility: visible;
-            transform: translateX(-50%) translateY(0);
           }
         }
         @media (min-width: 768px) {
@@ -820,6 +835,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           .navbar-actions {
             gap: 2px !important;
           }
+          .navbar-account-item,
           .navbar-account-link {
             display: none !important;
           }
