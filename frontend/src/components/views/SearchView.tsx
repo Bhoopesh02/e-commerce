@@ -24,7 +24,6 @@ import {
   SlidersHorizontal,
   RotateCcw,
   ArrowUp,
-  Sparkles,
   Clock,
   TrendingUp,
   ArrowRight,
@@ -1178,36 +1177,6 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                   </>
                 )}
               </div>
-
-              {/* Suggestions Footer */}
-              <div
-                onClick={() => applySearchQuery(query)}
-                style={{
-                  padding: '12px 20px',
-                  backgroundColor: 'var(--bg-surface)',
-                  borderTop: '1px solid var(--border-light)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  cursor: 'pointer',
-                  fontSize: '0.82rem',
-                  fontWeight: 600,
-                  color: 'var(--brand-primary)',
-                  transition: 'background-color 150ms ease',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--surface-brand)')}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-surface)')}
-              >
-                <span>
-                  {query.trim()
-                    ? `View all catalog results for "${query.trim()}"`
-                    : 'Explore all Aurelia catalog pieces'}
-                </span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 400 }}>Press Enter</span>
-                  <ArrowRight size={14} />
-                </div>
-              </div>
             </div>
           )}
         </div>
@@ -1232,10 +1201,8 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
               fontWeight: 600,
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '5px',
             }}
           >
-            <Sparkles size={13} style={{ color: 'var(--brand-primary)' }} />
             Trending:
           </span>
           {TRENDING_SEARCHES.map((item) => (

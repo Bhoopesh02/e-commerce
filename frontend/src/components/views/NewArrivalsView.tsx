@@ -8,6 +8,7 @@ import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCa
 import { Button } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
 import { RangeSlider } from '@/components/ui/RangeSlider';
+import { FilterDropdownSection } from '@/components/ui/FilterDropdownSection';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import Image from 'next/image';
 import { SlidersHorizontal, X, RotateCcw, ArrowUp, ArrowDown, Check, Search, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -35,6 +36,29 @@ export const NewArrivalsView: React.FC = () => {
   const [appliedAvailability, setAppliedAvailability] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    category: true,
+    price: false,
+    availability: false,
+  });
+
+  const toggleFilterSection = (key: string) => {
+    setOpenSections((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
+  const allSectionsOpen = Object.values(openSections).every(Boolean);
+
+  const toggleAllSections = () => {
+    const nextState = !allSectionsOpen;
+    setOpenSections({
+      category: nextState,
+      price: nextState,
+      availability: nextState,
+    });
+  };
 
   // Offload sticky state detection to an IntersectionObserver to eliminate main-thread layout thrashing
   useEffect(() => {
@@ -480,6 +504,11 @@ export const NewArrivalsView: React.FC = () => {
                   setStagedCategory(activeCategory);
                   setPriceRange(appliedPriceRange);
                   setSelectedAvailability(appliedAvailability);
+                  setOpenSections((prev) => ({
+                    category: prev.category ?? true,
+                    price: appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000 ? true : prev.price,
+                    availability: appliedAvailability === 'in_stock' ? true : prev.availability,
+                  }));
                   setMobileFiltersOpen(true);
                 }}
                 aria-label="Open Filters"
@@ -698,21 +727,59 @@ export const NewArrivalsView: React.FC = () => {
         headerStyle={{ borderBottom: '1px solid var(--overlay-black-5)', padding: '24px 32px 16px' }}
         titleStyle={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', letterSpacing: '0.02em', color: 'var(--text-primary)' }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '16px 8px 120px' }}>
-          {/* Category Filter */}
-          <div>
-            <h4
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px 8px 120px' }}>
+          {/* Quick Expand / Collapse All Header */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '2px 6px 12px 6px',
+              borderBottom: '1px solid var(--overlay-black-5)',
+            }}
+          >
+            <span
               style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: '1.05rem',
-                letterSpacing: '0.06em',
-                marginBottom: '16px',
-                color: 'var(--text-primary)',
+                fontSize: '0.75rem',
                 textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                color: 'var(--text-muted)',
+                fontWeight: 500,
               }}
             >
-              Category
-            </h4>
+              Filter Sections
+            </span>
+            <button
+              type="button"
+              onClick={toggleAllSections}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontSize: '0.74rem',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                color: 'var(--text-primary)',
+                cursor: 'pointer',
+                opacity: 0.75,
+                padding: '2px 6px',
+                borderRadius: '4px',
+                transition: 'opacity 0.2s ease',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.75')}
+            >
+              {allSectionsOpen ? 'Collapse All' : 'Expand All'}
+            </button>
+          </div>
+
+          {/* Category Filter Dropdown */}
+          <FilterDropdownSection
+            title="Category"
+            isOpen={openSections.category}
+            onToggle={() => toggleFilterSection('category')}
+            badge={stagedCategory !== 'all' ? (categories.find((c) => c.slug === stagedCategory)?.name || stagedCategory) : null}
+          >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <label
                 style={{
@@ -839,10 +906,19 @@ export const NewArrivalsView: React.FC = () => {
                 );
               })}
             </div>
-          </div>
+          </FilterDropdownSection>
 
-          <div>
-            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: 'var(--text-primary)', textTransform: 'uppercase' }}>Price Tier</h4>
+          {/* Price Range Dropdown */}
+          <FilterDropdownSection
+            title="Price Tier"
+            isOpen={openSections.price}
+            onToggle={() => toggleFilterSection('price')}
+            badge={
+              priceRange[0] > 0 || priceRange[1] < 100000
+                ? `₹${(priceRange[0] / 1000).toFixed(0)}k - ₹${(priceRange[1] / 1000).toFixed(0)}k`
+                : null
+            }
+          >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', minWidth: 0 }}>
                 {[
@@ -864,12 +940,18 @@ export const NewArrivalsView: React.FC = () => {
                 })}
               </div>
               <div style={{ width: '100%', maxWidth: '420px', boxSizing: 'border-box', minWidth: 0 }}>
-                <RangeSlider min={0} max={100000} step={5000} value={priceRange} onChange={setPriceRange} milestones={useMemo(() => [{ value: 0, label: '₹0' }, { value: 20000, label: '₹20K' }, { value: 35000, label: '₹35K' }, { value: 100000, label: '₹100K+' }], [])} />
+                <RangeSlider min={0} max={100000} step={5000} value={priceRange} onChange={setPriceRange} milestones={[{ value: 0, label: '₹0' }, { value: 20000, label: '₹20K' }, { value: 35000, label: '₹35K' }, { value: 100000, label: '₹100K+' }]} />
               </div>
             </div>
-          </div>
-          <div>
-            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', letterSpacing: '0.06em', marginBottom: '16px', color: 'var(--text-primary)', textTransform: 'uppercase' }}>Availability</h4>
+          </FilterDropdownSection>
+
+          {/* Availability Dropdown */}
+          <FilterDropdownSection
+            title="Availability"
+            isOpen={openSections.availability}
+            onToggle={() => toggleFilterSection('availability')}
+            badge={selectedAvailability === 'in_stock' ? 'In Stock' : null}
+          >
             <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1rem', cursor: 'pointer', color: 'var(--text-primary)', marginLeft: '-2px' }}>
               <div style={{ width: '16px', height: '16px', borderRadius: '4px', border: '1px solid var(--color-icy-lake-600)', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: selectedAvailability === 'in_stock' ? 'var(--color-icy-lake-600)' : 'transparent' }}>
                 {selectedAvailability === 'in_stock' && <Check size={12} color="var(--color-diamond)" strokeWidth={3} />}
@@ -877,7 +959,7 @@ export const NewArrivalsView: React.FC = () => {
               <input type="checkbox" checked={selectedAvailability === 'in_stock'} onChange={(e) => setSelectedAvailability(e.target.checked ? 'in_stock' : 'all')} style={{ display: 'none' }} />
               In Stock Pieces Only
             </label>
-          </div>
+          </FilterDropdownSection>
         </div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '24px 32px 32px', display: 'flex', gap: '16px', background: 'linear-gradient(to top, var(--bg-surface) 70%, transparent 100%)', borderTop: 'none', pointerEvents: 'none' }}>
           <div style={{ display: 'flex', gap: '12px', width: '100%', pointerEvents: 'auto' }}>

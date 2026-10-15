@@ -10,6 +10,7 @@ import { Drawer } from '@/components/ui/Drawer';
 import { CategorySection, CategorySectionSkeleton, SectionAnimationVariant } from '@/components/shop/CategorySection';
 import { SectionBanner } from '@/components/shop/SectionBanner';
 import { RangeSlider } from '@/components/ui/RangeSlider';
+import { FilterDropdownSection } from '@/components/ui/FilterDropdownSection';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FlatProductGrid, PAGE_SIZE } from '@/components/shop/FlatProductGrid';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
@@ -73,12 +74,26 @@ const SECTION_ANIMATIONS: Record<string, SectionAnimationVariant> = {
   'fine-jewelry': 'fade-up',
 };
 
+const priceMilestones = [
+  { value: 0, label: '₹0' },
+  { value: 20000, label: '₹20K' },
+  { value: 35000, label: '₹35K' },
+  { value: 100000, label: '₹100K+' },
+];
+
 interface ShopViewProps {
   initialProducts: Product[];
   initialCategories: Category[];
   /** When set, activates gender-filtered mode for /collections/men|women */
   gender?: 'men' | 'women';
 }
+
+const PRICE_MILESTONES = [
+  { value: 0, label: '₹0' },
+  { value: 20000, label: '₹20K' },
+  { value: 35000, label: '₹35K' },
+  { value: 100000, label: '₹100K+' },
+];
 
 export const ShopView: React.FC<ShopViewProps> = ({
   initialProducts,
@@ -107,6 +122,30 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [appliedAvailability, setAppliedAvailability] = useState<string>('all');
   const [selectedSort, setSelectedSort] = useState<string>('popularity');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    category: true,
+    price: false,
+    availability: false,
+  });
+
+  const toggleFilterSection = (key: string) => {
+    setOpenSections((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
+  const allSectionsOpen = Object.values(openSections).every(Boolean);
+
+  const toggleAllSections = () => {
+    const nextState = !allSectionsOpen;
+    setOpenSections({
+      category: nextState,
+      price: nextState,
+      availability: nextState,
+    });
+  };
+
   const [isStuck, setIsStuck] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const getPageFromParam = useCallback((param: string | null): number => {
@@ -548,6 +587,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   setStagedCategory(activeCategory);
                   setPriceRange(appliedPriceRange);
                   setSelectedAvailability(appliedAvailability);
+                  setOpenSections((prev) => ({
+                    category: prev.category ?? true,
+                    price: appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000 ? true : prev.price,
+                    availability: appliedAvailability === 'in_stock' ? true : prev.availability,
+                  }));
                   setMobileFiltersOpen(true);
                 }}
                 className="mobile-filter-btn"
@@ -905,21 +949,59 @@ export const ShopView: React.FC<ShopViewProps> = ({
           color: 'var(--text-primary)',
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '16px 8px 120px' }}>
-          {/* Category Filter */}
-          <div>
-            <h4
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px 8px 120px' }}>
+          {/* Quick Expand / Collapse All Header */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '2px 6px 12px 6px',
+              borderBottom: '1px solid var(--overlay-black-5)',
+            }}
+          >
+            <span
               style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: '1.05rem',
-                letterSpacing: '0.06em',
-                marginBottom: '16px',
-                color: 'var(--text-primary)',
+                fontSize: '0.75rem',
                 textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                color: 'var(--text-muted)',
+                fontWeight: 500,
               }}
             >
-              Category
-            </h4>
+              Filter Sections
+            </span>
+            <button
+              type="button"
+              onClick={toggleAllSections}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontSize: '0.74rem',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                color: 'var(--text-primary)',
+                cursor: 'pointer',
+                opacity: 0.75,
+                padding: '2px 6px',
+                borderRadius: '4px',
+                transition: 'opacity 0.2s ease',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.75')}
+            >
+              {allSectionsOpen ? 'Collapse All' : 'Expand All'}
+            </button>
+          </div>
+
+          {/* Category Filter Dropdown */}
+          <FilterDropdownSection
+            title="Category"
+            isOpen={openSections.category}
+            onToggle={() => toggleFilterSection('category')}
+            badge={stagedCategory !== 'all' ? (categories.find((c) => c.slug === stagedCategory)?.name || stagedCategory) : null}
+          >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {categories.map((cat) => {
                 const isSelected = stagedCategory === cat.slug;
@@ -987,22 +1069,19 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 );
               })}
             </div>
-          </div>
+          </FilterDropdownSection>
 
-          {/* Price Range */}
-          <div>
-            <h4
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: '1rem',
-                letterSpacing: '0.06em',
-                marginBottom: '16px',
-                color: 'var(--text-primary)',
-                textTransform: 'uppercase',
-              }}
-            >
-              Price Tier
-            </h4>
+          {/* Price Range Dropdown */}
+          <FilterDropdownSection
+            title="Price Tier"
+            isOpen={openSections.price}
+            onToggle={() => toggleFilterSection('price')}
+            badge={
+              priceRange[0] > 0 || priceRange[1] < 100000
+                ? `₹${(priceRange[0] / 1000).toFixed(0)}k - ₹${(priceRange[1] / 1000).toFixed(0)}k`
+                : null
+            }
+          >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', minWidth: 0 }}>
                 {[
@@ -1085,34 +1164,19 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   step={5000}
                   value={priceRange}
                   onChange={setPriceRange}
-                  milestones={useMemo(
-                    () => [
-                      { value: 0, label: '₹0' },
-                      { value: 20000, label: '₹20K' },
-                      { value: 35000, label: '₹35K' },
-                      { value: 100000, label: '₹100K+' },
-                    ],
-                    []
-                  )}
+                  milestones={PRICE_MILESTONES}
                 />
               </div>
             </div>
-          </div>
+          </FilterDropdownSection>
 
-          {/* Availability */}
-          <div>
-            <h4
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: '1rem',
-                letterSpacing: '0.06em',
-                marginBottom: '16px',
-                color: 'var(--text-primary)',
-                textTransform: 'uppercase',
-              }}
-            >
-              Availability
-            </h4>
+          {/* Availability Dropdown */}
+          <FilterDropdownSection
+            title="Availability"
+            isOpen={openSections.availability}
+            onToggle={() => toggleFilterSection('availability')}
+            badge={selectedAvailability === 'in_stock' ? 'In Stock' : null}
+          >
             <label
               style={{
                 display: 'flex',
@@ -1162,7 +1226,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 In Stock Pieces Only
               </span>
             </label>
-          </div>
+          </FilterDropdownSection>
         </div>
 
         {/* Sticky Footer Buttons */}
