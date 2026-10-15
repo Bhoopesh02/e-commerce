@@ -7,6 +7,7 @@ export interface ProductVariant {
   size: string;
   color: string;
   stock: number;
+  image?: string;
 }
 
 export interface ProductRating {

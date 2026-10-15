@@ -29,7 +29,7 @@ export const CURATED_EDIT_SLIDES: CuratedEditSlide[] = [
     subtitle: "It's time to invest in luxe layers",
     description: 'Double-faced virgin wool trench coats, Spanish shearling aviators, and archival silhouettes.',
     ctaText: 'Shop the edit',
-    image: '/images/banners/all-collections/curated-warmup.jpg',
+    image: '/images/banners/all-collections/curated-warmup.webp',
     objectPosition: 'center 26%',
   },
   {
@@ -41,7 +41,7 @@ export const CURATED_EDIT_SLIDES: CuratedEditSlide[] = [
     subtitle: 'Deconstructed suiting & floating canvas tailoring',
     description: 'Deconstructed wool suiting, razor-sharp peak lapels, and floating canvas bespoke tailoring.',
     ctaText: 'Shop the edit',
-    image: '/images/banners/all-collections/curated-sartorial.jpg',
+    image: '/images/banners/all-collections/curated-sartorial.webp',
     objectPosition: 'center 18%',
   },
   {
@@ -53,7 +53,7 @@ export const CURATED_EDIT_SLIDES: CuratedEditSlide[] = [
     subtitle: 'Ultra-fine Grade-A Mongolian fleece',
     description: 'Ultra-fine 15.2-micron Grade-A Mongolian cashmere, brushed mohair, and seamless ribbed jumpers.',
     ctaText: 'Shop the edit',
-    image: '/images/banners/all-collections/curated-cashmere.jpg',
+    image: '/images/banners/all-collections/curated-cashmere.webp',
     objectPosition: 'center 20%',
   },
   {
@@ -65,7 +65,7 @@ export const CURATED_EDIT_SLIDES: CuratedEditSlide[] = [
     subtitle: 'Liquid silk charmeuse & floor-grazing silhouettes',
     description: 'Liquid 30-momme mulberry silk charmeuse, floor-grazing puddle trains, and draped formal gala gowns.',
     ctaText: 'Shop the edit',
-    image: '/images/banners/all-collections/curated-evening.jpg',
+    image: '/images/banners/all-collections/curated-evening.webp',
     objectPosition: 'center 32%',
   },
   {
@@ -77,7 +77,7 @@ export const CURATED_EDIT_SLIDES: CuratedEditSlide[] = [
     subtitle: 'Pebbled leather weekenders & sculpted calfskin',
     description: 'Pebbled leather weekenders, obsidian calfskin folios, and structured saddle silhouettes.',
     ctaText: 'Shop the edit',
-    image: '/images/banners/all-collections/curated-leather.jpg',
+    image: '/images/banners/all-collections/curated-leather.webp',
     objectPosition: 'center 32%',
   },
 ];

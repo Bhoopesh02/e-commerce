@@ -11,8 +11,8 @@ import {
   StaggerFadeUp,
   LineReveal,
 } from '@/components/ui/StaggerReveal';
-import heroImg from '../../../public/images/banners/Gemini_Generated_Image_piepdipiepdipiep.webp';
-import heroMobileImg from '../../../public/images/banners/hero-mobile.webp';
+import heroImg from '../../../public/images/banners/home/hero.webp';
+import heroMobileImg from '../../../public/images/banners/home/hero-mobile.webp';
 
 export const HeroSection: React.FC = () => {
   const { storefront } = useStorefrontStore();
@@ -94,9 +94,8 @@ export const HeroSection: React.FC = () => {
 
       {/* Hero Content Wrapper */}
       <div
-        className={`relative z-10 flex flex-col justify-center text-left w-full min-h-screen min-h-[100svh] px-6 sm:px-10 md:px-16 lg:px-24 hero-content-container ${
-          isEditorial ? 'editorial-layout' : 'refined-layout'
-        }`}
+        className={`relative z-10 flex flex-col justify-center text-left w-full min-h-screen min-h-[100svh] px-6 sm:px-10 md:px-16 lg:px-24 hero-content-container ${isEditorial ? 'editorial-layout' : 'refined-layout'
+          }`}
         style={{
           position: 'relative',
           zIndex: 10,

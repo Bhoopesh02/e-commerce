@@ -298,13 +298,15 @@
         "sku": "TOT-COG-ONE",
         "size": "One Size",
         "color": "Cognac Ochre",
-        "stock": 7
+        "stock": 7,
+        "image": "/images/products/leather-goods/atelier-sculptural-leather-tote-4k-1.webp"
       },
       {
         "sku": "TOT-BLK-ONE",
         "size": "One Size",
         "color": "Onyx Black",
-        "stock": 3
+        "stock": 3,
+        "image": "/images/products/leather-goods/atelier-sculptural-leather-tote-4k-2.webp"
       }
     ],
     "availability": "in_stock",
@@ -3130,26 +3132,51 @@
     "categoryId": "cat_outerwear",
     "price": 38000,
     "images": [
-      "/images/products/outerwear/quilted-silk-down-parka-1.webp"
+      "/images/products/outerwear/quilted-silk-down-parka-1.webp",
+      "/images/products/outerwear/quilted-silk-down-parka-2.webp"
     ],
     "variants": [
       {
         "sku": "QP-OLV-S",
         "size": "S",
         "color": "Olive Forest",
-        "stock": 2
+        "stock": 2,
+        "image": "/images/products/outerwear/quilted-silk-down-parka-1.webp"
       },
       {
         "sku": "QP-OLV-M",
         "size": "M",
         "color": "Olive Forest",
-        "stock": 4
+        "stock": 4,
+        "image": "/images/products/outerwear/quilted-silk-down-parka-1.webp"
       },
       {
         "sku": "QP-OLV-L",
         "size": "L",
         "color": "Olive Forest",
-        "stock": 1
+        "stock": 0,
+        "image": "/images/products/outerwear/quilted-silk-down-parka-1.webp"
+      },
+      {
+        "sku": "QP-BLK-S",
+        "size": "S",
+        "color": "Nocturne Black",
+        "stock": 3,
+        "image": "/images/products/outerwear/quilted-silk-down-parka-2.webp"
+      },
+      {
+        "sku": "QP-BLK-M",
+        "size": "M",
+        "color": "Nocturne Black",
+        "stock": 5,
+        "image": "/images/products/outerwear/quilted-silk-down-parka-2.webp"
+      },
+      {
+        "sku": "QP-BLK-L",
+        "size": "L",
+        "color": "Nocturne Black",
+        "stock": 1,
+        "image": "/images/products/outerwear/quilted-silk-down-parka-2.webp"
       }
     ],
     "availability": "low_stock",

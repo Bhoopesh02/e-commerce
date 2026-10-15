@@ -16,7 +16,7 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] Featured products carousel or grid
 - [x] Promotional or seasonal campaign sections
 - [x] Newsletter subscription *(Implemented in Footer with private ledger validation)*
-- [ ] Footer with customer service, policies and social links *(Policies [Privacy, Terms, Returns] and social links are missing)*
+- [x] Footer with customer service, policies and social links *(Implemented in Footer with Customer Support, Return & Refund Policy, Bespoke Support, and circular social channels)*
 
 ### B. Product Listing & Discovery
 - [x] Category and collection listing pages
@@ -33,7 +33,7 @@ This document tracks the feature status, completed deliverables, and remaining a
 ### C. Product Detail Page (PDP)
 - [x] Product image gallery with zoom
 - [x] Product name, price and description
-- [ ] Colour and size/variant selection *(Size selection present; colour swatches/selectors missing)*
+- [x] Colour and size/variant selection *(Luxury circular swatches with active ring, color-linked image switching, and dynamic size filtering)*
 - [x] Size guide and fit information
 - [x] Stock / availability feedback
 - [x] Quantity selector where appropriate

@@ -39,10 +39,12 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
       title: "The Men's Wardrobe",
       subtitle: 'Architectural silhouettes, Savile Row precision, and noble natural fibers crafted for longevity.',
       href: '/collections/men',
-      image: '/images/banners/gen/men/all.webp',
+      image: '/images/banners/all-collections/shop-by-department/men.webp',
       badge: 'Savile Row Precision',
       tagline: 'Italian tailoring & natural fibers',
       itemCount: initialProducts.filter((p) => p.genders?.includes('men')).length,
+      cta: 'Shop the collection',
+      objectPosition: 'center 15%',
     },
     {
       id: 'women',
@@ -50,10 +52,12 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
       title: "The Women's Collection",
       subtitle: 'Sculptural drapery, liquid mulberry silks, and tactile tailoring designed with quiet authority.',
       href: '/collections/women',
-      image: '/images/banners/gen/women/all.webp',
+      image: '/images/banners/all-collections/shop-by-department/women.webp',
       badge: 'Sculptural Drapery',
       tagline: 'Mulberry silks & tactile tailoring',
       itemCount: initialProducts.filter((p) => p.genders?.includes('women')).length,
+      cta: 'Shop now',
+      objectPosition: 'center 20%',
     },
     {
       id: 'runway',
@@ -61,10 +65,12 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
       title: 'The New-Season Drop',
       subtitle: 'Direct from the Paris & Milan ateliers — fresh drop coats, fluid eveningwear, and limited runs.',
       href: '/new-arrivals',
-      image: '/images/banners/new-arrivals/new-arrivals-hero.webp',
+      image: '/images/banners/all-collections/shop-by-department/runway.webp',
       badge: 'Autumn / Winter 2026',
       tagline: 'Limited atelier releases',
       itemCount: initialProducts.filter((p) => p.isNewArrival).length,
+      cta: 'Shop the edit',
+      objectPosition: '76% center',
     },
   ];
 
@@ -80,10 +86,7 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
         <section style={{ marginBottom: '80px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '28px', borderBottom: '1px solid var(--border-color)', paddingBottom: '14px' }}>
             <div>
-              <span style={{ fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-golden-600)', fontWeight: 600 }}>
-                Primary Pillars
-              </span>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 400, marginTop: '4px' }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 400, margin: 0 }}>
                 Shop by Department
               </h2>
             </div>
@@ -92,7 +95,7 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
             </span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '28px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '36px' }}>
             {departmentCollections.map((dept) => (
               <Link
                 key={dept.id}
@@ -100,17 +103,21 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
                 className="group"
                 style={{
                   position: 'relative',
-                  borderRadius: '2px',
-                  overflow: 'hidden',
                   display: 'flex',
                   flexDirection: 'column',
                   textDecoration: 'none',
-                  backgroundColor: 'var(--bg-surface)',
-                  border: '1px solid var(--border-color)',
-                  transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease',
+                  backgroundColor: 'transparent',
                 }}
               >
-                <div style={{ position: 'relative', width: '100%', aspectRatio: '16 / 10', overflow: 'hidden', backgroundColor: 'var(--bg-subtle)' }}>
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '100%',
+                    aspectRatio: '4 / 5',
+                    overflow: 'hidden',
+                    backgroundColor: 'var(--bg-subtle)',
+                  }}
+                >
                   <Image
                     src={dept.image}
                     alt={dept.title}
@@ -118,68 +125,52 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
                     sizes="(max-width: 768px) 100vw, 33vw"
                     style={{
                       objectFit: 'cover',
+                      objectPosition: dept.objectPosition || 'center',
                       transition: 'transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
                     }}
                     className="group-hover:scale-105"
                   />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      inset: 0,
-                      background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.65) 100%)',
-                    }}
-                  />
-                  <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 2 }}>
-                    <span
-                      style={{
-                        display: 'inline-block',
-                        padding: '4px 10px',
-                        borderRadius: '4px',
-                        backgroundColor: 'rgba(20, 20, 20, 0.75)',
-                        backdropFilter: 'blur(8px)',
-                        color: '#fff',
-                        fontSize: '0.7rem',
-                        fontWeight: 600,
-                        letterSpacing: '0.08em',
-                        textTransform: 'uppercase',
-                        border: '1px solid rgba(255,255,255,0.15)',
-                      }}
-                    >
-                      {dept.badge}
-                    </span>
-                  </div>
-                  <div style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px', zIndex: 2, color: '#fff' }}>
-                    <div style={{ fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.9, marginBottom: '4px' }}>
-                      {dept.name}
-                    </div>
-                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.45rem', fontWeight: 400, color: '#fff', margin: 0 }}>
-                      {dept.title}
-                    </h3>
-                  </div>
                 </div>
 
-                <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
-                  <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.55, marginBottom: '20px' }}>
+                <div style={{ paddingTop: '18px', display: 'flex', flexDirection: 'column' }}>
+                  <h3
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '1.45rem',
+                      fontWeight: 400,
+                      color: 'var(--text-primary)',
+                      margin: '0 0 8px 0',
+                      lineHeight: 1.25,
+                      letterSpacing: '-0.01em',
+                    }}
+                  >
+                    {dept.title}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: '0.92rem',
+                      color: 'var(--text-secondary)',
+                      lineHeight: 1.55,
+                      margin: '0 0 16px 0',
+                    }}
+                  >
                     {dept.subtitle}
                   </p>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '14px', borderTop: '1px solid var(--border-color)' }}>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                      {dept.itemCount} Curated Pieces
-                    </span>
+                  <div>
                     <span
-                      className="extending-underline-link"
                       style={{
                         fontSize: '0.85rem',
-                        fontWeight: 600,
-                        letterSpacing: '0.06em',
-                        textTransform: 'uppercase',
+                        fontWeight: 500,
+                        letterSpacing: '0.02em',
+                        textDecoration: 'underline',
+                        textUnderlineOffset: '5px',
                         color: 'var(--text-primary)',
+                        display: 'inline-block',
+                        transition: 'opacity 0.2s ease',
                       }}
+                      className="group-hover:opacity-70"
                     >
-                      <span>Explore</span>
-                      <span className="arrow-micro">
-                        <ArrowRight size={15} />
-                      </span>
+                      {dept.cta}
                     </span>
                   </div>
                 </div>
@@ -192,10 +183,7 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
         <section style={{ marginBottom: '88px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '28px', borderBottom: '1px solid var(--border-color)', paddingBottom: '14px' }}>
             <div>
-              <span style={{ fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-golden-600)', fontWeight: 600 }}>
-                Permanent House Disciplines
-              </span>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 400, marginTop: '4px' }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 400, margin: 0 }}>
                 Shop by Category
               </h2>
             </div>
@@ -272,10 +260,7 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
                     </div>
                   </div>
 
-                  <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
-                    <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '16px' }}>
-                      {category.description}
-                    </p>
+                  <div style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div
                       className="extending-underline-link"
                       style={{
@@ -302,10 +287,7 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
         <section style={{ marginTop: '48px', paddingTop: '48px', borderTop: '1px solid var(--border-color)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '32px' }}>
             <div>
-              <span style={{ fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-golden-600)', fontWeight: 600 }}>
-                Iconic Selections
-              </span>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 400, marginTop: '4px' }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 400, margin: 0 }}>
                 Coveted Pieces Across Collections
               </h2>
             </div>
