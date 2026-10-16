@@ -19,14 +19,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const DIVISIONS = [
   { id: 'all', name: 'All Divisions' },
-  { id: 'cat_outerwear', name: 'Outerwear' },
-  { id: 'cat_tailoring', name: 'Tailoring' },
   { id: 'cat_eveningwear', name: 'Eveningwear' },
+  { id: 'cat_jewelry', name: 'Fine Jewelry' },
+  { id: 'cat_footwear', name: 'Footwear' },
+  { id: 'cat_fragrances', name: 'Fragrances' },
   { id: 'cat_knitwear', name: 'Knitwear' },
   { id: 'cat_leather_goods', name: 'Leather Goods' },
-  { id: 'cat_footwear', name: 'Footwear' },
-  { id: 'cat_jewelry', name: 'Fine Jewelry' },
-  { id: 'cat_fragrances', name: 'Fragrances' },
+  { id: 'cat_outerwear', name: 'Outerwear' },
+  { id: 'cat_tailoring', name: 'Tailoring' },
 ];
 
 const ADMIN_NAV_ITEMS = [

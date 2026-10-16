@@ -10,18 +10,18 @@ import { Product } from '@/types';
 import { AdminDropdown, DropdownOption } from '@/components/admin/AdminDropdown';
 
 const CATEGORY_OPTIONS: DropdownOption[] = [
-  { value: 'cat_outerwear', label: 'Outerwear' },
+  { value: 'cat_accessories', label: 'Accessories' },
+  { value: 'cat_bottoms', label: 'Bottoms' },
   { value: 'cat_dresses', label: 'Dresses' },
-  { value: 'cat_tailoring', label: 'Tailoring' },
   { value: 'cat_eveningwear', label: 'Eveningwear' },
+  { value: 'cat_jewelry', label: 'Fine Jewelry' },
+  { value: 'cat_footwear', label: 'Footwear' },
+  { value: 'cat_fragrances', label: 'Fragrances' },
   { value: 'cat_knitwear', label: 'Knitwear' },
   { value: 'cat_leather_goods', label: 'Leather Goods' },
-  { value: 'cat_footwear', label: 'Footwear' },
-  { value: 'cat_jewelry', label: 'Fine Jewelry' },
-  { value: 'cat_fragrances', label: 'Fragrances' },
+  { value: 'cat_outerwear', label: 'Outerwear' },
+  { value: 'cat_tailoring', label: 'Tailoring' },
   { value: 'cat_tops', label: 'Tops' },
-  { value: 'cat_bottoms', label: 'Bottoms' },
-  { value: 'cat_accessories', label: 'Accessories' },
 ];
 
 export default function EditProductPage() {

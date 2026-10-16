@@ -69,7 +69,7 @@
     "slug": "leather-goods",
     "description": "Full-grain calfskin tote bags, sculptural saddle clutches, and hand-stitched travel luggage.",
     "visible": true,
-    "image": "/images/categories/cat-leather-goods.webp",
+    "image": "/images/categories/cat-leather-goods.webp?v=2",
     "featuredOrder": 5,
     "bannerImage": "/images/sections/banners/banner-leather-goods.webp",
     "bannerHeadline": "Leather Goods & Atelier Bags",

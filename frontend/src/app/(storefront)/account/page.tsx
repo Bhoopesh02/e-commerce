@@ -81,7 +81,9 @@ export default function AccountOverviewPage() {
         
         .overview-block {
           padding: clamp(20px, 4vw, 32px) clamp(16px, 4vw, 24px);
-          border: 1px solid var(--overlay-black-10);
+          background-color: var(--bg-surface);
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-sm);
           cursor: pointer;
           transition: all 0.3s ease;
           display: flex;
@@ -90,8 +92,8 @@ export default function AccountOverviewPage() {
         }
         
         .overview-block:hover {
-          border-color: var(--overlay-black-30);
-          background-color: var(--overlay-black-5);
+          border-color: var(--brand-primary);
+          background-color: var(--bg-subtle);
         }
         
         .overview-block:hover .overview-action {
@@ -111,7 +113,7 @@ export default function AccountOverviewPage() {
           font-size: 0.75rem;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: var(--overlay-black-70);
+          color: var(--text-muted);
           margin-bottom: 16px;
         }
         

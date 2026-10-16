@@ -7,18 +7,18 @@ import { ArrowRight, Star } from 'lucide-react';
 export const getStatusColor = (status: string) => {
   switch (status) {
     case 'Delivered':
-      return { bg: 'rgba(102, 37, 73, 0.08)', text: 'var(--brand-primary)' };
+      return { bg: 'var(--color-success-bg)', text: 'var(--color-success)' };
     case 'Shipped':
     case 'Out for Delivery':
-      return { bg: 'var(--overlay-golden-10)', text: '#B2621C' };
+      return { bg: 'var(--color-info-bg)', text: 'var(--color-info)' };
     case 'Placed':
     case 'Confirmed':
     case 'Packed':
-      return { bg: '#F8F9FA', text: 'var(--color-black-tie)' };
+      return { bg: 'var(--bg-subtle)', text: 'var(--brand-primary)' };
     case 'Cancelled':
-      return { bg: 'rgba(174, 68, 90, 0.08)', text: 'var(--brand-accent)' };
+      return { bg: 'var(--color-error-bg)', text: 'var(--color-error)' };
     default:
-      return { bg: '#F8F9FA', text: 'var(--color-black-tie)' };
+      return { bg: 'var(--bg-subtle)', text: 'var(--text-primary)' };
   }
 };
 
@@ -200,7 +200,7 @@ export const OrderRow: React.FC<OrderRowProps> = ({ order, onReviewItem }) => {
         .row-review-btn:hover {
           border-color: var(--brand-accent);
           color: var(--brand-accent);
-          background-color: var(--overlay-golden-10);
+          background-color: var(--bg-subtle);
         }
 
         .text-action {

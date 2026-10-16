@@ -121,7 +121,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
               alignItems: 'center',
               justifyContent: 'space-between',
               cursor: 'pointer',
-              backgroundColor: selectedMethod === 'UPI' ? 'rgba(194, 155, 76, 0.06)' : 'transparent',
+              backgroundColor: selectedMethod === 'UPI' ? 'var(--bg-subtle)' : 'transparent',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -179,7 +179,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
               alignItems: 'center',
               justifyContent: 'space-between',
               cursor: 'pointer',
-              backgroundColor: selectedMethod === 'Card' ? 'rgba(194, 155, 76, 0.06)' : 'transparent',
+              backgroundColor: selectedMethod === 'Card' ? 'var(--bg-subtle)' : 'transparent',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -295,7 +295,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
               alignItems: 'center',
               justifyContent: 'space-between',
               cursor: 'pointer',
-              backgroundColor: selectedMethod === 'NetBanking' ? 'rgba(194, 155, 76, 0.06)' : 'transparent',
+              backgroundColor: selectedMethod === 'NetBanking' ? 'var(--bg-subtle)' : 'transparent',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -461,7 +461,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
               alignItems: 'center',
               justifyContent: 'space-between',
               cursor: 'pointer',
-              backgroundColor: selectedMethod === 'Wallet' ? 'rgba(194, 155, 76, 0.06)' : 'transparent',
+              backgroundColor: selectedMethod === 'Wallet' ? 'var(--bg-subtle)' : 'transparent',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -497,7 +497,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
               cursor: 'pointer',
               borderBottomLeftRadius: 'calc(var(--radius-sm) - 1px)',
               borderBottomRightRadius: 'calc(var(--radius-sm) - 1px)',
-              backgroundColor: selectedMethod === 'COD' ? 'rgba(194, 155, 76, 0.06)' : 'transparent',
+              backgroundColor: selectedMethod === 'COD' ? 'var(--bg-subtle)' : 'transparent',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>

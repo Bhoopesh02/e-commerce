@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import confetti from 'canvas-confetti';
 import dynamic from 'next/dynamic';
@@ -83,6 +84,7 @@ export const CheckoutView: React.FC = () => {
   const items = getActiveItems();
   const { user, isAuthenticated, setUser, logout, loginAsCustomer } = useAuthStore();
   const { showToast } = useToastStore();
+  const router = useRouter();
 
   useEffect(() => {
     validateCart();
@@ -616,9 +618,9 @@ export const CheckoutView: React.FC = () => {
           <div
             style={{
               padding: '16px 20px',
-              backgroundColor: 'var(--overlay-golden-10)',
+              backgroundColor: 'var(--bg-subtle)',
               borderRadius: 'var(--radius-sm)',
-              border: '1px solid var(--overlay-golden-35)',
+              border: '1px solid var(--border-color)',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '12px',
@@ -789,12 +791,21 @@ export const CheckoutView: React.FC = () => {
           </div>
 
           <div className="order-success-actions">
-            <Link href={`/account/orders/${confirmedOrder.id}`}>
-              <Button variant="primary">Track Order Progress</Button>
-            </Link>
-            <Link href="/shop">
-              <Button variant="outline" disableSheen>Continue Shopping</Button>
-            </Link>
+            <Button
+              variant="primary"
+              href={`/account/orders/${confirmedOrder.id}`}
+              onClick={() => router.push(`/account/orders/${confirmedOrder.id}`)}
+            >
+              Track Order Progress
+            </Button>
+            <Button
+              variant="outline"
+              disableSheen
+              href="/shop"
+              onClick={() => router.push('/shop')}
+            >
+              Continue Shopping
+            </Button>
           </div>
         </div>
       </div>
@@ -821,9 +832,9 @@ export const CheckoutView: React.FC = () => {
           <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>
             Add garments to your bag before initiating checkout.
           </p>
-          <Link href="/shop">
-            <Button variant="primary">Browse Collections</Button>
-          </Link>
+          <Button variant="primary" href="/shop" onClick={() => router.push('/shop')}>
+            Browse Collections
+          </Button>
         </div>
       </div>
     );
@@ -904,8 +915,8 @@ export const CheckoutView: React.FC = () => {
               maxWidth: '1040px',
               margin: '0 auto 28px',
               padding: '16px 20px',
-              backgroundColor: 'var(--overlay-golden-10)',
-              border: '1px solid var(--overlay-golden-35)',
+              backgroundColor: 'var(--color-warning-bg)',
+              border: '1px solid var(--color-warning)',
               borderRadius: 'var(--radius-sm)',
               color: 'var(--brand-primary)',
               display: 'flex',
@@ -1270,12 +1281,13 @@ export const CheckoutView: React.FC = () => {
                     <div
                       style={{
                         padding: '18px 20px',
-                        backgroundColor: 'var(--overlay-golden-10)',
-                        border: '1px solid var(--overlay-golden-35)',
+                        backgroundColor: 'var(--bg-surface)',
+                        border: '1px solid var(--border-color)',
                         borderRadius: 'var(--radius-sm)',
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '14px',
+                        boxShadow: 'var(--shadow-sm)',
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
@@ -1327,7 +1339,7 @@ export const CheckoutView: React.FC = () => {
                         </button>
                       </div>
 
-                      <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', borderTop: '1px solid var(--overlay-golden-20)', paddingTop: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', borderTop: '1px solid var(--border-light)', paddingTop: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <ShieldCheck size={14} style={{ color: 'var(--brand-primary)' }} />
                         <span>Saved addresses and concierge delivery privileges applied automatically.</span>
                       </div>
@@ -1552,7 +1564,7 @@ export const CheckoutView: React.FC = () => {
                       alignItems: 'flex-start',
                       gap: '12px',
                       padding: '14px 16px',
-                      backgroundColor: sameAsShipping ? 'var(--overlay-golden-10)' : 'var(--bg-surface)',
+                      backgroundColor: sameAsShipping ? 'var(--bg-subtle)' : 'var(--bg-surface)',
                       border: `1px solid ${sameAsShipping ? 'var(--brand-primary)' : 'var(--border-color)'}`,
                       borderRadius: 'var(--radius-sm)',
                       cursor: 'pointer',
@@ -1594,7 +1606,7 @@ export const CheckoutView: React.FC = () => {
                         flexDirection: 'column',
                         gap: '16px',
                         padding: '20px',
-                        backgroundColor: 'var(--bg-muted, rgba(0, 0, 0, 0.02))',
+                        backgroundColor: 'var(--bg-subtle)',
                         border: '1px solid var(--border-color)',
                         borderRadius: 'var(--radius-sm)',
                         marginTop: '2px',
@@ -1760,7 +1772,7 @@ export const CheckoutView: React.FC = () => {
                     padding: '20px',
                     borderRadius: 'var(--radius-sm)',
                     border: '2px solid var(--brand-primary)',
-                    backgroundColor: 'var(--overlay-golden-10)',
+                    backgroundColor: 'var(--bg-subtle)',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '12px',

@@ -12,6 +12,30 @@ import { Button } from '@/components/ui/Button';
 import { Package, Search, Plus, Sparkles, Filter, ChevronDown, Check, Edit2 } from 'lucide-react';
 import { AnimatedTrashIcon } from '@/components/ui/AnimatedTrashIcon';
 
+const CATEGORY_NAMES: Record<string, string> = {
+  cat_outerwear: 'Outerwear',
+  cat_tailoring: 'Tailoring',
+  cat_eveningwear: 'Eveningwear',
+  cat_knitwear: 'Knitwear',
+  cat_leather_goods: 'Leather Goods',
+  cat_footwear: 'Footwear',
+  cat_jewelry: 'Fine Jewelry',
+  cat_fragrances: 'Fragrances',
+  cat_dresses: 'Dresses',
+  cat_tops: 'Tops',
+  cat_bottoms: 'Bottoms',
+  cat_accessories: 'Accessories',
+};
+
+const getCategoryDisplayName = (catId: string): string => {
+  if (CATEGORY_NAMES[catId]) return CATEGORY_NAMES[catId];
+  return catId
+    .replace(/^cat_/, '')
+    .split('_')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+};
+
 function AdminProductsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -99,10 +123,15 @@ function AdminProductsPageContent() {
     return matchesSearch && matchesFilter;
   });
 
-  const categories = Array.from(new Set(products.map(p => p.categoryId)));
+  const categories = Array.from(new Set(products.map((p) => p.categoryId))).sort((a, b) =>
+    getCategoryDisplayName(a).localeCompare(getCategoryDisplayName(b))
+  );
 
-  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
-  const paginatedProducts = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+  // Arrange products in alphabetical order by name
+  const sortedProducts = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
+
+  const totalPages = Math.ceil(sortedProducts.length / ITEMS_PER_PAGE);
+  const paginatedProducts = sortedProducts.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
@@ -168,7 +197,7 @@ function AdminProductsPageContent() {
             {filterValue === 'all' ? 'Filter' : 
              ['in_stock', 'low_stock', 'out_of_stock'].includes(filterValue) ? 
              filterValue === 'in_stock' ? 'In Stock' : filterValue === 'low_stock' ? 'Low Stock' : 'Depleted'
-             : filterValue.replace('cat_', '').charAt(0).toUpperCase() + filterValue.replace('cat_', '').slice(1)}
+             : getCategoryDisplayName(filterValue)}
           </Button>
           
           <AnimatePresence>
@@ -271,7 +300,7 @@ function AdminProductsPageContent() {
                           All Categories
                           {filterValue === 'all' && <Check size={16} style={{ color: 'var(--brand-primary)' }} />}
                         </button>
-                        {categories.filter(c => c.toLowerCase().includes(categorySearch.toLowerCase())).map(cat => (
+                        {categories.filter(c => getCategoryDisplayName(c).toLowerCase().includes(categorySearch.toLowerCase())).map(cat => (
                           <button
                             key={cat}
                             onClick={() => { setFilterValue(cat); setIsFilterOpen(false); }}
@@ -289,11 +318,11 @@ function AdminProductsPageContent() {
                               fontSize: '0.85rem' 
                             }}
                           >
-                            {cat.replace('cat_', '').charAt(0).toUpperCase() + cat.replace('cat_', '').slice(1)}
+                            {getCategoryDisplayName(cat)}
                             {filterValue === cat && <Check size={16} style={{ color: 'var(--brand-primary)' }} />}
                           </button>
                         ))}
-                        {categories.filter(c => c.toLowerCase().includes(categorySearch.toLowerCase())).length === 0 && (
+                        {categories.filter(c => getCategoryDisplayName(c).toLowerCase().includes(categorySearch.toLowerCase())).length === 0 && (
                           <div style={{ padding: '20px 10px', textAlign: 'center', color: 'var(--admin-text-secondary)', fontSize: '0.85rem' }}>
                             No categories found.
                           </div>

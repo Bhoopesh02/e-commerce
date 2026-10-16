@@ -42,7 +42,7 @@ const OrderItemThumbnail: React.FC<{ src?: string; alt: string }> = ({ src, alt 
         position: 'relative',
         overflow: 'hidden',
         flexShrink: 0,
-        backgroundColor: 'var(--color-neutral-100)',
+        backgroundColor: 'var(--color-neutral-50)',
         borderRadius: 'var(--radius-sm)',
       }}
     >
@@ -64,7 +64,7 @@ const OrderItemThumbnail: React.FC<{ src?: string; alt: string }> = ({ src, alt 
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'var(--color-neutral-100)',
+            backgroundColor: 'var(--color-neutral-50)',
           }}
           aria-hidden="true"
         >
@@ -210,36 +210,11 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
                 Official Atelier Commission
               </span>
               <h1 className="order-header-title">
-                Commission #{order.id}
+                Commission Details
               </h1>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', marginTop: '6px' }}>
-                <span className="order-header-date">
-                  Registered: {new Date(order.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                </span>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Order ID:</span>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', fontWeight: 600, color: 'var(--brand-primary)' }}>
-                    {order.id}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => handleCopy(order.id, 'order')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: '2px',
-                      color: copiedField === 'order' ? 'var(--color-success)' : 'var(--text-muted)',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                    }}
-                    title="Copy Order ID"
-                    aria-label="Copy Order ID"
-                  >
-                    {copiedField === 'order' ? <Check size={13} /> : <Copy size={13} />}
-                  </button>
-                </div>
-              </div>
+              <span className="order-header-date">
+                Registered: {new Date(order.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+              </span>
             </div>
 
             <div className="order-header-actions">
@@ -507,8 +482,8 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
         }
 
         .order-tracking-strip {
-          background-color: var(--overlay-golden-10);
-          border: 1px solid var(--overlay-golden-35);
+          background-color: var(--bg-subtle);
+          border: 1px solid var(--border-color);
           border-radius: var(--radius-sm);
           padding: 16px 20px;
           display: flex;
@@ -560,7 +535,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
           border-radius: var(--radius-sm);
           overflow: hidden;
           flex-shrink: 0;
-          background-color: var(--color-neutral-100);
+          background-color: var(--color-neutral-50);
         }
 
         .order-item-fallback {
@@ -569,7 +544,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
           display: flex;
           align-items: center;
           justify-content: center;
-          background-color: var(--color-neutral-100);
+          background-color: var(--color-neutral-50);
         }
 
         .order-item-content {

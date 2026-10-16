@@ -326,7 +326,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
         
         .page-subheading {
           font-size: 0.95rem;
-          color: var(--overlay-scrim);
+          color: var(--text-muted);
         }
         
         .section-title {
@@ -340,7 +340,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
         
         .section-subtitle {
           font-size: 0.9rem;
-          color: var(--overlay-scrim);
+          color: var(--text-muted);
           margin-bottom: 32px;
         }
         
@@ -360,7 +360,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
 
         .empty-state-text {
           font-size: 0.95rem;
-          color: var(--overlay-scrim);
+          color: var(--text-muted);
           margin-bottom: 24px;
         }
       `}</style>

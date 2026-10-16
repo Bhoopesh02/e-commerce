@@ -104,6 +104,16 @@ textarea {
   outline: none;
 }
 
+/* Ensure browser autofill maintains luxury theme colors and does not tint inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-surface) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 button {
   cursor: pointer;
 }
@@ -873,13 +883,12 @@ button.filter-btn:focus-visible,
     flex-direction: column;
   }
 
-  .order-success-actions a {
-    width: 100%;
-    display: block;
-  }
-
-  .order-success-actions a button {
-    width: 100%;
+  .order-success-actions a,
+  .order-success-actions button,
+  .order-success-actions .luxury-btn {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
   }
 }
 
