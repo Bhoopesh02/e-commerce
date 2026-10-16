@@ -60,7 +60,7 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] Guest checkout and sign-in option *(Enforced authentication: guests clicking checkout are prompted to sign in or create an account)*
 - [x] Customer contact details
 - [x] Shipping address form and validation
-- [ ] Saved address selection and editing *(Loads default address; no picker for multiple saved addresses)*
+- [x] Saved address selection and editing *(Loads default address for shipping; quick-fill chips from saved addresses for distinct billing entity)*
 - [x] Delivery method and estimated delivery date
 - [x] Billing address selection *(Implemented: "Billing address matches shipping destination" luxury toggle, distinct billing address form with client/entity name, street address, city, state, PIN, quick-fill chips from saved addresses, inline validation, and order confirmation / order details breakdown)*
 - [x] Order summary visible during checkout
@@ -93,8 +93,8 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] No clutter, broken imagery or inconsistent layouts
 
 ### H. Responsive, States & Usability Testing
-- [x] Test desktop, tablet and mobile layouts
-- [x] Test all navigation links and interactive controls
+- [ ] Test desktop, tablet and mobile layouts
+- [ ] Test all navigation links and interactive controls
 - [x] Loading skeletons or loading indicators
 - [x] Empty, error, success and disabled states
 - [x] Form validation and useful error messages
@@ -114,37 +114,37 @@ This document tracks the feature status, completed deliverables, and remaining a
   - **Files**: `frontend/src/store/useCartStore.ts`, `frontend/src/store/useWishlistStore.ts`
   - **Goal**: Integrate Zustand `persist` middleware with `localStorage` so items survive browser refresh and navigation.
 
-- [ ] **Task 2: Size & Colour Filters on Shop Page**
+- [x] **Task 2: Size & Colour Filters on Shop Page**
   - **Files**: `frontend/src/components/views/ShopView.tsx`
-  - **Goal**: Add Size and Colour swatch filter controls to the shop filter drawer, mirroring the existing filter functionality in `SearchView.tsx`.
+  - **Goal**: Added Size pills, alphabetical luxury Colour swatches (`COLOR_GROUPS`), price slider with presets, and in-stock availability filters with active filter chips and clear-all action to the shop filter drawer.
 
-- [ ] **Task 3: Colour Selection on Product Detail Page (PDP)**
+- [x] **Task 3: Colour Selection on Product Detail Page (PDP)**
   - **Files**: `frontend/src/components/views/ProductDetailView.tsx`
-  - **Goal**: Add visual colour swatches alongside the size buttons so clients can pick variant colours directly.
+  - **Goal**: Added visual colour swatches with active ring indicator, hover colour labels, color-linked image preview switching, and dynamic size availability filtering based on selected colourway.
 
-- [ ] **Task 4: Real-time In-Cart Stock & Price Validation**
-  - **Files**: `frontend/src/components/cart/CartDrawer.tsx`, `frontend/src/components/views/CartView.tsx`
-  - **Goal**: Flag out-of-stock items or price adjustments with clear inline notices before initiating checkout.
+- [x] **Task 4: Real-time In-Cart Stock & Price Validation**
+  - **Files**: `frontend/src/components/cart/CartDrawer.tsx`, `frontend/src/components/views/CartView.tsx`, `frontend/src/store/useCartStore.ts`
+  - **Goal**: Implemented real-time catalog price and stock level validation across Cart Drawer, Cart page, and Checkout, with warning banners, auto-sync price adjustments, and one-click removal of unfulfillable items.
 
 ---
 
 ### Priority 2: Checkout & Policy Completeness (P1)
 
-- [ ] **Task 5: Order ID Display & Confirmation Enhancements**
-  - **Files**: `frontend/src/components/views/CheckoutView.tsx`
-  - **Goal**: Display the explicit Order ID (e.g. `Order #ORD-849201`) on the order confirmation screen alongside the carrier tracking ID.
+- [x] **Task 5: Order ID Display & Confirmation Enhancements**
+  - **Files**: `frontend/src/components/views/CheckoutView.tsx`, `frontend/src/components/views/OrderDetailView.tsx`
+  - **Goal**: Prominently displayed explicit Order ID (e.g. `ORD-849201`) alongside Carrier Tracking ID on the checkout confirmation screen and order detail views with one-click copy buttons and delivery dossier notice.
 
-- [ ] **Task 6: Checkout Saved Address Picker & Billing Address Toggle**
+- [x] **Task 6: Checkout Saved Address Picker & Billing Address Toggle**
   - **Files**: `frontend/src/components/views/CheckoutView.tsx`
-  - **Goal**: Allow authenticated users to select between their saved addresses and add an optional "Billing address same as shipping" toggle.
+  - **Goal**: Added luxury "Billing address matches shipping destination" toggle, distinct billing entity form, and quick-fill chips from saved profile addresses. Auto-populates shipping address from authenticated client default address.
 
-- [ ] **Task 7: Guest Checkout vs. Sign-in Option**
-  - **Files**: `frontend/src/components/views/CheckoutView.tsx`
-  - **Goal**: Add a prominent sign-in prompt/toggle for unauthenticated users at step 1 of checkout.
+- [x] **Task 7: Guest Checkout vs. Sign-in Option**
+  - **Files**: `frontend/src/components/views/CheckoutView.tsx`, `frontend/src/components/checkout/CheckoutAuthModal.tsx`
+  - **Goal**: Implemented mandatory patron authentication gate at Step 1 of checkout with tabbed Sign-in / Register forms and `CheckoutAuthModal` interceptor for unauthenticated patrons initiating checkout from cart/drawer.
 
-- [ ] **Task 8: Footer Policies & Social Media Links**
-  - **Files**: `frontend/src/components/navigation/Footer.tsx`, `frontend/src/app/(storefront)/policies/`
-  - **Goal**: Add links to Privacy Policy, Terms of Service, and Shipping/Returns, plus luxury social media icons (Instagram, Pinterest, Facebook).
+- [x] **Task 8: Footer Policies & Social Media Links**
+  - **Files**: `frontend/src/components/navigation/Footer.tsx`
+  - **Goal**: Integrated luxury circular social media channels (Instagram, Facebook, YouTube, Telegram, WhatsApp), headquarters address, and links to Client Concierge, Help Centre & FAQs, Order History, and Bespoke Support.
 
 ---
 
@@ -171,3 +171,20 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] **Task 14: Brand Storytelling & Craftsmanship Section**
   - **Files**: `frontend/src/components/views/HomeView.tsx`
   - **Goal**: Implemented bespoke `BrandStory` section featuring manifesto headline, Florentine leather & Milanese tailoring heritage narrative, and lookbook indicators.
+
+- [x] **Task 15: Editorial About Us & Brand Heritage Page**
+  - **Files**: `frontend/src/app/(storefront)/about/page.tsx`, `frontend/src/components/views/AboutView.tsx`
+  - **Goal**: Created editorial brand journey page featuring Florentine leather and Milanese tailoring heritage, master artisan portraits, material traceability manifesto, and interactive timeline.
+
+- [x] **Task 16: Catalog Alphabetization & Sorting Governance**
+  - **Files**: `frontend/src/data/categories.json`, `frontend/src/lib/mockApi.ts`, `frontend/src/app/admin/(panel)/products/page.tsx`, `frontend/src/components/views/ShopView.tsx`
+  - **Goal**: Alphabetized product catalog and category listings systematically across customer storefront navigation, filter drawers, and admin inventory management panels.
+
+- [x] **Task 17: Lookahead Scroll Image Preloading & WebP Standard**
+  - **Files**: `frontend/src/hooks/useScrollPreload.ts`, `frontend/src/lib/preloadImage.ts`, `frontend/src/components/product/ProductCard.tsx`
+  - **Goal**: Implemented scroll-velocity lookahead preloader to pre-cache upcoming catalog product images before they enter viewport. Converted and standardized all imagery to WebP format.
+
+- [x] **Task 18: Design System Tokens & Interactive Feedback Polish**
+  - **Files**: `frontend/src/styles/globals.css`, `frontend/COLOR_SYSTEM.md`, `frontend/src/components/ui/Button.tsx`, `frontend/src/components/navigation/Navbar.tsx`
+  - **Goal**: Refined design tokens and color system documentation, enhanced Button component with robust programmatic and Link-based navigation, added isolated icon tooltips in Navbar, and verified WCAG AA contrast.
+
