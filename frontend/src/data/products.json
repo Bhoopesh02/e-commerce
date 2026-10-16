@@ -290,8 +290,8 @@
     "categoryId": "cat_leather_goods",
     "price": 28999,
     "images": [
-      "/images/products/leather-goods/atelier-sculptural-leather-tote-4k-1.webp",
-      "/images/products/leather-goods/atelier-sculptural-leather-tote-4k-2.webp"
+      "/images/products/leather-goods/atelier-sculptural-leather-tote-v2-1.webp",
+      "/images/products/leather-goods/atelier-sculptural-leather-tote-v2-2.webp"
     ],
     "variants": [
       {
@@ -299,14 +299,14 @@
         "size": "One Size",
         "color": "Cognac Ochre",
         "stock": 7,
-        "image": "/images/products/leather-goods/atelier-sculptural-leather-tote-4k-1.webp"
+        "image": "/images/products/leather-goods/atelier-sculptural-leather-tote-v2-1.webp"
       },
       {
         "sku": "TOT-BLK-ONE",
         "size": "One Size",
         "color": "Onyx Black",
         "stock": 3,
-        "image": "/images/products/leather-goods/atelier-sculptural-leather-tote-4k-2.webp"
+        "image": "/images/products/leather-goods/atelier-sculptural-leather-tote-v2-2.webp"
       }
     ],
     "availability": "in_stock",
@@ -1739,20 +1739,23 @@
     "categoryId": "cat_leather_goods",
     "price": 22499,
     "images": [
-      "/images/products/leather-goods/curve-calfskin-crossbody-saddle-bag.webp"
+      "/images/products/leather-goods/curve-calfskin-crossbody-saddle-bag-1.webp",
+      "/images/products/leather-goods/curve-calfskin-crossbody-saddle-bag-2.webp"
     ],
     "variants": [
       {
         "sku": "SDL-TAN-ONE",
         "size": "One Size",
         "color": "Caramel Tan",
-        "stock": 4
+        "stock": 4,
+        "image": "/images/products/leather-goods/curve-calfskin-crossbody-saddle-bag-1.webp"
       },
       {
         "sku": "SDL-BLK-ONE",
         "size": "One Size",
         "color": "Nocturne Black",
-        "stock": 3
+        "stock": 3,
+        "image": "/images/products/leather-goods/curve-calfskin-crossbody-saddle-bag-2.webp"
       }
     ],
     "availability": "in_stock",
@@ -1799,15 +1802,23 @@
     "categoryId": "cat_leather_goods",
     "price": 36999,
     "images": [
-      "/images/sections/products/leather-goods/florentine-flap-briefcase-1.webp",
-      "/images/sections/products/leather-goods/florentine-flap-briefcase-2.webp"
+      "/images/products/leather-goods/florentine-flap-briefcase-1.webp",
+      "/images/products/leather-goods/florentine-flap-briefcase-2.webp"
     ],
     "variants": [
       {
         "sku": "BRF-BRN-ONE",
         "size": "One Size",
         "color": "Antique Havana",
-        "stock": 2
+        "stock": 4,
+        "image": "/images/products/leather-goods/florentine-flap-briefcase-1.webp"
+      },
+      {
+        "sku": "BRF-BLK-ONE",
+        "size": "One Size",
+        "color": "Obsidian Black",
+        "stock": 3,
+        "image": "/images/products/leather-goods/florentine-flap-briefcase-2.webp"
       }
     ],
     "availability": "low_stock",
@@ -1853,21 +1864,23 @@
     "categoryId": "cat_leather_goods",
     "price": 18999,
     "images": [
-      "/images/sections/products/leather-goods/grained-leather-folded-clutch-1.webp",
-      "/images/sections/products/leather-goods/grained-leather-folded-clutch-2.webp"
+      "/images/products/leather-goods/grained-leather-folded-clutch-1.webp",
+      "/images/products/leather-goods/grained-leather-folded-clutch-2.webp"
     ],
     "variants": [
       {
         "sku": "CLU-IVR-ONE",
         "size": "One Size",
         "color": "Cream Ecru",
-        "stock": 5
+        "stock": 5,
+        "image": "/images/products/leather-goods/grained-leather-folded-clutch-1.webp"
       },
       {
         "sku": "CLU-BLK-ONE",
         "size": "One Size",
         "color": "Raven Black",
-        "stock": 4
+        "stock": 4,
+        "image": "/images/products/leather-goods/grained-leather-folded-clutch-2.webp"
       }
     ],
     "availability": "in_stock",
@@ -1914,21 +1927,23 @@
     "categoryId": "cat_leather_goods",
     "price": 38999,
     "images": [
-      "/images/sections/products/leather-goods/pebbled-leather-weekend-duffle-1.webp",
-      "/images/sections/products/leather-goods/pebbled-leather-weekend-duffle-2.webp"
+      "/images/products/leather-goods/pebbled-leather-weekend-duffle-1.webp",
+      "/images/products/leather-goods/pebbled-leather-weekend-duffle-2.webp"
     ],
     "variants": [
       {
         "sku": "DUF-BLK-ONE",
         "size": "One Size",
         "color": "Midnight Black",
-        "stock": 3
+        "stock": 3,
+        "image": "/images/products/leather-goods/pebbled-leather-weekend-duffle-1.webp"
       },
       {
         "sku": "DUF-COGNAC-ONE",
         "size": "One Size",
-        "color": "Cognac golden",
-        "stock": 2
+        "color": "Cognac Golden",
+        "stock": 2,
+        "image": "/images/products/leather-goods/pebbled-leather-weekend-duffle-2.webp"
       }
     ],
     "availability": "in_stock",
@@ -1974,21 +1989,23 @@
     "categoryId": "cat_leather_goods",
     "price": 24999,
     "images": [
-      "/images/sections/products/leather-goods/structured-baguette-shoulder-bag-1.webp",
-      "/images/sections/products/leather-goods/structured-baguette-shoulder-bag-2.webp"
+      "/images/products/leather-goods/structured-baguette-shoulder-bag-1.webp",
+      "/images/products/leather-goods/structured-baguette-shoulder-bag-2.webp"
     ],
     "variants": [
       {
         "sku": "BAG-BUR-ONE",
         "size": "One Size",
         "color": "Deep Burgundy",
-        "stock": 3
+        "stock": 3,
+        "image": "/images/products/leather-goods/structured-baguette-shoulder-bag-1.webp"
       },
       {
         "sku": "BAG-BLK-ONE",
         "size": "One Size",
         "color": "Pitch Black",
-        "stock": 4
+        "stock": 4,
+        "image": "/images/products/leather-goods/structured-baguette-shoulder-bag-2.webp"
       }
     ],
     "availability": "in_stock",
@@ -4281,20 +4298,23 @@
     "categoryId": "cat_leather_goods",
     "price": 29999,
     "images": [
-      "/images/products/leather-goods/minimalist-box-calf-top-handle-1.webp"
+      "/images/products/leather-goods/minimalist-box-calf-top-handle-1.webp",
+      "/images/products/leather-goods/minimalist-box-calf-top-handle-2.webp"
     ],
     "variants": [
       {
         "sku": "TH-BLK-OS",
         "size": "One Size",
         "color": "Nocturne Black",
-        "stock": 3
+        "stock": 3,
+        "image": "/images/products/leather-goods/minimalist-box-calf-top-handle-1.webp"
       },
       {
         "sku": "TH-COG-OS",
         "size": "One Size",
         "color": "Cognac Tan",
-        "stock": 2
+        "stock": 2,
+        "image": "/images/products/leather-goods/minimalist-box-calf-top-handle-2.webp"
       }
     ],
     "availability": "in_stock",
@@ -4341,14 +4361,23 @@
     "categoryId": "cat_leather_goods",
     "price": 34000,
     "images": [
-      "/images/products/leather-goods/braided-lambskin-oversized-hobo-1.webp"
+      "/images/products/leather-goods/braided-lambskin-oversized-hobo-1.webp",
+      "/images/products/leather-goods/braided-lambskin-oversized-hobo-2.webp"
     ],
     "variants": [
       {
         "sku": "HB-CHL-OS",
         "size": "One Size",
         "color": "Chocolate Espresso",
-        "stock": 4
+        "stock": 4,
+        "image": "/images/products/leather-goods/braided-lambskin-oversized-hobo-1.webp"
+      },
+      {
+        "sku": "HB-ECR-OS",
+        "size": "One Size",
+        "color": "Warm Ecru",
+        "stock": 3,
+        "image": "/images/products/leather-goods/braided-lambskin-oversized-hobo-2.webp"
       }
     ],
     "availability": "in_stock",
@@ -4395,20 +4424,23 @@
     "categoryId": "cat_leather_goods",
     "price": 9999,
     "images": [
-      "/images/products/leather-goods/grained-leather-slim-folio-1.webp"
+      "/images/products/leather-goods/grained-leather-slim-folio-v2-1.webp",
+      "/images/products/leather-goods/grained-leather-slim-folio-v2-2.webp"
     ],
     "variants": [
       {
         "sku": "FP-NAV-OS",
         "size": "One Size",
         "color": "Midnight Marine",
-        "stock": 8
+        "stock": 8,
+        "image": "/images/products/leather-goods/grained-leather-slim-folio-v2-1.webp"
       },
       {
         "sku": "FP-BLK-OS",
         "size": "One Size",
         "color": "Nocturne Black",
-        "stock": 7
+        "stock": 7,
+        "image": "/images/products/leather-goods/grained-leather-slim-folio-v2-2.webp"
       }
     ],
     "availability": "in_stock",
@@ -4456,20 +4488,23 @@
     "categoryId": "cat_leather_goods",
     "price": 15999,
     "images": [
-      "/images/products/leather-goods/sculptural-half-moon-belt-bag-1.webp"
+      "/images/products/leather-goods/sculptural-half-moon-belt-bag-v2-1.webp",
+      "/images/products/leather-goods/sculptural-half-moon-belt-bag-v2-2.webp"
     ],
     "variants": [
       {
         "sku": "BB-BRN-OS",
         "size": "One Size",
         "color": "Sienna Brown",
-        "stock": 5
+        "stock": 5,
+        "image": "/images/products/leather-goods/sculptural-half-moon-belt-bag-v2-1.webp"
       },
       {
         "sku": "BB-BLK-OS",
         "size": "One Size",
         "color": "Onyx Black",
-        "stock": 4
+        "stock": 4,
+        "image": "/images/products/leather-goods/sculptural-half-moon-belt-bag-v2-2.webp"
       }
     ],
     "availability": "in_stock",
@@ -4518,20 +4553,23 @@
     "categoryId": "cat_leather_goods",
     "price": 8499,
     "images": [
-      "/images/products/leather-goods/vintage-leather-satchel-briefcase.webp"
+      "/images/products/leather-goods/vintage-leather-satchel-briefcase-1.webp",
+      "/images/products/leather-goods/vintage-leather-satchel-briefcase-2.webp"
     ],
     "variants": [
       {
         "sku": "SB-BRN-OS",
         "size": "One Size",
         "color": "Vintage Brown",
-        "stock": 6
+        "stock": 6,
+        "image": "/images/products/leather-goods/vintage-leather-satchel-briefcase-1.webp"
       },
       {
         "sku": "SB-BLK-OS",
         "size": "One Size",
         "color": "Classic Black",
-        "stock": 8
+        "stock": 8,
+        "image": "/images/products/leather-goods/vintage-leather-satchel-briefcase-2.webp"
       }
     ],
     "availability": "in_stock",

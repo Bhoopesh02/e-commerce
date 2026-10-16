@@ -1742,4 +1742,179 @@ button.filter-btn:focus-visible,
   }
 }
 
+/* ==========================================================================
+   Search Recommendations - Mobile View Only Optimizations (<= 767px)
+   ========================================================================== */
+@media (max-width: 767px) {
+  /* Recommendations dropdown popover container */
+  .search-suggestions-dropdown {
+    top: calc(100% + 6px) !important;
+    border-radius: 12px !important;
+    max-height: min(440px, 72vh) !important;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  }
+
+  /* Inner scrollable area */
+  .search-suggestions-inner {
+    padding: 10px 12px !important;
+    gap: 12px !important;
+  }
+
+  /* Section headers */
+  .search-suggestions-header {
+    margin-bottom: 6px !important;
+    gap: 4px !important;
+  }
+  .search-suggestions-header-title {
+    font-size: 0.65rem !important;
+    letter-spacing: 0.06em !important;
+    margin-bottom: 6px !important;
+  }
+  .search-suggestions-header-icon {
+    width: 11px !important;
+    height: 11px !important;
+  }
+  .search-suggestions-clear-btn {
+    font-size: 0.65rem !important;
+  }
+
+  /* Trending Suggestions Grid: compact, balanced 2-column alignment */
+  .search-trending-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+  }
+  .search-trending-btn {
+    padding: 6px 8px !important;
+    font-size: 0.72rem !important;
+    gap: 6px !important;
+    border-radius: 6px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+  .search-trending-icon {
+    width: 11px !important;
+    height: 11px !important;
+    flex-shrink: 0 !important;
+  }
+  .search-trending-text {
+    font-size: 0.72rem !important;
+    line-height: 1.25 !important;
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: left !important;
+  }
+
+  /* Explore by Category pills */
+  .search-category-wrap {
+    gap: 5px !important;
+  }
+  .search-category-btn {
+    padding: 4px 9px !important;
+    font-size: 0.70rem !important;
+    line-height: 1.2 !important;
+    border-radius: 9999px !important;
+  }
+
+  /* Recent Inquiries items */
+  .search-recent-item {
+    padding: 5px 8px !important;
+    font-size: 0.75rem !important;
+    border-radius: 6px !important;
+  }
+  .search-recent-icon {
+    width: 12px !important;
+    height: 12px !important;
+  }
+  .search-recent-text {
+    font-size: 0.75rem !important;
+  }
+
+  /* Query Active mode elements */
+  .search-query-match-btn {
+    padding: 5px 8px !important;
+    font-size: 0.75rem !important;
+    border-radius: 6px !important;
+  }
+  .search-matching-cats-wrap {
+    gap: 5px !important;
+  }
+  .search-matching-cat-btn {
+    padding: 4px 9px !important;
+    font-size: 0.70rem !important;
+  }
+  .search-preview-item {
+    padding: 4px 6px !important;
+    gap: 8px !important;
+    border-radius: 8px !important;
+  }
+  .search-preview-img-box {
+    width: 34px !important;
+    height: 42px !important;
+  }
+  .search-preview-name {
+    font-size: 0.74rem !important;
+  }
+  .search-preview-cat {
+    font-size: 0.65rem !important;
+  }
+  .search-preview-price {
+    font-size: 0.74rem !important;
+  }
+
+  /* Trending pills row under search input */
+  .search-trending-pills-bar {
+    gap: 5px !important;
+    margin-bottom: 20px !important;
+    padding: 0 4px !important;
+  }
+  .search-trending-pills-label {
+    font-size: 0.68rem !important;
+  }
+  .search-trending-pill-btn {
+    padding: 3px 9px !important;
+    font-size: 0.70rem !important;
+  }
+
+  /* Empty state recommendation pills */
+  .search-empty-state-title {
+    font-size: 0.66rem !important;
+    margin-bottom: 8px !important;
+  }
+  .search-empty-state-pills {
+    gap: 5px !important;
+  }
+  .search-empty-state-pill-btn {
+    padding: 4px 10px !important;
+    font-size: 0.72rem !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .search-trending-btn {
+    padding: 5px 6px !important;
+    font-size: 0.68rem !important;
+    gap: 4px !important;
+  }
+  .search-trending-text {
+    font-size: 0.68rem !important;
+  }
+  .search-trending-icon {
+    width: 10px !important;
+    height: 10px !important;
+  }
+  .search-category-btn {
+    padding: 3px 7px !important;
+    font-size: 0.66rem !important;
+  }
+}
+
+
 

@@ -845,19 +845,20 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                 flexDirection: 'column',
               }}
             >
-              <div style={{ overflowY: 'auto', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div className="search-suggestions-inner" style={{ overflowY: 'auto', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 {/* Mode 1: Empty Query - Show Recents, Trending & Categories */}
                 {!query.trim() ? (
                   <>
                     {/* Recent Searches */}
                     {recentSearches.length > 0 && (
-                      <div>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                          <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <Clock size={12} /> Recent Inquiries
+                      <div className="search-recent-section">
+                        <div className="search-suggestions-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                          <span className="search-suggestions-header-title" style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <Clock size={12} className="search-suggestions-header-icon" /> Recent Inquiries
                           </span>
                           <button
                             type="button"
+                            className="search-suggestions-clear-btn"
                             onClick={handleClearAllRecentSearches}
                             style={{
                               background: 'none',
@@ -876,6 +877,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                           {recentSearches.map((term, idx) => (
                             <div
                               key={term}
+                              className="search-recent-item"
                               onClick={() => applySearchQuery(term)}
                               style={{
                                 display: 'flex',
@@ -896,9 +898,9 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                                 }
                               }}
                             >
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <Clock size={14} style={{ color: 'var(--text-muted)' }} />
-                                <span>{term}</span>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+                                <Clock size={14} className="search-recent-icon" style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                                <span className="search-recent-text" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{term}</span>
                               </div>
                               <button
                                 type="button"
@@ -912,6 +914,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                                   padding: '2px',
                                   display: 'flex',
                                   alignItems: 'center',
+                                  flexShrink: 0,
                                 }}
                               >
                                 <X size={14} />
@@ -923,20 +926,21 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                     )}
 
                     {/* Trending Searches */}
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
-                        <TrendingUp size={13} style={{ color: 'var(--brand-primary)' }} />
-                        <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)' }}>
+                    <div className="search-trending-section">
+                      <div className="search-suggestions-header" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+                        <TrendingUp size={13} className="search-suggestions-header-icon" style={{ color: 'var(--brand-primary)', flexShrink: 0 }} />
+                        <span className="search-suggestions-header-title" style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)' }}>
                           Trending Suggestions
                         </span>
                       </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '6px' }}>
+                      <div className="search-trending-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '6px' }}>
                         {ROTATING_QUERIES.map((item, idx) => {
                           const itemIndex = recentSearches.length + idx;
                           return (
                             <button
                               key={item}
                               type="button"
+                              className="search-trending-btn"
                               onClick={() => applySearchQuery(item)}
                               style={{
                                 display: 'flex',
@@ -951,6 +955,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                                 textAlign: 'left',
                                 cursor: 'pointer',
                                 transition: 'all 150ms ease',
+                                minWidth: 0,
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.backgroundColor = 'var(--surface-brand)';
@@ -963,8 +968,8 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                                 }
                               }}
                             >
-                              <Search size={13} style={{ color: 'var(--brand-primary)', flexShrink: 0 }} />
-                              <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item}</span>
+                              <Search size={13} className="search-trending-icon" style={{ color: 'var(--brand-primary)', flexShrink: 0 }} />
+                              <span className="search-trending-text" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: 0, flex: 1 }}>{item}</span>
                             </button>
                           );
                         })}
@@ -972,15 +977,16 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                     </div>
 
                     {/* Quick Category Jump */}
-                    <div>
-                      <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '10px' }}>
+                    <div className="search-category-section">
+                      <span className="search-suggestions-header-title" style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '10px' }}>
                         Explore by Category
                       </span>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                      <div className="search-category-wrap" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                         {categories.slice(0, 6).map((cat) => (
                           <button
                             key={cat.id}
                             type="button"
+                            className="search-category-btn"
                             onClick={() => {
                               setActiveCategory(cat.slug);
                               setStagedCategory(cat.slug);
@@ -1020,7 +1026,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                     {/* Matching Phrase Suggestions */}
                     {autocompleteData.queryMatches.length > 0 && (
                       <div>
-                        <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '8px' }}>
+                        <span className="search-suggestions-header-title" style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '8px' }}>
                           Suggested Inquiries
                         </span>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
@@ -1028,6 +1034,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                             <button
                               key={phrase}
                               type="button"
+                              className="search-query-match-btn"
                               onClick={() => applySearchQuery(phrase)}
                               style={{
                                 display: 'flex',
@@ -1064,14 +1071,15 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                     {/* Matching Categories */}
                     {autocompleteData.categoryMatches.length > 0 && (
                       <div>
-                        <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '8px' }}>
+                        <span className="search-suggestions-header-title" style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '8px' }}>
                           Matching Categories
                         </span>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        <div className="search-matching-cats-wrap" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                           {autocompleteData.categoryMatches.map((cat) => (
                             <button
                               key={cat.id}
                               type="button"
+                              className="search-matching-cat-btn"
                               onClick={() => {
                                 setActiveCategory(cat.slug);
                                 setStagedCategory(cat.slug);
@@ -1103,7 +1111,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                     {/* Matching Product Previews */}
                     {autocompleteData.productMatches.length > 0 && (
                       <div>
-                        <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '10px' }}>
+                        <span className="search-suggestions-header-title" style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '10px' }}>
                           Preview Pieces ({autocompleteData.productMatches.length})
                         </span>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -1111,6 +1119,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                             <Link
                               key={prod.id}
                               href={`/product/${prod.slug || prod.id}`}
+                              className="search-preview-item"
                               onClick={() => {
                                 handleSaveRecentSearch(prod.name);
                                 setShowSuggestions(false);
@@ -1129,6 +1138,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                             >
                               <div
+                                className="search-preview-img-box"
                                 style={{
                                   position: 'relative',
                                   width: '42px',
@@ -1150,14 +1160,14 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                                 )}
                               </div>
                               <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ fontSize: '0.86rem', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                <div className="search-preview-name" style={{ fontSize: '0.86rem', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                   {prod.name}
                                 </div>
-                                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                                <div className="search-preview-cat" style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
                                   {categories.find((c) => c.id === prod.categoryId)?.name || 'Atelier Collection'}
                                 </div>
                               </div>
-                              <div style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--brand-primary)', flexShrink: 0 }}>
+                              <div className="search-preview-price" style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--brand-primary)', flexShrink: 0 }}>
                                 {formatPrice(prod.price)}
                               </div>
                             </Link>
@@ -1174,6 +1184,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
 
         {/* Curated Trending Suggestions Pills */}
         <div
+          className="search-trending-pills-bar"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -1184,6 +1195,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
           }}
         >
           <span
+            className="search-trending-pills-label"
             style={{
               fontSize: '0.74rem',
               textTransform: 'uppercase',
@@ -1200,6 +1212,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
             <button
               key={item}
               type="button"
+              className="search-trending-pill-btn"
               onClick={() => applySearchQuery(item)}
               style={{
                 display: 'inline-flex',
@@ -1788,6 +1801,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                   {/* Curated Inquiries Suggestions within Empty State */}
                   <div style={{ marginBottom: '32px' }}>
                     <div
+                      className="search-empty-state-title"
                       style={{
                         fontSize: '0.72rem',
                         textTransform: 'uppercase',
@@ -1800,6 +1814,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                       Try searching for
                     </div>
                     <div
+                      className="search-empty-state-pills"
                       style={{
                         display: 'flex',
                         flexWrap: 'wrap',
@@ -1813,6 +1828,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                         <button
                           key={item}
                           type="button"
+                          className="search-empty-state-pill-btn"
                           onClick={() => applySearchQuery(item)}
                           style={{
                             padding: '6px 14px',
