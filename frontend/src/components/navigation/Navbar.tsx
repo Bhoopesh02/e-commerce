@@ -31,8 +31,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const { storefront } = useStorefrontStore();
   const { user } = useAuthStore();
 
-  const cartCount = getCartItemCount();
-  const wishlistCount = productIds.length;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const cartCount = mounted ? getCartItemCount() : 0;
+  const wishlistCount = mounted ? productIds.length : 0;
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -827,8 +832,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           border-color: transparent transparent rgba(18, 18, 18, 0.94) transparent;
         }
         @media (hover: hover) and (pointer: fine) {
-          .navbar-action-item:hover .nav-tooltip,
-          .navbar-action-item:focus-within .nav-tooltip {
+          .navbar-action-item:hover .nav-tooltip {
             opacity: 1;
             visibility: visible;
           }

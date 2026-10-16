@@ -15,6 +15,7 @@ import {
   ChevronDown,
   ChevronRight,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const DIVISIONS = [
   { id: 'all', name: 'All Divisions' },
@@ -41,8 +42,16 @@ export const AdminSidebar: React.FC = () => {
   const { loginAsCustomer } = useAuthStore();
   
   const [isProductsExpanded, setIsProductsExpanded] = React.useState(pathname === '/admin/products');
+  const activeDivRef = React.useRef<HTMLAnchorElement>(null);
   
   const currentCategory = searchParams.get('category') || 'all';
+
+  // Automatically keep selected category in view inside the scroll container
+  React.useEffect(() => {
+    if (isProductsExpanded && activeDivRef.current) {
+      activeDivRef.current.scrollIntoView({ block: 'nearest' });
+    }
+  }, [isProductsExpanded, currentCategory]);
 
   return (
     <aside className="admin-sidebar">
@@ -84,6 +93,7 @@ export const AdminSidebar: React.FC = () => {
                   className={`admin-nav-link ${isActive ? 'admin-nav-link-active' : ''}`}
                   onClick={() => setIsProductsExpanded(!isProductsExpanded)}
                   style={{ width: '100%', justifyContent: 'space-between', border: 'none', background: 'transparent', cursor: 'pointer' }}
+                  aria-expanded={isProductsExpanded}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <span style={{ color: isActive ? 'var(--brand-primary)' : 'inherit', display: 'flex', alignItems: 'center' }}>
@@ -95,31 +105,53 @@ export const AdminSidebar: React.FC = () => {
                     {isProductsExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                   </span>
                 </button>
-                {isProductsExpanded && (
-                  <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '32px', marginTop: '4px', gap: '4px' }}>
-                    {DIVISIONS.map(div => {
-                      const isDivActive = isActive && currentCategory === div.id;
-                      const href = div.id === 'all' ? '/admin/products' : `/admin/products?category=${div.id}`;
-                      return (
-                        <Link
-                          key={div.id}
-                          href={href}
-                          style={{
-                            padding: '6px 12px',
-                            fontSize: '0.85rem',
-                            color: isDivActive ? 'var(--brand-primary)' : 'var(--admin-text-secondary)',
-                            textDecoration: 'none',
-                            borderRadius: '4px',
-                            backgroundColor: isDivActive ? 'var(--overlay-sapphire-10)' : 'transparent',
-                            transition: 'all 0.2s ease'
-                          }}
-                        >
-                          {div.name}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
+                <AnimatePresence>
+                  {isProductsExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2, ease: 'easeOut' }}
+                      style={{ overflow: 'hidden' }}
+                    >
+                      <div
+                        className="admin-dropdown-scroll-container"
+                        data-lenis-prevent="true"
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          marginLeft: '32px',
+                          marginTop: '4px',
+                          gap: '4px',
+                        }}
+                      >
+                        {DIVISIONS.map(div => {
+                          const isDivActive = isActive && currentCategory === div.id;
+                          const href = div.id === 'all' ? '/admin/products' : `/admin/products?category=${div.id}`;
+                          return (
+                            <Link
+                              key={div.id}
+                              ref={isDivActive ? activeDivRef : undefined}
+                              href={href}
+                              style={{
+                                padding: '6px 12px',
+                                fontSize: '0.85rem',
+                                color: isDivActive ? 'var(--brand-primary)' : 'var(--admin-text-secondary)',
+                                textDecoration: 'none',
+                                borderRadius: '4px',
+                                backgroundColor: isDivActive ? 'var(--overlay-sapphire-10)' : 'transparent',
+                                transition: 'all 0.2s ease',
+                                fontWeight: isDivActive ? 600 : 400,
+                              }}
+                            >
+                              {div.name}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             );
           }

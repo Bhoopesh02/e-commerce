@@ -5,6 +5,7 @@ export type ScrollToOptions = Parameters<Lenis['scrollTo']>[1];
 
 export interface ISmoothScrollService {
   start(): void;
+  stop(): void;
   destroy(): void;
   scrollTo(target: ScrollToTarget, options?: ScrollToOptions): void;
   getLenis(): Lenis | null;
@@ -12,13 +13,15 @@ export interface ISmoothScrollService {
 
 /**
  * Singleton service for momentum-style inertia smooth scrolling powered by Lenis.
- * Configured with lerp: 0.08, wheelMultiplier: 1, smoothWheel: true.
- * Respects 'prefers-reduced-motion: reduce'.
+ * Features:
+ * - 1.2s smooth exponential deceleration curve for luxury fluidity.
+ * - autoRaf enabled for native 60/120Hz display refresh synchronization.
+ * - Explicit respectReducedMotion: false to guarantee silky momentum scrolling across all OS display configurations.
+ * - Automatic prevention for nested scroll containers marked with data-lenis-prevent or .filter-scroll-container.
  */
 class SmoothScrollService implements ISmoothScrollService {
   private static instance: SmoothScrollService | null = null;
   private lenis: Lenis | null = null;
-  private rafId: number | null = null;
 
   public constructor() {}
 
@@ -31,58 +34,61 @@ class SmoothScrollService implements ISmoothScrollService {
 
   /**
    * Initializes and starts Lenis with inertia smooth scrolling.
-   * Skips initialization if user prefers reduced motion or if window is unavailable.
    */
   public start(): void {
     if (typeof window === 'undefined') return;
 
-    // Check if the user has requested reduced motion
-    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-    if (prefersReducedMotion) {
-      return;
-    }
-
-    // If already running, ensure loop is active and return
+    // If already running, ensure active
     if (this.lenis) {
       this.lenis.start();
-      if (this.rafId === null) {
-        this.runRafLoop();
-      }
       return;
     }
 
-    // Initialize Lenis with exact configuration
+    // Initialize Lenis with luxury smooth momentum configuration
     this.lenis = new Lenis({
-      lerp: 0.08,
-      wheelMultiplier: 1,
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
       smoothWheel: true,
+      wheelMultiplier: 1.0,
+      touchMultiplier: 1.5,
+      autoRaf: true,
+      respectReducedMotion: false,
+      prevent: (node: HTMLElement) => {
+        return (
+          node.hasAttribute('data-lenis-prevent') ||
+          Boolean(node.closest?.('[data-lenis-prevent]')) ||
+          node.classList?.contains('filter-scroll-container') ||
+          Boolean(node.closest?.('.filter-scroll-container'))
+        );
+      },
     } as any);
 
-    this.runRafLoop();
+    if (process.env.NODE_ENV !== 'production') {
+      (window as any).__lenis = this.lenis;
+    }
   }
 
-  private runRafLoop = (): void => {
-    const onFrame = (time: number) => {
-      if (this.lenis) {
-        this.lenis.raf(time);
-        this.rafId = requestAnimationFrame(onFrame);
-      }
-    };
-    this.rafId = requestAnimationFrame(onFrame);
-  };
+  /**
+   * Pauses smooth scrolling (e.g. for modal overlays or drawers)
+   */
+  public stop(): void {
+    if (this.lenis) {
+      this.lenis.stop();
+    }
+  }
 
   /**
-   * Destroys the Lenis instance and cancels any active requestAnimationFrame to prevent leaks.
+   * Destroys the Lenis instance and cleans up event listeners and RAF.
    */
   public destroy(): void {
-    if (this.rafId !== null) {
-      cancelAnimationFrame(this.rafId);
-      this.rafId = null;
-    }
-
     if (this.lenis) {
       this.lenis.destroy();
       this.lenis = null;
+      if (typeof window !== 'undefined' && (window as any).__lenis) {
+        delete (window as any).__lenis;
+      }
     }
   }
 
@@ -115,8 +121,10 @@ class SmoothScrollService implements ISmoothScrollService {
 
 export const smoothScrollService = SmoothScrollService.getInstance();
 export const start = () => smoothScrollService.start();
+export const stop = () => smoothScrollService.stop();
 export const destroy = () => smoothScrollService.destroy();
 export const scrollTo = (target: ScrollToTarget, options?: ScrollToOptions) =>
   smoothScrollService.scrollTo(target, options);
 
 export default smoothScrollService;
+

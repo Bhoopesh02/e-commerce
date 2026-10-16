@@ -311,3 +311,27 @@ export interface DashboardStats {
   pendingReturnsCount: number;
   openTicketsCount: number;
 }
+
+export interface CartItemValidation {
+  sku: string;
+  productName: string;
+  requestedQuantity: number;
+  availableStock: number;
+  isOutOfStock: boolean;
+  isQuantityExceeded: boolean;
+  currentPrice: number;
+  cartPrice: number;
+  isPriceChanged: boolean;
+  priceDifference: number; // currentPrice - cartPrice
+}
+
+export interface CartValidationResult {
+  isValid: boolean;
+  hasStockIssues: boolean;
+  hasPriceChanges: boolean;
+  itemValidations: Record<string, CartItemValidation>;
+  outOfStockItems: CartItemValidation[];
+  exceededQuantityItems: CartItemValidation[];
+  priceChangedItems: CartItemValidation[];
+  summaryMessage?: string;
+}

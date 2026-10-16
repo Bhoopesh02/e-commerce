@@ -312,25 +312,7 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
                         background: 'linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%)',
                       }}
                     />
-                    {category.bannerBadges && category.bannerBadges[0] && (
-                      <div style={{ position: 'absolute', top: '14px', left: '14px', zIndex: 2 }}>
-                        <span
-                          style={{
-                            display: 'inline-block',
-                            padding: '3px 8px',
-                            borderRadius: '3px',
-                            backgroundColor: 'rgba(255, 255, 255, 0.85)',
-                            color: 'var(--color-black-tie)',
-                            fontSize: '0.68rem',
-                            fontWeight: 600,
-                            letterSpacing: '0.06em',
-                            textTransform: 'uppercase',
-                          }}
-                        >
-                          {category.bannerBadges[0]}
-                        </span>
-                      </div>
-                    )}
+
                     <div style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px', zIndex: 2, color: '#fff' }}>
                       <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 400, color: '#fff', margin: 0, lineHeight: 1.2 }}>
                         {category.name}

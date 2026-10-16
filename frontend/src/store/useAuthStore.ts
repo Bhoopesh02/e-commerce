@@ -1,6 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { User, UserRole } from '@/types';
 import usersData from '@/data/users.json';
 
@@ -15,52 +16,75 @@ interface AuthState {
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => {
-  const defaultCustomer = (usersData as User[]).find((u) => u.id === 'usr_001') || (usersData as User[])[0];
-  const defaultAdmin = (usersData as User[]).find((u) => u.role === 'admin') || (usersData as User[])[3];
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => {
+      const defaultCustomer = (usersData as User[]).find((u) => u.id === 'usr_001') || (usersData as User[])[0];
+      const defaultAdmin = (usersData as User[]).find((u) => u.role === 'admin') || (usersData as User[])[3];
 
-  return {
-    user: defaultCustomer,
-    role: 'customer',
-    isAuthenticated: true,
-
-    setUser: (user) => {
-      set({
-        user,
-        role: user ? user.role : 'customer',
-        isAuthenticated: !!user,
-      });
-    },
-
-    setRole: (role) => {
-      set((state) => ({
-        role,
-        user: role === 'admin' ? defaultAdmin : (state.user?.role === 'customer' ? state.user : defaultCustomer),
-      }));
-    },
-
-    loginAsCustomer: () => {
-      set({
+      return {
         user: defaultCustomer,
         role: 'customer',
         isAuthenticated: true,
-      });
-    },
 
-    loginAsAdmin: () => {
-      set({
-        user: defaultAdmin,
-        role: 'admin',
-        isAuthenticated: true,
-      });
-    },
+        setUser: (user) => {
+          set({
+            user,
+            role: user ? user.role : 'customer',
+            isAuthenticated: !!user,
+          });
+        },
 
-    logout: () => {
-      set({
-        user: null,
-        role: 'customer',
-        isAuthenticated: false,
-      });
+        setRole: (role) => {
+          set((state) => ({
+            role,
+            user: role === 'admin' ? defaultAdmin : (state.user?.role === 'customer' ? state.user : defaultCustomer),
+          }));
+        },
+
+        loginAsCustomer: () => {
+          set({
+            user: defaultCustomer,
+            role: 'customer',
+            isAuthenticated: true,
+          });
+        },
+
+        loginAsAdmin: () => {
+          set({
+            user: defaultAdmin,
+            role: 'admin',
+            isAuthenticated: true,
+          });
+        },
+
+        logout: () => {
+          set({
+            user: null,
+            role: 'customer',
+            isAuthenticated: false,
+          });
+        },
+      };
     },
-  };
-});
+    {
+      name: 'aurelia_auth_store',
+      storage: createJSONStorage(() => {
+        if (typeof window !== 'undefined') {
+          return window.localStorage;
+        }
+        return {
+          getItem: () => null,
+          setItem: () => {},
+          removeItem: () => {},
+        };
+      }),
+      partialize: (state) => ({
+        user: state.user,
+        role: state.role,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    }
+  )
+);
+

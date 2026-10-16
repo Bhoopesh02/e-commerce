@@ -15,6 +15,7 @@ const TABS = [
   { id: 'returns', label: 'Returns & Exchanges', href: '/account/returns' },
   { id: 'preferences', label: 'Email Preferences', href: '/account/preferences' },
   { id: 'profile', label: 'Profile Settings', href: '/account/profile' },
+  { id: 'support', label: 'Help & Concierge', href: '/account/support' },
 ] as const;
 
 export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
@@ -127,7 +128,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
 
       <style jsx global>{`
         .account-page {
-          padding-top: 80px;
+          padding-top: calc(var(--navbar-height, 76px) + var(--announcement-bar-height, 37px) + clamp(24px, 3vw, 40px));
           padding-bottom: 80px;
           min-height: 100vh;
           background-color: var(--bg-primary);
@@ -139,6 +140,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           margin: 0 auto;
           display: flex;
           gap: 48px;
+          align-items: flex-start;
         }
 
         /* Sidebar Styles */
@@ -147,6 +149,17 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           flex-shrink: 0;
           display: flex;
           flex-direction: column;
+          position: sticky;
+          top: calc(var(--navbar-height, 76px) + 32px);
+          align-self: flex-start;
+          max-height: calc(100vh - var(--navbar-height, 76px) - 48px);
+          overflow-y: auto;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+
+        .account-sidebar::-webkit-scrollbar {
+          display: none;
         }
 
         .account-mobile-nav {
@@ -155,7 +168,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
         
         @media (max-width: 768px) {
           .account-page {
-            padding-top: calc(var(--navbar-height, 64px) + clamp(12px, 3vw, 24px));
+            padding-top: calc(var(--navbar-height, 64px) + var(--announcement-bar-height, 33px) + clamp(16px, 3vw, 24px));
             padding-bottom: 48px;
           }
 

@@ -9,17 +9,39 @@ import { useToastStore } from '@/store/useToastStore';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
-import { ArrowLeft, MessageSquare, Send, CheckCircle2, Shield } from 'lucide-react';
+import { FaqView } from '@/components/views/FaqView';
+import {
+  ArrowLeft,
+  MessageSquare,
+  Send,
+  Shield,
+  HelpCircle,
+  FileQuestion,
+  Headphones,
+} from 'lucide-react';
 
 export const SupportView: React.FC = () => {
   const { user } = useAuthStore();
   const { showToast } = useToastStore();
 
+  const [activeTab, setActiveTab] = useState<'faqs' | 'concierge'>('faqs');
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      if (tabParam === 'tickets' || tabParam === 'concierge') {
+        setActiveTab('concierge');
+      } else if (tabParam === 'faq' || tabParam === 'faqs') {
+        setActiveTab('faqs');
+      }
+    }
+  }, []);
 
   useEffect(() => {
     async function load() {
@@ -67,109 +89,208 @@ export const SupportView: React.FC = () => {
             marginBottom: '20px',
             fontWeight: 500,
             minHeight: '2.75rem',
+            textDecoration: 'none',
           }}
         >
           <ArrowLeft size={16} /> Back to Account
         </Link>
 
-        <div style={{ marginBottom: '28px' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
-            Client Relations Desk
-          </span>
-          <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', marginTop: '4px' }}>
-            Atelier Concierge Inquiries
-          </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', marginTop: '6px' }}>
-            Direct correspondence regarding custom tailoring sizing, delivery scheduling, and fabric provenance.
-          </p>
+        {/* Tab Selection Row */}
+        <div className="support-nav-tabs" role="tablist" aria-label="Support sections">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'faqs'}
+            className={`support-tab-btn ${activeTab === 'faqs' ? 'active' : ''}`}
+            onClick={() => setActiveTab('faqs')}
+          >
+            <HelpCircle size={17} />
+            <span>Help Centre & FAQs</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'concierge'}
+            className={`support-tab-btn ${activeTab === 'concierge' ? 'active' : ''}`}
+            onClick={() => setActiveTab('concierge')}
+          >
+            <Headphones size={17} />
+            <span>Concierge Ticket Desk</span>
+            {tickets.length > 0 && (
+              <span className="tab-count-badge">{tickets.length}</span>
+            )}
+          </button>
         </div>
 
-        <div className="support-grid">
-          {/* Left: New Inquiry Form */}
-          <div className="support-card inquiry-form-card">
-            <h2 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-display)', marginBottom: '16px' }}>
-              Dispatch New Inquiry
-            </h2>
-
-            <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <Input
-                label="Subject / Topic"
-                placeholder="e.g. Size advice for Double-Breasted Blazer"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                required
-              />
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <label style={{ fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
-                  Message to Concierge
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  placeholder="Detail your request or fitting inquiry..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="support-textarea"
-                />
-              </div>
-
-              <div className="support-btn-wrap">
-                <Button type="submit" variant="primary" isLoading={isSubmitting} leftIcon={<Send size={15} />}>
-                  Send Inquiry
-                </Button>
-              </div>
-            </form>
+        {/* TAB 1: FAQS & HELP CENTRE */}
+        {activeTab === 'faqs' && (
+          <div className="tab-pane fade-in">
+            <FaqView />
           </div>
+        )}
 
-          {/* Right: Existing Threads */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <h2 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-display)' }}>Previous Threads</h2>
+        {/* TAB 2: CONCIERGE TICKET DESK */}
+        {activeTab === 'concierge' && (
+          <div className="tab-pane fade-in">
+            <div style={{ marginBottom: '28px' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
+                Client Relations Desk
+              </span>
+              <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', marginTop: '4px' }}>
+                Atelier Concierge Inquiries
+              </h1>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', marginTop: '6px' }}>
+                Direct correspondence regarding custom tailoring sizing, delivery scheduling, and fabric provenance.
+              </p>
+            </div>
 
-            {tickets.map((t) => (
-              <div
-                key={t.id}
-                onClick={() => setSelectedTicket(t)}
-                className="ticket-card"
-                style={{
-                  border: selectedTicket?.id === t.id ? '2px solid var(--brand-primary)' : '1px solid var(--border-color)',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Ticket #{t.id}</span>
-                  <Badge variant={t.status === 'Resolved' ? 'success' : 'warning'}>{t.status}</Badge>
-                </div>
+            <div className="support-grid">
+              {/* Left: New Inquiry Form */}
+              <div className="support-card inquiry-form-card">
+                <h2 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-display)', marginBottom: '16px' }}>
+                  Dispatch New Inquiry
+                </h2>
 
-                <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '6px' }}>{t.subject}</h3>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '12px', lineHeight: 1.5 }}>
-                  {t.message}
-                </p>
+                <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <Input
+                    label="Subject / Topic"
+                    placeholder="e.g. Size advice for Double-Breasted Blazer"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    required
+                  />
 
-                {/* Admin Responses */}
-                {t.responses.length > 0 ? (
-                  <div style={{ backgroundColor: 'var(--overlay-golden-10)', padding: '12px 16px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--overlay-golden-35)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                      <Shield size={13} style={{ color: 'var(--brand-primary)' }} />
-                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--brand-primary)' }}>
-                        {t.responses[0].authorName}
-                      </span>
-                    </div>
-                    <p style={{ fontSize: '0.82rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>
-                      {t.responses[0].message}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <label style={{ fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+                      Message to Concierge
+                    </label>
+                    <textarea
+                      rows={4}
+                      required
+                      placeholder="Detail your request or fitting inquiry..."
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      className="support-textarea"
+                    />
+                  </div>
+
+                  <div className="support-btn-wrap">
+                    <Button type="submit" variant="primary" isLoading={isSubmitting} leftIcon={<Send size={15} />}>
+                      Send Inquiry
+                    </Button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Right: Existing Threads */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <h2 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-display)' }}>Previous Threads</h2>
+
+                {tickets.length === 0 ? (
+                  <div
+                    style={{
+                      padding: '32px 20px',
+                      backgroundColor: 'var(--bg-surface)',
+                      borderRadius: 'var(--radius-sm)',
+                      border: '1px solid var(--border-color)',
+                      textAlign: 'center',
+                    }}
+                  >
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>
+                      No prior inquiries filed. Your correspondence with our atelier will appear here.
                     </p>
                   </div>
                 ) : (
-                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                    Awaiting response from atelier operations...
-                  </span>
+                  tickets.map((t) => (
+                    <div
+                      key={t.id}
+                      onClick={() => setSelectedTicket(t)}
+                      className="ticket-card"
+                      style={{
+                        border: selectedTicket?.id === t.id ? '2px solid var(--brand-primary)' : '1px solid var(--border-color)',
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Ticket #{t.id}</span>
+                        <Badge variant={t.status === 'Resolved' ? 'success' : 'warning'}>{t.status}</Badge>
+                      </div>
+
+                      <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '6px' }}>{t.subject}</h3>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '12px', lineHeight: 1.5 }}>
+                        {t.message}
+                      </p>
+
+                      {/* Admin Responses */}
+                      {t.responses.length > 0 ? (
+                        <div style={{ backgroundColor: 'var(--overlay-golden-10)', padding: '12px 16px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--overlay-golden-35)' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                            <Shield size={13} style={{ color: 'var(--brand-primary)' }} />
+                            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--brand-primary)' }}>
+                              {t.responses[0].authorName}
+                            </span>
+                          </div>
+                          <p style={{ fontSize: '0.82rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>
+                            {t.responses[0].message}
+                          </p>
+                        </div>
+                      ) : (
+                        <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                          Awaiting response from atelier operations...
+                        </span>
+                      )}
+                    </div>
+                  ))
                 )}
               </div>
-            ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <style jsx>{`
+        .support-nav-tabs {
+          display: flex;
+          gap: 16px;
+          margin-bottom: 32px;
+          border-bottom: 1px solid var(--border-color);
+          padding-bottom: 4px;
+        }
+
+        .support-tab-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 18px;
+          background: none;
+          border: none;
+          font-size: 0.92rem;
+          color: var(--text-secondary);
+          cursor: pointer;
+          position: relative;
+          transition: all 0.2s ease;
+          border-bottom: 2px solid transparent;
+          margin-bottom: -5px;
+        }
+
+        .support-tab-btn:hover {
+          color: var(--text-primary);
+        }
+
+        .support-tab-btn.active {
+          color: var(--brand-primary);
+          font-weight: 600;
+          border-bottom-color: var(--brand-primary);
+        }
+
+        .tab-count-badge {
+          font-size: 0.72rem;
+          background-color: var(--brand-primary);
+          color: #ffffff;
+          padding: 2px 7px;
+          border-radius: 100px;
+          font-weight: 600;
+        }
+
         .support-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
@@ -206,6 +327,30 @@ export const SupportView: React.FC = () => {
         }
 
         @media (max-width: 600px) {
+          .support-nav-tabs {
+            flex-direction: column;
+            gap: 8px;
+            border-bottom: none;
+          }
+
+          .support-tab-btn {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            width: 100%;
+            justify-content: center;
+          }
+
+          .support-tab-btn.active {
+            background-color: var(--brand-primary);
+            color: #ffffff;
+            border-color: var(--brand-primary);
+          }
+
+          .support-tab-btn.active .tab-count-badge {
+            background-color: #ffffff;
+            color: var(--brand-primary);
+          }
+
           .support-grid {
             grid-template-columns: 1fr;
             gap: 24px;
@@ -220,7 +365,7 @@ export const SupportView: React.FC = () => {
           }
 
           .support-textarea {
-            font-size: 16px; /* Prevents auto-zoom on mobile */
+            font-size: 16px;
           }
 
           .support-btn-wrap {

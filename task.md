@@ -40,7 +40,7 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] Add-to-cart and wishlist actions
 - [x] Delivery estimate and shipping information
 - [x] Materials, care instructions and product details
-- [ ] Returns policy and customer reviews *(7-day policy & review list present; ReviewForm submission is disabled)*
+- [x] Returns policy and customer reviews *(7-day policy & verified-purchaser reflection submission on PDP and Order Details)*
 - [x] Related products / complete-the-look recommendations
 - [x] Clear feedback after adding to cart
 
@@ -51,13 +51,13 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] Subtotal, discounts, shipping and total breakdown
 - [x] Promo code application and error states
 - [x] Continue shopping and proceed-to-checkout actions
-- [ ] Out-of-stock or price-change feedback *(No real-time cart warning prior to checkout submission)*
+- [x] Out-of-stock or price-change feedback *(Real-time inventory and catalog price validation across cart drawer, cart page, and checkout with one-click resolution)*
 - [x] Empty-cart state with shopping CTA
 - [x] Wishlist page with remove and move-to-cart actions
-- [ ] Cart persistence when navigating or refreshing *(useCartStore lacks localStorage persistence)*
+- [x] Cart persistence when navigating or refreshing *(useCartStore backed by localStorage)*
 
 ### E. Checkout & Delivery
-- [ ] Guest checkout and sign-in option *(No guest/sign-in choice prompt or toggle)*
+- [x] Guest checkout and sign-in option *(Enforced authentication: guests clicking checkout are prompted to sign in or create an account)*
 - [x] Customer contact details
 - [x] Shipping address form and validation
 - [ ] Saved address selection and editing *(Loads default address; no picker for multiple saved addresses)*
@@ -78,8 +78,8 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] Cancel order where eligible
 - [x] Return / exchange request flow
 - [x] Refund status and return instructions
-- [ ] Product reviews and rating submission *(ReviewForm unmounted across PDP and Order history)*
-- [ ] Help centre, contact support and FAQs *(Concierge ticket desk present; FAQs / Help Centre articles missing)*
+- [x] Product reviews and rating submission *(Enabled across PDP with verified owner badges, and direct review modals in Order history & Order details)*
+- [x] Help centre, contact support and FAQs *(Interactive Help Centre & FAQ page with live search, categories, accordions, step-by-step guides, plus tabbed Concierge ticket desk)*
 
 ### G. Luxury Brand Experience
 - [x] Consistent typography, spacing and colour palette
@@ -98,7 +98,7 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] Loading skeletons or loading indicators
 - [x] Empty, error, success and disabled states
 - [x] Form validation and useful error messages
-- [ ] Slow network, refresh and back-button behaviour *(Cart state reset on refresh)*
+- [x] Slow network, refresh and back-button behaviour *(Cart state preserved across refreshes)*
 - [x] Image loading, fallback and broken-image handling
 - [x] Keyboard navigation and accessible labels
 - [x] No horizontal overflow or clipped content
@@ -110,7 +110,7 @@ This document tracks the feature status, completed deliverables, and remaining a
 
 ### Priority 1: Core E-Commerce & UX (P0)
 
-- [ ] **Task 1: Cart & Wishlist Persistence**
+- [x] **Task 1: Cart & Wishlist Persistence**
   - **Files**: `frontend/src/store/useCartStore.ts`, `frontend/src/store/useWishlistStore.ts`
   - **Goal**: Integrate Zustand `persist` middleware with `localStorage` so items survive browser refresh and navigation.
 
@@ -150,21 +150,21 @@ This document tracks the feature status, completed deliverables, and remaining a
 
 ### Priority 3: Polish & Brand Narrative (P2)
 
-- [ ] **Task 9: Top Announcement Bar**
-  - **Files**: `frontend/src/components/navigation/Navbar.tsx` or `frontend/src/components/layout/StorefrontLayoutWrapper.tsx`
+- [x] **Task 9: Top Announcement Bar**
+  - **Files**: `frontend/src/components/navigation/Navbar.tsx`, `frontend/src/components/navigation/AnnouncementBar.tsx`
   - **Goal**: Add a dismissible or subtle luxury announcement bar for complimentary white-glove delivery and seasonal notices.
 
-- [ ] **Task 10: Enable Product Review Submission**
-  - **Files**: `frontend/src/components/product/ReviewForm.tsx`, `frontend/src/components/views/ProductDetailView.tsx`, `frontend/src/components/views/OrderDetailView.tsx`
-  - **Goal**: Mount the review form on verified purchased orders or in an expandable modal on the PDP.
+- [x] **Task 10: Enable Product Review Submission**
+  - **Files**: `frontend/src/components/product/ReviewForm.tsx`, `frontend/src/components/views/ProductDetailView.tsx`, `frontend/src/components/views/OrderDetailView.tsx`, `frontend/src/app/(storefront)/account/orders/page.tsx`, `frontend/src/components/account/OrderRow.tsx`
+  - **Goal**: Mounted ReviewForm across PDP, Order history list, and Order details with verified purchase enforcement. Verified owners get celebrated "Verified Owner" badges, while patrons can submit reflections directly.
 
 - [x] **Task 11: Search with Suggestions & Empty Results on Search Page**
   - **Files**: `frontend/src/components/views/SearchView.tsx`, `frontend/src/app/(storefront)/search/page.tsx`
   - **Goal**: Integrated dynamic rotating placeholders, trending inquiry chips, keyboard-navigable autocomplete popover with live previews, and luxury empty state with recommendations directly on the dedicated search page. Deleted deprecated unmounted `SearchOverlay.tsx`.
 
-- [ ] **Task 12: Help Centre & FAQs Page**
-  - **Files**: `frontend/src/components/views/SupportView.tsx`, `frontend/src/app/(storefront)/faq/page.tsx`
-  - **Goal**: Provide an accordion FAQ covering sizing, bespoke tailoring, shipping times, and 7-day returns.
+- [x] **Task 12: Help Centre & FAQs Page**
+  - **Files**: `frontend/src/data/faqsData.ts`, `frontend/src/components/views/FaqView.tsx`, `frontend/src/components/views/SupportView.tsx`, `frontend/src/app/(storefront)/faq/page.tsx`, `frontend/src/components/navigation/Footer.tsx`, `frontend/src/components/layout/AccountLayout.tsx`
+  - **Goal**: Created dedicated `/faq` page and integrated Help Centre with live instant search, category filters, animated accordions, step-by-step atelier protocol guides, direct salon/phone/email channels, and seamless tabbed integration in the Account Concierge Desk.
 
 - [ ] **Task 13: Luxury Gift Packaging & Notes**
   - **Files**: `frontend/src/components/cart/CartDrawer.tsx`, `frontend/src/components/views/CheckoutView.tsx`

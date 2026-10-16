@@ -11,6 +11,7 @@ import { StatusTimeline } from '@/components/ui/StatusTimeline';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
+import { ReviewForm } from '@/components/product/ReviewForm';
 import {
   Package,
   Truck,
@@ -21,6 +22,7 @@ import {
   ExternalLink,
   MapPin,
   CreditCard,
+  Star,
 } from 'lucide-react';
 
 interface OrderDetailViewProps {
@@ -95,6 +97,10 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
   const [returnComments, setReturnComments] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // Reflection / Review Modal
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [selectedProductForReview, setSelectedProductForReview] = useState<{ id: string; name: string } | null>(null);
+
   useEffect(() => {
     async function loadOrder() {
       setLoading(true);
@@ -110,7 +116,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
 
   if (loading) {
     return (
-      <div style={{ paddingTop: '140px', textAlign: 'center' }}>
+      <div style={{ padding: '48px 0', textAlign: 'center' }}>
         <p>Loading Commission Details...</p>
       </div>
     );
@@ -118,7 +124,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
 
   if (!order) {
     return (
-      <div style={{ paddingTop: '140px', textAlign: 'center' }}>
+      <div style={{ padding: '48px 0', textAlign: 'center' }}>
         <h2>Order Not Located</h2>
         <Link href="/account">
           <Button variant="outline" style={{ marginTop: '16px' }}>Return to Account</Button>
@@ -274,6 +280,33 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
                   <p className="order-item-qty">
                     Qty: {item.quantity} × {formatPrice(item.price)}
                   </p>
+                  {order.status === 'Delivered' && (
+                    <div style={{ marginTop: '10px' }}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedProductForReview({
+                            id: item.productId,
+                            name: item.productName || 'Garment',
+                          });
+                          setReviewModalOpen(true);
+                        }}
+                        style={{
+                          fontSize: '0.78rem',
+                          padding: '5px 12px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          border: '1px solid var(--border-color)',
+                          borderRadius: 'var(--radius-sm)',
+                        }}
+                      >
+                        <Star size={13} style={{ color: 'var(--brand-accent)' }} />
+                        <span>Write Reflection</span>
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 
                 <span className="order-item-price-desktop">
@@ -708,6 +741,28 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
             </Button>
           </div>
         </div>
+      </Modal>
+
+      {/* Review / Reflection Modal */}
+      <Modal
+        isOpen={reviewModalOpen}
+        onClose={() => setReviewModalOpen(false)}
+        title={selectedProductForReview ? `Reflect on ${selectedProductForReview.name}` : 'Write a Client Reflection'}
+      >
+        {selectedProductForReview && (
+          <div style={{ paddingTop: '8px' }}>
+            <ReviewForm
+              productId={selectedProductForReview.id}
+              productName={selectedProductForReview.name}
+              initialExpanded
+              onReviewAdded={() => {
+                setReviewModalOpen(false);
+                showToast('Your verified reflection has been submitted and published.', 'success');
+              }}
+              onCancel={() => setReviewModalOpen(false)}
+            />
+          </div>
+        )}
       </Modal>
     </div>
   );

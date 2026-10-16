@@ -154,23 +154,23 @@ export const Footer: React.FC = () => {
               </h3>
               <ul className="footer-links-list">
                 <li>
-                  <Link href="/account/support" className="footer-link">
-                    FAQs
+                  <Link href="/faq" className="footer-link">
+                    Help Centre & FAQs
                   </Link>
                 </li>
                 <li>
-                  <Link href="/account/support" className="footer-link">
+                  <Link href="/faq?category=shipping-delivery" className="footer-link">
                     Shipping & Delivery
                   </Link>
                 </li>
                 <li>
-                  <Link href="/account/support" className="footer-link">
+                  <Link href="/faq?category=returns-exchanges" className="footer-link">
                     Return & Refund Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/account/support" className="footer-link">
-                    Bespoke Support
+                  <Link href="/account/support?tab=concierge" className="footer-link">
+                    Bespoke Concierge Desk
                   </Link>
                 </li>
                 <li>
@@ -405,6 +405,11 @@ export const Footer: React.FC = () => {
               <li>
                 <Link href="/account" className="footer-link">
                   Private Client Account
+                </Link>
+              </li>
+              <li>
+                <Link href="/faq" className="footer-link">
+                  Help Centre & FAQs
                 </Link>
               </li>
               <li>

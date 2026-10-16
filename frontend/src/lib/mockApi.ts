@@ -16,6 +16,8 @@ import {
   ReportFilters,
   DashboardStats,
   TrackingInfo,
+  CartItemValidation,
+  CartValidationResult,
 } from '@/types';
 import {
   RETURN_WINDOW_DAYS,
@@ -483,6 +485,112 @@ export async function getReturnById(returnId: string): Promise<ReturnRequest | n
 }
 
 // ----------------------------------------------------------------------
+// REAL-TIME CART STOCK & PRICE VALIDATION
+// ----------------------------------------------------------------------
+/**
+ * Real-time cart validation checking stock and price changes prior to checkout submission.
+ */
+export async function validateCartRealtime(
+  items: { sku: string; quantity: number; price: number }[]
+): Promise<CartValidationResult> {
+  await delay(100);
+  ensureClientState();
+
+  const itemValidations: Record<string, CartItemValidation> = {};
+  const outOfStockItems: CartItemValidation[] = [];
+  const exceededQuantityItems: CartItemValidation[] = [];
+  const priceChangedItems: CartItemValidation[] = [];
+
+  for (const item of items) {
+    let foundProduct: Product | undefined;
+    let foundVariant: { sku: string; size: string; color: string; stock: number } | undefined;
+
+    for (const p of productsState) {
+      const v = p.variants.find((variant) => variant.sku === item.sku);
+      if (v) {
+        foundProduct = p;
+        foundVariant = v;
+        break;
+      }
+    }
+
+    const productName = foundProduct?.name || 'Selected Item';
+    const availableStock = foundVariant ? foundVariant.stock : 0;
+    const currentPrice = foundProduct ? foundProduct.price : item.price;
+    const isOutOfStock = availableStock <= 0;
+    const isQuantityExceeded = availableStock > 0 && item.quantity > availableStock;
+    const isPriceChanged = currentPrice !== item.price;
+    const priceDifference = currentPrice - item.price;
+
+    const validation: CartItemValidation = {
+      sku: item.sku,
+      productName,
+      requestedQuantity: item.quantity,
+      availableStock,
+      isOutOfStock,
+      isQuantityExceeded,
+      currentPrice,
+      cartPrice: item.price,
+      isPriceChanged,
+      priceDifference,
+    };
+
+    itemValidations[item.sku] = validation;
+
+    if (isOutOfStock) {
+      outOfStockItems.push(validation);
+    } else if (isQuantityExceeded) {
+      exceededQuantityItems.push(validation);
+    }
+
+    if (isPriceChanged) {
+      priceChangedItems.push(validation);
+    }
+  }
+
+  const hasStockIssues = outOfStockItems.length > 0 || exceededQuantityItems.length > 0;
+  const hasPriceChanges = priceChangedItems.length > 0;
+  const isValid = !hasStockIssues && !hasPriceChanges;
+
+  let summaryMessage: string | undefined;
+  if (outOfStockItems.length > 0 && exceededQuantityItems.length > 0) {
+    summaryMessage = 'Some items in your bag are out of stock or exceed available atelier quantities.';
+  } else if (outOfStockItems.length > 0) {
+    summaryMessage = `Item ${outOfStockItems.map((i) => i.productName).join(', ')} is currently out of stock.`;
+  } else if (exceededQuantityItems.length > 0) {
+    summaryMessage = `Requested quantity exceeds available atelier reserve for ${exceededQuantityItems.map((i) => i.productName).join(', ')}.`;
+  } else if (hasPriceChanges) {
+    summaryMessage = 'Atelier catalog prices have updated for one or more pieces in your bag.';
+  }
+
+  return {
+    isValid,
+    hasStockIssues,
+    hasPriceChanges,
+    itemValidations,
+    outOfStockItems,
+    exceededQuantityItems,
+    priceChangedItems,
+    summaryMessage,
+  };
+}
+
+export async function adminUpdateProductPrice(
+  productId: string,
+  newPrice: number
+): Promise<boolean> {
+  await delay(150);
+  ensureClientState();
+  const product = productsState.find((p) => p.id === productId);
+  if (product) {
+    product.price = newPrice;
+    saveData('products', productsState);
+    return true;
+  }
+  return false;
+}
+
+// ----------------------------------------------------------------------
 // CHECKOUT STOCK REVALIDATION & CREATION
 // ----------------------------------------------------------------------
 /**
@@ -657,6 +765,27 @@ export async function loginUser(email: string): Promise<User> {
     id: `usr_${Date.now()}`,
     name: email.split('@')[0].toUpperCase(),
     email,
+    role: 'customer',
+    addresses: [],
+    notificationPreferences: {
+      emailPromotions: true,
+      emailOrderUpdates: true,
+      emailNewsletter: true,
+      emailSecurityAlerts: true,
+    },
+  };
+}
+
+export async function registerUser(name: string, email: string): Promise<User> {
+  await delay(350);
+  const found = (usersData as User[]).find((u) => u.email.toLowerCase() === email.toLowerCase());
+  if (found) {
+    return { ...found, name: name.trim() || found.name };
+  }
+  return {
+    id: `usr_${Date.now()}`,
+    name: name.trim() || email.split('@')[0].toUpperCase(),
+    email: email.trim().toLowerCase(),
     role: 'customer',
     addresses: [],
     notificationPreferences: {

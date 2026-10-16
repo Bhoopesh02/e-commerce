@@ -1,18 +1,21 @@
 'use client';
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Drawer } from '@/components/ui/Drawer';
 import { Button } from '@/components/ui/Button';
 import { useCartStore } from '@/store/useCartStore';
+import { useAuthStore } from '@/store/useAuthStore';
+import { CheckoutAuthModal } from '@/components/checkout/CheckoutAuthModal';
 import { formatPrice } from '@/lib/formatPrice';
-import { Plus, Minus, Tag, Check, ArrowRight, ShoppingBag } from 'lucide-react';
+import { Plus, Minus, Tag, Check, ArrowRight, ShoppingBag, AlertTriangle, AlertCircle, RefreshCw } from 'lucide-react';
 import { AnimatedTrashIcon } from '@/components/ui/AnimatedTrashIcon';
 
 export const CartDrawer: React.FC = () => {
   const router = useRouter();
+  const { isAuthenticated, user } = useAuthStore();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const {
     items,
     isDrawerOpen,
@@ -28,7 +31,19 @@ export const CartDrawer: React.FC = () => {
     getTax,
     getDeliveryFee,
     getTotal,
+    cartValidation,
+    isValidatingCart,
+    validateCart,
+    syncPrices,
+    fixStockIssues,
+    updateItemPrice,
   } = useCartStore();
+
+  useEffect(() => {
+    if (isDrawerOpen) {
+      validateCart();
+    }
+  }, [isDrawerOpen, validateCart]);
 
   const [couponInput, setCouponInput] = useState('');
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
@@ -47,16 +62,22 @@ export const CartDrawer: React.FC = () => {
   };
 
   const handleProceedToCheckout = () => {
+    if (!isAuthenticated || !user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
     closeDrawer();
     router.push('/checkout');
   };
 
-  if (!isDrawerOpen) {
+  if (!isDrawerOpen && !isAuthModalOpen) {
     return null;
   }
 
   return (
-    <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} title="Your Atelier Bag" width="480px">
+    <>
+      {isDrawerOpen && (
+        <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} title="Your Atelier Bag" width="480px">
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         {items.length === 0 ? (
           <div
@@ -101,6 +122,98 @@ export const CartDrawer: React.FC = () => {
           </div>
         ) : (
           <>
+            {/* Real-time Inventory & Price Feedback Banners */}
+            {cartValidation?.hasStockIssues && (
+              <div
+                style={{
+                  backgroundColor: 'var(--color-error-bg)',
+                  border: '1px solid var(--color-error)',
+                  borderRadius: 'var(--radius-sm)',
+                  padding: '12px 14px',
+                  marginBottom: '16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                  <AlertTriangle size={18} style={{ color: 'var(--color-error)', flexShrink: 0, marginTop: '2px' }} />
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-error)', margin: 0 }}>
+                      Inventory Availability Alert
+                    </p>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.4, margin: 0 }}>
+                      {cartValidation.summaryMessage || 'Some items in your bag are no longer available in the requested quantity.'}
+                    </p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '4px' }}>
+                  <button
+                    onClick={fixStockIssues}
+                    style={{
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      color: 'var(--color-error)',
+                      background: 'var(--bg-surface)',
+                      border: '1px solid var(--color-error)',
+                      borderRadius: 'var(--radius-pill)',
+                      padding: '4px 12px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Auto-Adjust Bag
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {cartValidation?.hasPriceChanges && (
+              <div
+                style={{
+                  backgroundColor: 'var(--overlay-golden-10)',
+                  border: '1px solid var(--overlay-golden-35)',
+                  borderRadius: 'var(--radius-sm)',
+                  padding: '12px 14px',
+                  marginBottom: '16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                  <Tag size={18} style={{ color: 'var(--brand-primary)', flexShrink: 0, marginTop: '2px' }} />
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--brand-primary)', margin: 0 }}>
+                      Atelier Catalog Price Notice
+                    </p>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.4, margin: 0 }}>
+                      Item prices have updated in our atelier catalog.
+                    </p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '4px' }}>
+                  <button
+                    onClick={syncPrices}
+                    style={{
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      color: 'var(--brand-primary)',
+                      background: 'var(--bg-surface)',
+                      border: '1px solid var(--brand-primary)',
+                      borderRadius: 'var(--radius-pill)',
+                      padding: '4px 12px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                    }}
+                  >
+                    <RefreshCw size={12} /> Update Prices
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Items List */}
             <div
               data-lenis-prevent
@@ -115,109 +228,265 @@ export const CartDrawer: React.FC = () => {
                 marginBottom: '24px',
               }}
             >
-              {items.map((item) => (
-                <div
-                  key={item.sku}
-                  style={{
-                    display: 'flex',
-                    gap: '16px',
-                    paddingBottom: '20px',
-                    borderBottom: '1px solid var(--border-light)',
-                  }}
-                >
+              {items.map((item) => {
+                const val = cartValidation?.itemValidations[item.sku];
+                const isOutOfStock = val?.isOutOfStock;
+                const isExceeded = val?.isQuantityExceeded;
+                const isPriceChanged = val?.isPriceChanged;
+                const maxStock = val ? val.availableStock : 99;
+
+                return (
                   <div
+                    key={item.sku}
                     style={{
-                      position: 'relative',
-                      width: '90px',
-                      height: '115px',
-                      borderRadius: 'var(--radius-sm)',
-                      overflow: 'hidden',
-                      flexShrink: 0,
-                      backgroundColor: 'var(--bg-primary)',
+                      display: 'flex',
+                      gap: '16px',
+                      paddingBottom: '20px',
+                      borderBottom: '1px solid var(--border-light)',
+                      opacity: isOutOfStock ? 0.75 : 1,
+                      backgroundColor: isOutOfStock ? 'rgba(239, 68, 68, 0.04)' : undefined,
+                      padding: isOutOfStock ? '12px' : undefined,
+                      borderRadius: isOutOfStock ? 'var(--radius-sm)' : undefined,
                     }}
                   >
-                    <Image
-                      src={item.product.images[0]}
-                      alt={item.product.name}
-                      fill
-                      sizes="100px"
-                      style={{ objectFit: 'cover' }}
-                    />
-                  </div>
-
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <Link
-                        href={`/product/${item.product.slug}`}
-                        onClick={closeDrawer}
-                        style={{
-                          fontSize: '0.95rem',
-                          fontWeight: 600,
-                          color: 'var(--text-primary)',
-                          lineHeight: 1.3,
-                        }}
-                      >
-                        {item.product.name}
-                      </Link>
-                      <button
-                        onClick={() => removeItem(item.sku)}
-                        style={{ color: 'var(--text-muted)', padding: '2px' }}
-                        aria-label={`Remove ${item.product.name}`}
-                      >
-                        <AnimatedTrashIcon size={15} />
-                      </button>
-                    </div>
-
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                      Size: <strong style={{ color: 'var(--text-primary)' }}>{item.size}</strong> · Color: {item.color}
-                    </div>
-
                     <div
                       style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        marginTop: 'auto',
-                        paddingTop: '10px',
+                        position: 'relative',
+                        width: '90px',
+                        height: '115px',
+                        borderRadius: 'var(--radius-sm)',
+                        overflow: 'hidden',
+                        flexShrink: 0,
+                        backgroundColor: 'var(--bg-primary)',
                       }}
                     >
-                      {/* Quantity Controls */}
-                      <div
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          border: '1px solid var(--border-color)',
-                          borderRadius: 'var(--radius-pill)',
-                          padding: '2px 8px',
-                          gap: '10px',
-                        }}
-                      >
-                        <button
-                          onClick={() => updateQuantity(item.sku, item.quantity - 1)}
-                          style={{ display: 'flex', alignItems: 'center', color: 'var(--text-muted)' }}
-                          aria-label="Decrease quantity"
+                      <Image
+                        src={item.product.images[0]}
+                        alt={item.product.name}
+                        fill
+                        sizes="100px"
+                        style={{ objectFit: 'cover' }}
+                      />
+                      {isOutOfStock && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            backgroundColor: 'rgba(0,0,0,0.6)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#fff',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            letterSpacing: '0.05em',
+                            textTransform: 'uppercase',
+                          }}
                         >
-                          <Minus size={12} />
-                        </button>
-                        <span style={{ fontSize: '0.85rem', fontWeight: 600, minWidth: '16px', textAlign: 'center' }}>
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() => updateQuantity(item.sku, item.quantity + 1)}
-                          style={{ display: 'flex', alignItems: 'center', color: 'var(--text-muted)' }}
-                          aria-label="Increase quantity"
+                          Sold Out
+                        </div>
+                      )}
+                    </div>
+
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <Link
+                          href={`/product/${item.product.slug}`}
+                          onClick={closeDrawer}
+                          style={{
+                            fontSize: '0.95rem',
+                            fontWeight: 600,
+                            color: 'var(--text-primary)',
+                            lineHeight: 1.3,
+                          }}
                         >
-                          <Plus size={12} />
+                          {item.product.name}
+                        </Link>
+                        <button
+                          onClick={() => removeItem(item.sku)}
+                          style={{ color: 'var(--text-muted)', padding: '2px' }}
+                          aria-label={`Remove ${item.product.name}`}
+                        >
+                          <AnimatedTrashIcon size={15} />
                         </button>
                       </div>
 
-                      <span style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                        {formatPrice(item.price * item.quantity)}
-                      </span>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                        Size: <strong style={{ color: 'var(--text-primary)' }}>{item.size}</strong> · Color: {item.color}
+                      </div>
+
+                      {/* Stock Warning Badges */}
+                      {isOutOfStock && (
+                        <div style={{ marginTop: '6px' }}>
+                          <span
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              color: 'var(--color-error)',
+                              backgroundColor: 'var(--color-error-bg)',
+                              padding: '2px 8px',
+                              borderRadius: 'var(--radius-pill)',
+                              border: '1px solid var(--color-error)',
+                            }}
+                          >
+                            <AlertCircle size={11} /> Out of Stock
+                          </span>
+                          <button
+                            onClick={() => removeItem(item.sku)}
+                            style={{
+                              display: 'block',
+                              fontSize: '0.75rem',
+                              color: 'var(--color-error)',
+                              textDecoration: 'underline',
+                              marginTop: '4px',
+                              background: 'none',
+                              border: 'none',
+                              cursor: 'pointer',
+                              padding: 0,
+                            }}
+                          >
+                            Remove item to proceed
+                          </button>
+                        </div>
+                      )}
+
+                      {!isOutOfStock && isExceeded && (
+                        <div style={{ marginTop: '6px' }}>
+                          <span
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              fontSize: '0.72rem',
+                              fontWeight: 600,
+                              color: 'var(--color-warning)',
+                              backgroundColor: 'var(--color-warning-bg)',
+                              padding: '2px 8px',
+                              borderRadius: 'var(--radius-pill)',
+                              border: '1px solid var(--color-warning)',
+                            }}
+                          >
+                            <AlertTriangle size={11} /> Only {val.availableStock} in stock (requested {item.quantity})
+                          </span>
+                          <button
+                            onClick={() => updateQuantity(item.sku, val.availableStock)}
+                            style={{
+                              display: 'block',
+                              fontSize: '0.75rem',
+                              color: 'var(--color-warning)',
+                              textDecoration: 'underline',
+                              marginTop: '4px',
+                              background: 'none',
+                              border: 'none',
+                              cursor: 'pointer',
+                              padding: 0,
+                            }}
+                          >
+                            Adjust to available {val.availableStock}
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Price Change Feedback */}
+                      {isPriceChanged && (
+                        <div style={{ marginTop: '6px' }}>
+                          <span
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              fontSize: '0.72rem',
+                              fontWeight: 600,
+                              color: 'var(--brand-primary)',
+                              backgroundColor: 'var(--overlay-golden-10)',
+                              padding: '2px 8px',
+                              borderRadius: 'var(--radius-pill)',
+                              border: '1px solid var(--overlay-golden-35)',
+                            }}
+                          >
+                            <Tag size={11} /> Catalog price: {formatPrice(val.currentPrice)}
+                          </span>
+                        </div>
+                      )}
+
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          marginTop: 'auto',
+                          paddingTop: '10px',
+                        }}
+                      >
+                        {/* Quantity Controls */}
+                        <div
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            border: '1px solid var(--border-color)',
+                            borderRadius: 'var(--radius-pill)',
+                            padding: '2px 8px',
+                            gap: '10px',
+                            opacity: isOutOfStock ? 0.5 : 1,
+                          }}
+                        >
+                          <button
+                            onClick={() => updateQuantity(item.sku, item.quantity - 1)}
+                            style={{ display: 'flex', alignItems: 'center', color: 'var(--text-muted)' }}
+                            aria-label="Decrease quantity"
+                            disabled={isOutOfStock}
+                          >
+                            <Minus size={12} />
+                          </button>
+                          <span style={{ fontSize: '0.85rem', fontWeight: 600, minWidth: '16px', textAlign: 'center' }}>
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() => {
+                              if (!val || item.quantity < val.availableStock) {
+                                updateQuantity(item.sku, item.quantity + 1);
+                              }
+                            }}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              color: item.quantity >= maxStock ? 'var(--text-muted)' : 'var(--text-primary)',
+                              opacity: item.quantity >= maxStock ? 0.35 : 1,
+                              cursor: item.quantity >= maxStock ? 'not-allowed' : 'pointer',
+                            }}
+                            disabled={isOutOfStock || item.quantity >= maxStock}
+                            aria-label="Increase quantity"
+                            title={item.quantity >= maxStock ? `Maximum available stock (${maxStock}) reached` : undefined}
+                          >
+                            <Plus size={12} />
+                          </button>
+                        </div>
+
+                        <div style={{ textAlign: 'right' }}>
+                          {isPriceChanged && (
+                            <span
+                              style={{
+                                display: 'block',
+                                fontSize: '0.78rem',
+                                color: 'var(--text-muted)',
+                                textDecoration: 'line-through',
+                              }}
+                            >
+                              {formatPrice(item.price * item.quantity)}
+                            </span>
+                          )}
+                          <span style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                            {formatPrice((isPriceChanged && val ? val.currentPrice : item.price) * item.quantity)}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Coupon Code Section */}
@@ -349,14 +618,44 @@ export const CartDrawer: React.FC = () => {
               variant="primary"
               size="lg"
               fullWidth
-              rightIcon={<ArrowRight size={16} />}
+              rightIcon={!isValidatingCart && <ArrowRight size={16} />}
               disableSheen
+              disabled={isValidatingCart || !!cartValidation?.hasStockIssues}
             >
-              Proceed to Checkout
+              {isValidatingCart ? 'Validating Atelier Inventory…' : 'Proceed to Checkout'}
             </Button>
+            {cartValidation?.hasStockIssues && (
+              <p
+                style={{
+                  fontSize: '0.78rem',
+                  color: 'var(--color-error)',
+                  textAlign: 'center',
+                  marginTop: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                }}
+              >
+                <AlertTriangle size={13} />
+                Please resolve unavailable items before checkout
+              </p>
+            )}
           </>
         )}
       </div>
     </Drawer>
+      )}
+
+      <CheckoutAuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onSuccess={() => {
+          setIsAuthModalOpen(false);
+          closeDrawer();
+          router.push('/checkout');
+        }}
+      />
+    </>
   );
 };

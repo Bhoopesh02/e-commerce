@@ -1,8 +1,9 @@
 'use client';
 
 import { create } from 'zustand';
-import { Product, Coupon } from '@/types';
-import { applyCoupon } from '@/lib/mockApi';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { Product, Coupon, CartValidationResult } from '@/types';
+import { applyCoupon, validateCartRealtime } from '@/lib/mockApi';
 
 export interface CartItem {
   product: Product;
@@ -22,6 +23,14 @@ interface CartState {
 
   checkoutMode: 'cart' | 'buy_now';
   buyNowItem: CartItem | null;
+
+  // Real-time stock & price validation state
+  cartValidation: CartValidationResult | null;
+  isValidatingCart: boolean;
+  validateCart: () => Promise<CartValidationResult>;
+  syncPrices: () => void;
+  fixStockIssues: () => void;
+  updateItemPrice: (sku: string, newPrice: number) => void;
 
   // Actions
   addItem: (product: Product, sku: string, size: string, color: string, quantity?: number, openDrawer?: boolean) => void;
@@ -47,7 +56,9 @@ interface CartState {
   getCartItemCount: () => number;
 }
 
-export const useCartStore = create<CartState>((set, get) => ({
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
   items: [
     // Pre-populate with one luxury piece for instant demo delight
     {
@@ -82,19 +93,143 @@ export const useCartStore = create<CartState>((set, get) => ({
   couponError: null,
   checkoutMode: 'cart',
   buyNowItem: null,
+  cartValidation: null,
+  isValidatingCart: false,
+
+  validateCart: async () => {
+    set({ isValidatingCart: true });
+    const activeItems = get().getActiveItems();
+    try {
+      const result = await validateCartRealtime(
+        activeItems.map((item) => ({
+          sku: item.sku,
+          quantity: item.quantity,
+          price: item.price,
+        }))
+      );
+      set({ cartValidation: result, isValidatingCart: false });
+      return result;
+    } catch {
+      set({ isValidatingCart: false });
+      return {
+        isValid: true,
+        hasStockIssues: false,
+        hasPriceChanges: false,
+        itemValidations: {},
+        outOfStockItems: [],
+        exceededQuantityItems: [],
+        priceChangedItems: [],
+      };
+    }
+  },
+
+  syncPrices: () => {
+    const { cartValidation, items, buyNowItem } = get();
+    if (!cartValidation) return;
+
+    const newItems = items.map((item) => {
+      const v = cartValidation.itemValidations[item.sku];
+      if (v && v.isPriceChanged) {
+        return {
+          ...item,
+          price: v.currentPrice,
+          product: { ...item.product, price: v.currentPrice },
+        };
+      }
+      return item;
+    });
+
+    let newBuyNowItem = buyNowItem;
+    if (buyNowItem) {
+      const v = cartValidation.itemValidations[buyNowItem.sku];
+      if (v && v.isPriceChanged) {
+        newBuyNowItem = {
+          ...buyNowItem,
+          price: v.currentPrice,
+          product: { ...buyNowItem.product, price: v.currentPrice },
+        };
+      }
+    }
+
+    set({ items: newItems, buyNowItem: newBuyNowItem });
+    get().validateCart();
+  },
+
+  fixStockIssues: () => {
+    const { cartValidation, items, buyNowItem } = get();
+    if (!cartValidation) return;
+
+    const newItems: CartItem[] = [];
+    for (const item of items) {
+      const v = cartValidation.itemValidations[item.sku];
+      if (!v) {
+        newItems.push(item);
+        continue;
+      }
+      if (v.isOutOfStock) {
+        // Drop out of stock item
+        continue;
+      }
+      if (v.isQuantityExceeded) {
+        newItems.push({
+          ...item,
+          quantity: Math.max(1, v.availableStock),
+        });
+      } else {
+        newItems.push(item);
+      }
+    }
+
+    let newBuyNow = buyNowItem;
+    if (buyNowItem) {
+      const v = cartValidation.itemValidations[buyNowItem.sku];
+      if (v && v.isOutOfStock) {
+        newBuyNow = null;
+      } else if (v && v.isQuantityExceeded) {
+        newBuyNow = { ...buyNowItem, quantity: Math.max(1, v.availableStock) };
+      }
+    }
+
+    set({ items: newItems, buyNowItem: newBuyNow });
+    get().validateCart();
+  },
+
+  updateItemPrice: (sku, newPrice) => {
+    set((state) => ({
+      items: state.items.map((item) =>
+        item.sku === sku
+          ? { ...item, price: newPrice, product: { ...item.product, price: newPrice } }
+          : item
+      ),
+      buyNowItem:
+        state.buyNowItem?.sku === sku
+          ? {
+              ...state.buyNowItem,
+              price: newPrice,
+              product: { ...state.buyNowItem.product, price: newPrice },
+            }
+          : state.buyNowItem,
+    }));
+    get().validateCart();
+  },
 
   setBuyNowItem: (product, sku, size, color, quantity) => {
     set({
       buyNowItem: { product, sku, size, color, quantity, price: product.price },
       checkoutMode: 'buy_now',
     });
+    get().validateCart();
   },
 
   clearBuyNowItem: () => {
     set({ buyNowItem: null, checkoutMode: 'cart' });
+    get().validateCart();
   },
 
-  setCheckoutMode: (mode) => set({ checkoutMode: mode }),
+  setCheckoutMode: (mode) => {
+    set({ checkoutMode: mode });
+    get().validateCart();
+  },
 
   addItem: (product, sku, size, color, quantity = 1, openDrawer = true) => {
     set((state) => {
@@ -114,12 +249,14 @@ export const useCartStore = create<CartState>((set, get) => ({
         buyNowItem: null,
       };
     });
+    get().validateCart();
   },
 
   removeItem: (sku) => {
     set((state) => ({
       items: state.items.filter((item) => item.sku !== sku),
     }));
+    get().validateCart();
   },
 
   updateQuantity: (sku, quantity) => {
@@ -132,15 +269,23 @@ export const useCartStore = create<CartState>((set, get) => ({
         item.sku === sku ? { ...item, quantity } : item
       ),
     }));
+    get().validateCart();
   },
 
   clearCart: () => {
-    set({ items: [], appliedCoupon: null, discountAmount: 0, couponError: null, checkoutMode: 'cart', buyNowItem: null });
+    set({ items: [], appliedCoupon: null, discountAmount: 0, couponError: null, checkoutMode: 'cart', buyNowItem: null, cartValidation: null });
   },
 
-  openDrawer: () => set({ isDrawerOpen: true, checkoutMode: 'cart', buyNowItem: null }),
+  openDrawer: () => {
+    set({ isDrawerOpen: true, checkoutMode: 'cart', buyNowItem: null });
+    get().validateCart();
+  },
   closeDrawer: () => set({ isDrawerOpen: false }),
-  toggleDrawer: () => set((state) => ({ isDrawerOpen: !state.isDrawerOpen, checkoutMode: 'cart', buyNowItem: null })),
+  toggleDrawer: () => {
+    const nextState = !get().isDrawerOpen;
+    set((state) => ({ isDrawerOpen: !state.isDrawerOpen, checkoutMode: 'cart', buyNowItem: null }));
+    if (nextState) get().validateCart();
+  },
 
   applyCouponCode: async (code: string) => {
     const subtotal = get().getSubtotal();
@@ -199,4 +344,31 @@ export const useCartStore = create<CartState>((set, get) => ({
   getCartItemCount: () => {
     return get().items.reduce((acc, item) => acc + item.quantity, 0);
   },
-}));
+}),
+    {
+      name: 'aurelia_cart',
+      storage: createJSONStorage(() => {
+        if (typeof window !== 'undefined') {
+          return window.localStorage;
+        }
+        return {
+          getItem: () => null,
+          setItem: () => {},
+          removeItem: () => {},
+        };
+      }),
+      partialize: (state) => ({
+        items: state.items,
+        appliedCoupon: state.appliedCoupon,
+        discountAmount: state.discountAmount,
+        checkoutMode: state.checkoutMode,
+        buyNowItem: state.buyNowItem,
+      }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.validateCart();
+        }
+      },
+    }
+  )
+);

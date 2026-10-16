@@ -249,6 +249,8 @@ button.filter-btn:focus-visible,
 /* Filter Dropdown Scrollable Sections */
 .filter-scroll-container {
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: var(--border-color) transparent;
   padding-right: 6px;
@@ -991,6 +993,34 @@ button.filter-btn:focus-visible,
 }
 
 .admin-sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: var(--admin-border-light);
+}
+
+/* Admin Sub-navigation Dropdown Scroll Container */
+.admin-dropdown-scroll-container {
+  max-height: 220px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--admin-border) transparent;
+  padding-right: 4px;
+}
+
+.admin-dropdown-scroll-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.admin-dropdown-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-dropdown-scroll-container::-webkit-scrollbar-thumb {
+  background: var(--admin-border);
+  border-radius: var(--radius-pill);
+}
+
+.admin-dropdown-scroll-container::-webkit-scrollbar-thumb:hover {
   background: var(--admin-border-light);
 }
 

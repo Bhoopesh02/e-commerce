@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Order } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Star } from 'lucide-react';
 
 export const getStatusColor = (status: string) => {
   switch (status) {
@@ -24,9 +24,10 @@ export const getStatusColor = (status: string) => {
 
 interface OrderRowProps {
   order: Order;
+  onReviewItem?: (productId: string, productName: string) => void;
 }
 
-export const OrderRow: React.FC<OrderRowProps> = ({ order }) => {
+export const OrderRow: React.FC<OrderRowProps> = ({ order, onReviewItem }) => {
   const statusColors = getStatusColor(order.status);
   const firstItem = order.items[0];
   const additionalItems = order.items.length - 1;
@@ -57,11 +58,27 @@ export const OrderRow: React.FC<OrderRowProps> = ({ order }) => {
       </div>
       <div className="row-col col-right">
         <span className="amount">{formatPrice(order.totals.total)}</span>
-        <Link href={`/account/orders/${order.id}`} style={{ textDecoration: 'none' }}>
-          <div className="text-action">
-            <span className="action-text">View details</span> <span className="arrow-icon"><ArrowRight size={14} /></span>
-          </div>
-        </Link>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px', marginTop: '4px' }}>
+          {order.status === 'Delivered' && onReviewItem && firstItem && (
+            <button
+              type="button"
+              className="row-review-btn"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onReviewItem(firstItem.productId, firstItem.productName || 'Garment');
+              }}
+            >
+              <Star size={12} style={{ color: 'var(--brand-accent)' }} />
+              <span>Write Reflection</span>
+            </button>
+          )}
+          <Link href={`/account/orders/${order.id}`} style={{ textDecoration: 'none' }}>
+            <div className="text-action">
+              <span className="action-text">View details</span> <span className="arrow-icon"><ArrowRight size={14} /></span>
+            </div>
+          </Link>
+        </div>
       </div>
 
       <style jsx>{`
@@ -163,6 +180,29 @@ export const OrderRow: React.FC<OrderRowProps> = ({ order }) => {
           }
         }
         
+        .row-review-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 5px 12px;
+          font-size: 0.78rem;
+          font-weight: 500;
+          letter-spacing: 0.04em;
+          color: var(--text-primary);
+          background-color: var(--bg-surface);
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-sm);
+          cursor: pointer;
+          transition: all 0.2s ease;
+          white-space: nowrap;
+        }
+
+        .row-review-btn:hover {
+          border-color: var(--brand-accent);
+          color: var(--brand-accent);
+          background-color: var(--overlay-golden-10);
+        }
+
         .text-action {
           font-size: 0.9rem;
           display: flex;

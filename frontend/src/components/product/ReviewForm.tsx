@@ -7,14 +7,26 @@ import { Input } from '@/components/ui/Input';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useToastStore } from '@/store/useToastStore';
 import { addReview } from '@/lib/mockApi';
+import { ShieldCheck } from 'lucide-react';
 import { Review } from '@/types';
 
 interface ReviewFormProps {
   productId: string;
+  productName?: string;
+  isVerifiedBuyer?: boolean;
+  initialExpanded?: boolean;
   onReviewAdded: (review: Review) => void;
+  onCancel?: () => void;
 }
 
-export const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewAdded }) => {
+export const ReviewForm: React.FC<ReviewFormProps> = ({
+  productId,
+  productName,
+  isVerifiedBuyer = false,
+  initialExpanded = false,
+  onReviewAdded,
+  onCancel,
+}) => {
   const { user } = useAuthStore();
   const { showToast } = useToastStore();
 
@@ -22,13 +34,16 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewAdded
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(initialExpanded);
 
   const handleDismiss = () => {
     setIsExpanded(false);
     setRating(0);
     setTitle('');
     setBody('');
+    if (onCancel) {
+      onCancel();
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -51,7 +66,7 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewAdded
         rating,
         title: title.trim(),
         body: body.trim(),
-        verifiedPurchase: true,
+        verifiedPurchase: isVerifiedBuyer,
       });
 
       onReviewAdded(newRev);
@@ -91,14 +106,38 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewAdded
         marginTop: '24px',
       }}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-display)' }}>
-          Record Your Impression
-        </h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
+        <div>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '0.72rem',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              color: isVerifiedBuyer ? 'var(--color-success, #2e7d32)' : 'var(--brand-primary)',
+              marginBottom: '4px',
+            }}
+          >
+            <ShieldCheck size={14} />
+            <span>{isVerifiedBuyer ? 'Verified Atelier Purchase' : 'Atelier Client Reflection'}</span>
+          </div>
+          <h3 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-display)', margin: 0 }}>
+            {productName ? `Reflect on ${productName}` : 'Record Your Impression'}
+          </h3>
+        </div>
         <button
           type="button"
           onClick={handleDismiss}
-          style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}
+          style={{
+            fontSize: '0.8rem',
+            color: 'var(--text-muted)',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '4px 8px',
+          }}
         >
           Cancel
         </button>

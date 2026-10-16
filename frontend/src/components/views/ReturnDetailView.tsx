@@ -29,11 +29,11 @@ export const ReturnDetailView: React.FC<ReturnDetailViewProps> = ({ returnId }) 
     load();
   }, [returnId]);
 
-  if (loading) return <div style={{ paddingTop: '140px', textAlign: 'center' }}>Loading Return Dossier...</div>;
+  if (loading) return <div style={{ padding: '48px 0', textAlign: 'center' }}>Loading Return Dossier...</div>;
 
   if (!returnReq) {
     return (
-      <div style={{ paddingTop: '140px', textAlign: 'center' }}>
+      <div style={{ padding: '48px 0', textAlign: 'center' }}>
         <h2>Return Request Not Found</h2>
         <Link href="/account">
           <Button variant="outline" style={{ marginTop: '16px' }}>Return to Account</Button>

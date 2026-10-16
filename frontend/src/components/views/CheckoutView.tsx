@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import confetti from 'canvas-confetti';
@@ -9,7 +9,7 @@ import { useCartStore } from '@/store/useCartStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useToastStore } from '@/store/useToastStore';
 import { formatPrice } from '@/lib/formatPrice';
-import { validateStock, placeOrder } from '@/lib/mockApi';
+import { validateStock, placeOrder, loginUser, registerUser } from '@/lib/mockApi';
 import { Order, Address } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -24,6 +24,14 @@ import {
   ShoppingBag,
   AlertTriangle,
   Mail,
+  User as UserIcon,
+  LogIn,
+  UserPlus,
+  Lock,
+  Sparkles,
+  Tag,
+  RefreshCw,
+  AlertCircle,
 } from 'lucide-react';
 
 // Lazy-load the payment component — only needed at checkout step 4
@@ -53,30 +61,245 @@ const PaymentAdyenDropIn = dynamic(
 );
 
 export const CheckoutView: React.FC = () => {
-  const { getActiveItems, clearCart, clearBuyNowItem, checkoutMode, getSubtotal, getTax, getDeliveryFee, getTotal, appliedCoupon, discountAmount } = useCartStore();
+  const {
+    getActiveItems,
+    clearCart,
+    clearBuyNowItem,
+    checkoutMode,
+    getSubtotal,
+    getTax,
+    getDeliveryFee,
+    getTotal,
+    appliedCoupon,
+    discountAmount,
+    cartValidation,
+    validateCart,
+    syncPrices,
+    fixStockIssues,
+  } = useCartStore();
   const items = getActiveItems();
-  const { user } = useAuthStore();
+  const { user, isAuthenticated, setUser, logout, loginAsCustomer } = useAuthStore();
   const { showToast } = useToastStore();
 
+  useEffect(() => {
+    validateCart();
+  }, [validateCart]);
+
   const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const [mounted, setMounted] = useState(false);
+
+  const goToStep = (newStep: 1 | 2 | 3 | 4 | 5, pushHistory = true) => {
+    setStep(newStep);
+    if (typeof window !== 'undefined' && pushHistory) {
+      if (newStep >= 1 && newStep <= 4) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('step', newStep.toString());
+        window.history.pushState({ step: newStep }, '', url.toString());
+      } else if (newStep === 5) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('step');
+        window.history.replaceState({ step: 5 }, '', url.toString());
+      }
+    }
+  };
+
+  useEffect(() => {
+    setMounted(true);
+    // Sync initial step from URL query params
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const s = parseInt(params.get('step') || '1', 10);
+      if (s >= 1 && s <= 4) {
+        setStep(s as 1 | 2 | 3 | 4);
+        window.history.replaceState({ step: s }, '', window.location.href);
+      }
+    }
+
+    const handlePopState = (e: PopStateEvent) => {
+      if (e.state && typeof e.state.step === 'number') {
+        const s = e.state.step;
+        if (s >= 1 && s <= 4) {
+          setStep(s as 1 | 2 | 3 | 4);
+        }
+      } else {
+        const params = new URLSearchParams(window.location.search);
+        const s = parseInt(params.get('step') || '1', 10);
+        if (s >= 1 && s <= 4) {
+          setStep(s as 1 | 2 | 3 | 4);
+        }
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
   const [stockError, setStockError] = useState<string | null>(null);
 
+  // Auth State
+  const isUserAuthenticated = !!(isAuthenticated && user);
+  const [authMode, setAuthMode] = useState<'signin' | 'register'>('signin');
+
   // Form states
-  const [email, setEmail] = useState(user?.email || 'ayesha@example.com');
-  const [phone, setPhone] = useState(user?.phone || '+91 98765 43210');
-  const [name, setName] = useState(user?.name || 'Ayesha Rahman');
+  const [email, setEmail] = useState(user?.email || '');
+  const [phone, setPhone] = useState(user?.phone || '');
+  const [name, setName] = useState(user?.name || '');
+  const [contactError, setContactError] = useState<string | null>(null);
+
+  // Inline Sign-in state
+  const [signInEmail, setSignInEmail] = useState('');
+  const [signInPassword, setSignInPassword] = useState('');
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [signInError, setSignInError] = useState<string | null>(null);
+
+  // Inline Register state
+  const [regName, setRegName] = useState('');
+  const [regEmail, setRegEmail] = useState('');
+  const [regPassword, setRegPassword] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [registerError, setRegisterError] = useState<string | null>(null);
 
   // Address state
   const defaultAddr = user?.addresses?.find((a) => a.isDefault) || user?.addresses?.[0];
-  const [addressLine1, setAddressLine1] = useState(defaultAddr?.line1 || '12 MG Road, Alwarpet');
-  const [city, setCity] = useState(defaultAddr?.city || 'Chennai');
-  const [state, setState] = useState(defaultAddr?.state || 'Tamil Nadu');
-  const [pincode, setPincode] = useState(defaultAddr?.pincode || '600001');
+  const [addressLine1, setAddressLine1] = useState(defaultAddr?.line1 || '');
+  const [city, setCity] = useState(defaultAddr?.city || '');
+  const [state, setState] = useState(defaultAddr?.state || '');
+  const [pincode, setPincode] = useState(defaultAddr?.pincode || '');
 
   // Payment state
   const [paymentDetails, setPaymentDetails] = useState<PaymentDetails>({ method: 'UPI', upiVpa: 'ayesha@oksbi' });
+
+  // Sync state if user changes or authenticates
+  useEffect(() => {
+    if (user && isAuthenticated) {
+      if (!name) setName(user.name);
+      if (!email) setEmail(user.email);
+      if (!phone && user.phone) setPhone(user.phone);
+      const def = user.addresses?.find((a) => a.isDefault) || user.addresses?.[0];
+      if (def) {
+        if (!addressLine1) setAddressLine1(def.line1);
+        if (!city) setCity(def.city);
+        if (!state) setState(def.state);
+        if (!pincode) setPincode(def.pincode);
+      }
+    }
+  }, [user, isAuthenticated]);
+
+  const handleSignIn = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setSignInError(null);
+    if (!signInEmail.trim()) {
+      setSignInError('Please enter your account email.');
+      return;
+    }
+    setIsSigningIn(true);
+    try {
+      const loggedUser = await loginUser(signInEmail.trim());
+      setUser(loggedUser);
+      setName(loggedUser.name || '');
+      setEmail(loggedUser.email || signInEmail.trim());
+      if (loggedUser.phone) setPhone(loggedUser.phone);
+      const def = loggedUser.addresses?.find((a) => a.isDefault) || loggedUser.addresses?.[0];
+      if (def) {
+        setAddressLine1(def.line1);
+        setCity(def.city);
+        setState(def.state);
+        setPincode(def.pincode);
+      }
+      showToast(`Welcome back, ${loggedUser.name || 'Client'}.`, 'success');
+    } catch {
+      setSignInError('Unable to sign in. Please check your credentials.');
+    } finally {
+      setIsSigningIn(false);
+    }
+  };
+
+  const handleRegister = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setRegisterError(null);
+    if (!regName.trim()) {
+      setRegisterError('Please enter your full client name.');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regEmail.trim() || !emailRegex.test(regEmail.trim())) {
+      setRegisterError('Please enter a valid email address.');
+      return;
+    }
+    setIsRegistering(true);
+    try {
+      const newUser = await registerUser(regName.trim(), regEmail.trim());
+      setUser(newUser);
+      setName(newUser.name);
+      setEmail(newUser.email);
+      showToast(`Client account established for ${newUser.name}. Welcome to Aurelia.`, 'success');
+    } catch {
+      setRegisterError('Unable to create client account. Please try again.');
+    } finally {
+      setIsRegistering(false);
+    }
+  };
+
+  const handleDemoSignIn = async () => {
+    setIsSigningIn(true);
+    setSignInError(null);
+    try {
+      loginAsCustomer();
+      const loggedUser = await loginUser('ayesha@example.com');
+      setUser(loggedUser);
+      setName(loggedUser.name || 'Ayesha Rahman');
+      setEmail(loggedUser.email || 'ayesha@example.com');
+      if (loggedUser.phone) setPhone(loggedUser.phone);
+      const def = loggedUser.addresses?.find((a) => a.isDefault) || loggedUser.addresses?.[0];
+      if (def) {
+        setAddressLine1(def.line1);
+        setCity(def.city);
+        setState(def.state);
+        setPincode(def.pincode);
+      }
+      showToast('Signed in as Ayesha Rahman (Atelier Member).', 'success');
+    } catch {
+      setSignInError('Demo sign in failed.');
+    } finally {
+      setIsSigningIn(false);
+    }
+  };
+
+  const handleSignOut = () => {
+    logout();
+    setName('');
+    setEmail('');
+    setPhone('');
+    setAddressLine1('');
+    setCity('');
+    setState('');
+    setPincode('');
+    goToStep(1, false);
+    showToast('Signed out of atelier account.', 'info');
+  };
+
+  const handleContinueToShipping = () => {
+    setContactError(null);
+    if (!name.trim()) {
+      setContactError('Please enter your full client name.');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim() || !emailRegex.test(email.trim())) {
+      setContactError('Please provide a valid email address for order confirmation & tracking.');
+      return;
+    }
+    if (!phone.trim()) {
+      setContactError('Please provide a telephone number for white-glove courier delivery.');
+      return;
+    }
+    if (cartValidation?.hasStockIssues) {
+      setStockError('Some items in your bag are no longer available. Please resolve them before proceeding.');
+      return;
+    }
+    goToStep(2);
+  };
 
   const subtotal = getSubtotal();
   const tax = getTax();
@@ -108,8 +331,14 @@ export const CheckoutView: React.FC = () => {
         isDefault: true,
       };
 
+      if (!user) {
+        showToast('Please sign in or create an account to authorize payment.', 'error');
+        goToStep(1, false);
+        return;
+      }
+
       const res = await placeOrder({
-        userId: user?.id || 'usr_001',
+        userId: user.id,
         customerName: name,
         customerEmail: email,
         items: items.map((i) => ({
@@ -147,7 +376,7 @@ export const CheckoutView: React.FC = () => {
 
       if (res.success && res.order) {
         setConfirmedOrder(res.order);
-        setStep(5);
+        goToStep(5, false);
         if (checkoutMode === 'buy_now') {
           clearBuyNowItem();
         } else {
@@ -282,6 +511,16 @@ export const CheckoutView: React.FC = () => {
     );
   }
 
+  if (!mounted) {
+    return (
+      <div style={{ paddingTop: '140px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+        <div className="container" style={{ maxWidth: '640px', textAlign: 'center' }}>
+          <div style={{ minHeight: '300px' }} />
+        </div>
+      </div>
+    );
+  }
+
   // If cart is empty, show empty bag state
   if (items.length === 0) {
     return (
@@ -327,12 +566,88 @@ export const CheckoutView: React.FC = () => {
           </div>
         </div>
 
+        {/* Real-time Cart Stock & Price Alerts Prior to Checkout Submission */}
+        {cartValidation?.hasStockIssues && (
+          <div
+            style={{
+              maxWidth: '1040px',
+              margin: '0 auto 28px',
+              padding: '16px 20px',
+              backgroundColor: 'var(--color-error-bg)',
+              border: '1px solid var(--color-error)',
+              borderRadius: 'var(--radius-sm)',
+              color: 'var(--color-error)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '16px',
+              flexWrap: 'wrap',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <AlertTriangle size={22} style={{ flexShrink: 0 }} />
+              <div>
+                <span style={{ fontSize: '0.92rem', fontWeight: 600, display: 'block' }}>
+                  Real-Time Inventory Alert
+                </span>
+                <span style={{ fontSize: '0.84rem', color: 'var(--text-secondary)' }}>
+                  {cartValidation.summaryMessage || 'Some items in your bag are out of stock or exceed available quantities.'}
+                </span>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <Button variant="outline" size="sm" onClick={fixStockIssues}>
+                Auto-Adjust Bag
+              </Button>
+              <Link href="/cart">
+                <Button variant="secondary" size="sm">
+                  Return to Bag
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {cartValidation?.hasPriceChanges && (
+          <div
+            style={{
+              maxWidth: '1040px',
+              margin: '0 auto 28px',
+              padding: '16px 20px',
+              backgroundColor: 'var(--overlay-golden-10)',
+              border: '1px solid var(--overlay-golden-35)',
+              borderRadius: 'var(--radius-sm)',
+              color: 'var(--brand-primary)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '16px',
+              flexWrap: 'wrap',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <Tag size={20} style={{ flexShrink: 0 }} />
+              <div>
+                <span style={{ fontSize: '0.92rem', fontWeight: 600, display: 'block' }}>
+                  Catalog Price Notice
+                </span>
+                <span style={{ fontSize: '0.84rem', color: 'var(--text-secondary)' }}>
+                  Atelier catalog rates have updated for silhouettes in your bag.
+                </span>
+              </div>
+            </div>
+            <Button variant="outline" size="sm" onClick={syncPrices} leftIcon={<RefreshCw size={13} />}>
+              Update Prices & Totals
+            </Button>
+          </div>
+        )}
+
         {/* Stock Error Alert */}
         {stockError && (
           <div
             style={{
-              maxWidth: '960px',
-              margin: '0 auto 32px',
+              maxWidth: '1040px',
+              margin: '0 auto 28px',
               padding: '16px 20px',
               backgroundColor: 'var(--color-error-bg)',
               border: '1px solid var(--color-error)',
@@ -375,30 +690,441 @@ export const CheckoutView: React.FC = () => {
           >
             {/* Step 1: Contact */}
             {step === 1 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>Contact Information</h3>
-                <Input
-                  label="Client Full Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
-                <Input
-                  label="Email (Order Dossier & Updates Only)"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-                <Input
-                  label="Telephone / Mobile"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  required
-                />
-                <Button variant="primary" onClick={() => setStep(2)} rightIcon={<ArrowRight size={16} />} disableSheen>
-                  Continue to Shipping
-                </Button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <h3 style={{ fontSize: '1.35rem', fontFamily: 'var(--font-display)', margin: 0 }}>
+                      Client & Contact
+                    </h3>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '4px', margin: 0 }}>
+                      Provide contact details for white-glove dispatch and physical dossier delivery.
+                    </p>
+                  </div>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--brand-primary)', fontWeight: 600 }}>
+                    Step 1 of 4
+                  </span>
+                </div>
+
+                {/* If NOT authenticated, show mandatory Sign In or Create Account Gate */}
+                {!isUserAuthenticated && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div style={{ textAlign: 'center', padding: '10px 0 4px' }}>
+                      <div style={{ display: 'inline-flex', marginBottom: '8px' }}>
+                        <Badge variant="gold" size="sm">Client Account Required</Badge>
+                      </div>
+                      <h4 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)', margin: '0 0 8px 0', color: 'var(--text-primary)' }}>
+                        Sign In or Create Account to Checkout
+                      </h4>
+                      <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', margin: '0 auto', maxWidth: '440px', lineHeight: 1.5 }}>
+                        To safeguard your commission, ensure white-glove courier custody, and issue certified tax dossiers, checkout is strictly reserved for registered patrons.
+                      </p>
+                    </div>
+
+                    {/* Tab Switcher */}
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        backgroundColor: 'var(--bg-muted, rgba(0, 0, 0, 0.04))',
+                        borderRadius: 'var(--radius-sm)',
+                        padding: '4px',
+                        border: '1px solid var(--border-color)',
+                        gap: '4px',
+                      }}
+                      role="tablist"
+                    >
+                      <button
+                        type="button"
+                        role="tab"
+                        id="checkout-signin-tab"
+                        aria-selected={authMode === 'signin'}
+                        onClick={() => {
+                          setAuthMode('signin');
+                          setSignInError(null);
+                        }}
+                        style={{
+                          padding: '11px 16px',
+                          fontSize: '0.88rem',
+                          fontWeight: authMode === 'signin' ? 600 : 500,
+                          borderRadius: 'var(--radius-xs, 4px)',
+                          border: 'none',
+                          backgroundColor: authMode === 'signin' ? 'var(--bg-surface)' : 'transparent',
+                          color: authMode === 'signin' ? 'var(--brand-primary)' : 'var(--text-muted)',
+                          boxShadow: authMode === 'signin' ? 'var(--shadow-sm)' : 'none',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        <LogIn size={16} />
+                        <span>Sign In</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        role="tab"
+                        id="checkout-register-tab"
+                        aria-selected={authMode === 'register'}
+                        onClick={() => {
+                          setAuthMode('register');
+                          setRegisterError(null);
+                        }}
+                        style={{
+                          padding: '11px 16px',
+                          fontSize: '0.88rem',
+                          fontWeight: authMode === 'register' ? 600 : 500,
+                          borderRadius: 'var(--radius-xs, 4px)',
+                          border: 'none',
+                          backgroundColor: authMode === 'register' ? 'var(--bg-surface)' : 'transparent',
+                          color: authMode === 'register' ? 'var(--brand-primary)' : 'var(--text-muted)',
+                          boxShadow: authMode === 'register' ? 'var(--shadow-sm)' : 'none',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        <UserPlus size={16} />
+                        <span>Create Account</span>
+                      </button>
+                    </div>
+
+                    {/* Sign In Tab Form */}
+                    {authMode === 'signin' && (
+                      <form onSubmit={handleSignIn} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {signInError && (
+                          <div
+                            style={{
+                              padding: '10px 14px',
+                              backgroundColor: 'var(--color-error-bg)',
+                              border: '1px solid var(--color-error)',
+                              borderRadius: 'var(--radius-xs, 4px)',
+                              color: 'var(--color-error)',
+                              fontSize: '0.82rem',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                            }}
+                          >
+                            <AlertTriangle size={15} />
+                            <span>{signInError}</span>
+                          </div>
+                        )}
+
+                        <Input
+                          label="Account Email"
+                          type="email"
+                          value={signInEmail}
+                          onChange={(e) => setSignInEmail(e.target.value)}
+                          placeholder="e.g. ayesha@example.com"
+                          leftIcon={<Mail size={16} />}
+                          required
+                        />
+
+                        <Input
+                          label="Password"
+                          type="password"
+                          value={signInPassword}
+                          onChange={(e) => setSignInPassword(e.target.value)}
+                          placeholder="••••••••"
+                          leftIcon={<Lock size={16} />}
+                        />
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '6px' }}>
+                          <Button
+                            type="submit"
+                            variant="primary"
+                            isLoading={isSigningIn}
+                            disableSheen
+                            style={{ width: '100%' }}
+                          >
+                            Sign In & Unlock Checkout
+                          </Button>
+
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleDemoSignIn}
+                            disabled={isSigningIn}
+                            leftIcon={<Sparkles size={16} />}
+                            disableSheen
+                            style={{ width: '100%' }}
+                          >
+                            One-Click Demo Sign-In (Ayesha Rahman)
+                          </Button>
+                        </div>
+
+                        <div style={{ textAlign: 'center', marginTop: '4px' }}>
+                          <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                            New to Aurelia Atelier?{' '}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setAuthMode('register');
+                                setRegisterError(null);
+                              }}
+                              style={{
+                                color: 'var(--brand-primary)',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontWeight: 600,
+                                padding: 0,
+                              }}
+                            >
+                              Create an account →
+                            </button>
+                          </span>
+                        </div>
+                      </form>
+                    )}
+
+                    {/* Create Account Tab Form */}
+                    {authMode === 'register' && (
+                      <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {registerError && (
+                          <div
+                            style={{
+                              padding: '10px 14px',
+                              backgroundColor: 'var(--color-error-bg)',
+                              border: '1px solid var(--color-error)',
+                              borderRadius: 'var(--radius-xs, 4px)',
+                              color: 'var(--color-error)',
+                              fontSize: '0.82rem',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                            }}
+                          >
+                            <AlertTriangle size={15} />
+                            <span>{registerError}</span>
+                          </div>
+                        )}
+
+                        <Input
+                          label="Client Full Name"
+                          type="text"
+                          value={regName}
+                          onChange={(e) => setRegName(e.target.value)}
+                          placeholder="e.g. Ayesha Rahman"
+                          leftIcon={<UserIcon size={16} />}
+                          required
+                        />
+
+                        <Input
+                          label="Email Address"
+                          type="email"
+                          value={regEmail}
+                          onChange={(e) => setRegEmail(e.target.value)}
+                          placeholder="client@example.com"
+                          leftIcon={<Mail size={16} />}
+                          required
+                        />
+
+                        <Input
+                          label="Password"
+                          type="password"
+                          value={regPassword}
+                          onChange={(e) => setRegPassword(e.target.value)}
+                          placeholder="Create a secure password"
+                          leftIcon={<Lock size={16} />}
+                        />
+
+                        <div style={{ marginTop: '6px' }}>
+                          <Button
+                            type="submit"
+                            variant="primary"
+                            isLoading={isRegistering}
+                            disableSheen
+                            style={{ width: '100%' }}
+                          >
+                            Create Account & Proceed to Checkout
+                          </Button>
+                        </div>
+
+                        <div style={{ textAlign: 'center', marginTop: '4px' }}>
+                          <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                            Already an atelier client?{' '}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setAuthMode('signin');
+                                setSignInError(null);
+                              }}
+                              style={{
+                                color: 'var(--brand-primary)',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontWeight: 600,
+                                padding: 0,
+                              }}
+                            >
+                              Sign in here →
+                            </button>
+                          </span>
+                        </div>
+                      </form>
+                    )}
+                  </div>
+                )}
+
+                {/* If authenticated, show Member Status Card and Contact form */}
+                {isUserAuthenticated && user && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div
+                      style={{
+                        padding: '18px 20px',
+                        backgroundColor: 'var(--overlay-golden-10)',
+                        border: '1px solid var(--overlay-golden-35)',
+                        borderRadius: 'var(--radius-sm)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '14px',
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <div
+                            style={{
+                              width: 40,
+                              height: 40,
+                              borderRadius: 'var(--radius-pill)',
+                              backgroundColor: 'var(--brand-primary)',
+                              color: '#ffffff',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '0.95rem',
+                              fontWeight: 700,
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                            }}
+                          >
+                            {user.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                                {user.name}
+                              </span>
+                              <Badge variant="gold" size="sm">Member</Badge>
+                            </div>
+                            <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                              {user.email}
+                            </span>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={handleSignOut}
+                          style={{
+                            fontSize: '0.8rem',
+                            color: 'var(--text-muted)',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            padding: '4px 6px',
+                            textDecoration: 'underline',
+                          }}
+                        >
+                          Sign Out / Switch Account
+                        </button>
+                      </div>
+
+                      <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', borderTop: '1px solid var(--overlay-golden-20)', paddingTop: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <ShieldCheck size={14} style={{ color: 'var(--brand-primary)' }} />
+                        <span>Saved addresses and concierge delivery privileges applied automatically.</span>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                      <Input
+                        label="Client Full Name"
+                        value={name}
+                        onChange={(e) => {
+                          setName(e.target.value);
+                          if (contactError) setContactError(null);
+                        }}
+                        placeholder="e.g. Ayesha Rahman"
+                        required
+                      />
+
+                      <Input
+                        label="Email (Order Dossier & Updates Only)"
+                        type="email"
+                        value={email}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          if (contactError) setContactError(null);
+                        }}
+                        placeholder="client@example.com"
+                        required
+                      />
+
+                      <Input
+                        label="Telephone / Mobile (For Delivery Coordination)"
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => {
+                          setPhone(e.target.value);
+                          if (contactError) setContactError(null);
+                        }}
+                        placeholder="+91 98765 43210"
+                        required
+                      />
+
+                      {contactError && (
+                        <div
+                          style={{
+                            padding: '10px 14px',
+                            backgroundColor: 'var(--color-error-bg)',
+                            border: '1px solid var(--color-error)',
+                            borderRadius: 'var(--radius-xs, 4px)',
+                            color: 'var(--color-error)',
+                            fontSize: '0.82rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                          }}
+                        >
+                          <AlertTriangle size={15} />
+                          <span>{contactError}</span>
+                        </div>
+                      )}
+
+                      <Button
+                        variant="primary"
+                        onClick={handleContinueToShipping}
+                        rightIcon={<ArrowRight size={16} />}
+                        disableSheen
+                        disabled={!!cartValidation?.hasStockIssues}
+                      >
+                        Continue to Shipping
+                      </Button>
+                      {cartValidation?.hasStockIssues && (
+                        <p
+                          style={{
+                            fontSize: '0.8rem',
+                            color: 'var(--color-error)',
+                            marginTop: '6px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                          }}
+                        >
+                          <AlertTriangle size={14} />
+                          Please resolve out-of-stock items before continuing to shipping.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -407,7 +1133,7 @@ export const CheckoutView: React.FC = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>Shipping Address</h3>
-                  <button onClick={() => setStep(1)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
+                  <button onClick={() => goToStep(1)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
                     ← Edit Contact
                   </button>
                 </div>
@@ -427,7 +1153,7 @@ export const CheckoutView: React.FC = () => {
                   onChange={(e) => setPincode(e.target.value)}
                   required
                 />
-                <Button variant="primary" onClick={() => setStep(3)} rightIcon={<ArrowRight size={16} />} disableSheen>
+                <Button variant="primary" onClick={() => goToStep(3)} rightIcon={<ArrowRight size={16} />} disableSheen>
                   Continue to Delivery
                 </Button>
               </div>
@@ -438,7 +1164,7 @@ export const CheckoutView: React.FC = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>Delivery Method</h3>
-                  <button onClick={() => setStep(2)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
+                  <button onClick={() => goToStep(2)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
                     ← Edit Address
                   </button>
                 </div>
@@ -481,7 +1207,7 @@ export const CheckoutView: React.FC = () => {
                   </div>
                 </div>
 
-                <Button variant="primary" onClick={() => setStep(4)} rightIcon={<ArrowRight size={16} />} disableSheen>
+                <Button variant="primary" onClick={() => goToStep(4)} rightIcon={<ArrowRight size={16} />} disableSheen>
                   Continue to Payment
                 </Button>
               </div>
@@ -492,7 +1218,7 @@ export const CheckoutView: React.FC = () => {
               <div className="checkout-step-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0, overflow: 'visible' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>Select Payment Method</h3>
-                  <button onClick={() => setStep(3)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
+                  <button onClick={() => goToStep(3)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
                     ← Edit Delivery
                   </button>
                 </div>
@@ -536,31 +1262,79 @@ export const CheckoutView: React.FC = () => {
             </h3>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
-              {items.map((item) => (
-                <div key={item.sku} style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
-                  <div
-                    style={{
-                      position: 'relative',
-                      width: '60px',
-                      height: '75px',
-                      borderRadius: 'var(--radius-sm)',
-                      overflow: 'hidden',
-                      flexShrink: 0,
-                    }}
-                  >
-                    <Image src={item.product.images[0]} alt={item.product.name} fill sizes="60px" style={{ objectFit: 'cover' }} />
+              {items.map((item) => {
+                const val = cartValidation?.itemValidations[item.sku];
+                const isOutOfStock = val?.isOutOfStock;
+                const isExceeded = val?.isQuantityExceeded;
+                const isPriceChanged = val?.isPriceChanged;
+
+                return (
+                  <div key={item.sku} style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
+                    <div
+                      style={{
+                        position: 'relative',
+                        width: '60px',
+                        height: '75px',
+                        borderRadius: 'var(--radius-sm)',
+                        overflow: 'hidden',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Image src={item.product.images[0]} alt={item.product.name} fill sizes="60px" style={{ objectFit: 'cover' }} />
+                      {isOutOfStock && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            backgroundColor: 'rgba(0,0,0,0.65)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#fff',
+                            fontSize: '0.62rem',
+                            fontWeight: 700,
+                            letterSpacing: '0.04em',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          Sold Out
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <h4 style={{ fontSize: '0.88rem', fontWeight: 600 }}>{item.product.name}</h4>
+                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                        Size: {item.size} · Qty: {item.quantity}
+                      </span>
+                      {isOutOfStock && (
+                        <span style={{ fontSize: '0.72rem', color: 'var(--color-error)', fontWeight: 700, display: 'block', marginTop: '2px' }}>
+                          Out of Stock
+                        </span>
+                      )}
+                      {!isOutOfStock && isExceeded && (
+                        <span style={{ fontSize: '0.72rem', color: 'var(--color-warning)', fontWeight: 600, display: 'block', marginTop: '2px' }}>
+                          Only {val.availableStock} in stock
+                        </span>
+                      )}
+                      {isPriceChanged && (
+                        <span style={{ fontSize: '0.72rem', color: 'var(--brand-primary)', fontWeight: 600, display: 'block', marginTop: '2px' }}>
+                          Catalog: {formatPrice(val.currentPrice)}
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      {isPriceChanged && (
+                        <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', textDecoration: 'line-through' }}>
+                          {formatPrice(item.price * item.quantity)}
+                        </span>
+                      )}
+                      <span style={{ fontSize: '0.92rem', fontWeight: 600 }}>
+                        {formatPrice((isPriceChanged && val ? val.currentPrice : item.price) * item.quantity)}
+                      </span>
+                    </div>
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <h4 style={{ fontSize: '0.88rem', fontWeight: 600 }}>{item.product.name}</h4>
-                    <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                      Size: {item.size} · Qty: {item.quantity}
-                    </span>
-                  </div>
-                  <span style={{ fontSize: '0.92rem', fontWeight: 600 }}>
-                    {formatPrice(item.price * item.quantity)}
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.88rem', borderTop: '1px solid var(--border-light)', paddingTop: '16px' }}>

@@ -4,9 +4,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, useRouter } from 'next/navigation';
-import { getProductBySlug, getReviews, getProducts } from '@/lib/mockApi';
+import { getProductBySlug, getReviews, getProducts, getOrders } from '@/lib/mockApi';
 import { Product, Review, ProductVariant } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
+import { useAuthStore } from '@/store/useAuthStore';
 import { useCartStore } from '@/store/useCartStore';
 import { useWishlistStore } from '@/store/useWishlistStore';
 import { useToastStore } from '@/store/useToastStore';
@@ -16,6 +17,7 @@ import { Modal } from '@/components/ui/Modal';
 import { RatingStars } from '@/components/ui/RatingStars';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { ReviewList } from '@/components/product/ReviewList';
+import { ReviewForm } from '@/components/product/ReviewForm';
 import { ProductCard } from '@/components/product/ProductCard';
 import { RecommendedProducts } from '@/components/product/RecommendedProducts';
 import { ProductImageLightbox } from '@/components/product/ProductImageLightbox';
@@ -75,10 +77,67 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
+  const { user, isAuthenticated } = useAuthStore();
+  const [isVerifiedBuyer, setIsVerifiedBuyer] = useState(false);
+  const [checkingPurchase, setCheckingPurchase] = useState(false);
+  const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
+
   const { addItem } = useCartStore();
   const { isInWishlist, toggleItem } = useWishlistStore();
   const { showToast } = useToastStore();
   const router = useRouter();
+
+  useEffect(() => {
+    let isMounted = true;
+    async function verifyPurchase() {
+      if (!product || !isAuthenticated || !user?.id) {
+        setIsVerifiedBuyer(false);
+        return;
+      }
+      setCheckingPurchase(true);
+      try {
+        const orders = await getOrders(user.id);
+        const hasPurchased = orders.some(
+          (o) =>
+            o.status !== 'Cancelled' &&
+            o.items.some((item) => item.productId === product.id)
+        );
+        if (isMounted) {
+          setIsVerifiedBuyer(hasPurchased);
+        }
+      } catch (err) {
+        console.error('Error verifying purchase status:', err);
+      } finally {
+        if (isMounted) {
+          setCheckingPurchase(false);
+        }
+      }
+    }
+    verifyPurchase();
+    return () => {
+      isMounted = false;
+    };
+  }, [product, user?.id, isAuthenticated]);
+
+  const handleReviewAdded = (newRev: Review) => {
+    setReviews((prev) => [newRev, ...prev]);
+    setIsReviewFormOpen(false);
+    if (product) {
+      const allRevs = [newRev, ...reviews];
+      const newAverage = allRevs.reduce((acc, r) => acc + r.rating, 0) / allRevs.length;
+      setProduct({
+        ...product,
+        rating: {
+          average: Number(newAverage.toFixed(1)),
+          count: allRevs.length,
+        },
+      });
+    }
+  };
+
+  const hasUserReviewed = Boolean(
+    user?.id && reviews.some((r) => r.userId === user.id)
+  );
 
   // Server pre-fetched data for this slug — skip redundant first-mount fetch
   const isInitialMount = useRef(true);
@@ -212,7 +271,13 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
       <div className="container">
         {/* Back Navigation */}
         <button
-          onClick={() => router.back()}
+          onClick={() => {
+            if (typeof window !== 'undefined' && window.history.length > 1) {
+              router.back();
+            } else {
+              router.push('/shop');
+            }
+          }}
           className="animated-back-btn"
           style={{
             display: 'flex',
@@ -933,7 +998,151 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
             </div>
           </div>
 
-          {/* Review submission temporarily disabled until post-purchase flow is implemented */}
+          {/* Verified purchase submission CTA / notice */}
+          {isVerifiedBuyer && !hasUserReviewed && (
+            <div
+              style={{
+                marginBottom: '28px',
+                padding: '20px 24px',
+                borderRadius: 'var(--radius-sm)',
+                backgroundColor: 'var(--bg-surface)',
+                border: '1px solid var(--border-color)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '16px',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(180, 140, 80, 0.12)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--brand-primary)',
+                    flexShrink: 0,
+                  }}
+                >
+                  <ShieldCheck size={18} />
+                </div>
+                <div>
+                  <h4 style={{ fontSize: '0.95rem', fontWeight: 600, margin: 0 }}>
+                    Verified Commission
+                  </h4>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: '2px 0 0 0' }}>
+                    You have acquired this piece. Share your reflections on its drape, tailoring, and fit with fellow patrons.
+                  </p>
+                </div>
+              </div>
+              <Button
+                variant={isReviewFormOpen ? 'ghost' : 'outline'}
+                size="sm"
+                onClick={() => setIsReviewFormOpen(!isReviewFormOpen)}
+              >
+                {isReviewFormOpen ? 'Close Reflection' : 'Write Client Reflection'}
+              </Button>
+            </div>
+          )}
+
+          {isVerifiedBuyer && hasUserReviewed && (
+            <div
+              style={{
+                marginBottom: '24px',
+                padding: '14px 18px',
+                borderRadius: 'var(--radius-sm)',
+                backgroundColor: 'var(--bg-surface)',
+                border: '1px solid var(--border-color)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                fontSize: '0.84rem',
+                color: 'var(--text-secondary)',
+              }}
+            >
+              <Check size={16} style={{ color: 'var(--color-success)' }} />
+              <span>You have submitted a verified reflection for this piece. Thank you for contributing to our atelier archives.</span>
+            </div>
+          )}
+
+          {!isVerifiedBuyer && !checkingPurchase && (
+            <div
+              style={{
+                marginBottom: '28px',
+                padding: '16px 20px',
+                borderRadius: 'var(--radius-sm)',
+                backgroundColor: 'var(--bg-subtle)',
+                border: '1px solid var(--border-color)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '12px',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <ShieldCheck size={16} style={{ color: 'var(--brand-primary)' }} />
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                  Purchased commissions earn the verified owner badge. You may also record your silhouette impression below.
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                {!isAuthenticated ? (
+                  <Link
+                    href="/account/login"
+                    style={{
+                      fontSize: '0.8rem',
+                      fontWeight: 600,
+                      color: 'var(--brand-primary)',
+                      textDecoration: 'underline',
+                      letterSpacing: '0.02em',
+                    }}
+                  >
+                    Sign in to verify
+                  </Link>
+                ) : (
+                  <Link
+                    href="/account/orders"
+                    style={{
+                      fontSize: '0.8rem',
+                      fontWeight: 600,
+                      color: 'var(--brand-primary)',
+                      textDecoration: 'underline',
+                      letterSpacing: '0.02em',
+                    }}
+                  >
+                    View your commissions
+                  </Link>
+                )}
+                <Button
+                  variant={isReviewFormOpen ? 'ghost' : 'outline'}
+                  size="sm"
+                  onClick={() => setIsReviewFormOpen(!isReviewFormOpen)}
+                >
+                  {isReviewFormOpen ? 'Close Reflection' : 'Write Client Reflection'}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Expandable Review Form */}
+          {isReviewFormOpen && (
+            <div style={{ marginBottom: '32px' }}>
+              <ReviewForm
+                productId={product.id}
+                productName={product.name}
+                isVerifiedBuyer={isVerifiedBuyer}
+                initialExpanded
+                onReviewAdded={handleReviewAdded}
+                onCancel={() => setIsReviewFormOpen(false)}
+              />
+            </div>
+          )}
+
           <div style={{ marginTop: '32px' }}>
             <ReviewList reviews={reviews} />
           </div>

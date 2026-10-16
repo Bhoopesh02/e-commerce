@@ -3,15 +3,20 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useToastStore } from '@/store/useToastStore';
 import { getOrders } from '@/lib/mockApi';
 import { Order } from '@/types';
 import { OrderRow } from '@/components/account/OrderRow';
+import { Modal } from '@/components/ui/Modal';
+import { ReviewForm } from '@/components/product/ReviewForm';
 
 export default function OrdersPage() {
   const { user } = useAuthStore();
+  const { showToast } = useToastStore();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'ALL' | 'ACTIVE' | 'DELIVERED' | 'CANCELLED'>('ALL');
+  const [reviewItem, setReviewItem] = useState<{ productId: string; productName: string } | null>(null);
 
   useEffect(() => {
     async function fetchOrders() {
@@ -66,11 +71,38 @@ export default function OrdersPage() {
         ) : (
           <div className="list-container">
             {filteredOrders.map(order => (
-              <OrderRow key={order.id} order={order} />
+              <OrderRow
+                key={order.id}
+                order={order}
+                onReviewItem={(productId, productName) => setReviewItem({ productId, productName })}
+              />
             ))}
           </div>
         )}
       </div>
+
+      {/* Review Modal for Verified Order Item */}
+      <Modal
+        isOpen={Boolean(reviewItem)}
+        onClose={() => setReviewItem(null)}
+        title={reviewItem ? `Reflect on ${reviewItem.productName}` : 'Write a Client Reflection'}
+      >
+        {reviewItem && (
+          <div style={{ paddingTop: '8px' }}>
+            <ReviewForm
+              productId={reviewItem.productId}
+              productName={reviewItem.productName}
+              isVerifiedBuyer={true}
+              initialExpanded
+              onReviewAdded={() => {
+                setReviewItem(null);
+                showToast('Your verified reflection has been submitted and published.', 'success');
+              }}
+              onCancel={() => setReviewItem(null)}
+            />
+          </div>
+        )}
+      </Modal>
 
       <style jsx>{`
         .orders-filter {
