@@ -155,6 +155,8 @@ export interface Order {
   status: OrderStatus;
   statusHistory: StatusHistoryItem[];
   address: Address;
+  billingAddress?: Address;
+  sameAsShipping?: boolean;
   payment: PaymentInfo;
   paymentMethod?: string;
   attribution?: OrderAttribution;

@@ -10,6 +10,7 @@ import { formatPrice } from '@/lib/formatPrice';
 import { useWishlistStore } from '@/store/useWishlistStore';
 import { useCartStore } from '@/store/useCartStore';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { useScrollPreload } from '@/hooks/useScrollPreload';
 
 export const BannerProductCardSkeleton: React.FC = () => {
   return (
@@ -107,8 +108,15 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
     }
   };
 
+  // Lookahead scroll preloader for banner cards
+  const { ref: cardRef } = useScrollPreload<HTMLDivElement>(
+    [imageSrc, product.images?.[1]],
+    { rootMargin: '600px 0px' }
+  );
+
   return (
     <motion.div
+      ref={cardRef}
       className="banner-product-card group"
       style={{
         flexShrink: 0,

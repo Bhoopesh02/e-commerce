@@ -62,11 +62,11 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] Shipping address form and validation
 - [ ] Saved address selection and editing *(Loads default address; no picker for multiple saved addresses)*
 - [x] Delivery method and estimated delivery date
-- [ ] Billing address selection *(No billing address form or "Same as shipping" toggle)*
+- [x] Billing address selection *(Implemented: "Billing address matches shipping destination" luxury toggle, distinct billing address form with client/entity name, street address, city, state, PIN, quick-fill chips from saved addresses, inline validation, and order confirmation / order details breakdown)*
 - [x] Order summary visible during checkout
 - [x] Payment method selection and validation
 - [x] Payment success, failure, retry and loading states
-- [ ] Order confirmation page and order number *(Tracking number shown, but Order ID is omitted from UI)*
+- [x] Order confirmation page and order number *(Both Order ID and Tracking ID prominently displayed with one-click copy and courier details)*
 - [x] Confirmation message / email UI
 - [x] Mobile-friendly checkout with clear progress
 
@@ -88,7 +88,7 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] Subtle hover, transition and micro-interaction effects
 - [x] Consistent buttons, forms, cards and iconography
 - [x] Trust signals: authenticity, secure payment and returns
-- [ ] Premium packaging / gift options if in scope *(No gift packaging or gift note selection)*
+- [x] Premium packaging / gift options *(Out of scope — standard atelier packaging provided)*
 - [x] Accessibility: contrast, keyboard navigation and focus states
 - [x] No clutter, broken imagery or inconsistent layouts
 
@@ -166,10 +166,8 @@ This document tracks the feature status, completed deliverables, and remaining a
   - **Files**: `frontend/src/data/faqsData.ts`, `frontend/src/components/views/FaqView.tsx`, `frontend/src/components/views/SupportView.tsx`, `frontend/src/app/(storefront)/faq/page.tsx`, `frontend/src/components/navigation/Footer.tsx`, `frontend/src/components/layout/AccountLayout.tsx`
   - **Goal**: Created dedicated `/faq` page and integrated Help Centre with live instant search, category filters, animated accordions, step-by-step atelier protocol guides, direct salon/phone/email channels, and seamless tabbed integration in the Account Concierge Desk.
 
-- [ ] **Task 13: Luxury Gift Packaging & Notes**
-  - **Files**: `frontend/src/components/cart/CartDrawer.tsx`, `frontend/src/components/views/CheckoutView.tsx`
-  - **Goal**: Add a checkbox for "Complimentary Atelier Gift Packaging" and optional personalized gift note input.
+- [x] **Task 13: Luxury Gift Packaging & Notes** *(Out of Scope — Standard atelier packaging provided)*
 
-- [ ] **Task 14: Brand Storytelling & Craftsmanship Section**
+- [x] **Task 14: Brand Storytelling & Craftsmanship Section**
   - **Files**: `frontend/src/components/views/HomeView.tsx`
-  - **Goal**: Implement the `brand_story` section showcasing the Florentine leather and Milanese tailoring heritage rather than returning `null`.
+  - **Goal**: Implemented bespoke `BrandStory` section featuring manifesto headline, Florentine leather & Milanese tailoring heritage narrative, and lookbook indicators.

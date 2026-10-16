@@ -32,6 +32,9 @@ import {
   Tag,
   RefreshCw,
   AlertCircle,
+  Receipt,
+  Copy,
+  Check,
 } from 'lucide-react';
 
 // Lazy-load the payment component — only needed at checkout step 4
@@ -135,7 +138,17 @@ export const CheckoutView: React.FC = () => {
   }, []);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
+  const [copiedField, setCopiedField] = useState<'order' | 'tracking' | null>(null);
   const [stockError, setStockError] = useState<string | null>(null);
+
+  const handleCopy = (text: string, field: 'order' | 'tracking') => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedField(field);
+      showToast(`${field === 'order' ? 'Order ID' : 'Tracking ID'} copied to clipboard`, 'success');
+      setTimeout(() => setCopiedField(null), 2000);
+    }
+  };
 
   // Auth State
   const isUserAuthenticated = !!(isAuthenticated && user);
@@ -166,6 +179,17 @@ export const CheckoutView: React.FC = () => {
   const [city, setCity] = useState(defaultAddr?.city || '');
   const [state, setState] = useState(defaultAddr?.state || '');
   const [pincode, setPincode] = useState(defaultAddr?.pincode || '');
+  const [shippingError, setShippingError] = useState<string | null>(null);
+
+  // Billing Address state
+  const [sameAsShipping, setSameAsShipping] = useState(true);
+  const [billingName, setBillingName] = useState(user?.name || '');
+  const [billingPhone, setBillingPhone] = useState(user?.phone || '');
+  const [billingAddressLine1, setBillingAddressLine1] = useState('');
+  const [billingCity, setBillingCity] = useState('');
+  const [billingState, setBillingState] = useState('');
+  const [billingPincode, setBillingPincode] = useState('');
+  const [billingError, setBillingError] = useState<string | null>(null);
 
   // Payment state
   const [paymentDetails, setPaymentDetails] = useState<PaymentDetails>({ method: 'UPI', upiVpa: 'ayesha@oksbi' });
@@ -176,6 +200,8 @@ export const CheckoutView: React.FC = () => {
       if (!name) setName(user.name);
       if (!email) setEmail(user.email);
       if (!phone && user.phone) setPhone(user.phone);
+      if (!billingName) setBillingName(user.name);
+      if (!billingPhone && user.phone) setBillingPhone(user.phone);
       const def = user.addresses?.find((a) => a.isDefault) || user.addresses?.[0];
       if (def) {
         if (!addressLine1) setAddressLine1(def.line1);
@@ -275,6 +301,15 @@ export const CheckoutView: React.FC = () => {
     setCity('');
     setState('');
     setPincode('');
+    setSameAsShipping(true);
+    setBillingName('');
+    setBillingPhone('');
+    setBillingAddressLine1('');
+    setBillingCity('');
+    setBillingState('');
+    setBillingPincode('');
+    setShippingError(null);
+    setBillingError(null);
     goToStep(1, false);
     showToast('Signed out of atelier account.', 'info');
   };
@@ -299,6 +334,53 @@ export const CheckoutView: React.FC = () => {
       return;
     }
     goToStep(2);
+  };
+
+  const handleContinueToDelivery = () => {
+    setShippingError(null);
+    setBillingError(null);
+
+    if (!addressLine1.trim()) {
+      setShippingError('Please enter your shipping street address or residence.');
+      return;
+    }
+    if (!city.trim()) {
+      setShippingError('Please enter your shipping city.');
+      return;
+    }
+    if (!state.trim()) {
+      setShippingError('Please enter your shipping state or province.');
+      return;
+    }
+    if (!pincode.trim()) {
+      setShippingError('Please enter a valid postal / PIN code.');
+      return;
+    }
+
+    if (!sameAsShipping) {
+      if (!billingName.trim()) {
+        setBillingError('Please enter the client or company name for the billing dossier.');
+        return;
+      }
+      if (!billingAddressLine1.trim()) {
+        setBillingError('Please enter the billing street address.');
+        return;
+      }
+      if (!billingCity.trim()) {
+        setBillingError('Please enter the billing city.');
+        return;
+      }
+      if (!billingState.trim()) {
+        setBillingError('Please enter the billing state or province.');
+        return;
+      }
+      if (!billingPincode.trim()) {
+        setBillingError('Please enter the billing postal / PIN code.');
+        return;
+      }
+    }
+
+    goToStep(3);
   };
 
   const subtotal = getSubtotal();
@@ -331,6 +413,24 @@ export const CheckoutView: React.FC = () => {
         isDefault: true,
       };
 
+      const finalBillingAddress: Address = sameAsShipping
+        ? {
+            name,
+            phone,
+            line1: addressLine1,
+            city,
+            state,
+            pincode,
+          }
+        : {
+            name: billingName.trim() || name,
+            phone: billingPhone.trim() || phone,
+            line1: billingAddressLine1.trim(),
+            city: billingCity.trim(),
+            state: billingState.trim(),
+            pincode: billingPincode.trim(),
+          };
+
       if (!user) {
         showToast('Please sign in or create an account to authorize payment.', 'error');
         goToStep(1, false);
@@ -353,6 +453,8 @@ export const CheckoutView: React.FC = () => {
         })),
         status: 'Placed',
         address: deliveryAddress,
+        billingAddress: finalBillingAddress,
+        sameAsShipping,
         payment: {
           method: paymentDetails.method,
           status: 'successful',
@@ -428,10 +530,87 @@ export const CheckoutView: React.FC = () => {
             Thank You, {confirmedOrder.customerName}
           </h1>
 
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '32px' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '24px' }}>
             Your commission has been registered successfully.
             Our master tailors are preparing your pieces for white-glove dispatch.
           </p>
+
+          {/* Prominent Order Credentials Badge showing Order ID & Tracking ID */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              gap: '16px 28px',
+              padding: '14px 28px',
+              backgroundColor: 'var(--bg-surface)',
+              borderRadius: 'var(--radius-pill)',
+              border: '1px solid var(--border-color)',
+              marginBottom: '28px',
+              boxShadow: 'var(--shadow-sm)',
+            }}
+          >
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontWeight: 600 }}>
+                Order ID:
+              </span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.95rem', fontWeight: 600, color: 'var(--brand-primary)' }}>
+                {confirmedOrder.id}
+              </span>
+              <button
+                type="button"
+                onClick={() => handleCopy(confirmedOrder.id, 'order')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  color: copiedField === 'order' ? 'var(--color-success)' : 'var(--text-muted)',
+                  borderRadius: 'var(--radius-xs)',
+                  transition: 'color 0.2s',
+                }}
+                title="Copy Order ID"
+                aria-label="Copy Order ID"
+              >
+                {copiedField === 'order' ? <Check size={14} /> : <Copy size={14} />}
+              </button>
+            </div>
+
+            <div style={{ width: '1px', height: '18px', backgroundColor: 'var(--border-color)' }} />
+
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontWeight: 600 }}>
+                Tracking ID:
+              </span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                {confirmedOrder.trackingInfo?.trackingId || 'Pending'}
+              </span>
+              {confirmedOrder.trackingInfo?.trackingId && (
+                <button
+                  type="button"
+                  onClick={() => handleCopy(confirmedOrder.trackingInfo!.trackingId, 'tracking')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '4px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    color: copiedField === 'tracking' ? 'var(--color-success)' : 'var(--text-muted)',
+                    borderRadius: 'var(--radius-xs)',
+                    transition: 'color 0.2s',
+                  }}
+                  title="Copy Tracking ID"
+                  aria-label="Copy Tracking ID"
+                >
+                  {copiedField === 'tracking' ? <Check size={14} /> : <Copy size={14} />}
+                </button>
+              )}
+            </div>
+          </div>
 
           {/* Email dispatch notice per rule */}
           <div
@@ -466,17 +645,85 @@ export const CheckoutView: React.FC = () => {
               boxShadow: 'var(--shadow-md)',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-light)', paddingBottom: '16px', marginBottom: '20px' }}>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: '16px',
+                borderBottom: '1px solid var(--border-light)',
+                paddingBottom: '20px',
+                marginBottom: '20px',
+              }}
+            >
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Estimated Delivery</span>
-                <p style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                  {confirmedOrder.trackingInfo?.estimatedDelivery} via {confirmedOrder.trackingInfo?.carrier}
-                </p>
+                <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontWeight: 600 }}>
+                  Order ID
+                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+                  <p style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--brand-primary)', fontFamily: 'var(--font-mono)', margin: 0 }}>
+                    {confirmedOrder.id}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(confirmedOrder.id, 'order')}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '2px',
+                      color: copiedField === 'order' ? 'var(--color-success)' : 'var(--text-muted)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                    }}
+                    title="Copy Order ID"
+                    aria-label="Copy Order ID"
+                  >
+                    {copiedField === 'order' ? <Check size={13} /> : <Copy size={13} />}
+                  </button>
+                </div>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Waybill Tracking</span>
-                <p style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--brand-primary)' }}>
-                  {confirmedOrder.trackingInfo?.trackingId}
+
+              <div>
+                <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontWeight: 600 }}>
+                  Tracking ID
+                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+                  <p style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', margin: 0 }}>
+                    {confirmedOrder.trackingInfo?.trackingId || 'Pending'}
+                  </p>
+                  {confirmedOrder.trackingInfo?.trackingId && (
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(confirmedOrder.trackingInfo!.trackingId, 'tracking')}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '2px',
+                        color: copiedField === 'tracking' ? 'var(--color-success)' : 'var(--text-muted)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                      }}
+                      title="Copy Tracking ID"
+                      aria-label="Copy Tracking ID"
+                    >
+                      {copiedField === 'tracking' ? <Check size={13} /> : <Copy size={13} />}
+                    </button>
+                  )}
+                </div>
+                {confirmedOrder.trackingInfo?.carrier && (
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                    via {confirmedOrder.trackingInfo.carrier}
+                  </span>
+                )}
+              </div>
+
+              <div>
+                <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontWeight: 600 }}>
+                  Estimated Delivery
+                </span>
+                <p style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '4px', margin: 0 }}>
+                  {confirmedOrder.trackingInfo?.estimatedDelivery || 'Calculated at dispatch'}
                 </p>
               </div>
             </div>
@@ -490,6 +737,49 @@ export const CheckoutView: React.FC = () => {
                   <span style={{ fontWeight: 600 }}>{formatPrice(item.price * item.quantity)}</span>
                 </div>
               ))}
+            </div>
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                gap: '16px',
+                borderTop: '1px solid var(--border-light)',
+                paddingTop: '16px',
+                marginBottom: '16px',
+              }}
+            >
+              <div>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+                  Delivery Residence
+                </span>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-primary)', marginTop: '4px', lineHeight: 1.5, margin: 0 }}>
+                  <strong>{confirmedOrder.address.name}</strong>
+                  <br />
+                  {confirmedOrder.address.line1}
+                  <br />
+                  {confirmedOrder.address.city}, {confirmedOrder.address.state} — {confirmedOrder.address.pincode}
+                </p>
+              </div>
+
+              <div>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+                  Billing Address
+                </span>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-primary)', marginTop: '4px', lineHeight: 1.5, margin: 0 }}>
+                  {confirmedOrder.sameAsShipping || !confirmedOrder.billingAddress ? (
+                    <span style={{ color: 'var(--text-secondary)' }}>Same as delivery residence</span>
+                  ) : (
+                    <>
+                      <strong>{confirmedOrder.billingAddress.name}</strong>
+                      <br />
+                      {confirmedOrder.billingAddress.line1}
+                      <br />
+                      {confirmedOrder.billingAddress.city}, {confirmedOrder.billingAddress.state} — {confirmedOrder.billingAddress.pincode}
+                    </>
+                  )}
+                </p>
+              </div>
             </div>
 
             <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', fontSize: '1.15rem', fontWeight: 600 }}>
@@ -1128,32 +1418,328 @@ export const CheckoutView: React.FC = () => {
               </div>
             )}
 
-            {/* Step 2: Shipping */}
+            {/* Step 2: Shipping & Billing */}
             {step === 2 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>Shipping Address</h3>
-                  <button onClick={() => goToStep(1)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
+                  <div>
+                    <h3 style={{ fontSize: '1.35rem', fontFamily: 'var(--font-display)', margin: 0 }}>
+                      Shipping & Billing
+                    </h3>
+                    <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '4px', margin: 0 }}>
+                      Specify your white-glove destination and tax dossier billing address.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => goToStep(1)}
+                    style={{
+                      fontSize: '0.8rem',
+                      color: 'var(--brand-primary)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontWeight: 500,
+                      padding: 0,
+                    }}
+                  >
                     ← Edit Contact
                   </button>
                 </div>
-                <Input
-                  label="Street Address / Residence"
-                  value={addressLine1}
-                  onChange={(e) => setAddressLine1(e.target.value)}
-                  required
-                />
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                  <Input label="City" value={city} onChange={(e) => setCity(e.target.value)} required />
-                  <Input label="State" value={state} onChange={(e) => setState(e.target.value)} required />
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '0.82rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
+                      Shipping Destination
+                    </span>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                      Insured Courier Handover
+                    </span>
+                  </div>
+
+                  <Input
+                    label="Street Address / Residence"
+                    value={addressLine1}
+                    onChange={(e) => {
+                      setAddressLine1(e.target.value);
+                      if (shippingError) setShippingError(null);
+                    }}
+                    placeholder="e.g. 12 MG Road, Alwarpet"
+                    required
+                  />
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <Input
+                      label="City"
+                      value={city}
+                      onChange={(e) => {
+                        setCity(e.target.value);
+                        if (shippingError) setShippingError(null);
+                      }}
+                      placeholder="e.g. Chennai"
+                      required
+                    />
+                    <Input
+                      label="State / Province"
+                      value={state}
+                      onChange={(e) => {
+                        setState(e.target.value);
+                        if (shippingError) setShippingError(null);
+                      }}
+                      placeholder="e.g. Tamil Nadu"
+                      required
+                    />
+                  </div>
+
+                  <Input
+                    label="PIN Code"
+                    value={pincode}
+                    onChange={(e) => {
+                      setPincode(e.target.value);
+                      if (shippingError) setShippingError(null);
+                    }}
+                    placeholder="6-digit PIN"
+                    required
+                  />
+
+                  {shippingError && (
+                    <div
+                      style={{
+                        padding: '10px 14px',
+                        backgroundColor: 'var(--color-error-bg)',
+                        border: '1px solid var(--color-error)',
+                        borderRadius: 'var(--radius-xs, 4px)',
+                        color: 'var(--color-error)',
+                        fontSize: '0.82rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                      }}
+                    >
+                      <AlertTriangle size={15} />
+                      <span>{shippingError}</span>
+                    </div>
+                  )}
                 </div>
-                <Input
-                  label="PIN Code"
-                  value={pincode}
-                  onChange={(e) => setPincode(e.target.value)}
-                  required
-                />
-                <Button variant="primary" onClick={() => goToStep(3)} rightIcon={<ArrowRight size={16} />} disableSheen>
+
+                {/* Billing Address Subsection */}
+                <div
+                  style={{
+                    borderTop: '1px solid var(--border-light)',
+                    paddingTop: '20px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '16px',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Receipt size={17} style={{ color: 'var(--brand-primary)' }} />
+                      <h4 style={{ fontSize: '1.02rem', fontFamily: 'var(--font-display)', margin: 0, color: 'var(--text-primary)' }}>
+                        Billing Address
+                      </h4>
+                    </div>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                      Required for certified invoices
+                    </span>
+                  </div>
+
+                  {/* Same as shipping toggle card */}
+                  <label
+                    id="billing-same-as-shipping-label"
+                    htmlFor="billing-same-as-shipping-checkbox"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '12px',
+                      padding: '14px 16px',
+                      backgroundColor: sameAsShipping ? 'var(--overlay-golden-10)' : 'var(--bg-surface)',
+                      border: `1px solid ${sameAsShipping ? 'var(--brand-primary)' : 'var(--border-color)'}`,
+                      borderRadius: 'var(--radius-sm)',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      userSelect: 'none',
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      id="billing-same-as-shipping-checkbox"
+                      checked={sameAsShipping}
+                      onChange={(e) => {
+                        setSameAsShipping(e.target.checked);
+                        if (e.target.checked) setBillingError(null);
+                      }}
+                      style={{
+                        marginTop: '3px',
+                        accentColor: 'var(--brand-primary)',
+                        width: '18px',
+                        height: '18px',
+                        cursor: 'pointer',
+                      }}
+                    />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                        Billing address matches shipping destination
+                      </span>
+                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                        Official tax invoice and certified physical dossier will be addressed to your delivery residence.
+                      </span>
+                    </div>
+                  </label>
+
+                  {/* Distinct Billing Address Form */}
+                  {!sameAsShipping && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                        padding: '20px',
+                        backgroundColor: 'var(--bg-muted, rgba(0, 0, 0, 0.02))',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: 'var(--radius-sm)',
+                        marginTop: '2px',
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--brand-primary)' }}>
+                          Distinct Billing Entity
+                        </span>
+                        {user?.addresses && user.addresses.length > 0 && (
+                          <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
+                            Quick-fill from saved profile addresses:
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Saved addresses quick picker if user has addresses */}
+                      {user?.addresses && user.addresses.length > 0 && (
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                          {user.addresses.map((saved) => (
+                            <button
+                              key={saved.id || saved.line1}
+                              type="button"
+                              onClick={() => {
+                                setBillingName(saved.name || user.name);
+                                setBillingPhone(saved.phone || user.phone || '');
+                                setBillingAddressLine1(saved.line1);
+                                setBillingCity(saved.city);
+                                setBillingState(saved.state);
+                                setBillingPincode(saved.pincode);
+                                if (billingError) setBillingError(null);
+                              }}
+                              style={{
+                                padding: '6px 12px',
+                                fontSize: '0.76rem',
+                                borderRadius: 'var(--radius-pill)',
+                                border: '1px solid var(--border-color)',
+                                backgroundColor: 'var(--bg-surface)',
+                                color: 'var(--text-primary)',
+                                cursor: 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                transition: 'all 0.15s ease',
+                              }}
+                            >
+                              <span>{saved.name ? `${saved.name}: ` : ''}{saved.line1.slice(0, 22)}… ({saved.city})</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      <Input
+                        label="Client or Entity Legal Name"
+                        value={billingName}
+                        onChange={(e) => {
+                          setBillingName(e.target.value);
+                          if (billingError) setBillingError(null);
+                        }}
+                        placeholder="e.g. Ayesha Rahman or Studio Design Ltd"
+                        required
+                      />
+
+                      <Input
+                        label="Billing Street Address"
+                        value={billingAddressLine1}
+                        onChange={(e) => {
+                          setBillingAddressLine1(e.target.value);
+                          if (billingError) setBillingError(null);
+                        }}
+                        placeholder="e.g. 44 Boat Club Road, Suite 3"
+                        required
+                      />
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                        <Input
+                          label="City"
+                          value={billingCity}
+                          onChange={(e) => {
+                            setBillingCity(e.target.value);
+                            if (billingError) setBillingError(null);
+                          }}
+                          placeholder="e.g. Chennai"
+                          required
+                        />
+                        <Input
+                          label="State / Province"
+                          value={billingState}
+                          onChange={(e) => {
+                            setBillingState(e.target.value);
+                            if (billingError) setBillingError(null);
+                          }}
+                          placeholder="e.g. Tamil Nadu"
+                          required
+                        />
+                      </div>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                        <Input
+                          label="PIN / Postal Code"
+                          value={billingPincode}
+                          onChange={(e) => {
+                            setBillingPincode(e.target.value);
+                            if (billingError) setBillingError(null);
+                          }}
+                          placeholder="6-digit PIN"
+                          required
+                        />
+                        <Input
+                          label="Billing Phone (Optional)"
+                          type="tel"
+                          value={billingPhone}
+                          onChange={(e) => setBillingPhone(e.target.value)}
+                          placeholder="+91 98765 43210"
+                        />
+                      </div>
+
+                      {billingError && (
+                        <div
+                          style={{
+                            padding: '10px 14px',
+                            backgroundColor: 'var(--color-error-bg)',
+                            border: '1px solid var(--color-error)',
+                            borderRadius: 'var(--radius-xs, 4px)',
+                            color: 'var(--color-error)',
+                            fontSize: '0.82rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                          }}
+                        >
+                          <AlertTriangle size={15} />
+                          <span>{billingError}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <Button
+                  variant="primary"
+                  onClick={handleContinueToDelivery}
+                  rightIcon={<ArrowRight size={16} />}
+                  disableSheen
+                >
                   Continue to Delivery
                 </Button>
               </div>

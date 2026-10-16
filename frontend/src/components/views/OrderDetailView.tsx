@@ -23,6 +23,9 @@ import {
   MapPin,
   CreditCard,
   Star,
+  Receipt,
+  Copy,
+  Check,
 } from 'lucide-react';
 
 interface OrderDetailViewProps {
@@ -96,6 +99,16 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
   const [returnReason, setReturnReason] = useState('Size fit preference');
   const [returnComments, setReturnComments] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [copiedField, setCopiedField] = useState<'order' | 'tracking' | null>(null);
+
+  const handleCopy = (text: string, field: 'order' | 'tracking') => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedField(field);
+      showToast(`${field === 'order' ? 'Order ID' : 'Tracking ID'} copied to clipboard`, 'success');
+      setTimeout(() => setCopiedField(null), 2000);
+    }
+  };
 
   // Reflection / Review Modal
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -197,11 +210,36 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
                 Official Atelier Commission
               </span>
               <h1 className="order-header-title">
-                Commission Details
+                Commission #{order.id}
               </h1>
-              <span className="order-header-date">
-                Registered: {new Date(order.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', marginTop: '6px' }}>
+                <span className="order-header-date">
+                  Registered: {new Date(order.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                </span>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Order ID:</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', fontWeight: 600, color: 'var(--brand-primary)' }}>
+                    {order.id}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(order.id, 'order')}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '2px',
+                      color: copiedField === 'order' ? 'var(--color-success)' : 'var(--text-muted)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                    }}
+                    title="Copy Order ID"
+                    aria-label="Copy Order ID"
+                  >
+                    {copiedField === 'order' ? <Check size={13} /> : <Copy size={13} />}
+                  </button>
+                </div>
+              </div>
             </div>
 
             <div className="order-header-actions">
@@ -233,8 +271,25 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <Truck size={20} style={{ color: 'var(--brand-primary)', flexShrink: 0, marginTop: '2px' }} />
                 <div style={{ minWidth: 0, flex: 1 }}>
-                  <span className="tracking-carrier-text">
+                  <span className="tracking-carrier-text" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                     {order.trackingInfo.carrier} · Waybill <span className="tracking-waybill">#{order.trackingInfo.trackingId}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(order.trackingInfo!.trackingId, 'tracking')}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '2px',
+                        color: copiedField === 'tracking' ? 'var(--color-success)' : 'var(--text-muted)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                      }}
+                      title="Copy Tracking ID"
+                      aria-label="Copy Tracking ID"
+                    >
+                      {copiedField === 'tracking' ? <Check size={13} /> : <Copy size={13} />}
+                    </button>
                   </span>
                   <span className="tracking-arrival-text">
                     Estimated Arrival: {order.trackingInfo.estimatedDelivery || 'In Transit'}
@@ -362,6 +417,30 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ orderId }) => 
               <br />
               {order.address.city}, {order.address.state} — {order.address.pincode}
             </p>
+          </div>
+
+          <div className="order-info-card">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+              <Receipt size={18} style={{ color: 'var(--brand-primary)' }} />
+              <h3 style={{ fontSize: '0.95rem', fontWeight: 600 }}>Billing Address</h3>
+            </div>
+            {order.sameAsShipping || !order.billingAddress ? (
+              <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                Same as delivery residence
+                <br />
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                  Certified tax dossier issued to shipping destination
+                </span>
+              </p>
+            ) : (
+              <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                <strong>{order.billingAddress.name}</strong>
+                <br />
+                {order.billingAddress.line1}
+                <br />
+                {order.billingAddress.city}, {order.billingAddress.state} — {order.billingAddress.pincode}
+              </p>
+            )}
           </div>
 
           <div className="order-info-card">

@@ -13,6 +13,8 @@ import { RatingStars } from '@/components/ui/RatingStars';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { getLuxuryColorStyle } from '@/lib/colorUtils';
+import { useScrollPreload } from '@/hooks/useScrollPreload';
+import { preloadImage } from '@/lib/preloadImage';
 
 export { ProductCardSkeleton, ProductGridSkeleton } from './ProductCardSkeleton';
 
@@ -101,8 +103,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   };
 
 
+  // Lookahead scroll preloader: fetches primary and secondary images 600px before card enters viewport
+  const { ref: cardRef } = useScrollPreload<HTMLDivElement>(
+    [currentImage, hasSecondaryImage ? product.images[1] : null],
+    {
+      rootMargin: '600px 0px',
+      immediate: priority,
+    }
+  );
+
   return (
     <motion.div
+      ref={cardRef}
       className={variant === 'grid' ? 'min-w-0 w-full p-3 rounded-xl md:p-0 md:rounded-none' : ''}
       style={variant === 'grid' ? { display: 'flex', flexDirection: 'column', position: 'relative' } : {
         display: 'flex',
@@ -111,7 +123,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       }}
       whileHover={shouldReduceMotion ? undefined : { y: -6 }}
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => {
+        setIsHovered(true);
+        // Preload additional color variant images on hover so color switches are instant
+        if (product.images.length > 2) {
+          product.images.slice(2).forEach((img) => preloadImage(img));
+        }
+      }}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Product Image Frame */}
