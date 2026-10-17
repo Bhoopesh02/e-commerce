@@ -1078,8 +1078,8 @@ export default function AdminDashboardPage() {
         : (totalWeeklyOrders > 0 ? Math.round((d.count / totalWeeklyOrders) * 100) : 0);
 
       const valueLabel = salesDayMetric === 'revenue'
-        ? formatPrice(d.revenue).replace(/\D000$/, 'K')
-        : `${d.count} ord`;
+        ? formatPrice(d.revenue)
+        : `${d.count} ${d.count === 1 ? 'order' : 'orders'}`;
 
       // Scale to chart area: each bar height = (value / max) * 100%, min 3%
       const heightPct = val > 0 ? Math.max(3, Math.min(100, Math.round((val / maxVal) * 100))) : 3;
@@ -3016,26 +3016,32 @@ export default function AdminDashboardPage() {
                             : 'var(--color-icy-lake-300)',
                         }}
                       >
-                        {/* Value Pill pinned above the bar: only for Peak day or Selected bar, NOT on hover */}
-                        {(day.isPeak || isSelected) && (
-                          <div style={{
-                            position: 'absolute',
-                            bottom: 'calc(100% + 5px)',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            whiteSpace: 'nowrap',
-                            pointerEvents: 'none',
-                          }}>
-                            <span style={{
-                              fontSize: '0.68rem',
-                              fontWeight: 700,
-                              color: day.isPeak || isSelected ? 'var(--color-sapphire-700)' : 'var(--text-primary)',
-                              padding: '1px 5px',
-                              borderRadius: '4px',
-                              backgroundColor: day.isPeak ? 'var(--overlay-sapphire-10)' : 'var(--admin-surface)',
-                              border: day.isPeak ? '1px solid rgba(36, 75, 87, 0.25)' : '1px solid var(--admin-border)',
-                              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-                            }}>
+                        {/* Value Pill pinned above the bar: for Peak day, Selected day, or Hovered bar */}
+                        {(day.isPeak || isSelected || isHovered) && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              bottom: 'calc(100% + 6px)',
+                              left: '50%',
+                              transform: 'translateX(-50%)',
+                              whiteSpace: 'nowrap',
+                              pointerEvents: 'none',
+                              zIndex: 10,
+                            }}
+                          >
+                            <span
+                              style={{
+                                fontSize: '0.68rem',
+                                fontWeight: 700,
+                                color: day.isPeak || isSelected ? 'var(--color-sapphire-700)' : 'var(--text-primary)',
+                                padding: '2px 7px',
+                                borderRadius: '4px',
+                                backgroundColor: day.isPeak ? 'var(--overlay-sapphire-10)' : 'var(--admin-surface)',
+                                border: day.isPeak ? '1px solid rgba(36, 75, 87, 0.25)' : '1px solid var(--admin-border)',
+                                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                                display: 'inline-block',
+                              }}
+                            >
                               {day.valueLabel}
                             </span>
                           </div>
@@ -3115,7 +3121,7 @@ export default function AdminDashboardPage() {
                 </span>
                 <span className="peak-sales-stat-val" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--color-sapphire-700)', marginTop: '2px', fontVariantNumeric: 'tabular-nums' }}>
                   {(salesDayMetric === 'revenue' ? weeklyActivity.totalWeeklyRevenue : weeklyActivity.totalWeeklyOrders) > 0 && weeklyActivity.peakDay
-                    ? `${weeklyActivity.peakDay.label} · ${salesDayMetric === 'revenue' ? formatPrice(weeklyActivity.peakDay.revenue) : weeklyActivity.peakDay.count}`
+                    ? `${weeklyActivity.peakDay.label} · ${salesDayMetric === 'revenue' ? formatPrice(weeklyActivity.peakDay.revenue) : `${weeklyActivity.peakDay.count} ${weeklyActivity.peakDay.count === 1 ? 'order' : 'orders'}`}`
                     : '-'}
                 </span>
               </div>
@@ -3127,7 +3133,7 @@ export default function AdminDashboardPage() {
                 </span>
                 <span className="peak-sales-stat-val" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--admin-text-primary)', marginTop: '2px', fontVariantNumeric: 'tabular-nums' }}>
                   {(salesDayMetric === 'revenue' ? weeklyActivity.totalWeeklyRevenue : weeklyActivity.totalWeeklyOrders) > 0
-                    ? (salesDayMetric === 'revenue' ? formatPrice(Math.round(weeklyActivity.totalWeeklyRevenue / 7)) : (weeklyActivity.totalWeeklyOrders / 7).toFixed(1))
+                    ? (salesDayMetric === 'revenue' ? `${formatPrice(Math.round(weeklyActivity.totalWeeklyRevenue / 7))}/day` : `${(weeklyActivity.totalWeeklyOrders / 7).toFixed(1)}/day`)
                     : '-'}
                 </span>
               </div>
@@ -3139,7 +3145,7 @@ export default function AdminDashboardPage() {
                 </span>
                 <span className="peak-sales-stat-val" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', marginTop: '2px', fontVariantNumeric: 'tabular-nums' }}>
                   {(salesDayMetric === 'revenue' ? weeklyActivity.totalWeeklyRevenue : weeklyActivity.totalWeeklyOrders) > 0 && weeklyActivity.quietestDay
-                    ? `${weeklyActivity.quietestDay.label} · ${salesDayMetric === 'revenue' ? formatPrice(weeklyActivity.quietestDay.revenue) : weeklyActivity.quietestDay.count}`
+                    ? `${weeklyActivity.quietestDay.label} · ${salesDayMetric === 'revenue' ? formatPrice(weeklyActivity.quietestDay.revenue) : `${weeklyActivity.quietestDay.count} ${weeklyActivity.quietestDay.count === 1 ? 'order' : 'orders'}`}`
                     : '-'}
                 </span>
               </div>

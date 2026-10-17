@@ -233,8 +233,8 @@ export function useBannerAnimation({
     const imgWrapper = imageWrapperRef.current;
     if (imgWrapper) {
       gsap.set(imgWrapper, {
-        clipPath: 'inset(0 0 0 0%)',
-        clearProps: 'willChange',
+        clipPath: 'none',
+        clearProps: 'clipPath,willChange',
       });
       const imgEl = imgWrapper.querySelector<HTMLImageElement>('img');
       if (imgEl) {
@@ -281,6 +281,8 @@ export function useBannerAnimation({
       return;
     }
 
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+
     let isCancelled = false;
 
     // Kill any active timeline on new identity/categorySlug change
@@ -309,7 +311,7 @@ export function useBannerAnimation({
 
     if (imgEl) {
       gsap.set(imgEl, {
-        xPercent: 12,
+        xPercent: isMobile ? 16 : 12,
         scale: 1.06,
         transformOrigin: 'center center',
       });
@@ -318,23 +320,33 @@ export function useBannerAnimation({
     // 2. Tag typing preparation:
     let rawTag = tagText.trim();
     if (tagEl && rawTag) {
-      // First ensure it's rendered with full text to measure final width
-      tagEl.textContent = rawTag;
-      const measuredWidth = tagEl.getBoundingClientRect().width;
-      if (measuredWidth > 0) {
-        tagEl.style.minWidth = `${Math.ceil(measuredWidth)}px`;
+      if (!isMobile) {
+        // First ensure it's rendered with full text to measure final width
+        tagEl.textContent = rawTag;
+        const measuredWidth = tagEl.getBoundingClientRect().width;
+        if (measuredWidth > 0) {
+          tagEl.style.minWidth = `${Math.ceil(measuredWidth)}px`;
+        }
+        tagEl.setAttribute('aria-label', rawTag);
+        // Mask all characters except spaces with '_'
+        tagEl.textContent = rawTag.replace(/[^\s]/g, '_');
+      } else {
+        tagEl.textContent = rawTag;
+        tagEl.removeAttribute('aria-hidden');
       }
-      tagEl.setAttribute('aria-label', rawTag);
-      // Mask all characters except spaces with '_'
-      tagEl.textContent = rawTag.replace(/[^\s]/g, '_');
     }
 
     // 3. Title split into rendered lines
     let innerSpans: HTMLElement[] = [];
     if (titleEl && titleText) {
-      const splitRes = splitTitleIntoRenderedLines(titleEl, titleText);
-      innerSpans = splitRes.innerSpans;
-      gsap.set(innerSpans, { yPercent: 110 });
+      if (!isMobile) {
+        const splitRes = splitTitleIntoRenderedLines(titleEl, titleText);
+        innerSpans = splitRes.innerSpans;
+        gsap.set(innerSpans, { yPercent: 110 });
+      } else {
+        titleEl.textContent = titleText;
+        titleEl.setAttribute('aria-label', titleText);
+      }
     }
 
     // Run async trigger sequence: wait for page transition overlay, then wait for image decode
@@ -357,14 +369,21 @@ export function useBannerAnimation({
           isAnimatingRef.current = false;
           if (imgWrapper) {
             imgWrapper.style.willChange = 'auto';
-            gsap.set(imgWrapper, { clipPath: 'inset(0 0 0 0%)' });
+            gsap.set(imgWrapper, { clipPath: 'none', clearProps: 'clipPath' });
           }
           if (imgEl) {
             imgEl.style.willChange = 'auto';
-            gsap.set(imgEl, { xPercent: 0, scale: 1, clearProps: 'willChange' });
+            gsap.set(imgEl, { xPercent: 0, scale: 1, clearProps: 'transform,willChange' });
           }
           if (tagEl && rawTag) {
             tagEl.textContent = rawTag;
+            gsap.set(tagEl, { clearProps: 'opacity,transform' });
+          }
+          if (titleEl) {
+            gsap.set(titleEl, { clearProps: 'opacity,transform' });
+          }
+          if (footerRef?.current) {
+            gsap.set(footerRef.current, { clearProps: 'opacity,transform' });
           }
           innerSpans.forEach((s) => {
             s.style.willChange = 'auto';
@@ -375,8 +394,8 @@ export function useBannerAnimation({
 
       timelineRef.current = tl;
 
-      // Step 1: IMAGE REVEAL (from the RIGHT)
-      // Wrapper: overflow hidden. Animate clip-path so it opens from the right edge toward its original position:
+      // Step 1: IMAGE REVEAL (from RIGHT to LEFT across both desktop and mobile full-width)
+      // Wrapper: overflow hidden. Animate clip-path so it opens from the right edge toward the left:
       // inset(0 0 0 100%) -> inset(0 0 0 0%), 0.9s, ease expo.out, at t=0
       tl.to(
         imgWrapper,
@@ -388,8 +407,8 @@ export function useBannerAnimation({
         0
       );
 
-      // Inner <img> slides with it for a parallax feel:
-      // xPercent 12 -> 0, 0.9s, ease expo.out, at t=0
+      // Inner <img> slides from right to left with parallax depth:
+      // xPercent 16/12 -> 0, 0.9s, ease expo.out, at t=0
       // scale 1.06 -> 1 over 1.2s, ease power2.out (transform only)
       if (imgEl) {
         tl.to(
@@ -413,53 +432,80 @@ export function useBannerAnimation({
         );
       }
 
-      // Step 2: TAG TYPING
-      // 0.5s, linear, unrevealed letters shown as "_", lock min-width first
-      if (tagEl && rawTag) {
-        const proxy = { progress: 0 };
-        const rawChars = rawTag.split('');
-        tl.to(
-          proxy,
-          {
-            progress: 1,
-            duration: 0.5,
-            ease: 'none',
-            onUpdate: () => {
-              const count = Math.floor(proxy.progress * rawChars.length);
-              const rendered = rawChars
-                .map((ch, idx) => {
-                  if (idx < count) return ch;
-                  if (ch === ' ' || ch === '\t') return ch;
-                  return '_';
-                })
-                .join('');
-              tagEl.textContent = rendered;
+      // Step 2: TAG & TITLE
+      if (isMobile) {
+        // Mobile typography sequence: smooth right-to-left / fade-up entrance
+        if (tagEl) {
+          tl.fromTo(
+            tagEl,
+            { opacity: 0, x: 25 },
+            { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' },
+            0.1
+          );
+        }
+        if (titleEl) {
+          tl.fromTo(
+            titleEl,
+            { opacity: 0, y: 16 },
+            { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' },
+            0.15
+          );
+        }
+        const footerEl = footerRef?.current;
+        if (footerEl) {
+          tl.fromTo(
+            footerEl,
+            { opacity: 0, y: 12 },
+            { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' },
+            0.2
+          );
+        }
+      } else {
+        // Desktop tag typing (0.5s, linear)
+        if (tagEl && rawTag) {
+          const proxy = { progress: 0 };
+          const rawChars = rawTag.split('');
+          tl.to(
+            proxy,
+            {
+              progress: 1,
+              duration: 0.5,
+              ease: 'none',
+              onUpdate: () => {
+                const count = Math.floor(proxy.progress * rawChars.length);
+                const rendered = rawChars
+                  .map((ch, idx) => {
+                    if (idx < count) return ch;
+                    if (ch === ' ' || ch === '\t') return ch;
+                    return '_';
+                  })
+                  .join('');
+                tagEl.textContent = rendered;
+              },
+              onComplete: () => {
+                tagEl.textContent = rawTag;
+              },
             },
-            onComplete: () => {
-              tagEl.textContent = rawTag;
+            0
+          );
+        }
+
+        // Desktop title line masks (yPercent 110 -> 0)
+        if (innerSpans.length > 0) {
+          tl.to(
+            innerSpans,
+            {
+              yPercent: 0,
+              duration: 0.55,
+              ease: 'power3.out',
+              stagger: 0.1,
             },
-          },
-          0
-        );
+            0.05
+          );
+        }
       }
 
-      // Step 3: TITLE LINES
-      // rendered lines split into masked lines, yPercent 110 -> 0, 0.55s, ease power3.out, stagger 0.1s, at t=0.05s.
-      // Timing overlaps the image so everything lands at about the same moment (total about 1.2s).
-      if (innerSpans.length > 0) {
-        tl.to(
-          innerSpans,
-          {
-            yPercent: 0,
-            duration: 0.55,
-            ease: 'power3.out',
-            stagger: 0.1,
-          },
-          0.05
-        );
-      }
-
-      // Step 4: Footer animation skipped entirely (no footer line in real banner)
+      // Step 4: Footer animation skipped for real banners without footer slot
     })();
 
     return () => {
@@ -481,6 +527,14 @@ export function useBannerAnimation({
       resizeTimerRef.current = setTimeout(() => {
         // Only re-split if timeline is not actively playing
         if (isAnimatingRef.current) return;
+        if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+          const titleEl = titleRef.current;
+          if (titleEl && titleText) {
+            titleEl.textContent = titleText;
+            titleEl.setAttribute('aria-label', titleText);
+          }
+          return;
+        }
         const titleEl = titleRef.current;
         if (titleEl && titleText) {
           const splitRes = splitTitleIntoRenderedLines(titleEl, titleText);

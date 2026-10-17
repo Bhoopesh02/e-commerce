@@ -554,8 +554,9 @@ export const Footer: React.FC = () => {
         }
 
         .footer-newsletter-badge {
+          font-family: var(--font-accent);
           font-size: 0.72rem;
-          fontWeight: 600;
+          font-weight: 600;
           letter-spacing: 0.18em;
           text-transform: uppercase;
           color: var(--color-icy-lake);
@@ -922,9 +923,14 @@ export const Footer: React.FC = () => {
             margin-bottom: 14px;
           }
 
+          .footer-mobile-columns-wrapper .footer-links-list {
+            gap: 8px;
+          }
+
           .footer-link {
-            font-size: 0.82rem;
-            min-height: 32px;
+            font-size: 0.72rem;
+            min-height: 28px;
+            line-height: 1.4;
           }
 
           /* 4. Mobile Connect With Us & Social Icons */

@@ -219,42 +219,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           />
         )}
 
-        {/* Top Badges */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '10px',
-            left: '10px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '6px',
-            zIndex: 2,
-          }}
-        >
-          {product.isNewArrival && (
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                color: 'var(--text-primary)',
-                fontSize: '0.65rem',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                padding: '3px 8px',
-                borderRadius: '9999px',
-                lineHeight: 1.2,
-                boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
-                backdropFilter: 'blur(4px)',
-                WebkitBackdropFilter: 'blur(4px)',
-              }}
-            >
-              New
-            </span>
-          )}
-        </div>
 
         {/* Wishlist Button (♡/♥) with restrained spring pop */}
         <motion.button
@@ -351,27 +315,121 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
               <div style={{ flex: 1, paddingRight: '12px' }}>
-                <h3
-                  style={{
-                    fontSize: '1.05rem',
-                    fontWeight: 500,
-                    color: "var(--text-inverse)",
-                    lineHeight: 1.2,
-                    fontFamily: 'var(--font-display)',
-                    marginBottom: '2px',
-                    textShadow: '0 1px 3px var(--overlay-black-30)',
-                  }}
-                >
-                  {product.name}
-                </h3>
-                {product.subtitle && (
-                  <span style={{ fontSize: '0.85rem', color: 'var(--overlay-white-85)' }}>
-                    {product.subtitle}
-                  </span>
+                <div style={{ height: '16px', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '3px' }}>
+                  {product.isNewArrival && (
+                    <span
+                      style={{
+                        fontSize: '0.62rem',
+                        fontWeight: 600,
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                        color: 'var(--text-inverse)',
+                        lineHeight: 1,
+                      }}
+                    >
+                      New
+                    </span>
+                  )}
+                  {product.isNewArrival && product.availability === 'low_stock' && (
+                    <span style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1 }}>•</span>
+                  )}
+                  {product.availability === 'low_stock' && (
+                    <span
+                      style={{
+                        fontSize: '0.62rem',
+                        fontWeight: 600,
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                        color: '#facc15',
+                        lineHeight: 1,
+                      }}
+                    >
+                      Low Stock
+                    </span>
+                  )}
+                </div>
+                <div style={{ minHeight: '2.4em' }}>
+                  <h3
+                    style={{
+                      fontSize: '1rem',
+                      fontWeight: 500,
+                      color: "var(--text-inverse)",
+                      lineHeight: 1.2,
+                      fontFamily: 'var(--font-display)',
+                      margin: 0,
+                      textShadow: '0 1px 3px var(--overlay-black-30)',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {product.name}
+                  </h3>
+                </div>
+                {availableColors.length > 1 && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      marginTop: '6px',
+                      pointerEvents: 'auto',
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                  >
+                    {availableColors.map((colorName) => {
+                      const isSelected = (activeColor || availableColors[0]) === colorName;
+                      const { background, isLight } = getLuxuryColorStyle(colorName);
+
+                      return (
+                        <button
+                          key={colorName}
+                          type="button"
+                          aria-label={`Select ${colorName}`}
+                          title={colorName}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setActiveColor(colorName);
+                          }}
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                            borderRadius: '50%',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: 0,
+                            background: 'transparent',
+                            border: isSelected ? '1px solid #ffffff' : '1px solid transparent',
+                            cursor: 'pointer',
+                            outline: 'none',
+                          }}
+                        >
+                          <span
+                            style={{
+                              width: '10px',
+                              height: '10px',
+                              borderRadius: '50%',
+                              background,
+                              boxShadow: isLight
+                                ? 'inset 0 0 0 1px rgba(0, 0, 0, 0.25)'
+                                : 'inset 0 0 0 1px rgba(255, 255, 255, 0.25)',
+                              display: 'block',
+                            }}
+                          />
+                        </button>
+                      );
+                    })}
+                  </div>
                 )}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                <span style={{ fontSize: '1rem', fontWeight: 600, color: "var(--text-inverse)", textShadow: '0 1px 3px var(--overlay-black-30)' }}>
+                <span style={{ fontSize: '0.88rem', fontWeight: 600, color: "var(--text-inverse)", textShadow: '0 1px 3px var(--overlay-black-30)' }}>
                   {formatPrice(product.price)}
                 </span>
               </div>
@@ -383,16 +441,64 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Meta */}
       {(variant === 'standard' || variant === 'grid') && (
         <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          {/* First Line: Status (New / Low Stock) - Always reserves space so all titles align */}
+          <div
+            style={{
+              height: '18px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              marginBottom: '4px',
+            }}
+          >
+            {product.isNewArrival && (
+              <span
+                style={{
+                  fontSize: '0.65rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: 'var(--brand-primary)',
+                  lineHeight: 1,
+                }}
+              >
+                New
+              </span>
+            )}
+            {product.isNewArrival && product.availability === 'low_stock' && (
+              <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', lineHeight: 1 }}>•</span>
+            )}
+            {product.availability === 'low_stock' && (
+              <span
+                style={{
+                  fontSize: '0.65rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: 'var(--color-warning)',
+                  lineHeight: 1,
+                }}
+              >
+                Low Stock
+              </span>
+            )}
+          </div>
+
+          {/* Second Line: Product Name (with space reserved for up to 2 lines) */}
+          <div style={{ minHeight: '2.6em', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
             <Link href={`/product/${product.slug}`} onClick={onClick} style={{ textDecoration: 'none', minWidth: 0 }}>
               <h3
                 style={{
-                  fontSize: 'clamp(0.95rem, 3.8vw, 1.05rem)',
+                  fontSize: 'clamp(0.92rem, 3.6vw, 1rem)',
                   fontWeight: 400,
                   color: 'var(--text-primary)',
-                  lineHeight: 1.25,
+                  lineHeight: 1.3,
                   fontFamily: 'var(--font-display)',
                   margin: 0,
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
                 }}
               >
                 {product.name}
@@ -400,24 +506,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </Link>
           </div>
 
-          {product.subtitle && (
-            <span
-              style={{
-                fontSize: 'clamp(0.78rem, 2.8vw, 0.82rem)',
-                color: 'var(--text-muted)',
-                lineHeight: 1.35,
-                marginTop: '3px',
-                display: 'block',
-              }}
-            >
-              {product.subtitle}
-            </span>
-          )}
-
+          {/* Third/Fourth Line: Price (reduced number size) */}
           <div style={{ marginTop: '6px', display: 'flex', alignItems: 'center' }}>
             <span
               style={{
-                fontSize: 'clamp(0.95rem, 3.6vw, 1.05rem)',
+                fontSize: 'clamp(0.85rem, 3.2vw, 0.92rem)',
                 fontWeight: 600,
                 color: 'var(--text-primary)',
                 letterSpacing: '-0.01em',

@@ -125,6 +125,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
         </noscript>
         {/* Left side: Typography */}
         <div
+          className="section-banner-text-col"
           style={{
             flex: "1 1 50%",
             display: "flex",
@@ -213,18 +214,6 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
             className="reveal-banner__img"
           />
         </div>
-
-        <style jsx>{`
-          @media (max-width: 768px) {
-            .section-banner-split {
-              flex-direction: column !important;
-            }
-            .banner-image-container {
-              height: 400px;
-              width: 100%;
-            }
-          }
-        `}</style>
       </div>
     );
   }
@@ -278,6 +267,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
       </noscript>
       {/* Left side: Typography */}
       <div
+        className="section-banner-text-col"
         style={{
           flex: "1 1 50%",
           display: "flex",
@@ -346,22 +336,6 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
           className="reveal-banner__img"
         />
       </div>
-
-      <style jsx>{`
-        .split-arrow-btn:hover {
-          background-color: var(--color-neutral-50) !important;
-          border-color: var(--color-neutral-300) !important;
-        }
-        @media (max-width: 768px) {
-          .section-banner-split {
-            flex-direction: column !important;
-          }
-          .banner-image-container {
-            height: 400px;
-            width: 100%;
-          }
-        }
-      `}</style>
     </div>
   );
 };

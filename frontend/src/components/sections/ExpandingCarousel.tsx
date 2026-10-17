@@ -662,7 +662,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
         }
 
         .collapsed-index-number {
-          font-family: var(--font-mono, monospace);
+          font-family: var(--font-accent);
           font-size: 0.85rem;
           font-weight: 700;
           letter-spacing: 0.12em;
@@ -724,7 +724,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
 
         /* Stagger Item 2: Masked Words of the Headline */
         .cinematic-title {
-          font-family: var(--font-display, 'Playfair Display', serif);
+          font-family: var(--font-display);
           font-size: clamp(2.2rem, 4.2vw, 4.2rem);
           font-weight: 400;
           color: var(--color-diamond);
@@ -789,7 +789,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
         }
 
         .credit-line-primary {
-          font-family: var(--font-mono, monospace);
+          font-family: var(--font-body);
           font-size: 0.68rem;
           letter-spacing: 0.16em;
           text-transform: uppercase;
@@ -809,7 +809,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
         }
 
         .credit-line-secondary {
-          font-family: var(--font-mono, monospace);
+          font-family: var(--font-body);
           font-size: 0.6rem;
           letter-spacing: 0.12em;
           text-transform: uppercase;
@@ -934,7 +934,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           }
 
           .mobile-collapsed-index {
-            font-family: var(--font-mono, monospace);
+            font-family: var(--font-accent);
             font-size: 0.85rem;
             font-weight: 700;
             letter-spacing: 0.08em;

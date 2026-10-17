@@ -5,7 +5,6 @@ import { Product } from '@/types';
 import { ProductCard, ProductCardSkeleton } from '@/components/product/ProductCard';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
 
 interface NewArrivalsCarouselProps {
   products: Product[];
@@ -253,86 +252,86 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
     <section className="new-arrivals-section" style={{ padding: '60px 0', backgroundColor: 'var(--bg-primary)' }}>
       <div className="container" style={{ position: 'relative' }}>
         <ScrollReveal duration={0.5}>
-          {/* Header Row with Title, Chevrons, and View All link */}
+          {/* Header Row with Title Centered and Navigation Controls */}
           <div
+            className="new-arrivals-header"
             style={{
+              position: 'relative',
               display: 'flex',
-              flexWrap: 'wrap',
               alignItems: 'center',
-              justifyContent: 'space-between',
+              justifyContent: 'center',
               marginBottom: '36px',
-              gap: '16px',
+              width: '100%',
             }}
           >
-            <div>
+            <div style={{ textAlign: 'center' }}>
               <h2
                 style={{
-                  fontSize: 'clamp(1.5rem, 2.5vw, 2rem)',
+                  fontSize: 'clamp(1.6rem, 2.8vw, 2.2rem)',
+                  fontFamily: 'var(--font-display, serif)',
                   fontWeight: 400,
                   textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
+                  letterSpacing: '0.08em',
                   margin: 0,
+                  textAlign: 'center',
+                  color: 'var(--text-primary)',
                 }}
               >
                 New Arrivals
               </h2>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <button
-                  type="button"
-                  onClick={() => scroll('left')}
-                  disabled={!canScrollLeft}
-                  style={{
-                    background: 'transparent',
-                    border: 'none',
-                    cursor: canScrollLeft ? 'pointer' : 'default',
-                    opacity: canScrollLeft ? 1 : 0.25,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4px',
-                    transition: 'opacity 0.2s ease',
-                  }}
-                  aria-label="Scroll left"
-                >
-                  <ChevronLeft size={28} strokeWidth={1.5} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => scroll('right')}
-                  disabled={!canScrollRight}
-                  style={{
-                    background: 'transparent',
-                    border: 'none',
-                    cursor: canScrollRight ? 'pointer' : 'default',
-                    opacity: canScrollRight ? 1 : 0.25,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4px',
-                    transition: 'opacity 0.2s ease',
-                  }}
-                  aria-label="Scroll right"
-                >
-                  <ChevronRight size={28} strokeWidth={1.5} />
-                </button>
-              </div>
-              <Link
-                href="/new-arrivals"
-                className="editorial-arrow-link"
+            <div
+              className="new-arrivals-nav-controls"
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => scroll('left')}
+                disabled={!canScrollLeft}
                 style={{
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  textDecoration: 'underline',
-                  textUnderlineOffset: '4px',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: canScrollLeft ? 'pointer' : 'default',
+                  opacity: canScrollLeft ? 1 : 0.25,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '6px',
+                  transition: 'opacity 0.2s ease, transform 0.2s ease',
+                  color: 'var(--text-primary)',
                 }}
+                aria-label="Scroll left"
               >
-                <span className="editorial-arrow-link-text">
-                  <span className="desktop-only">View All</span>
-                  <span className="mobile-only">View All</span>
-                </span>
-              </Link>
+                <ChevronLeft size={28} strokeWidth={1.5} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scroll('right')}
+                disabled={!canScrollRight}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: canScrollRight ? 'pointer' : 'default',
+                  opacity: canScrollRight ? 1 : 0.25,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '6px',
+                  transition: 'opacity 0.2s ease, transform 0.2s ease',
+                  color: 'var(--text-primary)',
+                }}
+                aria-label="Scroll right"
+              >
+                <ChevronRight size={28} strokeWidth={1.5} />
+              </button>
             </div>
           </div>
 
@@ -406,6 +405,30 @@ export const NewArrivalsCarousel: React.FC<NewArrivalsCarouselProps> = ({
       <style
         dangerouslySetInnerHTML={{
           __html: `
+        .new-arrivals-header {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 36px;
+          width: 100%;
+        }
+        .new-arrivals-nav-controls button:hover:not(:disabled) {
+          transform: scale(1.12);
+          opacity: 1 !important;
+        }
+        @media (max-width: 640px) {
+          .new-arrivals-header {
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+          }
+          .new-arrivals-nav-controls {
+            position: static !important;
+            transform: none !important;
+            justify-content: center;
+          }
+        }
         .carousel-product-item {
           flex-shrink: 0;
           width: calc(50% - 12px); /* 2 items on mobile */

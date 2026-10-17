@@ -33,7 +33,7 @@ export const CURATED_EDIT_SLIDES: CuratedEditSlide[] = [
     image: '/images/banners/all-collections/curated-warmup.webp',
     mobileImage: '/images/banners/all-collections/curated-warmup-mobile.webp',
     objectPosition: 'center 26%',
-    mobileObjectPosition: 'center 20%',
+    mobileObjectPosition: 'center 18%',
   },
   {
     id: 'sartorial',
@@ -209,14 +209,6 @@ export const CuratedEditsHeroBanner: React.FC = () => {
       aria-roledescription="carousel"
       aria-label="Curated Edits Banner Carousel"
       className={styles.heroBanner}
-      style={{
-        position: 'relative',
-        width: '100%',
-        marginTop: 'var(--announcement-bar-height, 37px)',
-        minHeight: 'calc(100dvh - var(--announcement-bar-height, 37px))',
-        height: 'calc(100dvh - var(--announcement-bar-height, 37px))',
-        overflow: 'hidden',
-      }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onFocus={() => setIsPaused(true)}

@@ -42,18 +42,6 @@ export const ProductCardSkeleton: React.FC<ProductCardSkeletonProps> = ({
           borderRadius={variant === 'grid' ? '8px' : 'var(--radius-sm)'}
         />
 
-        {/* Top-left Badge Skeleton */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '12px',
-            left: '12px',
-            zIndex: 2,
-          }}
-        >
-          <Skeleton width="48px" height="22px" borderRadius="999px" />
-        </div>
-
         {/* Top-right Wishlist Button Skeleton */}
         <div
           style={{
@@ -70,46 +58,36 @@ export const ProductCardSkeleton: React.FC<ProductCardSkeletonProps> = ({
       {/* Product Meta Skeletons */}
       <div
         style={{
-          marginTop: '14px',
+          marginTop: '10px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '6px',
         }}
       >
-        {/* Product Title Line */}
-        <Skeleton
-          width="75%"
-          height="18px"
-          borderRadius="4px"
-        />
+        {/* Status Line Placeholder (Height 18px) */}
+        <div style={{ height: '18px', display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
+          <Skeleton width="42px" height="11px" borderRadius="3px" />
+        </div>
 
-        {/* Product Subtitle Line */}
-        <Skeleton
-          width="48%"
-          height="13px"
-          borderRadius="3px"
-        />
+        {/* Product Title Slot (Reserved 2-line height) */}
+        <div style={{ minHeight: '2.6em', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <Skeleton
+            width="75%"
+            height="16px"
+            borderRadius="4px"
+          />
+        </div>
 
-        {/* Price & Rating Row */}
+        {/* Price Row (Reduced size) */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: '4px',
+            marginTop: '6px',
           }}
         >
-          {/* Price */}
           <Skeleton
-            width="35%"
-            height="18px"
-            borderRadius="4px"
-          />
-
-          {/* Star Rating */}
-          <Skeleton
-            width="52px"
-            height="14px"
+            width="32%"
+            height="15px"
             borderRadius="4px"
           />
         </div>

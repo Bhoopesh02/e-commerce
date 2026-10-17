@@ -28,18 +28,21 @@ import {
   StaggerFadeUp,
   LineReveal,
 } from '@/components/ui/StaggerReveal';
-import heritageBannerImg from '../../../public/images/banners/new/Gemini_Generated_Image_wi5d5owi5d5owi5d.webp';
-import heritageBannerMobileImg from '../../../public/images/banners/new/Gemini_Generated_Image_n4wph0n4wph0n4wp.webp';
-import newArrivalsBannerImg from '../../../public/images/banners/new/Gemini_Generated_Image_8hy0gw8hy0gw8hy0.webp';
-import newArrivalsBannerMobileImg from '../../../public/images/banners/new/Gemini_Generated_Image_lo7saulo7saulo7s.webp';
+import signatureEveningwearBannerDesktop from '../../../public/images/banners/new/signature_eveningwear_banner_desktop.webp';
+import signatureEveningwearBannerMobile from '../../../public/images/banners/new/signature_eveningwear_banner_mobile.webp';
+import newArrivalsBannerImg from '../../../public/images/banners/new/luxury_reloved_banner_desktop.webp';
+import newArrivalsBannerMobileImg from '../../../public/images/banners/new/luxury_reloved_banner_mobile.webp';
 
 interface HomeBannerCardProps {
   imageSrc: StaticImageData;
   mobileImageSrc?: StaticImageData;
   alt: string;
-  eyebrow: string;
+  eyebrow?: string;
   headline: string;
-  description: string;
+  description?: string;
+  buttonText?: string;
+  buttonLink?: string;
+  align?: 'left' | 'center';
 }
 
 const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
@@ -49,6 +52,9 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
   eyebrow,
   headline,
   description,
+  buttonText,
+  buttonLink,
+  align = 'center',
 }) => {
   const [loaded, setLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -150,38 +156,45 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
         style={{
           position: 'absolute',
           inset: 0,
-          backgroundColor: 'rgba(0,0,0,0.4)',
+          background:
+            align === 'left'
+              ? 'linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.38) 45%, rgba(0,0,0,0.06) 100%)'
+              : 'rgba(0,0,0,0.4)',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
+          alignItems: align === 'left' ? 'flex-start' : 'center',
           justifyContent: 'center',
-          textAlign: 'center',
-          padding: '20px',
+          textAlign: align === 'left' ? 'left' : 'center',
+          padding: align === 'left' ? 'clamp(24px, 6vw, 90px)' : '20px',
           zIndex: 2,
         }}
       >
-        <StaggerFadeUp
-          as="span"
-          style={{
-            fontSize: 'clamp(0.72rem, 1vw, 0.85rem)',
-            fontWeight: 600,
-            letterSpacing: '0.15em',
-            textTransform: 'uppercase',
-            color: 'var(--color-golden-200)',
-            marginBottom: '12px',
-            display: 'block',
-          }}
-        >
-          {eyebrow}
-        </StaggerFadeUp>
+        {eyebrow && (
+          <StaggerFadeUp
+            as="span"
+            style={{
+              fontFamily: 'var(--font-accent)',
+              fontSize: 'clamp(0.72rem, 1vw, 0.85rem)',
+              fontWeight: 600,
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              color: 'var(--color-golden-200)',
+              marginBottom: '10px',
+              display: 'block',
+            }}
+          >
+            {eyebrow}
+          </StaggerFadeUp>
+        )}
 
         <h2
           style={{
             color: 'var(--color-diamond)',
             fontSize: 'clamp(1.5rem, 3.8vw, 3.2rem)',
             fontFamily: 'var(--font-display)',
-            marginBottom: '14px',
+            marginBottom: description ? '12px' : '16px',
             lineHeight: 1.15,
+            maxWidth: '620px',
           }}
         >
           <LineReveal bottomPadding="8px">
@@ -189,18 +202,49 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
           </LineReveal>
         </h2>
 
-        <StaggerFadeUp
-          as="p"
-          style={{
-            color: 'rgba(255,255,255,0.9)',
-            fontSize: 'clamp(0.85rem, 1.2vw, 1.05rem)',
-            maxWidth: '560px',
-            lineHeight: 1.55,
-            margin: 0,
-          }}
-        >
-          {description}
-        </StaggerFadeUp>
+        {description && (
+          <StaggerFadeUp
+            as="p"
+            style={{
+              color: 'rgba(255,255,255,0.9)',
+              fontSize: 'clamp(0.85rem, 1.2vw, 1.05rem)',
+              maxWidth: '480px',
+              lineHeight: 1.5,
+              margin: 0,
+            }}
+          >
+            {description}
+          </StaggerFadeUp>
+        )}
+
+        {buttonText && buttonLink && (
+          <StaggerFadeUp as="div" style={{ marginTop: '22px' }}>
+            <Link
+              href={buttonLink}
+              className="home-banner-btn"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 24px',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: '#ffffff',
+                backgroundColor: 'rgba(0, 0, 0, 0.45)',
+                border: '1px solid rgba(255, 255, 255, 0.75)',
+                borderRadius: '4px',
+                backdropFilter: 'blur(6px)',
+                transition: 'all 0.25s ease',
+                textDecoration: 'none',
+              }}
+            >
+              <span>{buttonText}</span>
+              <ArrowRight size={14} />
+            </Link>
+          </StaggerFadeUp>
+        )}
       </StaggerContainer>
     </div>
   );
@@ -314,12 +358,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <section key={id} id="signature-icons" style={{ scrollMarginTop: '80px' }}>
             <section style={{ width: '100%', padding: '0 0 20px', backgroundColor: 'var(--bg-primary)' }}>
               <HomeBannerCard
-                imageSrc={heritageBannerImg}
-                mobileImageSrc={heritageBannerMobileImg}
-                alt="Signature Excellence Banner"
-                eyebrow="Our Heritage"
-                headline="The Signature of Excellence"
-                description="Discover the foundational pillars that define our commitment to unparalleled craftsmanship and uncompromising quality."
+                imageSrc={signatureEveningwearBannerDesktop}
+                mobileImageSrc={signatureEveningwearBannerMobile}
+                alt="Signature Eveningwear Collection"
+                eyebrow="Signature Icons"
+                headline="The Evening Edit"
+                description="Sculptural draping and fluid silk silhouettes crafted for twilight occasions."
+                buttonText="Explore Eveningwear"
+                buttonLink="/shop?categorySlug=eveningwear"
+                align="left"
               />
             </section>
             <ExpandingCarousel
@@ -358,10 +405,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <HomeBannerCard
                 imageSrc={newArrivalsBannerImg}
                 mobileImageSrc={newArrivalsBannerMobileImg}
-                alt="New Arrivals Banner"
+                alt="New Arrivals Collection"
                 eyebrow="Just Arrived"
-                headline="The New Season Collection"
-                description="Discover our latest arrivals, featuring exquisite craftsmanship and unparalleled elegance for the modern connoisseur."
+                headline="The New Season"
+                description="Curated craftsmanship and timeless luxury."
+                buttonText="Discover"
+                buttonLink="/new-arrivals"
+                align="left"
               />
             </section>
             <NewArrivalsCarousel products={uploadedNewArrivals} loading={loading} />

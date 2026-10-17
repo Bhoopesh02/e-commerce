@@ -140,7 +140,7 @@
   text-transform: uppercase;
   color: var(--text-primary);
   margin: 0;
-  font-family: var(--font-mono, monospace);
+  font-family: var(--font-accent);
 }
 
 .eyebrowSquare {

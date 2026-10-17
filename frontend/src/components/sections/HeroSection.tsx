@@ -125,6 +125,7 @@ export const HeroSection: React.FC = () => {
               as="span"
               className="hero-eyebrow text-left block mb-4"
               style={{
+                fontFamily: 'var(--font-accent)',
                 fontSize: 'clamp(0.72rem, 0.58rem + 0.18vw, 0.85rem)',
                 fontWeight: 600,
                 letterSpacing: 'clamp(0.12em, 0.08em + 0.08vw, 0.18em)',
@@ -212,6 +213,7 @@ export const HeroSection: React.FC = () => {
               as="span"
               className="hero-eyebrow text-left block mb-4"
               style={{
+                fontFamily: 'var(--font-accent)',
                 fontSize: 'clamp(0.72rem, 0.58rem + 0.18vw, 0.85rem)',
                 fontWeight: 600,
                 letterSpacing: 'clamp(0.12em, 0.08em + 0.08vw, 0.18em)',

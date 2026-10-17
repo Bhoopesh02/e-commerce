@@ -3,9 +3,9 @@
   width: 100%;
   margin-top: var(--announcement-bar-height, 37px);
   height: calc(100vh - var(--announcement-bar-height, 37px));
-  height: calc(100dvh - var(--announcement-bar-height, 37px));
+  height: calc(100svh - var(--announcement-bar-height, 37px));
   min-height: calc(100vh - var(--announcement-bar-height, 37px));
-  min-height: calc(100dvh - var(--announcement-bar-height, 37px));
+  min-height: calc(100svh - var(--announcement-bar-height, 37px));
   overflow: hidden;
   background-color: var(--color-black-tie);
   user-select: none;
@@ -16,9 +16,10 @@
   .heroBanner {
     margin-top: var(--announcement-bar-height, 33px);
     height: calc(100vh - var(--announcement-bar-height, 33px));
-    height: calc(100dvh - var(--announcement-bar-height, 33px));
+    height: calc(100svh - var(--announcement-bar-height, 33px));
     min-height: calc(100vh - var(--announcement-bar-height, 33px));
-    min-height: calc(100dvh - var(--announcement-bar-height, 33px));
+    min-height: calc(100svh - var(--announcement-bar-height, 33px));
+    max-height: calc(100svh - var(--announcement-bar-height, 33px));
   }
 }
 

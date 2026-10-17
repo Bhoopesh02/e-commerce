@@ -11,6 +11,7 @@ import { useWishlistStore } from '@/store/useWishlistStore';
 import { useCartStore } from '@/store/useCartStore';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { useScrollPreload } from '@/hooks/useScrollPreload';
+import { getLuxuryColorStyle } from '@/lib/colorUtils';
 
 export const BannerProductCardSkeleton: React.FC = () => {
   return (
@@ -52,7 +53,6 @@ export const BannerProductCardSkeleton: React.FC = () => {
         }}
       >
         <Skeleton width="80%" height="13px" borderRadius="3px" style={{ marginTop: '4px' }} />
-        <Skeleton width="50%" height="10px" borderRadius="3px" />
         <Skeleton width="40%" height="12px" borderRadius="3px" style={{ marginTop: '4px' }} />
         <Skeleton width="100%" height="28px" borderRadius="6px" style={{ marginTop: '6px' }} />
       </div>
@@ -77,6 +77,17 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
 
   const isFavorited = isInWishlist(product.id);
   const imageSrc = product.images?.[0] || '/images/hero/hero-refined.webp';
+
+  const availableColors = React.useMemo(() => {
+    if (!product?.variants) return [];
+    const colors: string[] = [];
+    product.variants.forEach((v) => {
+      if (v.color && !colors.includes(v.color)) {
+        colors.push(v.color);
+      }
+    });
+    return colors;
+  }, [product?.variants]);
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -188,19 +199,6 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
           }}
         />
 
-        {/* Top Badges */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '8px',
-            left: '8px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '4px',
-            zIndex: 2,
-          }}
-        >
-        </div>
 
         {/* Wishlist Button (Compact) */}
         <button
@@ -256,9 +254,42 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
           gap: '2px',
         }}
       >
+        <div style={{ height: '14px', display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '2px' }}>
+          {product.isNewArrival && (
+            <span
+              style={{
+                fontSize: '0.58rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: 'var(--color-diamond)',
+                lineHeight: 1,
+              }}
+            >
+              New
+            </span>
+          )}
+          {product.isNewArrival && product.availability === 'low_stock' && (
+            <span style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>•</span>
+          )}
+          {product.availability === 'low_stock' && (
+            <span
+              style={{
+                fontSize: '0.58rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: '#fbbf24',
+                lineHeight: 1,
+              }}
+            >
+              Low Stock
+            </span>
+          )}
+        </div>
         <Link
           href={`/product/${product.slug}`}
-          style={{ textDecoration: 'none' }}
+          style={{ textDecoration: 'none', display: 'block', minHeight: '2.5em' }}
         >
           <h4
             style={{
@@ -268,9 +299,10 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
               lineHeight: 1.25,
               fontFamily: 'var(--font-display)',
               margin: 0,
-              whiteSpace: 'nowrap',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
-              textOverflow: 'ellipsis',
               transition: 'color 200ms ease',
             }}
             title={product.name}
@@ -279,33 +311,19 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
           </h4>
         </Link>
 
-        {product.subtitle && (
-          <span
-            style={{
-              fontSize: '0.66rem',
-              color: 'rgba(245, 248, 248, 0.7)',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {product.subtitle}
-          </span>
-        )}
-
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             gap: '6px',
-            marginTop: '2px',
+            marginTop: '3px',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'baseline' }}>
             <span
               style={{
-                fontSize: '0.8rem',
+                fontSize: '0.74rem',
                 fontWeight: 600,
                 color: 'var(--bg-subtle)',
                 letterSpacing: '0.02em',
@@ -314,6 +332,36 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
               {formatPrice(product.price)}
             </span>
           </div>
+
+          {availableColors.length > 1 && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+              }}
+            >
+              {availableColors.slice(0, 3).map((colorName) => {
+                const { background, isLight } = getLuxuryColorStyle(colorName);
+                return (
+                  <span
+                    key={colorName}
+                    title={colorName}
+                    style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background,
+                      boxShadow: isLight
+                        ? 'inset 0 0 0 1px rgba(0, 0, 0, 0.25)'
+                        : 'inset 0 0 0 1px rgba(255, 255, 255, 0.2)',
+                      display: 'inline-block',
+                    }}
+                  />
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Quick Add Button (Compact) */}
