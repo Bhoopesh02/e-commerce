@@ -697,7 +697,7 @@ button.filter-btn:focus-visible,
   background: rgba(12, 10, 20, 0.5);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--bg-subtle, #f5f8f8);
+  color: var(--bg-subtle);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
   outline: none;
@@ -1208,7 +1208,7 @@ button.filter-btn:focus-visible,
   top: 0;
   bottom: 10%;
   width: 0;
-  border-left: 1.5px dashed var(--neutral-300, #CBD5E1);
+  border-left: 1.5px dashed var(--color-neutral-300);
   pointer-events: none;
   z-index: 10;
   opacity: 0.85;
@@ -1250,9 +1250,9 @@ button.filter-btn:focus-visible,
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #8EAFB8;
+  background-color: var(--color-sapphire-300);
   border: 1.5px solid var(--admin-surface);
-  box-shadow: 0 0 0 3px rgba(142, 175, 184, 0.3);
+  box-shadow: 0 0 0 3px rgba(125, 161, 171, 0.3);
   box-sizing: content-box;
   pointer-events: none;
   z-index: 13;
@@ -1335,7 +1335,7 @@ button.filter-btn:focus-visible,
 }
 
 .peak-sales-day-col:hover .peak-sales-bar:not(.peak-sales-bar--peak):not(.peak-sales-bar--selected) {
-  background: var(--color-sapphire-300, #7DA1AB);
+  background: var(--color-sapphire-300);
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
@@ -1357,13 +1357,13 @@ button.filter-btn:focus-visible,
 .peak-sales-bar {
   width: min(100%, 30px);
   border-radius: 8px 8px 3px 3px;
-  background: var(--color-icy-lake-300, #CAD4D6);
+  background: var(--color-icy-lake-300);
   transition: height 350ms var(--ease-editorial), background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
   position: relative;
 }
 
 .peak-sales-bar--peak {
-  background: var(--color-sapphire-700, #244B57);
+  background: var(--color-sapphire-700);
 }
 
 .peak-sales-bar--selected {
@@ -1417,7 +1417,7 @@ button.filter-btn:focus-visible,
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  border-top: 1px solid var(--color-neutral-200, #E0E0E0);
+  border-top: 1px solid var(--color-neutral-200);
   padding-top: 16px;
   margin-top: 16px;
   width: 100%;
@@ -1693,8 +1693,8 @@ button.filter-btn:focus-visible,
 
 /* Product Detail Page Action Buttons */
 .pdp-btn-bag:hover:not(:disabled) {
-  background-color: #2b2b2b !important;
-  border-color: #2b2b2b !important;
+  background-color: var(--color-black-tie) !important;
+  border-color: var(--color-black-tie) !important;
 }
 
 .pdp-wishlist-action-btn:hover {

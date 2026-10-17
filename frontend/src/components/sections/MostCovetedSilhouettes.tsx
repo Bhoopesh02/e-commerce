@@ -481,8 +481,8 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                 type="button"
                 onClick={onExploreClick}
                 style={{
-                  backgroundColor: '#000',
-                  color: '#fff',
+                  backgroundColor: 'var(--color-black-tie)',
+                  color: 'var(--color-diamond)',
                   padding: '16px 48px',
                   border: 'none',
                   fontSize: '0.9rem',
@@ -491,8 +491,8 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                   width: 'max-content',
                   transition: 'background-color 0.2s ease',
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#333')}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#000')}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-sapphire-800)')}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-black-tie)')}
               >
                 Shop now
               </button>
@@ -500,8 +500,8 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
               <Link
                 href="/shop"
                 style={{
-                  backgroundColor: '#000',
-                  color: '#fff',
+                  backgroundColor: 'var(--color-black-tie)',
+                  color: 'var(--color-diamond)',
                   padding: '16px 48px',
                   display: 'inline-block',
                   textDecoration: 'none',
@@ -509,8 +509,8 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                   fontWeight: 500,
                   transition: 'background-color 0.2s ease',
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#333')}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#000')}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-sapphire-800)')}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-black-tie)')}
               >
                 Shop now
               </Link>
@@ -551,7 +551,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
               e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.18)';
-              e.currentTarget.style.backgroundColor = '#ffffff';
+              e.currentTarget.style.backgroundColor = 'var(--color-diamond)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
@@ -593,7 +593,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
               e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.18)';
-              e.currentTarget.style.backgroundColor = '#ffffff';
+              e.currentTarget.style.backgroundColor = 'var(--color-diamond)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
@@ -701,7 +701,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                           aspectRatio: '3/4',
                           position: 'relative',
                           overflow: 'hidden',
-                          backgroundColor: '#f5f5f5',
+                          backgroundColor: 'var(--bg-surface)',
                           cursor: 'pointer',
                         }}
                       >
@@ -728,7 +728,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                             style={{
                               width: '100%',
                               height: '100%',
-                              backgroundColor: '#f5f5f5',
+                              backgroundColor: 'var(--bg-surface)',
                             }}
                           />
                         )}
@@ -741,7 +741,7 @@ export const MostCovetedSilhouettes: React.FC<MostCovetedSilhouettesProps> = ({
                           style={{
                             position: 'absolute',
                             inset: 0,
-                            backgroundColor: '#000',
+                            backgroundColor: 'var(--color-black-tie)',
                             opacity: 0,
                             pointerEvents: 'none',
                             transition: 'opacity 0.08s linear',

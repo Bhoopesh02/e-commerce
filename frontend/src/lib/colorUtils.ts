@@ -101,3 +101,23 @@ export function getLuxuryColorStyle(colorName: string): { background: string; is
   if (lower.includes('grey') || lower.includes('gray') || lower.includes('charcoal')) return { background: '#40454A' };
   return { background: '#222222' };
 }
+
+export interface ColorGroup {
+  name: string;
+  hex: string;
+  matches: string[];
+  isLight?: boolean;
+}
+
+// Group complex color names into selectable swatches (Alphabetical order)
+export const COLOR_GROUPS: ColorGroup[] = [
+  { name: 'Black', hex: '#1A1A1A', matches: ['Black', 'Noir', 'Abyss', 'Nocturne'] },
+  { name: 'Brown', hex: '#4A3728', matches: ['Brown', 'Cognac', 'Espresso', 'Chocolate', 'Havana'] },
+  { name: 'Burgundy', hex: '#4A1C20', matches: ['Burgundy', 'Aubergine'] },
+  { name: 'Camel / Beige', hex: '#C19A6B', matches: ['Camel', 'Sand', 'Tan', 'Khaki', 'Oatmeal', 'Vicuna', 'Taupe'] },
+  { name: 'Gold', hex: '#D4AF37', matches: ['Gold', 'Bronze'] },
+  { name: 'Green', hex: '#2E4C38', matches: ['Emerald', 'Forest', 'Sage'] },
+  { name: 'Grey', hex: '#4B4B4B', matches: ['Charcoal'] },
+  { name: 'Ivory / White', hex: '#F8F5F0', matches: ['Ivory', 'Ecru', 'Alabaster', 'Milk', 'Pearl', 'White'], isLight: true },
+  { name: 'Navy', hex: '#1B2431', matches: ['Navy'] },
+];

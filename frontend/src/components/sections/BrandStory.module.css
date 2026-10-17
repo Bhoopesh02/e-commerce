@@ -3,8 +3,8 @@
 .section {
   position: relative;
   width: 100%;
-  background-color: #f7f6f3;
-  color: var(--text-primary, #141414);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
   padding: clamp(64px, 7vw, 110px) 0;
   border-top: 1px solid rgba(20, 20, 20, 0.06);
   border-bottom: 1px solid rgba(20, 20, 20, 0.06);
@@ -38,7 +38,7 @@
   width: 100%;
   aspect-ratio: 3 / 4;
   overflow: hidden;
-  background-color: #e8e6e1;
+  background-color: var(--color-neutral-200);
 }
 
 .portraitImage {
@@ -61,7 +61,7 @@
 .storyParagraph {
   font-size: clamp(0.82rem, 0.78rem + 0.16vw, 0.94rem);
   line-height: 1.68;
-  color: #4a4a4a;
+  color: var(--text-secondary);
   margin: 0;
   letter-spacing: -0.005em;
 }
@@ -74,7 +74,7 @@
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: var(--text-primary, #141414);
+  color: var(--text-primary);
   text-decoration: none;
   width: fit-content;
   padding-bottom: 4px;
@@ -100,7 +100,7 @@
   left: 0;
   width: 0%;
   height: 1.5px;
-  background-color: var(--text-primary, #141414);
+  background-color: var(--text-primary);
   transition: width 350ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -138,7 +138,7 @@
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-primary, #141414);
+  color: var(--text-primary);
   margin: 0;
   font-family: var(--font-mono, monospace);
 }
@@ -147,7 +147,7 @@
   display: inline-block;
   width: 6px;
   height: 6px;
-  background-color: var(--text-primary, #141414);
+  background-color: var(--text-primary);
   vertical-align: middle;
 }
 
@@ -156,10 +156,10 @@
   font-weight: 450;
   line-height: 1.22;
   letter-spacing: -0.018em;
-  color: var(--text-primary, #141414);
+  color: var(--text-primary);
   margin: 0;
   max-width: 580px;
-  font-family: var(--font-display, var(--font-serif, serif));
+  font-family: var(--font-display);
 }
 
 .stillLifeWrapper {
@@ -167,7 +167,7 @@
   width: clamp(120px, 11vw, 165px);
   aspect-ratio: 3 / 4;
   overflow: hidden;
-  background-color: #e8e6e1;
+  background-color: var(--color-neutral-200);
   flex-shrink: 0;
   box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.08);
 }
@@ -188,7 +188,7 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  background-color: #e8e6e1;
+  background-color: var(--color-neutral-200);
 }
 
 .landscapeImage {

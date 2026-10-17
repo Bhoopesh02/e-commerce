@@ -3,8 +3,8 @@
 .announcementBar {
   position: relative;
   width: 100%;
-  background: #101418;
-  color: #f4f7f8;
+  background: var(--color-black-tie);
+  color: var(--color-diamond);
   border-bottom: 1px solid rgba(194, 155, 76, 0.22);
   overflow: hidden;
   z-index: 101;
@@ -51,12 +51,12 @@
 
 .marqueeContainer::before {
   left: 0;
-  background: linear-gradient(90deg, #101418 0%, rgba(16, 20, 24, 0) 100%);
+  background: linear-gradient(90deg, var(--color-black-tie) 0%, rgba(20, 20, 20, 0) 100%);
 }
 
 .marqueeContainer::after {
   right: 0;
-  background: linear-gradient(270deg, #101418 0%, rgba(16, 20, 24, 0) 100%);
+  background: linear-gradient(270deg, var(--color-black-tie) 0%, rgba(20, 20, 20, 0) 100%);
 }
 
 .marqueeTrack {
@@ -88,12 +88,12 @@
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #f1f4f6;
+  color: var(--color-diamond);
   line-height: 1;
 }
 
 .starSeparator {
-  color: #c29b4c;
+  color: var(--color-golden-500);
   font-size: 0.72rem;
   display: inline-flex;
   align-items: center;
@@ -104,7 +104,7 @@
 }
 
 .promoLink {
-  color: #f1f4f6;
+  color: var(--color-diamond);
   text-decoration: none;
   transition: color 200ms ease, opacity 200ms ease;
   position: relative;
@@ -115,7 +115,7 @@
 
 .promoLink:hover,
 .promoLink:focus-visible {
-  color: #eed7a1;
+  color: var(--color-golden-200);
   text-decoration: underline;
   text-underline-offset: 3px;
   outline: none;

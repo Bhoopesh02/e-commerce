@@ -24,25 +24,25 @@ export default function StepperTestPage() {
         <div className="mt-12 flex justify-center gap-4">
           <button 
             onClick={() => setStep(Math.max(0, step - 1))}
-            className="px-4 py-2 bg-[var(--border-color)] rounded-md hover:bg-[var(--border-color)]"
+            className="px-4 py-2 bg-[var(--border-color)] text-[var(--text-primary)] rounded-md hover:opacity-85"
           >
             Previous Step
           </button>
           <button 
             onClick={() => setStep(Math.min(4, step + 1))}
-            className="px-4 py-2 bg-[#E88D4D] text-white rounded-md hover:bg-[#d67b3b]"
+            className="px-4 py-2 bg-[var(--color-golden-500)] text-[var(--color-diamond)] rounded-md hover:bg-[var(--color-golden-600)]"
           >
             Next Step
           </button>
           <button 
             onClick={() => setStep(-1)}
-            className="px-4 py-2 bg-red-100 text-red-600 rounded-md hover:bg-red-200"
+            className="px-4 py-2 bg-[var(--color-error-bg)] text-[var(--color-error)] rounded-md hover:opacity-85"
           >
             Reset
           </button>
           <button 
             onClick={() => setStep(4)}
-            className="px-4 py-2 bg-green-100 text-green-600 rounded-md hover:bg-green-200"
+            className="px-4 py-2 bg-[var(--color-success-bg)] text-[var(--color-success)] rounded-md hover:opacity-85"
           >
             Complete
           </button>

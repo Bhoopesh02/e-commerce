@@ -547,22 +547,22 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
           user-select: none !important;
         }
         .crop-action-btn:hover {
-          background-color: #32323D !important;
-          border-color: #4E4E5C !important;
+          background-color: var(--color-sapphire-900) !important;
+          border-color: var(--color-sapphire-700) !important;
           color: var(--text-inverse) !important;
           box-shadow: 0 2px 8px var(--overlay-black-20) !important;
         }
         .crop-action-btn:active {
           transform: scale(0.96) !important;
-          background-color: #3D3D4A !important;
+          background-color: var(--color-sapphire-800) !important;
         }
       `}</style>
 
       <div
         style={{
-          backgroundColor: 'var(--admin-surface, #1A1A1E)',
+          backgroundColor: 'var(--admin-surface)',
           borderRadius: 'var(--radius-md, 16px)',
-          border: '1px solid var(--admin-border, #2E2E36)',
+          border: '1px solid var(--admin-border)',
           width: '100%',
           maxWidth: '920px',
           maxHeight: '92vh',
@@ -570,7 +570,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
           flexDirection: 'column',
           boxShadow: '0 24px 60px var(--overlay-black-50)',
           overflow: 'hidden',
-          color: 'var(--admin-text-primary, #F0F0F3)',
+          color: 'var(--admin-text-primary)',
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -578,12 +578,12 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
         <div
           style={{
             padding: '20px 24px',
-            borderBottom: '1px solid var(--admin-border, #2E2E36)',
+            borderBottom: '1px solid var(--admin-border)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             gap: '16px',
-            backgroundColor: 'var(--admin-surface, #1A1A1E)',
+            backgroundColor: 'var(--admin-surface)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -615,7 +615,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                     padding: '3px 8px',
                     borderRadius: '4px',
                     backgroundColor: 'rgba(36, 75, 87, 0.4)',
-                    color: '#7EC3D8',
+                    color: 'var(--color-sapphire-300)',
                     border: '1px solid rgba(126, 195, 216, 0.3)',
                     display: 'flex',
                     alignItems: 'center',
@@ -626,7 +626,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                   3:4 Ratio Locked
                 </span>
               </div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--admin-text-secondary, #9E9EA7)', margin: '2px 0 0 0' }}>
+              <p style={{ fontSize: '0.8rem', color: 'var(--admin-text-secondary)', margin: '2px 0 0 0' }}>
                 {isMultiQueue
                   ? `Processing item ${activeQueueIndex + 1} of ${queue.length}: "${currentItem.name}"`
                   : `Framing "${currentItem.name}" to Atelier 3:4 standard`}
@@ -640,7 +640,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
             style={{
               background: 'none',
               border: 'none',
-              color: 'var(--admin-text-secondary, #9E9EA7)',
+              color: 'var(--admin-text-secondary)',
               cursor: 'pointer',
               padding: '6px',
               borderRadius: '50%',
@@ -664,7 +664,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
             padding: '24px',
             gap: '24px',
             overflowY: 'auto',
-            backgroundColor: '#121215',
+            backgroundColor: 'var(--color-black-tie)',
           }}
         >
           {/* Main Cropping Canvas Viewport */}
@@ -677,9 +677,9 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
               justifyContent: 'center',
               minHeight: '400px',
               maxHeight: '480px',
-              backgroundColor: '#0A0A0C',
+              backgroundColor: 'var(--admin-canvas)',
               borderRadius: '12px',
-              border: '1px solid #26262D',
+              border: '1px solid var(--admin-border)',
               position: 'relative',
               overflow: 'hidden',
               userSelect: 'none',
@@ -934,9 +934,9 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
             {/* Live 3:4 Preview Box */}
             <div
               style={{
-                backgroundColor: '#1A1A1E',
+                backgroundColor: 'var(--admin-surface)',
                 borderRadius: '10px',
-                border: '1px solid #2E2E36',
+                border: '1px solid var(--admin-border)',
                 padding: '16px',
                 display: 'flex',
                 flexDirection: 'column',
@@ -944,7 +944,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--admin-text-secondary, #9E9EA7)' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--admin-text-secondary)' }}>
                   Stored Output Preview
                 </span>
                 <span style={{ fontSize: '0.7rem', color: 'var(--brand-accent)', fontWeight: 600 }}>
@@ -959,9 +959,9 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                   maxWidth: '180px',
                   margin: '0 auto',
                   aspectRatio: '3 / 4',
-                  backgroundColor: '#0D0D10',
+                  backgroundColor: 'var(--color-black-tie)',
                   borderRadius: '6px',
-                  border: '1px solid #33333D',
+                  border: '1px solid var(--admin-border)',
                   overflow: 'hidden',
                   display: 'flex',
                   alignItems: 'center',
@@ -979,7 +979,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                 />
               </div>
 
-              <div style={{ fontSize: '0.75rem', color: '#A0A0AB', lineHeight: 1.4 }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-400)', lineHeight: 1.4 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
                   <span>Ratio format:</span>
                   <strong style={{ color: "var(--text-inverse)" }}>3:4 (0.75:1)</strong>
@@ -990,7 +990,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
                   <span>Storage rule:</span>
-                  <strong style={{ color: '#7EC3D8' }}>Strict 3:4 Enforced</strong>
+                  <strong style={{ color: 'var(--color-sapphire-300)' }}>Strict 3:4 Enforced</strong>
                 </div>
               </div>
             </div>
@@ -998,16 +998,16 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
             {/* Quick Adjustment Tools (Requested Working Buttons) */}
             <div
               style={{
-                backgroundColor: '#1A1A1E',
+                backgroundColor: 'var(--admin-surface)',
                 borderRadius: '10px',
-                border: '1px solid #2E2E36',
+                border: '1px solid var(--admin-border)',
                 padding: '16px',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '12px',
               }}
             >
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--admin-text-secondary, #9E9EA7)' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--admin-text-secondary)' }}>
                 Frame Adjustments
               </span>
 
@@ -1029,10 +1029,10 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                     justifyContent: 'center',
                     gap: '6px',
                     padding: '9px 10px',
-                    backgroundColor: '#26262E',
-                    border: '1px solid #3A3A45',
+                    backgroundColor: 'var(--admin-canvas)',
+                    border: '1px solid var(--admin-border)',
                     borderRadius: '6px',
-                    color: '#EEE',
+                    color: 'var(--admin-text-primary)',
                     fontSize: '0.78rem',
                     fontWeight: 600,
                   }}
@@ -1055,15 +1055,15 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                     justifyContent: 'center',
                     gap: '6px',
                     padding: '9px 10px',
-                    backgroundColor: '#26262E',
-                    border: '1px solid #3A3A45',
+                    backgroundColor: 'var(--admin-canvas)',
+                    border: '1px solid var(--admin-border)',
                     borderRadius: '6px',
-                    color: '#EEE',
+                    color: 'var(--admin-text-primary)',
                     fontSize: '0.78rem',
                     fontWeight: 600,
                   }}
                 >
-                  <ZoomOut size={14} style={{ color: '#7EC3D8' }} /> Expand Box
+                  <ZoomOut size={14} style={{ color: 'var(--color-sapphire-300)' }} /> Expand Box
                 </button>
               </div>
 
@@ -1084,10 +1084,10 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                   justifyContent: 'center',
                   gap: '6px',
                   padding: '10px 12px',
-                  backgroundColor: '#26262E',
-                  border: '1px solid #3A3A45',
+                  backgroundColor: 'var(--admin-canvas)',
+                  border: '1px solid var(--admin-border)',
                   borderRadius: '6px',
-                  color: '#EEE',
+                  color: 'var(--admin-text-primary)',
                   fontSize: '0.8rem',
                   fontWeight: 600,
                 }}
@@ -1108,8 +1108,8 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                 alignItems: 'flex-start',
               }}
             >
-              <Info size={15} style={{ color: '#7EC3D8', flexShrink: 0, marginTop: '2px' }} />
-              <span style={{ fontSize: '0.72rem', color: '#B5CCD2', lineHeight: 1.4 }}>
+              <Info size={15} style={{ color: 'var(--color-sapphire-300)', flexShrink: 0, marginTop: '2px' }} />
+              <span style={{ fontSize: '0.72rem', color: 'var(--color-icy-lake-300)', lineHeight: 1.4 }}>
                 Only verified 3:4 cropped imagery will be persisted to the catalog to maintain storefront alignment.
               </span>
             </div>
@@ -1120,11 +1120,11 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
         <div
           style={{
             padding: '16px 24px',
-            borderTop: '1px solid var(--admin-border, #2E2E36)',
+            borderTop: '1px solid var(--admin-border)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            backgroundColor: 'var(--admin-surface, #1A1A1E)',
+            backgroundColor: 'var(--admin-surface)',
           }}
         >
           <Button variant="outline" size="sm" onClick={onClose}>
@@ -1133,7 +1133,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
 
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             {isMultiQueue && (
-              <span style={{ fontSize: '0.82rem', color: 'var(--admin-text-secondary, #9E9EA7)' }}>
+              <span style={{ fontSize: '0.82rem', color: 'var(--admin-text-secondary)' }}>
                 {queue.length - activeQueueIndex - 1} remaining in queue
               </span>
             )}

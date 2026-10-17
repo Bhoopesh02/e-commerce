@@ -559,7 +559,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                                       left: '-20%',
                                       width: '140%',
                                       height: '1.5px',
-                                      backgroundColor: '#B00020',
+                                      backgroundColor: 'var(--color-error)',
                                       transform: 'rotate(-45deg)',
                                       transformOrigin: 'center',
                                     }}
@@ -636,11 +636,11 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                                   }
                                 : isVariantOutOfStock
                                 ? {
-                                    backgroundColor: '#FAFAFA',
-                                    color: '#9CA3AF',
-                                    border: '1px solid #E5E7EB',
+                                    backgroundColor: 'var(--bg-surface)',
+                                    color: 'var(--text-disabled)',
+                                    border: '1px solid var(--border-color)',
                                     backgroundImage:
-                                      'linear-gradient(to top right, transparent calc(50% - 0.75px), #D1D5DB calc(50% - 0.75px), #D1D5DB calc(50% + 0.75px), transparent calc(50% + 0.75px))',
+                                      'linear-gradient(to top right, transparent calc(50% - 0.75px), var(--border-color) calc(50% - 0.75px), var(--border-color) calc(50% + 0.75px), transparent calc(50% + 0.75px))',
                                   }
                                 : {
                                     backgroundColor: 'var(--bg-primary)',

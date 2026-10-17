@@ -59,7 +59,7 @@ export const HeroSection: React.FC = () => {
         minHeight: 'calc(100dvh - var(--announcement-bar-height, 37px))',
         height: 'calc(100dvh - var(--announcement-bar-height, 37px))',
         overflow: 'hidden',
-        backgroundColor: '#2b241d',
+        backgroundColor: 'var(--color-black-tie)',
       }}
     >
       {/* Background Image Container - Responsive Art Direction via HTML5 <picture> */}
@@ -301,7 +301,7 @@ export const HeroSection: React.FC = () => {
           display: flex;
           flex-direction: column;
           overflow: hidden;
-          background-color: #2b241d;
+          background-color: var(--color-black-tie);
         }
 
         .hero-image-picture {

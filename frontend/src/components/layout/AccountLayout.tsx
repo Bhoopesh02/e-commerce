@@ -194,18 +194,18 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           }
 
           .account-mobile-nav.fade-right {
-            -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 32px), transparent 100%);
-            mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 32px), transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, black 0%, black calc(100% - 32px), transparent 100%);
+            mask-image: linear-gradient(to right, black 0%, black calc(100% - 32px), transparent 100%);
           }
 
           .account-mobile-nav.fade-left {
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 32px, #000 100%);
-            mask-image: linear-gradient(to right, transparent 0%, #000 32px, #000 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 32px, black 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 32px, black 100%);
           }
 
           .account-mobile-nav.fade-left.fade-right {
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 32px, #000 calc(100% - 32px), transparent 100%);
-            mask-image: linear-gradient(to right, transparent 0%, #000 32px, #000 calc(100% - 32px), transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 32px, black calc(100% - 32px), transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 32px, black calc(100% - 32px), transparent 100%);
           }
 
           .mobile-nav-scroll {

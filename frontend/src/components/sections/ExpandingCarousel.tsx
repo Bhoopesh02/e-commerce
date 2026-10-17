@@ -479,7 +479,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           gap: 6px;
           width: 100%;
           overflow: hidden;
-          background: #08070b;
+          background: var(--color-black-tie);
         }
 
         /* Panels: Clean crisp borders with subtle radius */
@@ -518,7 +518,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
         .carousel-panel-skeleton {
           position: absolute;
           inset: 0;
-          background: linear-gradient(135deg, #141219 0%, #1c1824 50%, #141219 100%);
+          background: linear-gradient(135deg, var(--color-black-tie) 0%, rgba(36, 75, 87, 0.2) 50%, var(--color-black-tie) 100%);
           z-index: 1;
           overflow: hidden;
           pointer-events: none;
@@ -531,7 +531,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           background: linear-gradient(
             90deg,
             transparent 0%,
-            rgba(201, 169, 110, 0.08) 50%,
+            rgba(194, 155, 76, 0.08) 50%,
             transparent 100%
           );
           animation: carouselSkeletonShimmer 2s infinite ease-in-out;
@@ -603,7 +603,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           left: 0;
           right: 0;
           height: 2px;
-          background-color: var(--brand-accent, #c9a96e);
+          background-color: var(--brand-accent);
           transform-origin: left;
           z-index: 10;
           pointer-events: none;
@@ -706,7 +706,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           font-weight: 600;
           letter-spacing: 0.22em;
           text-transform: uppercase;
-          color: var(--brand-accent, #c9a96e);
+          color: var(--brand-accent);
           margin-bottom: 14px;
           text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
           opacity: 0;
@@ -727,7 +727,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           font-family: var(--font-display, 'Playfair Display', serif);
           font-size: clamp(2.2rem, 4.2vw, 4.2rem);
           font-weight: 400;
-          color: #ffffff;
+          color: var(--color-diamond);
           line-height: 1.14;
           margin: 0;
           text-shadow: 0 4px 30px rgba(0, 0, 0, 0.85);
@@ -804,7 +804,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
 
         .credit-bullet {
           margin: 0 10px;
-          color: var(--brand-accent, #c9a96e);
+          color: var(--brand-accent);
           opacity: 0.8;
         }
 
@@ -917,7 +917,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
             font-weight: 600;
             letter-spacing: 0.16em;
             text-transform: uppercase;
-            color: var(--brand-accent, #c9a96e);
+            color: var(--brand-accent);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -926,7 +926,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
           .mobile-collapsed-title {
             font-size: 0.95rem;
             font-family: var(--font-display, serif);
-            color: #ffffff;
+            color: var(--color-diamond);
             margin: 0;
             white-space: nowrap;
             overflow: hidden;

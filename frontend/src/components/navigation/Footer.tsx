@@ -97,7 +97,7 @@ export const Footer: React.FC = () => {
             <div className="footer-newsletter-form-wrapper">
               {isSubmitted ? (
                 <div className="footer-newsletter-success">
-                  <CheckCircle2 size={20} style={{ color: 'var(--color-golden-500, #C29B4C)', flexShrink: 0 }} />
+                  <CheckCircle2 size={20} style={{ color: 'var(--color-golden-500)', flexShrink: 0 }} />
                   <span style={{ fontSize: '0.86rem', color: 'var(--color-diamond)', lineHeight: 1.5 }}>
                     Your email ({email}) is inscribed. We honor your privacy with email-only correspondence.
                   </span>
@@ -295,7 +295,7 @@ export const Footer: React.FC = () => {
                 fontSize: '0.78rem',
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                color: 'var(--color-icy-lake, #CAD4D6)',
+                color: 'var(--color-icy-lake)',
                 fontWeight: 500,
                 marginBottom: '16px',
               }}
@@ -558,7 +558,7 @@ export const Footer: React.FC = () => {
           fontWeight: 600;
           letter-spacing: 0.18em;
           text-transform: uppercase;
-          color: var(--color-icy-lake, #CAD4D6);
+          color: var(--color-icy-lake);
           display: block;
           margin-bottom: 8px;
         }
@@ -590,7 +590,7 @@ export const Footer: React.FC = () => {
           background-color: rgba(255, 255, 255, 0.08);
           backdrop-filter: blur(8px);
           border-radius: var(--radius-sm, 8px);
-          border: 1px solid var(--color-golden-300, #E4C888);
+          border: 1px solid var(--color-golden-300);
           display: flex;
           align-items: center;
           gap: 12px;
@@ -729,8 +729,8 @@ export const Footer: React.FC = () => {
           width: 36px;
           height: 36px;
           border-radius: 50%;
-          background-color: #FFFFFF;
-          color: #141414;
+          background-color: var(--color-diamond);
+          color: var(--color-black-tie);
           text-decoration: none;
           transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
           flex-shrink: 0;
@@ -738,7 +738,7 @@ export const Footer: React.FC = () => {
 
         .footer-social-circle:hover {
           transform: translateY(-2px) scale(1.06);
-          background-color: var(--color-golden-200, #EED7A1);
+          background-color: var(--color-golden-200);
           box-shadow: 0 4px 12px rgba(255, 255, 255, 0.25);
         }
 
@@ -895,7 +895,7 @@ export const Footer: React.FC = () => {
             font-size: 0.75rem;
             letter-spacing: 0.14em;
             text-transform: uppercase;
-            color: var(--color-icy-lake, #CAD4D6);
+            color: var(--color-icy-lake);
             font-weight: 500;
           }
 

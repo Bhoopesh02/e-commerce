@@ -116,7 +116,7 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
               fontSize: '0.72rem',
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
-              color: isVerifiedBuyer ? 'var(--color-success, #2e7d32)' : 'var(--brand-primary)',
+              color: isVerifiedBuyer ? 'var(--color-success)' : 'var(--brand-primary)',
               marginBottom: '4px',
             }}
           >

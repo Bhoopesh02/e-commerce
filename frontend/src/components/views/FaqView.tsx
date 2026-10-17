@@ -502,7 +502,7 @@ export const FaqView: React.FC<FaqViewProps> = ({
         .faq-cat-pill.active {
           background-color: var(--brand-primary);
           border-color: var(--brand-primary);
-          color: #ffffff;
+          color: var(--color-diamond);
         }
 
         .faq-cat-count {
@@ -515,7 +515,7 @@ export const FaqView: React.FC<FaqViewProps> = ({
 
         .faq-cat-pill.active .faq-cat-count {
           background-color: rgba(255, 255, 255, 0.25);
-          color: #ffffff;
+          color: var(--color-diamond);
         }
 
         .faq-controls-bar {

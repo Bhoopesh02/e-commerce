@@ -285,7 +285,7 @@ export const SupportView: React.FC = () => {
         .tab-count-badge {
           font-size: 0.72rem;
           background-color: var(--brand-primary);
-          color: #ffffff;
+          color: var(--color-diamond);
           padding: 2px 7px;
           border-radius: 100px;
           font-weight: 600;
@@ -342,12 +342,12 @@ export const SupportView: React.FC = () => {
 
           .support-tab-btn.active {
             background-color: var(--brand-primary);
-            color: #ffffff;
+            color: var(--color-diamond);
             border-color: var(--brand-primary);
           }
 
           .support-tab-btn.active .tab-count-badge {
-            background-color: #ffffff;
+            background-color: var(--color-diamond);
             color: var(--brand-primary);
           }
 

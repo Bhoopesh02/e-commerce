@@ -228,12 +228,12 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
               width: '26px',
               height: '26px',
               borderRadius: '50%',
-              backgroundColor: isFavorited ? '#121624' : 'rgba(15, 12, 24, 0.92)',
+              backgroundColor: isFavorited ? 'var(--color-black-tie)' : 'var(--overlay-black-85)',
               border: '1px solid rgba(255, 255, 255, 0.22)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: isFavorited ? '#FFE28A' : 'var(--color-diamond)',
+              color: isFavorited ? 'var(--color-golden-500)' : 'var(--color-diamond)',
               boxShadow: '0 4px 10px rgba(16, 33, 39, 0.4)',
             }}
           >

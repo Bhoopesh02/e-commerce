@@ -16,6 +16,7 @@ import { FlatProductGrid, PAGE_SIZE } from '@/components/shop/FlatProductGrid';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { SlidersHorizontal, X, RotateCcw, ArrowUp, Check, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { smoothScrollService } from '@/services/smooth-scroll';
+import { COLOR_GROUPS } from '@/lib/colorUtils';
 
 export const ShopViewSkeleton: React.FC = () => {
   return (
@@ -93,19 +94,6 @@ const PRICE_MILESTONES = [
   { value: 20000, label: '₹20K' },
   { value: 35000, label: '₹35K' },
   { value: 100000, label: '₹100K+' },
-];
-
-// Helper to group complex color names into selectable luxury swatches (Alphabetical order)
-const COLOR_GROUPS = [
-  { name: 'Black', hex: '#1A1A1A', matches: ['Black', 'Noir', 'Abyss', 'Nocturne'] },
-  { name: 'Brown', hex: '#4A3728', matches: ['Brown', 'Cognac', 'Espresso', 'Chocolate', 'Havana'] },
-  { name: 'Burgundy', hex: '#4A1C20', matches: ['Burgundy', 'Aubergine'] },
-  { name: 'Camel / Beige', hex: '#C19A6B', matches: ['Camel', 'Sand', 'Tan', 'Khaki', 'Oatmeal', 'Vicuna', 'Taupe'] },
-  { name: 'Gold', hex: '#D4AF37', matches: ['Gold', 'Bronze'] },
-  { name: 'Green', hex: '#2E4C38', matches: ['Emerald', 'Forest', 'Sage'] },
-  { name: 'Grey', hex: '#4B4B4B', matches: ['Charcoal'] },
-  { name: 'Ivory / White', hex: '#F8F5F0', matches: ['Ivory', 'Ecru', 'Alabaster', 'Milk', 'Pearl', 'White'] },
-  { name: 'Navy', hex: '#1B2431', matches: ['Navy'] },
 ];
 
 export const ShopView: React.FC<ShopViewProps> = ({
@@ -629,7 +617,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     borderRadius: 'var(--radius-pill, 999px)',
                     fontSize: '0.82rem',
                     fontFamily: 'inherit',
-                    backgroundColor: 'var(--bg-surface, #fafafa)',
+                    backgroundColor: 'var(--bg-surface)',
                     color: 'var(--text-primary)',
                     outline: 'none',
                     transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
@@ -1097,7 +1085,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           padding: '24px 32px 16px',
         }}
         titleStyle={{
-          fontFamily: 'var(--font-serif)',
+          fontFamily: 'var(--font-display)',
           fontSize: '1.4rem',
           letterSpacing: '0.02em',
           color: 'var(--text-primary)',
@@ -1300,7 +1288,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                             width: '6px',
                             height: '6px',
                             borderRadius: '50%',
-                            backgroundColor: g.hex === '#F8F5F0' ? '#000' : 'var(--color-diamond)',
+                            backgroundColor: g.isLight ? 'var(--color-black-tie)' : 'var(--color-diamond)',
                           }}
                         />
                       )}

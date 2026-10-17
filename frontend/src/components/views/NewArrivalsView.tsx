@@ -445,7 +445,7 @@ export const NewArrivalsView: React.FC = () => {
                     borderRadius: 'var(--radius-pill, 999px)',
                     fontSize: '0.82rem',
                     fontFamily: 'inherit',
-                    backgroundColor: 'var(--bg-surface, #fafafa)',
+                    backgroundColor: 'var(--bg-surface)',
                     color: 'var(--text-primary)',
                     outline: 'none',
                     transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
@@ -714,7 +714,7 @@ export const NewArrivalsView: React.FC = () => {
         position="right"
         contentStyle={{ backgroundColor: 'var(--bg-surface)' }}
         headerStyle={{ borderBottom: '1px solid var(--overlay-black-5)', padding: '24px 32px 16px' }}
-        titleStyle={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', letterSpacing: '0.02em', color: 'var(--text-primary)' }}
+        titleStyle={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', letterSpacing: '0.02em', color: 'var(--text-primary)' }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px 8px 120px' }}>
           {/* Category Filter Dropdown */}

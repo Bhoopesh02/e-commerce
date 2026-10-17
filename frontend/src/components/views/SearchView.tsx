@@ -13,6 +13,7 @@ import { RangeSlider } from '@/components/ui/RangeSlider';
 import { FilterDropdownSection } from '@/components/ui/FilterDropdownSection';
 import { smoothScrollService } from '@/services/smooth-scroll';
 import { formatPrice } from '@/lib/formatPrice';
+import { COLOR_GROUPS } from '@/lib/colorUtils';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
   Search,
@@ -54,19 +55,6 @@ const TRENDING_SEARCHES = [
 
 const LOCAL_STORAGE_RECENT_SEARCHES_KEY = 'aurelia_recent_searches';
 const MAX_RECENT_SEARCHES = 5;
-
-// Helper to group complex color names into selectable swatches (Alphabetical order)
-const COLOR_GROUPS = [
-  { name: 'Black', hex: '#1A1A1A', matches: ['Black', 'Noir', 'Abyss', 'Nocturne'] },
-  { name: 'Brown', hex: '#4A3728', matches: ['Brown', 'Cognac', 'Espresso', 'Chocolate', 'Havana'] },
-  { name: 'Burgundy', hex: '#4A1C20', matches: ['Burgundy', 'Aubergine'] },
-  { name: 'Camel / Beige', hex: '#C19A6B', matches: ['Camel', 'Sand', 'Tan', 'Khaki', 'Oatmeal', 'Vicuna', 'Taupe'] },
-  { name: 'Gold', hex: '#D4AF37', matches: ['Gold', 'Bronze'] },
-  { name: 'Green', hex: '#2E4C38', matches: ['Emerald', 'Forest', 'Sage'] },
-  { name: 'Grey', hex: '#4B4B4B', matches: ['Charcoal'] },
-  { name: 'Ivory / White', hex: '#F8F5F0', matches: ['Ivory', 'Ecru', 'Alabaster', 'Milk', 'Pearl', 'White'] },
-  { name: 'Navy', hex: '#1B2431', matches: ['Navy'] },
-];
 
 const COLLECTIONS = [
   { id: 'new-arrival', label: 'New Arrivals' },
@@ -720,7 +708,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
             SEARCH
           </h1>
           {initialQuery && (
-            <h2 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-serif)', color: 'var(--text-primary)', fontWeight: 400, marginBottom: '8px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontWeight: 400, marginBottom: '8px' }}>
               Search results for &ldquo;{initialQuery}&rdquo;
             </h2>
           )}
@@ -1772,7 +1760,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                   <h3
                     style={{
                       fontSize: '1.5rem',
-                      fontFamily: 'var(--font-serif)',
+                      fontFamily: 'var(--font-display)',
                       marginBottom: '12px',
                       color: 'var(--text-primary)',
                       letterSpacing: '0.02em',
@@ -1934,7 +1922,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                       <h4
                         style={{
                           fontSize: '1.4rem',
-                          fontFamily: 'var(--font-serif)',
+                          fontFamily: 'var(--font-display)',
                           color: 'var(--text-primary)',
                           letterSpacing: '0.02em',
                           margin: 0,
@@ -1980,7 +1968,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
         position="right"
         contentStyle={{ backgroundColor: 'var(--bg-surface)' }}
         headerStyle={{ borderBottom: '1px solid var(--overlay-black-5)', padding: '24px 32px 16px' }}
-        titleStyle={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', letterSpacing: '0.02em', color: 'var(--text-primary)' }}
+        titleStyle={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', letterSpacing: '0.02em', color: 'var(--text-primary)' }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px 8px 120px' }}>
           {/* Category Filter Dropdown */}
@@ -2377,7 +2365,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                             width: '6px',
                             height: '6px',
                             borderRadius: '50%',
-                            backgroundColor: g.hex === '#F8F5F0' ? '#000' : 'var(--color-diamond)',
+                            backgroundColor: g.isLight ? 'var(--color-black-tie)' : 'var(--color-diamond)',
                           }}
                         />
                       )}

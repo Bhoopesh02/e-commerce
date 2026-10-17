@@ -424,7 +424,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
                   top: '20px',
                   transform: i === 0 ? 'translateX(0)' : i === milestones.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)',
                   color: 'rgba(36, 75, 87, 0.7)', // Sapphire at 70%
-                  fontFamily: 'var(--font-sans)',
+                  fontFamily: 'var(--font-body)',
                   fontSize: '0.75rem',
                   fontWeight: 500,
                   letterSpacing: '0.05em'

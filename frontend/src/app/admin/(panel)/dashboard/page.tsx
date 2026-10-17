@@ -1742,15 +1742,15 @@ export default function AdminDashboardPage() {
                     gap: '6px',
                     fontSize: '0.75rem',
                     fontWeight: 600,
-                    color: '#996515',
-                    backgroundColor: 'rgba(212, 175, 55, 0.12)',
-                    border: '1px solid #D4AF37',
+                    color: 'var(--color-golden-800)',
+                    backgroundColor: 'var(--overlay-golden-10)',
+                    border: '1px solid var(--color-golden-500)',
                     padding: '2px 10px',
                     borderRadius: 'var(--radius-pill)',
                     whiteSpace: 'nowrap',
                     flexShrink: 0,
                   }}>
-                    <Filter size={12} style={{ color: '#B8860B' }} />
+                    <Filter size={12} style={{ color: 'var(--color-golden-600)' }} />
                     <span>Filtered: {activeChannelFilter.label}</span>
                     <button
                       type="button"
@@ -1763,7 +1763,7 @@ export default function AdminDashboardPage() {
                         padding: 0,
                         display: 'flex',
                         alignItems: 'center',
-                        color: '#996515',
+                        color: 'var(--color-golden-800)',
                       }}
                     >
                       <X size={12} />
@@ -1955,7 +1955,7 @@ export default function AdminDashboardPage() {
                         style={{
                           width: '36px',
                           height: '4px',
-                          backgroundColor: 'var(--color-neutral-300, #CBD5E1)',
+                          backgroundColor: 'var(--color-neutral-300)',
                           borderRadius: '2px',
                           margin: '0 auto 12px',
                         }}
@@ -2315,8 +2315,8 @@ export default function AdminDashboardPage() {
                       gap: '4px',
                       fontSize: '0.8rem',
                       fontWeight: 600,
-                      color: kpiMetrics.trendPct >= 0 ? 'var(--color-sapphire-700)' : '#dc2626',
-                      backgroundColor: kpiMetrics.trendPct >= 0 ? 'var(--overlay-sapphire-10)' : 'rgba(220, 38, 38, 0.08)',
+                      color: kpiMetrics.trendPct >= 0 ? 'var(--color-sapphire-700)' : 'var(--color-error)',
+                      backgroundColor: kpiMetrics.trendPct >= 0 ? 'var(--overlay-sapphire-10)' : 'var(--color-error-bg)',
                       padding: '2px var(--space-2)',
                       borderRadius: 'var(--radius-pill)',
                       cursor: 'help',
@@ -2336,7 +2336,7 @@ export default function AdminDashboardPage() {
                       <span>Current</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <div style={{ width: '12px', height: '2px', borderTop: '2px dashed #8EAFB8' }} />
+                      <div style={{ width: '12px', height: '2px', borderTop: '2px dashed var(--color-sapphire-300)' }} />
                       <span>Prior Period</span>
                     </div>
                   </div>
@@ -2431,7 +2431,7 @@ export default function AdminDashboardPage() {
                             : `${formatPrice(activePoint.revenue)} • ${activePoint.orders} ${activePoint.orders === 1 ? 'commission' : 'commissions'}`}
                         </div>
                         {showCompareLine && activePoint.prevVal !== undefined && (
-                          <div style={{ fontSize: '0.68rem', color: '#64748b', borderTop: '1px solid var(--admin-border-light)', paddingTop: '2px', marginTop: '2px' }}>
+                          <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', borderTop: '1px solid var(--admin-border-light)', paddingTop: '2px', marginTop: '2px' }}>
                             Prior period: {revenueMetric === 'orders' ? `${activePoint.prevOrders} orders` : formatPrice(activePoint.prevVal)}
                           </div>
                         )}
@@ -2549,7 +2549,7 @@ export default function AdminDashboardPage() {
                         <path
                           d={chartData.compareLinePath}
                           fill="none"
-                          stroke="#8EAFB8"
+                          stroke="var(--color-sapphire-300)"
                           strokeWidth="2"
                           strokeDasharray="4 4"
                           strokeLinecap="round"
@@ -2617,9 +2617,9 @@ export default function AdminDashboardPage() {
                         cursor: 'pointer',
                         transition: 'all 0.15s ease',
                         backgroundColor: channelView === 'payments' ? 'var(--admin-surface)' : 'transparent',
-                        color: channelView === 'payments' ? '#996515' : 'var(--text-muted)',
+                        color: channelView === 'payments' ? 'var(--color-golden-800)' : 'var(--text-muted)',
                         boxShadow: channelView === 'payments' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                        borderBottom: channelView === 'payments' ? '2px solid #D4AF37' : '2px solid transparent',
+                        borderBottom: channelView === 'payments' ? '2px solid var(--color-golden-500)' : '2px solid transparent',
                       }}
                     >
                       Payment Methods
@@ -2636,9 +2636,9 @@ export default function AdminDashboardPage() {
                         cursor: 'pointer',
                         transition: 'all 0.15s ease',
                         backgroundColor: channelView === 'sources' ? 'var(--admin-surface)' : 'transparent',
-                        color: channelView === 'sources' ? '#996515' : 'var(--text-muted)',
+                        color: channelView === 'sources' ? 'var(--color-golden-800)' : 'var(--text-muted)',
                         boxShadow: channelView === 'sources' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                        borderBottom: channelView === 'sources' ? '2px solid #D4AF37' : '2px solid transparent',
+                        borderBottom: channelView === 'sources' ? '2px solid var(--color-golden-500)' : '2px solid transparent',
                       }}
                     >
                       Traffic Sources
@@ -2707,7 +2707,7 @@ export default function AdminDashboardPage() {
                             <td style={{ padding: '8px 12px', textAlign: 'right' }}>{ch.count}</td>
                             <td style={{ padding: '8px 12px', textAlign: 'right' }}>{formatPrice(ch.aov)}</td>
                             {channelView === 'payments' && (
-                              <td style={{ padding: '8px 12px', textAlign: 'right', color: (ch as any).failedRate > 5 ? '#dc2626' : 'var(--color-sapphire-700)' }}>
+                              <td style={{ padding: '8px 12px', textAlign: 'right', color: (ch as any).failedRate > 5 ? 'var(--color-error)' : 'var(--color-sapphire-700)' }}>
                                 {(ch as any).successRate}% ok ({(ch as any).failedRate}% loss)
                               </td>
                             )}
@@ -2725,12 +2725,12 @@ export default function AdminDashboardPage() {
                   gap: 'var(--space-4)',
                 }}>
                   {(channelView === 'payments' ? settlementData.paymentMethods : settlementData.trafficSources).map((ch, idx) => {
-                    // 3 Sapphire/Icy Lake Tones: biggest channel darkest
+                    // 4 Sapphire tones: biggest channel darkest
                     const tones = [
-                      '#1A3B47', // Darkest Sapphire
-                      '#2F5E6E', // Medium Sapphire
-                      '#5A8B9C', // Icy Lake tone
-                      '#8EAFB8', // Muted tone for Other
+                      'var(--color-sapphire-900)',
+                      'var(--color-sapphire-800)',
+                      'var(--color-sapphire-700)',
+                      'var(--color-sapphire-300)',
                     ];
                     const colorTone = tones[Math.min(idx, tones.length - 1)];
                     const isFiltered = activeChannelFilter?.key === ch.key;
@@ -2755,7 +2755,7 @@ export default function AdminDashboardPage() {
                             : hoveredChannelKey === ch.key
                             ? 'var(--bg-subtle)'
                             : 'transparent',
-                          border: isFiltered ? '1.5px solid #D4AF37' : '1px solid transparent',
+                          border: isFiltered ? '1.5px solid var(--color-golden-500)' : '1px solid transparent',
                           cursor: 'pointer',
                           transition: 'all 0.15s ease',
                           position: 'relative',
@@ -2781,7 +2781,7 @@ export default function AdminDashboardPage() {
                             </span>
                           </div>
                           {isFiltered && (
-                            <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#B8860B' }}>
+                            <span style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--color-golden-600)' }}>
                               ACTIVE
                             </span>
                           )}
@@ -2824,7 +2824,7 @@ export default function AdminDashboardPage() {
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-muted)' }}>
                           <span>{ch.count} {ch.count === 1 ? 'order' : 'orders'}</span>
                           {channelView === 'payments' ? (
-                            <span style={{ color: (ch as any).failedRate > 5 ? '#b91c1c' : 'inherit' }}>
+                            <span style={{ color: (ch as any).failedRate > 5 ? 'var(--color-error)' : 'inherit' }}>
                               {(ch as any).failedRate}% failed
                             </span>
                           ) : (
@@ -2956,9 +2956,9 @@ export default function AdminDashboardPage() {
                   zIndex: 0,
                 }}
               >
-                <div style={{ width: '100%', borderTop: '1px dashed var(--color-neutral-200, #E0E0E0)', opacity: 0.7 }} />
-                <div style={{ width: '100%', borderTop: '1px dashed var(--color-neutral-200, #E0E0E0)', opacity: 0.7 }} />
-                <div style={{ width: '100%', borderTop: '1px solid var(--color-neutral-200, #E0E0E0)', opacity: 0.9 }} />
+                <div style={{ width: '100%', borderTop: '1px dashed var(--color-neutral-200)', opacity: 0.7 }} />
+                <div style={{ width: '100%', borderTop: '1px dashed var(--color-neutral-200)', opacity: 0.7 }} />
+                <div style={{ width: '100%', borderTop: '1px solid var(--color-neutral-200)', opacity: 0.9 }} />
               </div>
 
               {weeklyActivity.days.map((day) => {
@@ -3010,10 +3010,10 @@ export default function AdminDashboardPage() {
                         style={{
                           height: `${day.heightPct}%`,
                           backgroundColor: day.isPeak
-                            ? 'var(--color-sapphire-700, #244B57)'
+                            ? 'var(--color-sapphire-700)'
                             : isHovered
-                            ? 'var(--color-sapphire-300, #7DA1AB)'
-                            : 'var(--color-icy-lake-300, #CAD4D6)',
+                            ? 'var(--color-sapphire-300)'
+                            : 'var(--color-icy-lake-300)',
                         }}
                       >
                         {/* Value Pill pinned above the bar: only for Peak day or Selected bar, NOT on hover */}
@@ -3029,7 +3029,7 @@ export default function AdminDashboardPage() {
                             <span style={{
                               fontSize: '0.68rem',
                               fontWeight: 700,
-                              color: day.isPeak || isSelected ? 'var(--color-sapphire-700, #244B57)' : 'var(--text-primary)',
+                              color: day.isPeak || isSelected ? 'var(--color-sapphire-700)' : 'var(--text-primary)',
                               padding: '1px 5px',
                               borderRadius: '4px',
                               backgroundColor: day.isPeak ? 'var(--overlay-sapphire-10)' : 'var(--admin-surface)',

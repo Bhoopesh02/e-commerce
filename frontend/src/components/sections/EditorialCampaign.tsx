@@ -170,15 +170,15 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
       className="editorial-banner-section"
       style={{
         position: 'relative',
-        backgroundColor: '#EAE8E3',
-        color: 'var(--color-black-tie, #141414)',
+        backgroundColor: 'var(--bg-surface)',
+        color: 'var(--color-black-tie)',
         padding: '90px 24px 100px',
         overflow: 'hidden',
       }}
     >
       <style>{`
         .editorial-banner-section {
-          background: radial-gradient(circle at 50% 30%, #F5F4F0 0%, #E9E7E1 100%);
+          background: radial-gradient(circle at 50% 30%, var(--bg-surface) 0%, var(--color-neutral-200) 100%);
         }
 
         /* Giant Watermark Background Typography */
@@ -239,7 +239,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
           height: 380px;
           border-radius: 26px;
           position: relative;
-          background: #D9D7D2;
+          background: var(--color-neutral-200);
           box-shadow: 0 18px 45px -12px rgba(20, 20, 20, 0.14);
           overflow: hidden;
           will-change: transform, opacity, clip-path;
@@ -268,7 +268,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
           height: 540px;
           border-radius: 32px;
           position: relative;
-          background: #D9D7D2;
+          background: var(--color-neutral-200);
           box-shadow: 0 26px 65px -15px rgba(20, 20, 20, 0.22);
           overflow: hidden;
           will-change: transform, opacity, clip-path;
@@ -299,7 +299,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
           height: 380px;
           border-radius: 26px;
           position: relative;
-          background: #D9D7D2;
+          background: var(--color-neutral-200);
           box-shadow: 0 18px 45px -12px rgba(20, 20, 20, 0.14);
           overflow: hidden;
           will-change: transform, opacity, clip-path;
@@ -661,8 +661,8 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
             style={{
               padding: '16px 36px',
               borderRadius: '9999px',
-              backgroundColor: 'var(--color-black-tie, #141414)',
-              color: '#FFFFFF',
+              backgroundColor: 'var(--color-black-tie)',
+              color: 'var(--color-diamond)',
               boxShadow: '0 12px 30px -8px rgba(20, 20, 20, 0.35)',
               fontWeight: 500,
               letterSpacing: '0.04em',

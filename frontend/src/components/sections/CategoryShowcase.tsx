@@ -53,7 +53,7 @@ export const CategoryShowcaseSkeleton: React.FC<CategoryShowcaseSkeletonProps> =
         <div className="category-grid">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ aspectRatio: '1/1', backgroundColor: '#f4f5f7', borderRadius: '12px' }}>
+              <div style={{ aspectRatio: '1/1', backgroundColor: 'var(--bg-surface)', borderRadius: '12px' }}>
                 <Skeleton width="100%" height="100%" borderRadius="12px" />
               </div>
               <Skeleton width="120px" height="20px" borderRadius="4px" />
@@ -90,7 +90,7 @@ const CategoryCardItem: React.FC<{ category: Category }> = ({ category }) => {
       <div 
         className="category-image-container"
         style={{
-          backgroundColor: '#f4f5f7',
+          backgroundColor: 'var(--bg-surface)',
           borderRadius: '12px',
           aspectRatio: '1/1',
           position: 'relative',

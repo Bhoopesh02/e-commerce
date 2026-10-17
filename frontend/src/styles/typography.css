@@ -49,6 +49,10 @@
     Georgia,
     serif;
 
+  /* Legacy & utility aliases */
+  --font-serif: var(--font-display);
+  --font-sans: var(--font-body);
+
 
   /* ========================================================================
      3. FONT WEIGHTS
@@ -354,6 +358,14 @@ h4,
 /* ==========================================================================
    11. BODY & EDITORIAL COPY
    ========================================================================== */
+
+.font-sans {
+  font-family: var(--font-body);
+}
+
+.font-serif {
+  font-family: var(--font-display);
+}
 
 .font-body,
 .type-body {

@@ -55,7 +55,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ initialMode = 'login' }) => 
         paddingTop: '120px',
         paddingBottom: '96px',
         minHeight: '100vh',
-        background: 'radial-gradient(ellipse at 50% 15%, var(--bg-subtle) 0%, var(--bg-secondary) 50%, #F9E2E8 100%)',
+        background: 'radial-gradient(ellipse at 50% 15%, var(--bg-subtle) 0%, var(--bg-secondary) 50%, var(--color-golden-50) 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

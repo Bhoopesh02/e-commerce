@@ -313,8 +313,8 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
                       }}
                     />
 
-                    <div style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px', zIndex: 2, color: '#fff' }}>
-                      <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 400, color: '#fff', margin: 0, lineHeight: 1.2 }}>
+                    <div style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px', zIndex: 2, color: 'var(--color-diamond)' }}>
+                      <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 400, color: 'var(--color-diamond)', margin: 0, lineHeight: 1.2 }}>
                         {category.name}
                       </h3>
                       <span style={{ fontSize: '0.78rem', opacity: 0.85, marginTop: '4px', display: 'block' }}>

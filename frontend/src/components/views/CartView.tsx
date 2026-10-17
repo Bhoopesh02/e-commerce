@@ -230,7 +230,7 @@ export const CartView: React.FC = () => {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          color: '#fff',
+                          color: 'var(--color-diamond)',
                           fontSize: '0.78rem',
                           fontWeight: 700,
                           letterSpacing: '0.05em',

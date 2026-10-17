@@ -149,8 +149,8 @@ export default function SignOutPage() {
                 leftIcon={<ShoppingBag size={16} />}
                 style={{
                   borderColor: 'var(--border-color)',
-                  color: '#4A3338',
-                  backgroundColor: '#FFF8FA',
+                  color: 'var(--text-primary)',
+                  backgroundColor: 'var(--bg-surface)',
                 }}
               >
                 Return to Boutique

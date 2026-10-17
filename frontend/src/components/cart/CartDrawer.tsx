@@ -276,7 +276,7 @@ export const CartDrawer: React.FC = () => {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: '#fff',
+                            color: 'var(--color-diamond)',
                             fontSize: '0.75rem',
                             fontWeight: 700,
                             letterSpacing: '0.05em',

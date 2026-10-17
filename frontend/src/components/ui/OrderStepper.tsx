@@ -40,7 +40,7 @@ export const OrderStepper: React.FC<OrderStepperProps> = ({
   if (!mounted) return null;
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-8 font-sans">
+    <div className="w-full max-w-4xl mx-auto p-8 font-sans" style={{ fontFamily: 'var(--font-body)' }}>
       <div className="relative flex justify-between items-start w-full">
         
         {/* Background inactive line */}
@@ -58,7 +58,8 @@ export const OrderStepper: React.FC<OrderStepperProps> = ({
               {index > 0 && (
                 <div className="absolute top-[20px] left-[-50%] right-[50%] h-[2px] overflow-hidden z-10">
                   <motion.div 
-                    className="w-full h-full bg-[#E88D4D]"
+                    className="w-full h-full"
+                    style={{ backgroundColor: 'var(--color-golden-500)', originX: 0 }}
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: isCompleted ? 1 : 0 }}
                     transition={{ 
@@ -66,7 +67,6 @@ export const OrderStepper: React.FC<OrderStepperProps> = ({
                       delay: (index - 1) * segmentDuration,
                       ease: "linear" // Linear works better for continuous connecting lines
                     }}
-                    style={{ originX: 0 }}
                   />
                 </div>
               )}
@@ -76,8 +76,8 @@ export const OrderStepper: React.FC<OrderStepperProps> = ({
                 {/* Pulse ring for active step */}
                 {isCurrent && (
                   <motion.div
-                    className="absolute rounded-full bg-[#E88D4D] opacity-20"
-                    style={{ width: '60px', height: '60px' }}
+                    className="absolute rounded-full opacity-20"
+                    style={{ width: '60px', height: '60px', backgroundColor: 'var(--color-golden-500)' }}
                     initial={{ scale: 0.8, opacity: 0.4 }}
                     animate={{ scale: 1.5, opacity: 0 }}
                     transition={{
@@ -98,7 +98,7 @@ export const OrderStepper: React.FC<OrderStepperProps> = ({
                   }}
                   animate={{
                     scale: isCompleted ? [0.8, 1.1, 1.0] : 1,
-                    backgroundColor: isCompleted ? '#E88D4D' : 'var(--border-color)',
+                    backgroundColor: isCompleted ? 'var(--color-golden-500)' : 'var(--border-color)',
                   }}
                   transition={{
                     duration: 0.6,

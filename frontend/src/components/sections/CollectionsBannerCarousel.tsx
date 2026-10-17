@@ -148,7 +148,7 @@ export function CollectionsBannerCarousel() {
         minHeight: 'calc(100dvh - var(--announcement-bar-height, 37px))',
         width: '100%',
         boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',
-        backgroundColor: '#0c0a14',
+        backgroundColor: 'var(--color-black-tie)',
       }}
       className="group hero-master-banner"
     >
@@ -503,7 +503,7 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
         display: 'flex',
         alignItems: 'center',
         boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',
-        backgroundColor: '#0c0a14',
+        backgroundColor: 'var(--color-black-tie)',
       }}
       className="group hero-master-banner"
     >

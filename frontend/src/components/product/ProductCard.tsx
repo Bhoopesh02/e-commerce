@@ -274,7 +274,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: isFavorited ? 'var(--brand-primary, #244B57)' : 'var(--text-primary, #141414)',
+            color: isFavorited ? 'var(--brand-primary)' : 'var(--text-primary)',
             cursor: 'pointer',
             zIndex: 3,
             boxShadow: '0 1px 5px rgba(0, 0, 0, 0.12)',

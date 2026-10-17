@@ -64,7 +64,7 @@ export const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
         >
           <span
             style={{
-              fontFamily: 'var(--font-serif)',
+              fontFamily: 'var(--font-display)',
               fontSize: '1rem',
               letterSpacing: '0.06em',
               color: 'var(--text-primary)',

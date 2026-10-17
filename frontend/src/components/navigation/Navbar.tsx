@@ -134,7 +134,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     justifyContent: 'center',
     lineHeight: 1,
     padding: '0 clamp(3px, 0.3vw, 6px)',
-    color: isLightNav ? '#ffffff' : 'var(--text-primary)',
+    color: isLightNav ? 'var(--color-diamond)' : 'var(--text-primary)',
     textShadow: isLightNav ? '0 1px 8px var(--overlay-black-70)' : 'none',
     transition: 'color 350ms var(--ease-luxury), text-shadow 350ms var(--ease-luxury)',
     position: 'relative',
@@ -151,7 +151,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     minWidth: '48px',
     minHeight: '48px',
     padding: 0,
-    color: isLightNav ? '#ffffff' : 'var(--text-primary)',
+    color: isLightNav ? 'var(--color-diamond)' : 'var(--text-primary)',
     background: 'transparent',
     border: 'none',
     cursor: 'pointer',
@@ -203,7 +203,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           WebkitBackdropFilter: isSolidNav ? 'blur(6px)' : 'none',
           borderBottom: isSolidNav ? '1px solid var(--border-color)' : 'none',
           boxShadow: isSolidNav ? '0 2px 10px rgba(0, 0, 0, 0.03)' : 'none',
-          color: isLightNav ? '#ffffff' : 'var(--text-primary)',
+          color: isLightNav ? 'var(--color-diamond)' : 'var(--text-primary)',
         }}
       >
         <AnnouncementBar isScrolled={isScrolled} />
@@ -249,7 +249,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 minWidth: '48px',
                 minHeight: '48px',
                 padding: 0,
-                color: isLightNav ? '#ffffff' : 'var(--text-primary)',
+                color: isLightNav ? 'var(--color-diamond)' : 'var(--text-primary)',
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
@@ -361,7 +361,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   fontWeight: 600,
                   letterSpacing: 'clamp(0.12em, 0.04em + 0.1vw, 0.22em)',
                   lineHeight: 1,
-                  color: isLightNav ? '#ffffff' : 'var(--text-primary)',
+                  color: isLightNav ? 'var(--color-diamond)' : 'var(--text-primary)',
                   display: 'inline-flex',
                   alignItems: 'center',
                   transform: isScrolled ? 'scale(0.92)' : 'scale(0.92)',
@@ -803,7 +803,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           left: 50%;
           transform: translateX(-50%) !important;
           background: rgba(18, 18, 18, 0.94);
-          color: #ffffff !important;
+          color: var(--color-diamond) !important;
           font-size: 0.58rem !important;
           font-weight: 600 !important;
           letter-spacing: 0.06em !important;

@@ -36,8 +36,8 @@ export default function AdminLoginPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#0f0f13',
-        background: 'radial-gradient(ellipse at 50% 20%, #1a1a2e 0%, #0f0f13 70%)',
+        backgroundColor: 'var(--color-black-tie)',
+        background: 'radial-gradient(ellipse at 50% 20%, var(--color-sapphire-900) 0%, var(--color-black-tie) 70%)',
       }}
     >
       <div
@@ -49,7 +49,7 @@ export default function AdminLoginPage() {
       >
         <div
           style={{
-            backgroundColor: '#1a1a1e',
+            backgroundColor: 'var(--surface-brand-dark)',
             borderRadius: '20px',
             border: '1px solid rgba(255, 255, 255, 0.08)',
             padding: '44px 36px',
@@ -63,11 +63,11 @@ export default function AdminLoginPage() {
                 width: 48,
                 height: 48,
                 borderRadius: '12px',
-                backgroundColor: 'var(--brand-primary, #244B57)',
+                backgroundColor: 'var(--brand-primary)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#fff',
+                color: 'var(--color-diamond)',
                 marginBottom: '16px',
               }}
             >
@@ -77,13 +77,13 @@ export default function AdminLoginPage() {
               style={{
                 fontSize: '1.5rem',
                 fontWeight: 600,
-                color: '#f0f0f3',
+                color: 'var(--color-diamond)',
                 marginBottom: '8px',
               }}
             >
               Admin Console
             </h1>
-            <p style={{ fontSize: '0.88rem', color: '#9e9ea7', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.88rem', color: 'var(--color-icy-lake-300)', lineHeight: 1.5 }}>
               Sign in to the operations portal. This area is restricted to authorized personnel only.
             </p>
           </div>
@@ -92,7 +92,7 @@ export default function AdminLoginPage() {
             <div>
               <label
                 htmlFor="admin-email"
-                style={{ fontSize: '0.82rem', fontWeight: 600, color: '#c0c0c8', display: 'block', marginBottom: '6px' }}
+                style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--color-neutral-300)', display: 'block', marginBottom: '6px' }}
               >
                 Email
               </label>
@@ -105,10 +105,10 @@ export default function AdminLoginPage() {
                 style={{
                   width: '100%',
                   padding: '12px 14px',
-                  backgroundColor: '#121216',
+                  backgroundColor: 'var(--color-black-tie)',
                   border: '1px solid rgba(255,255,255,0.1)',
                   borderRadius: '10px',
-                  color: '#f0f0f3',
+                  color: 'var(--color-diamond)',
                   fontSize: '0.9rem',
                   outline: 'none',
                   boxSizing: 'border-box',
@@ -120,7 +120,7 @@ export default function AdminLoginPage() {
             <div>
               <label
                 htmlFor="admin-password"
-                style={{ fontSize: '0.82rem', fontWeight: 600, color: '#c0c0c8', display: 'block', marginBottom: '6px' }}
+                style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--color-neutral-300)', display: 'block', marginBottom: '6px' }}
               >
                 Password
               </label>
@@ -133,10 +133,10 @@ export default function AdminLoginPage() {
                 style={{
                   width: '100%',
                   padding: '12px 14px',
-                  backgroundColor: '#121216',
+                  backgroundColor: 'var(--color-black-tie)',
                   border: '1px solid rgba(255,255,255,0.1)',
                   borderRadius: '10px',
-                  color: '#f0f0f3',
+                  color: 'var(--color-diamond)',
                   fontSize: '0.9rem',
                   outline: 'none',
                   boxSizing: 'border-box',
@@ -152,8 +152,8 @@ export default function AdminLoginPage() {
                 marginTop: '8px',
                 width: '100%',
                 padding: '14px',
-                backgroundColor: 'var(--brand-primary, #244B57)',
-                color: '#fff',
+                backgroundColor: 'var(--brand-primary)',
+                color: 'var(--color-diamond)',
                 border: 'none',
                 borderRadius: '10px',
                 fontSize: '0.9rem',
@@ -167,7 +167,7 @@ export default function AdminLoginPage() {
             </button>
           </form>
 
-          <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.78rem', color: '#6b6b78' }}>
+          <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.78rem', color: 'var(--color-neutral-400)' }}>
             This portal is for authorized administrators only.
           </p>
         </div>

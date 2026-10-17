@@ -102,7 +102,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
           width: "100%",
           display: "flex",
           flexDirection: "row",
-          backgroundColor: "#ffffff",
+          backgroundColor: "var(--color-diamond)",
           minHeight: "60vh",
           overflow: "hidden",
           boxShadow: "0 4px 24px rgba(0,0,0,0.05)",
@@ -153,7 +153,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
                     fontWeight: 600,
                     textTransform: "uppercase",
                     letterSpacing: "clamp(0.08em, 0.04em + 0.06vw, 0.12em)",
-                    color: "#333",
+                    color: "var(--text-secondary)",
                     marginBottom: "16px",
                   } as React.CSSProperties
                 }
@@ -167,9 +167,9 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
                   {
                     "--i": 1,
                     fontSize: "clamp(1.85rem, 1.1rem + 1.8vw, 3.8rem)",
-                    fontFamily: "var(--font-serif)",
+                    fontFamily: "var(--font-display)",
                     fontWeight: 400,
-                    color: "#000",
+                    color: "var(--text-primary)",
                     lineHeight: 1.1,
                     letterSpacing: "-0.02em",
                     marginBottom: "20px",
@@ -184,7 +184,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
                   {
                     "--i": 2,
                     fontSize: "clamp(0.82rem, 0.65rem + 0.25vw, 1rem)",
-                    color: "#555",
+                    color: "var(--text-muted)",
                     lineHeight: 1.6,
                     maxWidth: "340px",
                     margin: "0 auto",
@@ -255,7 +255,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
         marginBottom: "0px",
         display: "flex",
         flexDirection: "row",
-        backgroundColor: "#ffffff",
+        backgroundColor: "var(--color-diamond)",
         minHeight: "60vh",
         overflow: "hidden",
         boxShadow: "0 4px 24px rgba(0,0,0,0.05)",
@@ -298,7 +298,7 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
                 fontWeight: 600,
                 textTransform: "uppercase",
                 letterSpacing: "clamp(0.08em, 0.04em + 0.06vw, 0.12em)",
-                color: "#333",
+                color: "var(--text-secondary)",
                 marginBottom: "16px",
               } as React.CSSProperties
             }
@@ -312,9 +312,9 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
               {
                 "--i": 1,
                 fontSize: "clamp(1.85rem, 1.1rem + 1.8vw, 3.8rem)",
-                fontFamily: "var(--font-serif)",
+                fontFamily: "var(--font-display)",
                 fontWeight: 400,
-                color: "#000",
+                color: "var(--text-primary)",
                 lineHeight: 1.1,
                 letterSpacing: "-0.02em",
               } as React.CSSProperties
@@ -349,8 +349,8 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
 
       <style jsx>{`
         .split-arrow-btn:hover {
-          background-color: #f5f5f5 !important;
-          border-color: #d0d0d0 !important;
+          background-color: var(--color-neutral-50) !important;
+          border-color: var(--color-neutral-300) !important;
         }
         @media (max-width: 768px) {
           .section-banner-split {

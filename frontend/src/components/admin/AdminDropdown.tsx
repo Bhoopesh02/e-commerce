@@ -214,7 +214,7 @@ export const AdminDropdown: React.FC<AdminDropdownProps> = ({
             color: 'var(--text-secondary)',
           }}
         >
-          {label} {required && <span style={{ color: 'var(--color-error, #dc2626)' }}>*</span>}
+          {label} {required && <span style={{ color: 'var(--color-error)' }}>*</span>}
         </label>
       )}
 
@@ -234,7 +234,7 @@ export const AdminDropdown: React.FC<AdminDropdownProps> = ({
           padding: '10px 14px',
           borderRadius: 'var(--radius-sm)',
           border: displayError
-            ? '1px solid var(--color-error, #dc2626)'
+            ? '1px solid var(--color-error)'
             : `1px solid ${isOpen ? 'var(--brand-primary)' : 'var(--border-color)'}`,
           backgroundColor: 'var(--bg-surface)',
           color: selectedOption ? 'var(--text-primary)' : 'var(--text-muted)',
@@ -242,7 +242,7 @@ export const AdminDropdown: React.FC<AdminDropdownProps> = ({
           cursor: disabled ? 'not-allowed' : 'pointer',
           textAlign: 'left',
           boxShadow: displayError
-            ? '0 0 0 1px var(--color-error, #dc2626)'
+            ? '0 0 0 1px var(--color-error)'
             : isOpen
             ? '0 0 0 1px var(--brand-primary)'
             : 'none',
@@ -284,7 +284,7 @@ export const AdminDropdown: React.FC<AdminDropdownProps> = ({
           role="alert"
           style={{
             fontSize: '0.78rem',
-            color: 'var(--color-error, #dc2626)',
+            color: 'var(--color-error)',
             margin: '2px 0 0 0',
             display: 'flex',
             alignItems: 'center',

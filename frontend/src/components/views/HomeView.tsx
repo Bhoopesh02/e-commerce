@@ -76,7 +76,7 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
         height: 'clamp(340px, 32vw, 520px)',
         borderRadius: 0,
         overflow: 'hidden',
-        backgroundColor: '#1c1917',
+        backgroundColor: 'var(--color-black-tie)',
       }}
     >
       {/* Background Image with Loaded Gate Animation */}
@@ -177,7 +177,7 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
 
         <h2
           style={{
-            color: '#fff',
+            color: 'var(--color-diamond)',
             fontSize: 'clamp(1.5rem, 3.8vw, 3.2rem)',
             fontFamily: 'var(--font-display)',
             marginBottom: '14px',
