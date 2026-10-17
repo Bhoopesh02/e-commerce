@@ -907,9 +907,9 @@ export const Footer: React.FC = () => {
 
           .footer-mobile-two-col-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 36px;
+            grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+            gap: 16px;
+            margin-bottom: 32px;
           }
 
           .footer-mobile-nav-column {
@@ -920,17 +920,19 @@ export const Footer: React.FC = () => {
           .footer-column-heading {
             font-size: 0.78rem;
             letter-spacing: 0.14em;
-            margin-bottom: 14px;
+            margin-bottom: 10px;
           }
 
           .footer-mobile-columns-wrapper .footer-links-list {
-            gap: 8px;
+            gap: 2px;
           }
 
           .footer-link {
             font-size: 0.72rem;
-            min-height: 28px;
-            line-height: 1.4;
+            min-height: unset;
+            padding: 2px 0;
+            line-height: 1.35;
+            white-space: nowrap;
           }
 
           /* 4. Mobile Connect With Us & Social Icons */
