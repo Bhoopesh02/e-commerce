@@ -206,18 +206,18 @@ const useIsomorphicLayoutEffect =
 /**
  * Hook to manage GSAP timeline entrance animation for Aurelia top banners.
  */
-export function useBannerAnimation({
-  containerRef,
-  imageWrapperRef,
-  tagRef,
-  titleRef,
-  footerRef,
-  isInScope,
-  identityKey,
-  tagText,
-  titleText,
-  footerText,
-}: UseBannerAnimationOptions) {
+export function useBannerAnimation(options: UseBannerAnimationOptions) {
+  const {
+    imageWrapperRef,
+    tagRef,
+    titleRef,
+    footerRef,
+    isInScope,
+    identityKey,
+    tagText,
+    titleText,
+    footerText,
+  } = options;
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const isAnimatingRef = useRef<boolean>(false);
   const resizeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -318,7 +318,7 @@ export function useBannerAnimation({
     }
 
     // 2. Tag typing preparation:
-    let rawTag = tagText.trim();
+    const rawTag = tagText.trim();
     if (tagEl && rawTag) {
       if (!isMobile) {
         // First ensure it's rendered with full text to measure final width
@@ -512,7 +512,6 @@ export function useBannerAnimation({
       isCancelled = true;
       restoreFinalState();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isInScope, identityKey, tagText, titleText, footerText]);
 
   // Window resize handler: re-split title lines debounced ~200ms when not animating
