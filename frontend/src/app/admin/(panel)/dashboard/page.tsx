@@ -1242,7 +1242,7 @@ export default function AdminDashboardPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
       {/* Header Row */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-4)' }}>
+      <div className="admin-dashboard-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-4)' }}>
         <div>
           <span style={{
             fontSize: '0.78rem',
@@ -1253,7 +1253,7 @@ export default function AdminDashboardPage() {
           }}>
             Executive Dashboard
           </span>
-          <h1 style={{
+          <h1 className="admin-dashboard-title" style={{
             fontSize: '2rem',
             fontFamily: 'var(--font-display)',
             color: 'var(--admin-text-primary)',
@@ -1263,7 +1263,7 @@ export default function AdminDashboardPage() {
           </h1>
         </div>
 
-        <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="admin-dashboard-header-controls" style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center', flexWrap: 'wrap' }}>
           {/* Date Picker */}
           <div style={{ position: 'relative' }}>
             <div
@@ -1617,7 +1617,7 @@ export default function AdminDashboardPage() {
           }}
         />
 
-        <div style={{
+        <div className="admin-dashboard-kpi-grid" style={{
           position: 'relative',
           zIndex: 1,
           display: 'grid',
@@ -1625,92 +1625,92 @@ export default function AdminDashboardPage() {
           gap: 'var(--space-4)',
         }}>
           {/* Card 1: Total Users */}
-          <div className="admin-glass-card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div className="admin-glass-card admin-kpi-card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+              <span className="admin-kpi-title" style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
                 Active Customers
               </span>
-              <div className="admin-glass-pill">
+              <div className="admin-glass-pill admin-kpi-pill">
                 <Users size={18} />
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--text-primary)', marginTop: 'var(--space-3)' }}>
+              <h3 className="admin-kpi-number" style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--text-primary)', marginTop: 'var(--space-3)' }}>
                 {stats.activeCustomers.toLocaleString()}
               </h3>
-              <span style={{ fontSize: '0.75rem', color: 'var(--color-sapphire-700)', marginTop: 'var(--space-1)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+              <span className="admin-kpi-trend" style={{ fontSize: '0.75rem', color: 'var(--color-sapphire-700)', marginTop: 'var(--space-1)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
                 <TrendingUp size={12} /> +12.5%
               </span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 'var(--space-1)', display: 'block' }}>
+              <span className="admin-kpi-subtitle" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 'var(--space-1)', display: 'block' }}>
                 vs. last period
               </span>
             </div>
           </div>
 
           {/* Card 2: Active Sessions */}
-          <div className="admin-glass-card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div className="admin-glass-card admin-kpi-card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+              <span className="admin-kpi-title" style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
                 Total Orders
               </span>
-              <div className="admin-glass-pill">
+              <div className="admin-glass-pill admin-kpi-pill">
                 <ShoppingBag size={18} />
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--text-primary)', marginTop: 'var(--space-3)' }}>
+              <h3 className="admin-kpi-number" style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--text-primary)', marginTop: 'var(--space-3)' }}>
                 {stats.totalOrders.toLocaleString()}
               </h3>
-              <span style={{ fontSize: '0.75rem', color: 'var(--color-sapphire-700)', marginTop: 'var(--space-1)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+              <span className="admin-kpi-trend" style={{ fontSize: '0.75rem', color: 'var(--color-sapphire-700)', marginTop: 'var(--space-1)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
                 <TrendingUp size={12} /> +8.2%
               </span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 'var(--space-1)', display: 'block' }}>
+              <span className="admin-kpi-subtitle" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 'var(--space-1)', display: 'block' }}>
                 vs. last period
               </span>
             </div>
           </div>
 
           {/* Card 3: Bounce Rate */}
-          <div className="admin-glass-card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div className="admin-glass-card admin-kpi-card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+              <span className="admin-kpi-title" style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
                 Average Order Value
               </span>
-              <div className="admin-glass-pill">
+              <div className="admin-glass-pill admin-kpi-pill">
                 <TrendingUp size={18} />
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--text-primary)', marginTop: 'var(--space-3)' }}>
+              <h3 className="admin-kpi-number" style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--text-primary)', marginTop: 'var(--space-3)' }}>
                 {formatPrice(stats.averageOrderValue)}
               </h3>
-              <span style={{ fontSize: '0.75rem', color: 'var(--color-sapphire-700)', marginTop: 'var(--space-1)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+              <span className="admin-kpi-trend" style={{ fontSize: '0.75rem', color: 'var(--color-sapphire-700)', marginTop: 'var(--space-1)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
                 <TrendingUp size={12} /> +2.4%
               </span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 'var(--space-1)', display: 'block' }}>
+              <span className="admin-kpi-subtitle" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 'var(--space-1)', display: 'block' }}>
                 vs. last period
               </span>
             </div>
           </div>
 
           {/* Card 4: New Subscriptions */}
-          <div className="admin-glass-card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div className="admin-glass-card admin-kpi-card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+              <span className="admin-kpi-title" style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
                 Pending Operations
               </span>
-              <div className="admin-glass-pill">
+              <div className="admin-glass-pill admin-kpi-pill">
                 <Boxes size={18} />
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--text-primary)', marginTop: 'var(--space-3)' }}>
+              <h3 className="admin-kpi-number" style={{ fontSize: '1.8rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--text-primary)', marginTop: 'var(--space-3)' }}>
                 {stats.pendingReturnsCount + stats.openTicketsCount}
               </h3>
-              <span style={{ fontSize: '0.75rem', color: 'var(--color-sapphire-700)', marginTop: 'var(--space-1)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+              <span className="admin-kpi-trend" style={{ fontSize: '0.75rem', color: 'var(--color-sapphire-700)', marginTop: 'var(--space-1)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
                 Requires Attention
               </span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 'var(--space-1)', display: 'block' }}>
+              <span className="admin-kpi-subtitle" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 'var(--space-1)', display: 'block' }}>
                 {stats.pendingReturnsCount} returns, {stats.openTicketsCount} tickets
               </span>
             </div>
@@ -1724,7 +1724,7 @@ export default function AdminDashboardPage() {
         <div className="admin-grid-col-8" style={{ gridColumn: 'span 8', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
 
           {/* Overall Revenue Card */}
-          <div className="admin-table-wrapper" style={{ padding: 'var(--space-6)', position: 'relative' }}>
+          <div className="admin-table-wrapper admin-revenue-card" style={{ padding: 'var(--space-6)', position: 'relative' }}>
             {/* Top Toolbar: Title row + Controls row (Two stacked rows that never share width) */}
             <div className="revenue-card__header">
               <div className="revenue-card__title-row">
@@ -2719,7 +2719,7 @@ export default function AdminDashboardPage() {
                 </div>
               ) : (
                 /* 3-Column View with Largest Channel Darkest */
-                <div style={{
+                <div className="admin-settlement-grid" style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
                   gap: 'var(--space-4)',
@@ -3150,7 +3150,7 @@ export default function AdminDashboardPage() {
         {/* Full-Width Row (12 cols) – Top Performing Items Table */}
         <div className="admin-grid-col-12" style={{ gridColumn: 'span 12' }}>
           {/* Top Performing Items Table */}
-          <div className="admin-table-wrapper" style={{ padding: 'var(--space-6)', position: 'relative' }}>
+          <div className="admin-table-wrapper admin-top-items-card" style={{ padding: 'var(--space-6)', position: 'relative' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-4)', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
@@ -3198,7 +3198,7 @@ export default function AdminDashboardPage() {
               </div>
 
               {/* Controls: Top N Selector + View All + More Menu */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+              <div className="admin-top-items-controls" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
                 {/* Top N Selector */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>Show:</span>
@@ -3349,7 +3349,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            <div style={{ width: '100%', overflowX: 'auto' }}>
+            <div className="admin-table-scroll-wrap" style={{ width: '100%', overflowX: 'auto' }}>
             <table style={{ width: '100%', minWidth: '760px', borderCollapse: 'collapse', textAlign: 'left' }}>
               <thead>
                 <tr className="admin-table-header">
