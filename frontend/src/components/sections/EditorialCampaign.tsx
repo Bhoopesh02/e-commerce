@@ -26,7 +26,7 @@ export interface EditorialCampaignProps {
  * offset = sin(t * freq) * amplitude * (1 - p)^1.4
  */
 const generateShakeKeyframes = (
-  durationMs = 850,
+  durationMs = 650,
   steps = 26,
   maxAmpX = 5,
   maxAmpY = 4,
@@ -123,7 +123,7 @@ const SplitParagraph: React.FC<SplitParagraphProps> = ({
               shouldReduceMotion
                 ? { duration: 0.4 }
                 : {
-                    duration: 0.7,
+                    duration: 0.5,
                     delay: startDelay + idx * staggerDelay,
                     ease: [0.16, 1, 0.3, 1],
                   }
@@ -154,13 +154,13 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
   const shouldReduceMotion = Boolean(useReducedMotion());
   const isInView = useInView(sectionRef, { once: true, amount: 0.25 });
 
-  // Slower decaying shake profiles for Left and Right dots (850ms duration)
+  // Fast decaying shake profiles for Left and Right dots (650ms duration)
   const leftShake = useMemo(
-    () => generateShakeKeyframes(850, 26, 5, 4, 2.5, 0, -1),
+    () => generateShakeKeyframes(650, 26, 5, 4, 2.5, 0, -1),
     []
   );
   const rightShake = useMemo(
-    () => generateShakeKeyframes(850, 26, 4.5, 3.8, 2.2, 1.8, 1),
+    () => generateShakeKeyframes(650, 26, 4.5, 3.8, 2.2, 1.8, 1),
     []
   );
 
@@ -307,7 +307,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
 
         /* Hover Zoom on Cards once settled */
         .editorial-card-img-zoom {
-          transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .editorial-card-left:hover .editorial-card-img-zoom,
         .editorial-card-right:hover .editorial-card-img-zoom,
@@ -357,7 +357,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
         }
       `}</style>
 
-      {/* 0.0s: Background Outline Letters fade in & slow horizontal drift (2.15s duration) */}
+      {/* 0.0s: Background Outline Letters fade in & horizontal drift (1.95s duration) */}
       <div className="editorial-watermark-container" aria-hidden="true">
         <motion.span
           className="editorial-watermark-text"
@@ -372,7 +372,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
           transition={
             shouldReduceMotion
               ? { duration: 0.5 }
-              : { duration: 2.15, delay: 0.0, ease: [0.16, 1, 0.3, 1] }
+              : { duration: 1.95, delay: 0.0, ease: [0.16, 1, 0.3, 1] }
           }
         >
           {watermarkText}
@@ -381,9 +381,9 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
 
       {/* Desktop 3-Card Master Layout */}
       <div className="editorial-layout-grid">
-        {/* Left Column: Grow from dot with jitter shake -> lands at 1.4s -> text at 1.85s */}
+        {/* Left Column: Grow from dot with jitter shake -> lands at 1.20s -> text at 1.40s */}
         <div className="editorial-col-left">
-          {/* Outer Jitter Shake Wrapper (0.55s to 1.4s, duration 0.85s) */}
+          {/* Outer Jitter Shake Wrapper (0.55s to 1.20s, duration 0.65s) */}
           <motion.div
             style={{ width: '100%', maxWidth: '320px', willChange: 'transform' }}
             initial={shouldReduceMotion ? { opacity: 0 } : { x: 0, y: 0, rotate: 0 }}
@@ -398,7 +398,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
             }
             transition={{
               delay: 0.55,
-              duration: 0.85,
+              duration: 0.65,
               times: leftShake.times,
               ease: 'linear',
             }}
@@ -436,7 +436,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
                   ? { duration: 0.5 }
                   : {
                       delay: 0.55,
-                      duration: 0.85,
+                      duration: 0.65,
                       times: [0, 0.45, 0.85, 1],
                       ease: [0.16, 1, 0.3, 1],
                     }
@@ -458,18 +458,18 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
             </motion.div>
           </motion.div>
 
-          {/* 1.60s: Left Paragraph line-by-line staggered reveal */}
+          {/* 1.40s: Left Paragraph line-by-line staggered reveal */}
           <SplitParagraph
             text={leftText}
             className="editorial-copy-bottom-left"
-            startDelay={1.60}
+            startDelay={1.40}
             staggerDelay={0.09}
             isInView={isInView}
             shouldReduceMotion={shouldReduceMotion}
           />
         </div>
 
-        {/* Center Column: 0.25s Rising from below with slow inner zoom (1.35s duration) */}
+        {/* Center Column: 0.25s Rising from below with inner zoom (1.15s duration) */}
         <div className="editorial-col-center">
           <motion.div
             className="editorial-card-center"
@@ -506,13 +506,13 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
               shouldReduceMotion
                 ? { duration: 0.5 }
                 : {
-                    duration: 1.35,
+                    duration: 1.15,
                     delay: 0.25,
                     ease: [0.16, 1, 0.3, 1],
                   }
             }
           >
-            {/* Inner Image with 2.15s slow zoom settle */}
+            {/* Inner Image with 1.95s zoom settle */}
             <motion.div
               className="editorial-card-img-zoom"
               style={{ position: 'relative', width: '100%', height: '100%' }}
@@ -522,7 +522,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
                 shouldReduceMotion
                   ? { duration: 0.5 }
                   : {
-                      duration: 2.15,
+                      duration: 1.95,
                       delay: 0.25,
                       ease: [0.16, 1, 0.3, 1],
                     }
@@ -540,19 +540,19 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
           </motion.div>
         </div>
 
-        {/* Right Column: 2.10s Top text -> 0.75s Dot grows with positive shake -> lands at 1.6s */}
+        {/* Right Column: 1.65s Top text -> 0.75s Dot grows with positive shake -> lands at 1.40s */}
         <div className="editorial-col-right">
-          {/* 1.85s: Right Paragraph line-by-line staggered reveal */}
+          {/* 1.65s: Right Paragraph line-by-line staggered reveal */}
           <SplitParagraph
             text={rightText}
             className="editorial-copy-top-right"
-            startDelay={1.85}
+            startDelay={1.65}
             staggerDelay={0.09}
             isInView={isInView}
             shouldReduceMotion={shouldReduceMotion}
           />
 
-          {/* Outer Jitter Shake Wrapper (0.75s to 1.6s, duration 0.85s) */}
+          {/* Outer Jitter Shake Wrapper (0.75s to 1.40s, duration 0.65s) */}
           <motion.div
             style={{ width: '100%', maxWidth: '320px', willChange: 'transform' }}
             initial={shouldReduceMotion ? { opacity: 0 } : { x: 0, y: 0, rotate: 0 }}
@@ -567,7 +567,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
             }
             transition={{
               delay: 0.75,
-              duration: 0.85,
+              duration: 0.65,
               times: rightShake.times,
               ease: 'linear',
             }}
@@ -605,7 +605,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
                   ? { duration: 0.5 }
                   : {
                       delay: 0.75,
-                      duration: 0.85,
+                      duration: 0.65,
                       times: [0, 0.45, 0.85, 1],
                       ease: [0.16, 1, 0.3, 1],
                     }
@@ -629,7 +629,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
         </div>
       </div>
 
-      {/* 2.25s: Centered Primary CTA Button */}
+      {/* 2.05s: Centered Primary CTA Button */}
       <motion.div
         style={{
           display: 'flex',
@@ -650,7 +650,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
         transition={
           shouldReduceMotion
             ? { duration: 0.4 }
-            : { duration: 0.6, delay: 2.25, ease: [0.16, 1, 0.3, 1] }
+            : { duration: 0.4, delay: 2.05, ease: [0.16, 1, 0.3, 1] }
         }
       >
         <Link href={ctaLink}>
