@@ -59,34 +59,7 @@ interface CartState {
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
-  items: [
-    // Pre-populate with one luxury piece for instant demo delight
-    {
-      product: {
-        id: 'prod_001',
-        slug: 'italian-leather-jacket',
-        name: 'Italian Leather Jacket',
-        subtitle: 'Milanese Full-Grain Nappa',
-        description: 'Hand-finished leather jacket crafted in Milan from supple nappa leather.',
-        categoryId: 'cat_outerwear',
-        price: 24999,
-        images: ['/images/products/outerwear/italian-leather-jacket-4k-1.webp'],
-        variants: [
-          { sku: 'LJ-BLK-M', size: 'M', color: 'Nocturne Black', stock: 4 }
-        ],
-        availability: 'low_stock',
-        rating: { average: 4.8, count: 32 },
-        featured: true,
-        tags: ['new-arrival', 'outerwear'],
-        storefronts: ['a']
-      },
-      sku: 'LJ-BLK-M',
-      size: 'M',
-      color: 'Nocturne Black',
-      quantity: 1,
-      price: 24999,
-    },
-  ],
+  items: [],
   isDrawerOpen: false,
   appliedCoupon: null,
   discountAmount: 0,
@@ -364,6 +337,22 @@ export const useCartStore = create<CartState>()(
         checkoutMode: state.checkoutMode,
         buyNowItem: state.buyNowItem,
       }),
+      version: 1,
+      migrate: (persistedState: any, version: number) => {
+        if (!version || version < 1) {
+          if (
+            Array.isArray(persistedState?.items) &&
+            persistedState.items.length === 1 &&
+            persistedState.items[0]?.sku === 'LJ-BLK-M'
+          ) {
+            return {
+              ...persistedState,
+              items: [],
+            };
+          }
+        }
+        return persistedState;
+      },
       onRehydrateStorage: () => (state) => {
         if (state) {
           state.validateCart();

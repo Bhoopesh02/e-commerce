@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Image from 'next/image';
+import Image, { getImageProps } from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const AUTOPLAY_INTERVAL_MS = 2000;
@@ -10,6 +10,7 @@ const TRANSITION_DURATION_MS = 600;
 interface BannerSlideItem {
   src: string;
   mobileSrc?: string;
+  objectPosition?: string;
   mobileObjectPosition?: string;
   alt: string;
   heading: string;
@@ -144,8 +145,6 @@ export function CollectionsBannerCarousel() {
         touchAction: 'pan-y pinch-zoom',
         marginBottom: '40px',
         marginTop: 'var(--announcement-bar-height, 37px)',
-        height: 'calc(100dvh - var(--announcement-bar-height, 37px))',
-        minHeight: 'calc(100dvh - var(--announcement-bar-height, 37px))',
         width: '100%',
         boxShadow: '0 24px 48px -12px rgba(12, 10, 20, 0.35)',
         backgroundColor: 'var(--color-black-tie)',
@@ -165,61 +164,77 @@ export function CollectionsBannerCarousel() {
           willChange: 'transform',
         }}
       >
-        {slides.map((slide, index) => (
-          <div
-            key={index}
-            aria-hidden={currentIndex !== index}
-            style={{
-              position: 'relative',
-              flex: '0 0 100%',
-              height: '100%',
-            }}
-          >
+        {slides.map((slide, index) => {
+          const common = {
+            alt: slide.alt,
+            fill: true,
+            priority: index === 0,
+            quality: 80,
+            sizes: '100vw',
+          };
+          const {
+            props: { srcSet: desktopSrcSet, ...desktopRest },
+          } = getImageProps({
+            ...common,
+            src: slide.src,
+          });
+          const {
+            props: { srcSet: mobileSrcSet },
+          } = getImageProps({
+            ...common,
+            src: slide.mobileSrc || slide.src,
+          });
+
+          return (
             <div
+              key={index}
+              aria-hidden={currentIndex !== index}
               style={{
-                position: 'absolute',
-                inset: 0,
-                zIndex: 1,
+                position: 'relative',
+                flex: '0 0 100%',
+                height: '100%',
               }}
             >
-              {/* Desktop Landscape Crop */}
-              <div className="collections-desktop-banner-wrapper">
-                <Image
-                  src={slide.src}
-                  alt={slide.alt}
-                  fill
-                  quality={88}
-                  sizes="(max-width: 768px) 1px, 100vw"
-                  style={{
-                    objectFit: 'cover',
-                    objectPosition: 'center 26%',
-                    transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-                  }}
-                  className="group-hover:scale-105"
-                />
-              </div>
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  zIndex: 1,
+                }}
+              >
+                {/* Responsive Art Direction via Next.js getImageProps */}
+                <picture style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+                  {slide.mobileSrc && (
+                    <source
+                      media="(max-width: 767px)"
+                      srcSet={mobileSrcSet}
+                    />
+                  )}
+                  <source
+                    media="(min-width: 768px)"
+                    srcSet={desktopSrcSet}
+                  />
+                  <img
+                    {...desktopRest}
+                    srcSet={desktopSrcSet}
+                    alt={slide.alt}
+                    style={{
+                      ...desktopRest.style,
+                      ['--pos-desktop' as string]: slide.objectPosition || 'center 26%',
+                      ['--pos-mobile' as string]: slide.mobileObjectPosition || 'right 5% center',
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+                    }}
+                    className="group-hover:scale-105 collections-banner-img"
+                  />
+                </picture>
 
-              {/* Mobile Portrait Crop (Show person on right half of screen) */}
-              <div className="collections-mobile-banner-wrapper">
-                <Image
-                  src={slide.mobileSrc || slide.src}
-                  alt={slide.alt}
-                  fill
-                  quality={88}
-                  sizes="(max-width: 768px) 100vw, 1px"
-                  style={{
-                    objectFit: 'cover',
-                    objectPosition: slide.mobileObjectPosition || 'right 5% center',
-                    transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-                  }}
-                  className="group-hover:scale-105"
-                />
+                {/* Scrim Gradients */}
+                <div className="collections-scrim-horizontal" />
+                <div className="collections-scrim-vertical" />
               </div>
-
-              {/* Scrim Gradients */}
-              <div className="collections-scrim-horizontal" />
-              <div className="collections-scrim-vertical" />
-            </div>
 
             <div
               className="container collections-banner-container"
@@ -314,7 +329,8 @@ export function CollectionsBannerCarousel() {
               </div>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Floating Arrow Controls with micro-animations */}
@@ -426,20 +442,23 @@ export function CollectionsBannerCarousel() {
         }
         .hero-master-banner {
           height: 100vh;
-          height: 100dvh;
+          height: 100svh;
           min-height: 100vh;
-          min-height: 100dvh;
+          min-height: 100svh;
           width: 100%;
         }
-        .collections-banner-container {
-          padding-top: var(--navbar-height, 76px);
+        .collections-banner-img {
+          object-position: var(--pos-desktop, center 26%);
         }
-        @media (max-width: 768px) {
+        @media (max-width: 767px) {
+          .collections-banner-img {
+            object-position: var(--pos-mobile, right 5% center) !important;
+          }
           .hero-master-banner {
             height: 100vh !important;
-            height: 100dvh !important;
+            height: 100svh !important;
             min-height: 100vh !important;
-            min-height: 100dvh !important;
+            min-height: 100svh !important;
             margin-bottom: 24px !important;
           }
           .collections-desktop-banner-wrapper {
@@ -497,8 +516,8 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
         position: 'relative',
         overflow: 'hidden',
         marginBottom: '40px',
-        height: '100dvh',
-        minHeight: '100dvh',
+        height: '100svh',
+        minHeight: '100svh',
         width: '100%',
         display: 'flex',
         alignItems: 'center',
@@ -514,36 +533,57 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
           zIndex: 1,
         }}
       >
-        <div className="collections-desktop-banner-wrapper">
-          <Image
-            src={banner.src}
-            alt={banner.alt}
-            fill
-            quality={88}
-            sizes="(max-width: 768px) 1px, 100vw"
-            style={{
-              objectFit: 'cover',
-              objectPosition: 'center 26%',
-              transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-            className="group-hover:scale-105"
-          />
-        </div>
-        <div className="collections-mobile-banner-wrapper">
-          <Image
-            src={banner.mobileSrc || banner.src}
-            alt={banner.alt}
-            fill
-            quality={88}
-            sizes="(max-width: 768px) 100vw, 1px"
-            style={{
-              objectFit: 'cover',
-              objectPosition: banner.mobileObjectPosition || 'right 5% center',
-              transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-            className="group-hover:scale-105"
-          />
-        </div>
+        {(() => {
+          const common = {
+            alt: banner.alt,
+            fill: true,
+            priority: true,
+            quality: 80,
+            sizes: '100vw',
+          };
+          const {
+            props: { srcSet: desktopSrcSet, ...desktopRest },
+          } = getImageProps({
+            ...common,
+            src: banner.src,
+          });
+          const {
+            props: { srcSet: mobileSrcSet },
+          } = getImageProps({
+            ...common,
+            src: banner.mobileSrc || banner.src,
+          });
+
+          return (
+            <picture style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+              {banner.mobileSrc && (
+                <source
+                  media="(max-width: 767px)"
+                  srcSet={mobileSrcSet}
+                />
+              )}
+              <source
+                media="(min-width: 768px)"
+                srcSet={desktopSrcSet}
+              />
+              <img
+                {...desktopRest}
+                srcSet={desktopSrcSet}
+                alt={banner.alt}
+                style={{
+                  ...desktopRest.style,
+                  ['--pos-desktop' as string]: banner.objectPosition || 'center 26%',
+                  ['--pos-mobile' as string]: banner.mobileObjectPosition || 'right 5% center',
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
+                className="group-hover:scale-105 collections-banner-img"
+              />
+            </picture>
+          );
+        })()}
         <div className="collections-scrim-horizontal" />
         <div className="collections-scrim-vertical" />
       </div>

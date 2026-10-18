@@ -17,10 +17,12 @@ import {
   getStorefrontConfig,
   getNewArrivals,
   getTrendingProducts,
+  ensureClientState,
 } from '@/lib/mockApi';
+import { areProductsEqual, areCategoriesEqual } from '@/lib/catalogCompare';
 import { Product, Category, StorefrontConfig } from '@/types';
 import Link from 'next/link';
-import Image, { StaticImageData } from 'next/image';
+import Image, { StaticImageData, getImageProps } from 'next/image';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import {
@@ -59,18 +61,36 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
   const [loaded, setLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const desktopImgRef = useRef<HTMLImageElement>(null);
-  const mobileImgRef = useRef<HTMLImageElement>(null);
   const hasEntered = useInView(containerRef, { once: true, margin: '200px' });
   const isInView = useInView(containerRef, { once: true, amount: 0.25 });
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (desktopImgRef.current?.complete || mobileImgRef.current?.complete) {
+    if (desktopImgRef.current?.complete) {
       setLoaded(true);
     }
   }, [hasEntered]);
 
   const isReady = isInView && loaded;
+
+  const common = {
+    alt,
+    fill: true,
+    quality: 88,
+    sizes: '100vw',
+  };
+  const {
+    props: { srcSet: desktopSrcSet, ...desktopRest },
+  } = getImageProps({
+    ...common,
+    src: imageSrc,
+  });
+  const {
+    props: { srcSet: mobileSrcSet },
+  } = getImageProps({
+    ...common,
+    src: mobileImageSrc || imageSrc,
+  });
 
   return (
     <div
@@ -85,6 +105,19 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
         backgroundColor: 'var(--color-black-tie)',
       }}
     >
+      {/* Shimmer skeleton while banner image loads */}
+      {!loaded && (
+        <div
+          className="skeleton-shimmer"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 0,
+            opacity: 0.25,
+          }}
+        />
+      )}
+
       {/* Background Image with Loaded Gate Animation */}
       <motion.div
         initial={false}
@@ -106,45 +139,26 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
         }}
       >
         {hasEntered && (
-          mobileImageSrc ? (
-            <>
-              <div className="home-banner-img-mobile">
-                <Image
-                  ref={mobileImgRef}
-                  src={mobileImageSrc}
-                  alt={alt}
-                  fill
-                  quality={88}
-                  sizes="(max-width: 767px) 100vw, 1px"
-                  onLoad={() => setLoaded(true)}
-                  style={{ objectFit: 'cover', objectPosition: 'center' }}
-                />
-              </div>
-              <div className="home-banner-img-desktop">
-                <Image
-                  ref={desktopImgRef}
-                  src={imageSrc}
-                  alt={alt}
-                  fill
-                  quality={88}
-                  sizes="(max-width: 767px) 1px, 100vw"
-                  onLoad={() => setLoaded(true)}
-                  style={{ objectFit: 'cover', objectPosition: 'center' }}
-                />
-              </div>
-            </>
-          ) : (
-            <Image
+          <picture style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+            {mobileImageSrc && (
+              <source media="(max-width: 767px)" srcSet={mobileSrcSet} />
+            )}
+            <source media="(min-width: 768px)" srcSet={desktopSrcSet} />
+            <img
+              {...desktopRest}
+              srcSet={desktopSrcSet}
               ref={desktopImgRef}
-              src={imageSrc}
               alt={alt}
-              fill
-              quality={88}
-              sizes="100vw"
               onLoad={() => setLoaded(true)}
-              style={{ objectFit: 'cover', objectPosition: 'center' }}
+              style={{
+                ...desktopRest.style,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+              }}
             />
-          )
+          </picture>
         )}
       </motion.div>
 
@@ -279,14 +293,68 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [config, setConfig] = useState<StorefrontConfig>(initialConfig);
   const [loading, setLoading] = useState<boolean>(initialLoading);
 
-  // Server pre-fetched for storefront 'a' — skip redundant first-mount fetch
-  const isInitialMount = useRef(true);
+  const productsRef = useRef(products);
+  productsRef.current = products;
+  const newArrivalsRef = useRef(newArrivals);
+  newArrivalsRef.current = newArrivals;
+  const trendingRef = useRef(trending);
+  trendingRef.current = trending;
+  const categoriesRef = useRef(categories);
+  categoriesRef.current = categories;
+  const configRef = useRef(config);
+  configRef.current = config;
 
+  // Mount-only silent reconciliation with localStorage (Strict Mode safe)
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      if (currentStorefront === 'a') return;
+    let cancelled = false;
+    async function reconcileOnMount() {
+      ensureClientState();
+      try {
+        const [allProds, newArr, trend, cats, cfg] = await Promise.all([
+          getProducts({ storefront: currentStorefront }),
+          getNewArrivals(currentStorefront),
+          getTrendingProducts(currentStorefront),
+          getCategories(),
+          getStorefrontConfig(currentStorefront),
+        ]);
+        if (cancelled) return;
+        if (!areProductsEqual(productsRef.current, allProds)) {
+          console.log('[reconcile:home] products updated from localStorage', allProds.length);
+          setProducts(allProds);
+        }
+        if (!areProductsEqual(newArrivalsRef.current, newArr)) {
+          console.log('[reconcile:home] newArrivals updated from localStorage', newArr.length);
+          setNewArrivals(newArr);
+        }
+        if (!areProductsEqual(trendingRef.current, trend)) {
+          console.log('[reconcile:home] trending updated from localStorage', trend.length);
+          setTrending(trend);
+        }
+        if (!areCategoriesEqual(categoriesRef.current, cats)) {
+          console.log('[reconcile:home] categories updated from localStorage', cats.length);
+          setCategories(cats);
+        }
+        if (JSON.stringify(configRef.current) !== JSON.stringify(cfg)) {
+          console.log('[reconcile:home] storefront config updated from localStorage');
+          setConfig(cfg);
+        }
+      } catch {
+        // silent fallback
+      }
     }
+    reconcileOnMount();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Separate storefront switch effect (runs only when storefront changes after initial mount)
+  const prevStorefront = useRef(currentStorefront);
+  useEffect(() => {
+    if (prevStorefront.current === currentStorefront) {
+      return;
+    }
+    prevStorefront.current = currentStorefront;
 
     let isMounted = true;
     async function loadData() {
@@ -307,7 +375,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           setCategories(cats);
           setConfig(cfg);
         }
-      } catch (err) {
+      } catch {
         // Fallback gracefully to statically initialized data
       } finally {
         if (isMounted) {

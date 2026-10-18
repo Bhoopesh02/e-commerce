@@ -48,38 +48,23 @@
   height: 100%;
 }
 
-/* Desktop vs Mobile Responsive Image Visibility */
-.desktopImageWrapper {
+.pictureWrapper {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  display: block;
-}
-
-.mobileImageWrapper {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
 }
 
 .bannerImage {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  object-position: var(--pos-desktop, center 26%);
 }
 
-.bannerImageMobile {
-  object-fit: cover;
-}
-
-@media (max-width: 768px) {
-  .desktopImageWrapper {
-    display: none !important;
-  }
-
-  .mobileImageWrapper {
-    display: block !important;
+@media (max-width: 767px) {
+  .bannerImage {
+    object-position: var(--pos-mobile, center center) !important;
   }
 
   .scrimBottom {

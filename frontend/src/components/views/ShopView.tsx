@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { getProducts, getCategories } from '@/lib/mockApi';
+import { getProducts, getCategories, ensureClientState } from '@/lib/mockApi';
+import { areProductsEqual, areCategoriesEqual } from '@/lib/catalogCompare';
 import { Product, Category } from '@/types';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/Button';
@@ -14,7 +15,7 @@ import { FilterDropdownSection } from '@/components/ui/FilterDropdownSection';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FlatProductGrid, PAGE_SIZE } from '@/components/shop/FlatProductGrid';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
-import { SlidersHorizontal, X, RotateCcw, ArrowUp, Check, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { SlidersHorizontal, X, RotateCcw, ArrowUp, Check, Search, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { smoothScrollService } from '@/services/smooth-scroll';
 import { COLOR_GROUPS } from '@/lib/colorUtils';
 
@@ -82,6 +83,14 @@ const priceMilestones = [
   { value: 100000, label: '₹100K+' },
 ];
 
+export const SORT_OPTIONS = [
+  { id: 'popularity', label: 'Most Popular' },
+  { id: 'newest', label: 'Newest Arrivals' },
+  { id: 'price-asc', label: 'Price: Low to High' },
+  { id: 'price-desc', label: 'Price: High to Low' },
+  { id: 'rating', label: 'Highest Rated' },
+];
+
 interface ShopViewProps {
   initialProducts: Product[];
   initialCategories: Category[];
@@ -143,14 +152,28 @@ export const ShopView: React.FC<ShopViewProps> = ({
   });
 
   const [selectedSort, setSelectedSort] = useState<string>('popularity');
+  const [sortOpen, setSortOpen] = useState(false);
+  const sortDropdownRef = useRef<HTMLDivElement>(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    sort: false,
     category: false,
     size: false,
     color: false,
     price: false,
     availability: false,
   });
+
+  useEffect(() => {
+    if (!sortOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (sortDropdownRef.current && !sortDropdownRef.current.contains(e.target as Node)) {
+        setSortOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [sortOpen]);
 
   const toggleFilterSection = (key: string) => {
     setOpenSections((prev) => ({
@@ -284,15 +307,47 @@ export const ShopView: React.FC<ShopViewProps> = ({
     return () => observer.disconnect();
   }, []);
 
-  // Server pre-fetched for storefront 'a' — skip redundant first-mount fetch
-  const isInitialMount = useRef(true);
+  const productsRef = useRef(products);
+  productsRef.current = products;
+  const categoriesRef = useRef(categories);
+  categoriesRef.current = categories;
 
-  // Load catalog data
+  // Silent mount-only reconciliation with localStorage (Strict Mode safe)
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      if (storefront === 'a') return;
+    let cancelled = false;
+    async function reconcileOnMount() {
+      ensureClientState();
+      try {
+        const [prods, cats] = await Promise.all([
+          getProducts({ storefront }),
+          getCategories(),
+        ]);
+        if (cancelled) return;
+        if (!areProductsEqual(productsRef.current, prods)) {
+          console.log('[reconcile:shop] products updated from localStorage', prods.length);
+          setProducts(prods);
+        }
+        if (!areCategoriesEqual(categoriesRef.current, cats)) {
+          console.log('[reconcile:shop] categories updated from localStorage', cats.length);
+          setCategories(cats);
+        }
+      } catch {
+        // silent fallback
+      }
     }
+    reconcileOnMount();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Separate storefront switch effect (user-triggered storefront change)
+  const prevStorefront = useRef(storefront);
+  useEffect(() => {
+    if (prevStorefront.current === storefront) {
+      return;
+    }
+    prevStorefront.current = storefront;
 
     let isMounted = true;
     async function loadData() {
@@ -581,8 +636,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
               flexWrap: 'wrap',
             }}
           >
-            {/* Search Bar & Filters */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0 }}>
+            {/* Search Bar, Filters & Sort */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0, flexWrap: 'wrap' }}>
               {/* Inline Search Bar */}
               <div
                 className="shop-search-bar"
@@ -611,7 +666,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   placeholder="Search products..."
                   aria-label="Search products"
                   style={{
-                    width: '220px',
+                    width: 'clamp(140px, 22vw, 220px)',
+                    minHeight: '44px',
                     padding: '8px 32px 8px 36px',
                     border: '1px solid var(--border-color)',
                     borderRadius: 'var(--radius-pill, 999px)',
@@ -637,19 +693,20 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     aria-label="Clear search"
                     style={{
                       position: 'absolute',
-                      right: '10px',
+                      right: '8px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       background: 'none',
                       border: 'none',
                       cursor: 'pointer',
-                      padding: '2px',
+                      width: '32px',
+                      height: '32px',
                       borderRadius: '50%',
                       color: 'var(--text-muted)',
                     }}
                   >
-                    <X size={13} />
+                    <X size={14} />
                   </button>
                 )}
               </div>
@@ -658,7 +715,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
               <div
                 style={{
                   width: '1px',
-                  height: '20px',
+                  height: '24px',
                   backgroundColor: 'var(--border-color)',
                   flexShrink: 0,
                 }}
@@ -681,15 +738,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
-                  padding: '7px 0px',
-                  border: 'none',
+                  minHeight: '44px',
+                  padding: '8px 14px',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: 'var(--radius-pill)',
                   fontSize: '0.82rem',
                   fontWeight: 600,
-                  backgroundColor: 'transparent',
+                  backgroundColor: 'var(--bg-surface)',
                   color: 'var(--text-primary)',
                   cursor: 'pointer',
                   outline: 'none',
-                  boxShadow: 'none',
                 }}
               >
                 <SlidersHorizontal size={14} />
@@ -703,12 +761,92 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       width: '6px',
                       height: '6px',
                       borderRadius: '50%',
-                      backgroundColor: 'var(--color-terracotta, var(--color-golden-500))',
+                      backgroundColor: 'var(--color-golden-500)',
                       marginLeft: '2px',
                     }}
                   />
                 )}
               </button>
+
+              {/* Sort Select Dropdown */}
+              <div ref={sortDropdownRef} style={{ position: 'relative' }}>
+                <button
+                  id="collection-sort-btn"
+                  onClick={() => setSortOpen(!sortOpen)}
+                  aria-expanded={sortOpen}
+                  aria-label="Sort collection items"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    minHeight: '44px',
+                    padding: '8px 14px',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: 'var(--radius-pill)',
+                    fontSize: '0.82rem',
+                    fontWeight: 500,
+                    backgroundColor: 'var(--bg-surface)',
+                    color: 'var(--text-primary)',
+                    cursor: 'pointer',
+                    transition: 'border-color 0.2s ease',
+                  }}
+                >
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>Sort:</span>
+                  <span>{SORT_OPTIONS.find((s) => s.id === selectedSort)?.label}</span>
+                  <ChevronDown
+                    size={14}
+                    style={{
+                      transform: sortOpen ? 'rotate(180deg)' : 'rotate(0)',
+                      transition: 'transform 0.2s ease',
+                    }}
+                  />
+                </button>
+                {sortOpen && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 'calc(100% + 6px)',
+                      left: 0,
+                      zIndex: 60,
+                      minWidth: '190px',
+                      backgroundColor: 'var(--bg-primary)',
+                      border: '1px solid var(--border-color)',
+                      boxShadow: 'var(--shadow-editorial)',
+                      borderRadius: 'var(--radius-sm)',
+                      padding: '6px 0',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {SORT_OPTIONS.map((opt) => (
+                      <button
+                        key={opt.id}
+                        onClick={() => {
+                          setSelectedSort(opt.id);
+                          setSortOpen(false);
+                        }}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          width: '100%',
+                          minHeight: '44px',
+                          padding: '10px 16px',
+                          border: 'none',
+                          backgroundColor: selectedSort === opt.id ? 'var(--overlay-black-5)' : 'transparent',
+                          color: selectedSort === opt.id ? 'var(--brand-primary)' : 'var(--text-primary)',
+                          fontSize: '0.85rem',
+                          fontWeight: selectedSort === opt.id ? 600 : 400,
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                        }}
+                      >
+                        <span>{opt.label}</span>
+                        {selectedSort === opt.id && <Check size={14} />}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             {/* Active Filters inside the Navbar */}
             <div
@@ -995,8 +1133,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 disabled={currentPage === 1}
                 aria-label="Previous Page"
                 style={{
-                  width: '36px',
-                  height: '36px',
+                  width: '44px',
+                  height: '44px',
+                  minWidth: '44px',
+                  minHeight: '44px',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
@@ -1020,8 +1160,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   aria-label={`Page ${idx + 1}`}
                   aria-current={currentPage === idx + 1 ? 'page' : undefined}
                   style={{
-                    width: '36px',
-                    height: '36px',
+                    width: '44px',
+                    height: '44px',
+                    minWidth: '44px',
+                    minHeight: '44px',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
@@ -1045,8 +1187,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 disabled={currentPage === totalPages}
                 aria-label="Next Page"
                 style={{
-                  width: '36px',
-                  height: '36px',
+                  width: '44px',
+                  height: '44px',
+                  minWidth: '44px',
+                  minHeight: '44px',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
@@ -1092,6 +1236,68 @@ export const ShopView: React.FC<ShopViewProps> = ({
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px 8px 120px' }}>
+          {/* Sort Filter Dropdown */}
+          <FilterDropdownSection
+            title="Sort By"
+            isOpen={openSections.sort}
+            onToggle={() => toggleFilterSection('sort')}
+            badge={SORT_OPTIONS.find((s) => s.id === selectedSort)?.label}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {SORT_OPTIONS.map((opt) => {
+                const isSelected = selectedSort === opt.id;
+                return (
+                  <label
+                    key={opt.id}
+                    onClick={() => setSelectedSort(opt.id)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      fontSize: '0.95rem',
+                      minHeight: '44px',
+                      cursor: 'pointer',
+                      color: 'var(--text-primary)',
+                      padding: '8px 10px',
+                      borderRadius: '8px',
+                      backgroundColor: isSelected ? 'var(--overlay-black-5)' : 'transparent',
+                      transition: 'background-color 0.2s ease',
+                      userSelect: 'none',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '18px',
+                        height: '18px',
+                        borderRadius: '50%',
+                        border: isSelected
+                          ? '1.5px solid var(--color-black-tie)'
+                          : '1.5px solid var(--border-color)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        backgroundColor: isSelected ? 'var(--color-black-tie)' : 'transparent',
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            width: '6px',
+                            height: '6px',
+                            borderRadius: '50%',
+                            backgroundColor: 'var(--color-diamond)',
+                          }}
+                        />
+                      )}
+                    </div>
+                    <span style={{ fontWeight: isSelected ? 600 : 400 }}>{opt.label}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </FilterDropdownSection>
+
           {/* Category Filter Dropdown */}
           <FilterDropdownSection
             title="Category"
@@ -1118,6 +1324,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       alignItems: 'center',
                       gap: '12px',
                       fontSize: '0.95rem',
+                      minHeight: '44px',
                       cursor: 'pointer',
                       color: 'var(--text-primary)',
                       padding: '8px 10px',
@@ -1207,7 +1414,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       }}
                       style={{
                         minWidth: '44px',
-                        height: '40px',
+                        height: '44px',
+                        minHeight: '44px',
                         padding: '0 14px',
                         borderRadius: 'var(--radius-pill)',
                         border: isSelected
@@ -1260,6 +1468,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       display: 'flex',
                       alignItems: 'center',
                       gap: '10px',
+                      minHeight: '44px',
                       padding: '8px 10px',
                       borderRadius: '8px',
                       cursor: 'pointer',
@@ -1337,6 +1546,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         alignItems: 'center',
                         gap: '12px',
                         fontSize: '0.95rem',
+                        minHeight: '44px',
                         cursor: 'pointer',
                         padding: '8px 10px',
                         backgroundColor: isChecked && p.id !== 'all' ? 'var(--overlay-black-5)' : 'transparent',
@@ -1421,6 +1631,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 alignItems: 'center',
                 gap: '12px',
                 fontSize: '0.95rem',
+                minHeight: '44px',
                 cursor: 'pointer',
                 color: 'var(--text-primary)',
                 padding: '8px 10px',
@@ -1473,10 +1684,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
           bottom: 0,
           left: 0,
           width: '100%',
-          padding: '24px 32px 32px',
+          padding: '24px 24px',
+          paddingBottom: 'max(24px, env(safe-area-inset-bottom, 24px))',
+          paddingLeft: 'max(24px, env(safe-area-inset-left, 24px))',
+          paddingRight: 'max(24px, env(safe-area-inset-right, 24px))',
           display: 'flex',
           gap: '16px',
-          background: 'linear-gradient(to top, var(--bg-surface) 70%, transparent 100%)',
+          background: 'linear-gradient(to top, var(--bg-surface) 75%, transparent 100%)',
           borderTop: 'none',
           pointerEvents: 'none',
         }}>

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Image from 'next/image';
+import { getImageProps } from 'next/image';
 import Link from 'next/link';
 import styles from './CuratedEditsHeroBanner.module.css';
 
@@ -228,42 +228,59 @@ export const CuratedEditsHeroBanner: React.FC = () => {
             : 'none',
         }}
       >
-        {slides.map((slide, index) => (
-          <div
-            key={`${slide.id}-${index}`}
-            className={styles.slideContainer}
-            aria-hidden={index !== currentIndex}
-          >
-            {/* Background Editorial Image */}
-            <div className={styles.imageWrapper}>
-              {/* Desktop Landscape Crop */}
-              <div className={styles.desktopImageWrapper}>
-                <Image
-                  src={slide.image}
-                  alt={`${slide.title} - ${slide.badge}`}
-                  fill
-                  priority={index <= 2}
-                  quality={90}
-                  sizes="(max-width: 767px) 1px, 100vw"
-                  className={styles.bannerImage}
-                  style={{ objectPosition: slide.objectPosition || 'center 26%' }}
-                />
-              </div>
+        {slides.map((slide, index) => {
+          const common = {
+            alt: `${slide.title} - ${slide.badge}`,
+            fill: true,
+            priority: index === 0,
+            quality: 80,
+            sizes: '100vw',
+          };
+          const {
+            props: { srcSet: desktopSrcSet, ...desktopRest },
+          } = getImageProps({
+            ...common,
+            src: slide.image,
+          });
+          const {
+            props: { srcSet: mobileSrcSet },
+          } = getImageProps({
+            ...common,
+            src: slide.mobileImage || slide.image,
+          });
 
-              {/* Mobile Portrait Crop with zero quality loss */}
-              <div className={styles.mobileImageWrapper}>
-                <Image
-                  src={slide.mobileImage || slide.image}
-                  alt={`${slide.title} - ${slide.badge}`}
-                  fill
-                  priority={index <= 2}
-                  quality={90}
-                  sizes="(max-width: 767px) 100vw, 1px"
-                  className={styles.bannerImageMobile}
-                  style={{ objectPosition: slide.mobileObjectPosition || 'center center' }}
-                />
+          return (
+            <div
+              key={`${slide.id}-${index}`}
+              className={styles.slideContainer}
+              aria-hidden={index !== currentIndex}
+            >
+              {/* Background Editorial Image via Next.js getImageProps */}
+              <div className={styles.imageWrapper}>
+                <picture className={styles.pictureWrapper}>
+                  {slide.mobileImage && (
+                    <source
+                      media="(max-width: 767px)"
+                      srcSet={mobileSrcSet}
+                    />
+                  )}
+                  <source
+                    media="(min-width: 768px)"
+                    srcSet={desktopSrcSet}
+                  />
+                  <img
+                    {...desktopRest}
+                    srcSet={desktopSrcSet}
+                    className={styles.bannerImage}
+                    style={{
+                      ...desktopRest.style,
+                      ['--pos-desktop' as string]: slide.objectPosition || 'center 26%',
+                      ['--pos-mobile' as string]: slide.mobileObjectPosition || 'center center',
+                      objectFit: 'cover',
+                    }}
+                  />
+                </picture>
               </div>
-            </div>
 
             {/* Atmosphere Scrim Overlays */}
             <div className={styles.scrim} />
@@ -295,7 +312,8 @@ export const CuratedEditsHeroBanner: React.FC = () => {
               </div>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

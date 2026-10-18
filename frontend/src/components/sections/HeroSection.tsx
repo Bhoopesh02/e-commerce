@@ -31,7 +31,7 @@ export const HeroSection: React.FC = () => {
     alt: 'Aurelia Luxury Campaign - The Winter Collection',
     fill: true,
     priority: true,
-    quality: 90,
+    quality: 80,
     sizes: '100vw',
   };
 
@@ -56,8 +56,6 @@ export const HeroSection: React.FC = () => {
         position: 'relative',
         width: '100%',
         marginTop: 'var(--announcement-bar-height, 37px)',
-        minHeight: 'calc(100dvh - var(--announcement-bar-height, 37px))',
-        height: 'calc(100dvh - var(--announcement-bar-height, 37px))',
         overflow: 'hidden',
         backgroundColor: 'var(--color-black-tie)',
       }}
@@ -102,7 +100,7 @@ export const HeroSection: React.FC = () => {
           zIndex: 10,
           color: 'var(--bg-subtle)',
           width: '100%',
-          minHeight: 'calc(100dvh - var(--announcement-bar-height, 37px))',
+          minHeight: 'calc(100svh - var(--announcement-bar-height, 37px))',
           height: '100%',
         }}
       >
@@ -297,8 +295,10 @@ export const HeroSection: React.FC = () => {
           position: relative;
           width: 100%;
           margin-top: var(--announcement-bar-height, 37px);
+          height: calc(100vh - var(--announcement-bar-height, 37px));
+          height: calc(100svh - var(--announcement-bar-height, 37px));
           min-height: calc(100vh - var(--announcement-bar-height, 37px));
-          min-height: calc(100dvh - var(--announcement-bar-height, 37px));
+          min-height: calc(100svh - var(--announcement-bar-height, 37px));
           box-sizing: border-box;
           display: flex;
           flex-direction: column;
@@ -332,7 +332,7 @@ export const HeroSection: React.FC = () => {
           justify-content: center !important;
           width: 100%;
           min-height: calc(100vh - var(--announcement-bar-height, 37px));
-          min-height: calc(100dvh - var(--announcement-bar-height, 37px));
+          min-height: calc(100svh - var(--announcement-bar-height, 37px));
           box-sizing: border-box;
           text-align: left;
           padding-left: 24px;

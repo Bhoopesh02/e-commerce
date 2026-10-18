@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
     root: path.resolve(__dirname),
   },
   images: {
-    formats: ['image/webp'],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 31536000,
     qualities: [60, 75, 80, 85, 88, 90, 92, 95, 100],
     remotePatterns: [
       {

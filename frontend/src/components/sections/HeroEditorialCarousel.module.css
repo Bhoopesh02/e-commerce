@@ -6,9 +6,9 @@
   border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
   margin-top: var(--announcement-bar-height, 37px);
   height: calc(100vh - var(--announcement-bar-height, 37px));
-  height: calc(100dvh - var(--announcement-bar-height, 37px));
+  height: calc(100svh - var(--announcement-bar-height, 37px));
   min-height: calc(100vh - var(--announcement-bar-height, 37px));
-  min-height: calc(100dvh - var(--announcement-bar-height, 37px));
+  min-height: calc(100svh - var(--announcement-bar-height, 37px));
   margin-bottom: 40px;
   box-shadow: 0 24px 48px -12px rgba(12, 10, 20, 0.35);
   user-select: none;
@@ -45,40 +45,29 @@
 }
 
 /* Desktop vs Mobile Responsive Image Visibility */
-.desktopImageWrapper {
+.pictureWrapper {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  display: block;
-}
-
-.mobileImageWrapper {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
 }
 
 .bannerImage {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  object-position: right 20% center;
+  object-position: var(--pos-desktop, right 20% center);
   transition: transform 8s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.bannerImageMobile {
-  object-fit: cover;
-  object-position: right 5% center;
-  transition: transform 8s cubic-bezier(0.25, 1, 0.5, 1);
+@media (max-width: 767px) {
+  .bannerImage {
+    object-position: var(--pos-mobile, right 5% center) !important;
+  }
 }
 
 .slide.active .bannerImage {
   transform: scale(1.035);
-}
-
-.slide.active .bannerImageMobile {
-  transform: scale(1.03);
 }
 
 /* Cinematic Scrim Gradients for Contrast & Legibility */
@@ -298,9 +287,9 @@
   .carouselSection {
     margin-top: var(--announcement-bar-height, 33px);
     height: calc(100vh - var(--announcement-bar-height, 33px));
-    height: calc(100dvh - var(--announcement-bar-height, 33px));
+    height: calc(100svh - var(--announcement-bar-height, 33px));
     min-height: calc(100vh - var(--announcement-bar-height, 33px));
-    min-height: calc(100dvh - var(--announcement-bar-height, 33px));
+    min-height: calc(100svh - var(--announcement-bar-height, 33px));
     margin-bottom: 24px;
   }
 

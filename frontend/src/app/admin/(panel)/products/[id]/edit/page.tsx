@@ -8,6 +8,7 @@ import { ArrowLeft, Save, UploadCloud, X } from 'lucide-react';
 import { getProductById, adminUpdateProduct } from '@/lib/mockApi';
 import { Product } from '@/types';
 import { AdminDropdown, DropdownOption } from '@/components/admin/AdminDropdown';
+import { downscaleImage } from '@/lib/imageCompression';
 
 const CATEGORY_OPTIONS: DropdownOption[] = [
   { value: 'cat_accessories', label: 'Accessories' },
@@ -32,6 +33,7 @@ export default function EditProductPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   
+  const [initialProduct, setInitialProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     categoryId: '',
@@ -47,6 +49,7 @@ export default function EditProductPage() {
       try {
         const product = await getProductById(id);
         if (product) {
+          setInitialProduct(product);
           setFormData({
             name: product.name,
             categoryId: product.categoryId,
@@ -75,12 +78,18 @@ export default function EditProductPage() {
       if (filesToAdd.length > 0) {
         setImageFiles((prev) => [...prev, ...filesToAdd]);
         
-        filesToAdd.forEach((file) => {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            setImagePreviews((prev) => [...prev, reader.result as string]);
-          };
-          reader.readAsDataURL(file);
+        filesToAdd.forEach(async (file) => {
+          try {
+            const compressed = await downscaleImage(file, 1200, 0.8);
+            setImagePreviews((prev) => [...prev, compressed]);
+          } catch (err) {
+            console.error('Failed to downscale image upload:', err);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              setImagePreviews((prev) => [...prev, reader.result as string]);
+            };
+            reader.readAsDataURL(file);
+          }
         });
       }
     }
@@ -108,21 +117,56 @@ export default function EditProductPage() {
       alert('Please select a category division.');
       return;
     }
+
+    // Diff against initial product so only changed fields are sent to adminUpdateProduct
+    const updates: Partial<Product> = {};
+    if (initialProduct) {
+      if (formData.name !== initialProduct.name) updates.name = formData.name;
+      if (formData.categoryId !== initialProduct.categoryId) updates.categoryId = formData.categoryId;
+      const parsedPrice = parseFloat(formData.price) || 0;
+      if (parsedPrice !== initialProduct.price) updates.price = parsedPrice;
+      if (formData.description !== initialProduct.description) updates.description = formData.description;
+      if (JSON.stringify(imagePreviews) !== JSON.stringify(initialProduct.images || [])) {
+        updates.images = imagePreviews;
+      }
+    } else {
+      updates.name = formData.name;
+      updates.categoryId = formData.categoryId;
+      updates.price = parseFloat(formData.price) || 0;
+      updates.description = formData.description;
+      updates.images = imagePreviews;
+    }
+
+    if (initialProduct && Object.keys(updates).length === 0) {
+      alert('No changes detected.');
+      router.push('/admin/products');
+      return;
+    }
     
     setSaving(true);
     try {
-      await adminUpdateProduct(id, {
-        name: formData.name,
-        categoryId: formData.categoryId,
-        price: parseFloat(formData.price) || 0,
-        description: formData.description,
-        images: imagePreviews, // using previews as mock images
-      });
+      // Downscale any base64 data URLs before saving
+      if (updates.images && updates.images.length > 0) {
+        updates.images = await Promise.all(
+          updates.images.map((img) =>
+            img.startsWith('data:') ? downscaleImage(img, 1200, 0.8) : Promise.resolve(img)
+          )
+        );
+      }
+      await adminUpdateProduct(id, updates);
       alert('Silhouette updated successfully! Changes are temporarily visible.');
       router.push('/admin/products');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Failed to update silhouette.');
+      const isQuota =
+        err?.message?.includes('Storage quota') ||
+        err?.name === 'QuotaExceededError' ||
+        err?.code === 22;
+      if (isQuota) {
+        alert('Storage quota exceeded! The images were too large to fit in client storage.');
+      } else {
+        alert('Failed to update silhouette.');
+      }
     } finally {
       setSaving(false);
     }

@@ -40,7 +40,7 @@ export const OrderStepper: React.FC<OrderStepperProps> = ({
   if (!mounted) return null;
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-8 font-sans" style={{ fontFamily: 'var(--font-body)' }}>
+    <div className="w-full max-w-4xl mx-auto px-3 py-6 sm:p-8 font-sans" style={{ fontFamily: 'var(--font-body)' }}>
       <div className="relative flex justify-between items-start w-full">
         
         {/* Background inactive line */}

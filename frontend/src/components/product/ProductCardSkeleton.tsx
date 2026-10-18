@@ -109,11 +109,8 @@ export const ProductGridSkeleton: React.FC<ProductGridSkeletonProps> = ({
 }) => {
   return (
     <div
-      className={`product-grid max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px] ${className}`}
+      className={`product-grid ${className}`}
       style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-        gap: '32px',
         width: '100%',
       }}
     >

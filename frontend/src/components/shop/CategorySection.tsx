@@ -123,14 +123,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
         </div>
 
         {products.length > 0 ? (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-              gap: '32px',
-            }}
-            className="product-grid max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]"
-          >
+          <div className="product-grid">
             {products.map((product, idx) => (
               <motion.div
                 key={product.id}

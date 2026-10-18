@@ -1,5 +1,11 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });
+}
 
 export const IN_SCOPE_CATEGORY_SLUGS = [
   'outerwear',

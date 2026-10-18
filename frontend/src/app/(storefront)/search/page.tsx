@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { SearchView } from '@/components/views/SearchView';
-import { getInitialProducts, getInitialCategories } from '@/lib/serverData';
+import { getInitialProducts, getInitialCategories, getInitialNewArrivals } from '@/lib/serverData';
 import { ProductGridSkeleton } from '@/components/product/ProductCard';
 
 export const metadata = {
@@ -11,10 +11,15 @@ export const metadata = {
 export default function SearchPage() {
   const initialProducts = getInitialProducts('a');
   const initialCategories = getInitialCategories();
+  const initialCuratedFallback = getInitialNewArrivals('a').slice(0, 4);
 
   return (
     <Suspense fallback={<div style={{ paddingTop: '140px', textAlign: 'center' }}><ProductGridSkeleton count={8} /></div>}>
-      <SearchView initialProducts={initialProducts} initialCategories={initialCategories} />
+      <SearchView
+        initialProducts={initialProducts}
+        initialCategories={initialCategories}
+        initialCuratedFallback={initialCuratedFallback}
+      />
     </Suspense>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Image from 'next/image';
+import { getImageProps } from 'next/image';
 import { ArrowDown } from 'lucide-react';
 import styles from './HeroEditorialCarousel.module.css';
 
@@ -16,6 +16,8 @@ export interface BannerSlide {
   ctaText: string;
   image: string;
   mobileImage: string;
+  objectPosition?: string;
+  mobileObjectPosition?: string;
 }
 
 export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
@@ -174,8 +176,8 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
         position: 'relative',
         width: '100%',
         marginTop: 'var(--announcement-bar-height, 37px)',
-        minHeight: 'calc(100dvh - var(--announcement-bar-height, 37px))',
-        height: 'calc(100dvh - var(--announcement-bar-height, 37px))',
+        minHeight: 'calc(100svh - var(--announcement-bar-height, 37px))',
+        height: 'calc(100svh - var(--announcement-bar-height, 37px))',
         overflow: 'hidden',
       }}
       onMouseEnter={() => {
@@ -198,6 +200,25 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
       >
         {slides.map((slide, index) => {
           const isActive = index === currentIndex;
+          const common = {
+            alt: `${slide.title} — ${slide.subtitle}`,
+            fill: true,
+            priority: index === 0,
+            quality: 80,
+            sizes: '100vw',
+          };
+          const {
+            props: { srcSet: desktopSrcSet, ...desktopRest },
+          } = getImageProps({
+            ...common,
+            src: slide.image,
+          });
+          const {
+            props: { srcSet: mobileSrcSet },
+          } = getImageProps({
+            ...common,
+            src: slide.mobileImage || slide.image,
+          });
 
           return (
             <div
@@ -206,29 +227,32 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
             >
               {/* Background Image Layer (Dual Desktop & Mobile Cropping) */}
               <div className={styles.imageWrapper}>
-                {/* Desktop Landscape Crop */}
-                <div className={styles.desktopImageWrapper}>
-                  <Image
-                    src={slide.image}
-                    alt={`${slide.title} — ${slide.subtitle}`}
-                    fill
-                    quality={85}
-                    sizes="(max-width: 767px) 1px, 100vw"
+                {/* Responsive Art Direction via Next.js getImageProps */}
+                <picture className={styles.pictureWrapper}>
+                  {slide.mobileImage && (
+                    <source
+                      media="(max-width: 767px)"
+                      srcSet={mobileSrcSet}
+                    />
+                  )}
+                  <source
+                    media="(min-width: 768px)"
+                    srcSet={desktopSrcSet}
+                  />
+                  <img
+                    {...desktopRest}
+                    srcSet={desktopSrcSet}
                     className={styles.bannerImage}
+                    style={{
+                      ...desktopRest.style,
+                      ['--pos-desktop' as string]: slide.objectPosition || 'right 20% center',
+                      ['--pos-mobile' as string]: slide.mobileObjectPosition || 'right 5% center',
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
                   />
-                </div>
-
-                {/* Mobile Portrait Crop (Framed like uploaded image) */}
-                <div className={styles.mobileImageWrapper}>
-                  <Image
-                    src={slide.mobileImage}
-                    alt={`${slide.title} — ${slide.subtitle}`}
-                    fill
-                    quality={85}
-                    sizes="(max-width: 767px) 100vw, 1px"
-                    className={styles.bannerImageMobile}
-                  />
-                </div>
+                </picture>
 
                 {/* Cinematic Scrim Gradients */}
                 <div className={styles.scrimHorizontal} />

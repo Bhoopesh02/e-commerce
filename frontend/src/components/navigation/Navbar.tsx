@@ -216,6 +216,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 ? 'linear-gradient(180deg, var(--overlay-black-50) 0%, var(--overlay-black-30) 60%, transparent 100%)'
                 : 'transparent',
             transition: 'background 250ms ease',
+            paddingLeft: 'env(safe-area-inset-left, 0px)',
+            paddingRight: 'env(safe-area-inset-right, 0px)',
           }}
         >
         <div
@@ -224,7 +226,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             display: 'grid',
             gridTemplateColumns: '1fr auto 1fr',
             alignItems: 'center',
-            height: '76px',
+            height: 'var(--navbar-height, 76px)',
           }}
         >
           {/* Left: Nav items (Hamburger on mobile, Nav Links on desktop) */}
@@ -468,8 +470,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+              className="mobile-menu-drawer"
               style={{
-                overflow: 'hidden',
+                overflowY: 'auto',
+                WebkitOverflowScrolling: 'touch',
+                maxHeight: 'calc(100dvh - var(--header-h, 64px))',
                 position: 'absolute',
                 top: '100%',
                 left: 0,
@@ -485,6 +490,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <div
                 style={{
                   padding: '24px',
+                  paddingBottom: 'max(24px, env(safe-area-inset-bottom, 24px))',
+                  paddingLeft: 'max(24px, env(safe-area-inset-left, 24px))',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '8px',
@@ -526,10 +533,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     fontSize: '0.95rem',
                     fontWeight: pathname === '/collections' ? 600 : 400,
                     letterSpacing: '0.04em',
-                    minHeight: '36px',
+                    minHeight: '44px',
                     display: 'flex',
                     alignItems: 'center',
-                    paddingLeft: '16px',
+                    padding: '10px 16px',
                     color: pathname === '/collections' ? 'var(--brand-primary)' : 'var(--text-primary)',
                   }}
                 >
@@ -542,10 +549,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     fontSize: '0.95rem',
                     fontWeight: pathname === '/collections/men' ? 600 : 400,
                     letterSpacing: '0.04em',
-                    minHeight: '36px',
+                    minHeight: '44px',
                     display: 'flex',
                     alignItems: 'center',
-                    paddingLeft: '16px',
+                    padding: '10px 16px',
                     color: pathname === '/collections/men' ? 'var(--brand-primary)' : 'var(--text-primary)',
                   }}
                 >
@@ -558,10 +565,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     fontSize: '0.95rem',
                     fontWeight: pathname === '/collections/women' ? 600 : 400,
                     letterSpacing: '0.04em',
-                    minHeight: '36px',
+                    minHeight: '44px',
                     display: 'flex',
                     alignItems: 'center',
-                    paddingLeft: '16px',
+                    padding: '10px 16px',
                     color: pathname === '/collections/women' ? 'var(--brand-primary)' : 'var(--text-primary)',
                   }}
                 >
@@ -866,7 +873,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           .navbar-container {
             grid-template-columns: 48px 1fr auto !important;
             gap: 4px !important;
-            height: 64px !important;
+            height: var(--navbar-height, 64px) !important;
           }
           .navbar-brand-text {
             font-size: clamp(1.15rem, 4.5vw, 1.55rem) !important;

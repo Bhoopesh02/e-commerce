@@ -141,10 +141,10 @@ export const Drawer: React.FC<DrawerProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: 40,
-              height: 40,
-              minWidth: 40,
-              minHeight: 40,
+              width: 44,
+              height: 44,
+              minWidth: 44,
+              minHeight: 44,
               borderRadius: '50%',
               border: '1.5px solid var(--overlay-black-15)',
               boxShadow: '0 2px 6px rgba(0, 0, 0, 0.06)',
@@ -159,6 +159,7 @@ export const Drawer: React.FC<DrawerProps> = ({
 
         <div
           data-lenis-prevent
+          className="drawer-content-container"
           style={{
             flex: 1,
             overflowY: 'auto',
@@ -167,6 +168,9 @@ export const Drawer: React.FC<DrawerProps> = ({
             overscrollBehaviorY: 'contain',
             touchAction: 'pan-y',
             padding: '24px',
+            paddingBottom: 'max(24px, env(safe-area-inset-bottom, 24px))',
+            paddingLeft: 'max(24px, env(safe-area-inset-left, 24px))',
+            paddingRight: 'max(24px, env(safe-area-inset-right, 24px))',
           }}
         >
           {children}

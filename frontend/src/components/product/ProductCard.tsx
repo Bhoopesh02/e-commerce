@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useAnimationControls, useReducedMotion } from 'framer-motion';
@@ -35,7 +35,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1440px) 33vw, 450px',
   onClick,
   priority = false,
-  quality = 95,
+  quality = 80,
 }) => {
   const shouldReduceMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
@@ -46,7 +46,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const { isInWishlist, toggleItem } = useWishlistStore();
   const { addItem } = useCartStore();
 
-  const isFavorited = isInWishlist(product.id);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  const isFavorited = mounted && isInWishlist(product.id);
 
   // Extract unique colors for this product
   const availableColors = React.useMemo(() => {

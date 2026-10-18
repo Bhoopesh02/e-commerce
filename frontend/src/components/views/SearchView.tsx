@@ -4,7 +4,8 @@ import React, { useState, useEffect, useMemo, Suspense, useRef } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getProducts, getCategories, getNewArrivals } from '@/lib/mockApi';
+import { getProducts, getCategories, getNewArrivals, ensureClientState } from '@/lib/mockApi';
+import { areProductsEqual, areCategoriesEqual } from '@/lib/catalogCompare';
 import { Product, Category } from '@/types';
 import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCard';
 import { Button } from '@/components/ui/Button';
@@ -102,9 +103,10 @@ function useOnClickOutside<T extends HTMLElement = HTMLElement>(
 export interface SearchViewProps {
   initialProducts?: Product[];
   initialCategories?: Category[];
+  initialCuratedFallback?: Product[];
 }
 
-function SearchContent({ initialProducts = [], initialCategories = [] }: SearchViewProps) {
+function SearchContent({ initialProducts = [], initialCategories = [], initialCuratedFallback = [] }: SearchViewProps) {
   const shouldReduceMotion = useReducedMotion();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -117,7 +119,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
   const [query, setQuery] = useState(initialQuery);
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [allCatalog, setAllCatalog] = useState<Product[]>(initialProducts);
-  const [curatedFallback, setCuratedFallback] = useState<Product[]>([]);
+  const [curatedFallback, setCuratedFallback] = useState<Product[]>(initialCuratedFallback);
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(initialProducts.length > 0 || !!initialQuery);
@@ -205,28 +207,53 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
 
 
 
-  // Load full catalog and fallback recommendations
+  const allCatalogRef = useRef(allCatalog);
+  allCatalogRef.current = allCatalog;
+  const curatedFallbackRef = useRef(curatedFallback);
+  curatedFallbackRef.current = curatedFallback;
+  const categoriesRef = useRef(categories);
+  categoriesRef.current = categories;
+  const productsRef = useRef(products);
+  productsRef.current = products;
+
+  // Load full catalog and fallback recommendations - silently reconcile with localStorage on mount (Strict Mode safe)
   useEffect(() => {
-    let isMounted = true;
-    async function loadCatalogAndFallback() {
+    let cancelled = false;
+    async function reconcileSearchCatalog() {
+      ensureClientState();
       try {
-        const [allProds, arrivals] = await Promise.all([
+        const [allProds, arrivals, cats] = await Promise.all([
           getProducts(),
           getNewArrivals(),
+          getCategories(),
         ]);
-        if (isMounted) {
+        if (cancelled) return;
+        if (!areProductsEqual(allCatalogRef.current, allProds)) {
+          console.log('[reconcile:search] allCatalog updated from localStorage', allProds.length);
           setAllCatalog(allProds);
-          setCuratedFallback(arrivals.slice(0, 4));
+        }
+        const fallbackSlice = arrivals.slice(0, 4);
+        if (!areProductsEqual(curatedFallbackRef.current, fallbackSlice)) {
+          console.log('[reconcile:search] curatedFallback updated from localStorage', fallbackSlice.length);
+          setCuratedFallback(fallbackSlice);
+        }
+        if (!areCategoriesEqual(categoriesRef.current, cats)) {
+          console.log('[reconcile:search] categories updated from localStorage', cats.length);
+          setCategories(cats);
+        }
+        if (!initialQuery && !areProductsEqual(productsRef.current, allProds)) {
+          console.log('[reconcile:search] products updated from localStorage', allProds.length);
+          setProducts(allProds);
         }
       } catch (err) {
-        console.error('Failed to load search catalog:', err);
+        console.error('Failed to reconcile search catalog:', err);
       }
     }
-    loadCatalogAndFallback();
+    reconcileSearchCatalog();
     return () => {
-      isMounted = false;
+      cancelled = true;
     };
-  }, []);
+  }, [initialQuery]);
 
   const priceMilestones = useMemo(
     () => [
@@ -1544,10 +1571,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
               <ProductGridSkeleton count={8} />
             ) : paginatedProducts.length > 0 ? (
               <>
-                <div
-                  className="product-grid max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]"
-                  style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}
-                >
+                <div className="product-grid">
                   {paginatedProducts.map((product, idx) => (
                     <motion.div
                       key={product.id}
@@ -1932,14 +1956,7 @@ function SearchContent({ initialProducts = [], initialCategories = [] }: SearchV
                       </h4>
                     </div>
 
-                    <div
-                      className="product-grid max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]"
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                        gap: '32px',
-                      }}
-                    >
+                    <div className="product-grid">
                       {curatedFallback.map((prod) => (
                         <ProductCard key={`fallback-${prod.id}`} product={prod} />
                       ))}

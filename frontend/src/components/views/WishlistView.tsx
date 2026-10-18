@@ -1,43 +1,105 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useWishlistStore } from '@/store/useWishlistStore';
 import { useCartStore } from '@/store/useCartStore';
 import { useToastStore } from '@/store/useToastStore';
-import { getProducts } from '@/lib/mockApi';
+import { getProducts, ensureClientState } from '@/lib/mockApi';
+import { areProductsEqual } from '@/lib/catalogCompare';
 import { Product } from '@/types';
 import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCard';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Heart, ShoppingBag, ArrowRight } from 'lucide-react';
 
-export const WishlistView: React.FC = () => {
-  const { productIds, toggleItem } = useWishlistStore();
+export interface WishlistViewProps {
+  initialAllProducts?: Product[];
+}
+
+export const WishlistView: React.FC<WishlistViewProps> = ({
+  initialAllProducts,
+}) => {
+  const { productIds, toggleItem, hydrated: isStoreHydrated } = useWishlistStore();
   const { addItem } = useCartStore();
   const { showToast } = useToastStore();
 
+  const [allCatalog, setAllCatalog] = useState<Product[]>(() => initialAllProducts || []);
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  const allCatalogRef = useRef(allCatalog);
+  allCatalogRef.current = allCatalog;
+  const productsRef = useRef(products);
+  productsRef.current = products;
+
+  // Silent mount reconciliation with localStorage (Strict Mode safe)
   useEffect(() => {
-    let isMounted = true;
-    async function loadWishlistItems() {
-      setLoading(true);
-      try {
-        const all = await getProducts();
-        if (isMounted) {
-          setProducts(all.filter((p) => productIds.includes(p.id)));
+    let cancelled = false;
+
+    async function waitForWishlistHydration(): Promise<string[]> {
+      if (useWishlistStore.persist?.hasHydrated?.()) {
+        return useWishlistStore.getState().productIds;
+      }
+      return new Promise((resolve) => {
+        let resolved = false;
+        const unsub = useWishlistStore.persist?.onFinishHydration?.((state) => {
+          if (!resolved) {
+            resolved = true;
+            unsub?.();
+            resolve(state?.productIds || useWishlistStore.getState().productIds);
+          }
+        });
+        if (useWishlistStore.persist?.hasHydrated?.()) {
+          if (!resolved) {
+            resolved = true;
+            unsub?.();
+            resolve(useWishlistStore.getState().productIds);
+          }
         }
+      });
+    }
+
+    async function reconcileWishlist() {
+      ensureClientState();
+      try {
+        const [all, currentIds] = await Promise.all([
+          getProducts(),
+          waitForWishlistHydration(),
+        ]);
+        if (cancelled) return;
+        if (!areProductsEqual(allCatalogRef.current, all)) {
+          console.log('[reconcile:wishlist] updating allCatalog from localStorage', all.length);
+          setAllCatalog(all);
+        }
+        const nextWishlistProds = all.filter((p) => currentIds.includes(p.id));
+        if (!areProductsEqual(productsRef.current, nextWishlistProds)) {
+          console.log('[reconcile:wishlist] updating wishlist products from localStorage', nextWishlistProds.length);
+          setProducts(nextWishlistProds);
+        }
+      } catch {
+        // silent fallback
       } finally {
-        if (isMounted) setLoading(false);
+        if (!cancelled) {
+          setHydrated(true);
+        }
       }
     }
-    loadWishlistItems();
+    reconcileWishlist();
     return () => {
-      isMounted = false;
+      cancelled = true;
     };
-  }, [productIds]);
+  }, []);
+
+  // Sync displayed items when client productIds change or allCatalog updates
+  useEffect(() => {
+    if (!hydrated) return;
+    const nextProds = allCatalog.filter((p) => productIds.includes(p.id));
+    if (!areProductsEqual(productsRef.current, nextProds)) {
+      setProducts(nextProds);
+    }
+  }, [productIds, allCatalog, hydrated]);
 
   const handleMoveAllToBag = () => {
     let addedCount = 0;
@@ -51,7 +113,7 @@ export const WishlistView: React.FC = () => {
     showToast(`Transferred ${addedCount} available silhouettes to your bag.`, 'success');
   };
 
-  if (loading) {
+  if (!hydrated || !isStoreHydrated || loading) {
     return (
       <div style={{ paddingTop: '110px', paddingBottom: '96px' }} className="container">
         <Skeleton height="40px" width="300px" style={{ marginBottom: '32px' }} />
@@ -130,14 +192,7 @@ export const WishlistView: React.FC = () => {
             </Link>
           </div>
         ) : (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))',
-              gap: 'clamp(20px, 4vw, 36px)',
-            }}
-            className="product-grid"
-          >
+          <div className="product-grid">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

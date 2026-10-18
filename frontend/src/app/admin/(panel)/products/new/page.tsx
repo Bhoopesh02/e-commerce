@@ -202,9 +202,17 @@ export default function NewProductPage() {
 
       alert('New silhouette drafted successfully with verified 3:4 imagery!');
       router.push('/admin/products');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Failed to save silhouette draft.');
+      const isQuota =
+        err?.message?.includes('Storage quota') ||
+        err?.name === 'QuotaExceededError' ||
+        err?.code === 22;
+      if (isQuota) {
+        alert('Storage quota exceeded! The images were too large to fit in client storage.');
+      } else {
+        alert('Failed to save silhouette draft.');
+      }
     } finally {
       setIsSubmitting(false);
     }

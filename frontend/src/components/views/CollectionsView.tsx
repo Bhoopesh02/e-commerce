@@ -372,7 +372,7 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
             </Link>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '28px' }}>
+          <div className="product-grid">
             {runwayPieces.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

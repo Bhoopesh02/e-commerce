@@ -299,11 +299,13 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
           background-color: var(--bg-primary);
           border: 1px solid var(--border-color);
           border-radius: 24px;
-          padding: 10px 12px;
+          padding: 0 14px;
           gap: 4px;
           flex: 1;
           min-width: 0;
           flex-wrap: nowrap;
+          min-height: 44px;
+          height: 44px;
         }
         .price-input-wrapper span {
           font-size: 0.85rem;
@@ -316,6 +318,8 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
           outline: none;
           width: 100%;
           min-width: 0;
+          height: 100%;
+          min-height: 44px;
           font-size: 0.95rem;
           color: var(--text-primary);
           font-weight: 600;

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import '@/styles/globals.css';
 import { BRAND_NAME, BRAND_TAGLINE } from '@/lib/constants';
@@ -8,6 +8,12 @@ import { PageTransitionOverlay } from '@/components/transition/PageTransitionOve
 export const metadata: Metadata = {
   title: `${BRAND_NAME} Atelier | Luxury Haute Couture & Ready-to-Wear`,
   description: `${BRAND_TAGLINE}. Discover Italian leather jackets, virgin wool tailoring, and Grade-A cashmere.`,
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 };
 
 const antiFlashScript = `

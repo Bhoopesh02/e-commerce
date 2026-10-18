@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Package, Search, Plus, Sparkles, Filter, ChevronDown, Check, Edit2 } from 'lucide-react';
 import { AnimatedTrashIcon } from '@/components/ui/AnimatedTrashIcon';
+import { useDropdownPosition } from '@/hooks/useDropdownPosition';
 
 const CATEGORY_NAMES: Record<string, string> = {
   cat_outerwear: 'Outerwear',
@@ -52,6 +53,7 @@ function AdminProductsPageContent() {
   const ITEMS_PER_PAGE = 20;
 
   const filterRef = React.useRef<HTMLDivElement>(null);
+  const filterDropdownStyle = useDropdownPosition(filterRef, isFilterOpen, 280);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -210,13 +212,12 @@ function AdminProductsPageContent() {
                 style={{ 
                   position: 'absolute', 
                   top: '100%', 
-                  right: 0, 
+                  ...filterDropdownStyle,
                   marginTop: '8px',
                   backgroundColor: 'var(--admin-surface)',
                   border: '1px solid var(--admin-border)',
                   borderRadius: 'var(--radius-md)',
                   boxShadow: '0 4px 20px var(--overlay-black-15)',
-                  width: '280px',
                   zIndex: 50,
                   overflow: 'hidden'
                 }}

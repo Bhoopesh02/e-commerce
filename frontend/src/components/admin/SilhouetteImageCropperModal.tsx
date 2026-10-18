@@ -441,9 +441,9 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
     const naturalCropW = Math.round(cropBox.width * scaleX);
     const naturalCropH = Math.round(cropBox.height * scaleY);
 
-    // Standard high-resolution output locked strictly at 3:4 ratio (portrait)
-    const targetWidth = Math.max(750, Math.min(1500, naturalCropW));
-    const targetHeight = Math.round(targetWidth * (4 / 3)); // Exactly 3:4
+    // Standard high-resolution output locked strictly at 3:4 ratio (portrait, max ~1200px height)
+    const targetWidth = Math.max(450, Math.min(900, naturalCropW));
+    const targetHeight = Math.round(targetWidth * (4 / 3)); // Exactly 3:4 (max 1200px)
 
     // Verify 3:4 ratio mathematically
     const ratioCheck = targetWidth / targetHeight;
@@ -477,7 +477,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
       targetHeight
     );
 
-    const croppedDataUrl = offscreenCanvas.toDataURL('image/webp', 0.92);
+    const croppedDataUrl = offscreenCanvas.toDataURL('image/webp', 0.80);
 
     offscreenCanvas.toBlob(
       (blob) => {

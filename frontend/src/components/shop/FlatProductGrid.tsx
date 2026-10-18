@@ -61,14 +61,7 @@ export const FlatProductGrid: React.FC<FlatProductGridProps> = ({ products, gend
 
         return (
           <React.Fragment key={chunkIndex}>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                gap: '32px',
-              }}
-              className="product-grid max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]"
-            >
+            <div className="product-grid">
               {chunk.map((product, idx) => (
                 <motion.div
                   key={product.id}

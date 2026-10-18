@@ -306,14 +306,7 @@ export const CategoryShowcaseSection: React.FC<CategoryShowcaseSectionProps> = (
 
         {/* Responsive Product Grid */}
         {catalogProducts.length > 0 ? (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-              gap: '32px',
-            }}
-            className="product-grid max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]"
-          >
+          <div className="product-grid">
             {catalogProducts.map((product, idx) => (
               <motion.div
                 key={product.id}

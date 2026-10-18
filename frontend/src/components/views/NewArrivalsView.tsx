@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { getProducts, getCategories } from '@/lib/mockApi';
+import { getProducts, getCategories, ensureClientState } from '@/lib/mockApi';
+import { areProductsEqual, areCategoriesEqual } from '@/lib/catalogCompare';
 import { Product, Category } from '@/types';
 import { ProductCard, ProductGridSkeleton } from '@/components/product/ProductCard';
 import { Button } from '@/components/ui/Button';
@@ -18,11 +19,23 @@ import { HeroEditorialCarousel } from '@/components/sections/HeroEditorialCarous
 
 export const PRODUCTS_PER_PAGE = 36;
 
-export const NewArrivalsView: React.FC = () => {
+export interface NewArrivalsViewProps {
+  initialProducts?: Product[];
+  initialCategories?: Category[];
+}
+
+export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
+  initialProducts,
+  initialCategories = [],
+}) => {
   const { storefront } = useStorefrontStore();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(() =>
+    initialProducts
+      ? initialProducts.filter((p) => p.isNewArrival || p.tags?.includes('new-arrival'))
+      : []
+  );
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [loading, setLoading] = useState(!initialProducts);
   const [isStuck, setIsStuck] = useState(false);
   const stickyBarRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -72,7 +85,49 @@ export const NewArrivalsView: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
+  const productsRef = useRef(products);
+  productsRef.current = products;
+  const categoriesRef = useRef(categories);
+  categoriesRef.current = categories;
+
+  // Silent mount-only reconciliation with localStorage (Strict Mode safe)
   useEffect(() => {
+    let cancelled = false;
+    async function reconcileOnMount() {
+      ensureClientState();
+      try {
+        const [prods, cats] = await Promise.all([
+          getProducts({ storefront }),
+          getCategories(),
+        ]);
+        if (cancelled) return;
+        const nextNewArrivals = prods.filter((p) => p.isNewArrival || p.tags?.includes('new-arrival'));
+        if (!areProductsEqual(productsRef.current, nextNewArrivals)) {
+          console.log('[reconcile:new-arrivals] products updated from localStorage', nextNewArrivals.length);
+          setProducts(nextNewArrivals);
+        }
+        if (!areCategoriesEqual(categoriesRef.current, cats)) {
+          console.log('[reconcile:new-arrivals] categories updated from localStorage', cats.length);
+          setCategories(cats);
+        }
+      } catch {
+        // silent fallback
+      }
+    }
+    reconcileOnMount();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Separate storefront switch effect (runs only when storefront changes after initial mount)
+  const prevStorefront = useRef(storefront);
+  useEffect(() => {
+    if (prevStorefront.current === storefront) {
+      return;
+    }
+    prevStorefront.current = storefront;
+
     let isMounted = true;
     async function loadData() {
       setLoading(true);
@@ -82,7 +137,7 @@ export const NewArrivalsView: React.FC = () => {
           getCategories(),
         ]);
         if (isMounted) {
-          setProducts(prods.filter(p => p.isNewArrival || p.tags?.includes('new-arrival')));
+          setProducts(prods.filter((p) => p.isNewArrival || p.tags?.includes('new-arrival')));
           setCategories(cats);
         }
       } finally {
@@ -90,7 +145,9 @@ export const NewArrivalsView: React.FC = () => {
       }
     }
     loadData();
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [storefront]);
 
   const filteredProducts = useMemo(() => {
@@ -543,7 +600,7 @@ export const NewArrivalsView: React.FC = () => {
           <ProductGridSkeleton count={8} />
         ) : filteredProducts.length > 0 ? (
           <>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }} className="product-grid max-md:!grid max-md:!grid-cols-2 max-md:!gap-[12px]">
+            <div className="product-grid">
               {paginatedProducts.map((product, idx) => (
                 <motion.div key={product.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-30px' }} transition={{ duration: 0.45, delay: (idx % 4) * 0.06 }}>
                   <ProductCard product={product} />

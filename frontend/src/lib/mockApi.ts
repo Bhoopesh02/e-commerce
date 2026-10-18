@@ -40,8 +40,10 @@ import returnsData from '@/data/returns.json';
 import storefrontConfigData from '@/data/storefrontConfig.json';
 
 // Simulated network latency helper
-const delay = (ms: number = MOCK_API_DELAY_MS) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms: number = MOCK_API_DELAY_MS): Promise<void> => {
+  if (ms <= 0) return Promise.resolve();
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
 
 // Helper for client-side localStorage persistence across refreshes
 function getInitialData<T>(key: string, fallback: T): T {
@@ -58,8 +60,20 @@ function saveData<T>(key: string, data: T): void {
   if (typeof window === 'undefined') return;
   try {
     window.localStorage.setItem(`aurelia_${key}`, JSON.stringify(data));
-  } catch {
-    // Ignore storage quota issues in mock
+  } catch (err: any) {
+    const isQuota =
+      err?.name === 'QuotaExceededError' ||
+      err?.name === 'NS_ERROR_DOM_QUOTA_REACHED' ||
+      err?.code === 22 ||
+      err?.code === 1014;
+    if (isQuota) {
+      const quotaMsg = `Storage quota exceeded while saving "aurelia_${key}". Client storage limit reached.`;
+      console.error(`[mockApi:saveData] QuotaExceededError:`, quotaMsg, err);
+      throw new Error(quotaMsg);
+    } else {
+      console.error(`[mockApi:saveData] Error writing "aurelia_${key}" to localStorage:`, err);
+      throw err;
+    }
   }
 }
 
@@ -77,10 +91,10 @@ let wishlistsState: Record<string, string[]> = (wishlistsData as { userId: strin
 );
 
 // Catalog version tag to invalidate stale client localStorage when products/orders update
-const CATALOG_VERSION = '2026.10.16.v5-leather-goods-refresh'; // Bump this string to force a cache reset across clients-side state on first mount (runs only once per session)
+const CATALOG_VERSION = '2026.10.18.v6-empty-wishlist-bag'; // Bump this string to force a cache reset across clients-side state on first mount (runs only once per session)
 let isClientStateInitialized = false;
 
-function ensureClientState() {
+export function ensureClientState() {
   if (typeof window === 'undefined' || isClientStateInitialized) return;
   isClientStateInitialized = true;
 
@@ -91,34 +105,61 @@ function ensureClientState() {
     // Reset products state to fresh JSON data when catalog version is bumped
     productsState = [...(productsData as Product[])];
     saveData('products', productsState);
-    
-    // Also reset banners and orders to ensure new metadata/orders show up
+    saveData('product_overrides', {});
+    saveData('admin_created_products', []);
+    saveData('deleted_product_ids', []);
+
+    // Also reset banners, orders, and wishlists to ensure clean initial client state
     bannersState = [...(bannersData as Banner[])];
     saveData('banners', bannersState);
 
     ordersState = [...(ordersData as Order[])];
     saveData('orders', ordersState);
-    
+
+    wishlistsState = (wishlistsData as { userId: string; productIds: string[] }[]).reduce(
+      (acc, curr) => ({ ...acc, [curr.userId]: curr.productIds }),
+      {}
+    );
+    saveData('wishlists', wishlistsState);
+
     window.localStorage.setItem('aurelia_catalog_version', CATALOG_VERSION);
   } else {
-    const cachedProducts = getInitialData('products', productsState);
-    // Intelligent reconciliation: prioritize fresh JSON fields while preserving active checkout stock changes per SKU
-    productsState = (productsData as Product[]).map((fresh) => {
-      const cached = cachedProducts.find((c) => c.id === fresh.id);
-      if (!cached) return fresh;
+    const overrides = getInitialData<Record<string, Partial<Product>>>('product_overrides', {});
+    const adminCreated = getInitialData<Product[]>('admin_created_products', []);
+    const deletedIds = getInitialData<string[]>('deleted_product_ids', []);
+    const deletedSet = new Set(deletedIds);
 
-      const mergedVariants = (fresh.variants || []).map((freshVariant) => {
-        const cachedVariant = (cached.variants || []).find((v) => v.sku === freshVariant.sku);
-        return cachedVariant !== undefined ? cachedVariant : freshVariant;
+    // Merge fresh JSON with overrides[id], keeping variants with cached stock
+    const freshMerged: Product[] = (productsData as Product[])
+      .filter((fresh) => !deletedSet.has(fresh.id))
+      .map((fresh) => {
+        const override = overrides[fresh.id];
+        if (!override) return fresh;
+
+        const overrideVariants = override.variants || [];
+        const mergedVariants = (fresh.variants || []).map((freshVariant) => {
+          const cachedVariant = overrideVariants.find((v) => v.sku === freshVariant.sku);
+          return cachedVariant !== undefined ? cachedVariant : freshVariant;
+        });
+
+        return {
+          ...fresh,
+          ...override,
+          variants: mergedVariants.length > 0 ? mergedVariants : fresh.variants,
+        };
       });
 
-      return {
-        ...fresh,
-        variants: mergedVariants.length > 0 ? mergedVariants : fresh.variants,
-      };
-    });
+    // Merge admin-created products (applying any overrides, and excluding deleted)
+    const adminCreatedMerged: Product[] = adminCreated
+      .filter((p) => !deletedSet.has(p.id))
+      .map((p) => {
+        const override = overrides[p.id];
+        return override ? { ...p, ...override } : p;
+      });
+
+    productsState = [...adminCreatedMerged, ...freshMerged];
     saveData('products', productsState);
-    
+
     bannersState = getInitialData('banners', bannersState);
   }
 
@@ -134,7 +175,6 @@ function ensureClientState() {
 // PRODUCTS API
 // ----------------------------------------------------------------------
 export async function getProducts(filters?: ProductFilterOptions): Promise<Product[]> {
-  await delay();
   ensureClientState();
   let list = [...productsState];
 
@@ -204,21 +244,18 @@ export async function getProducts(filters?: ProductFilterOptions): Promise<Produ
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  await delay();
   ensureClientState();
   const product = productsState.find((p) => p.slug === slug);
   return product || null;
 }
 
 export async function getProductById(id: string): Promise<Product | null> {
-  await delay();
   ensureClientState();
   const product = productsState.find((p) => p.id === id);
   return product || null;
 }
 
 export async function getFeaturedProducts(storefront?: StorefrontId): Promise<Product[]> {
-  await delay();
   ensureClientState();
   let list = productsState.filter((p) => p.featured);
   if (storefront) {
@@ -228,7 +265,6 @@ export async function getFeaturedProducts(storefront?: StorefrontId): Promise<Pr
 }
 
 export async function getNewArrivals(storefront?: StorefrontId): Promise<Product[]> {
-  await delay();
   ensureClientState();
   let list = productsState.filter((p) => p.isNewArrival);
   if (storefront) {
@@ -238,7 +274,6 @@ export async function getNewArrivals(storefront?: StorefrontId): Promise<Product
 }
 
 export async function getTrendingProducts(storefront?: StorefrontId): Promise<Product[]> {
-  await delay();
   ensureClientState();
   let list = productsState.filter((p) => p.isTrending);
   if (storefront) {
@@ -248,7 +283,7 @@ export async function getTrendingProducts(storefront?: StorefrontId): Promise<Pr
 }
 
 export async function createProduct(productData: Partial<Product> & { name: string; price: number; categoryId: string; images: string[] }): Promise<Product> {
-  await delay();
+  await delay(150);
   ensureClientState();
   const id = `prod_${Date.now()}`;
   const slug = (productData.name || 'silhouette')
@@ -284,6 +319,9 @@ export async function createProduct(productData: Partial<Product> & { name: stri
     careGuide: productData.careGuide || ['Specialist dry clean only'],
   };
 
+  const adminCreated = getInitialData<Product[]>('admin_created_products', []);
+  saveData('admin_created_products', [newProduct, ...adminCreated]);
+
   productsState = [newProduct, ...productsState];
   saveData('products', productsState);
   return newProduct;
@@ -293,12 +331,10 @@ export async function createProduct(productData: Partial<Product> & { name: stri
 // CATEGORIES API
 // ----------------------------------------------------------------------
 export async function getCategories(): Promise<Category[]> {
-  await delay();
   return (categoriesData as Category[]).filter((c) => c.visible);
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  await delay();
   const cat = (categoriesData as Category[]).find((c) => c.slug === slug);
   return cat || null;
 }
@@ -307,7 +343,6 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 // REVIEWS API
 // ----------------------------------------------------------------------
 export async function getReviews(productId: string): Promise<Review[]> {
-  await delay();
   ensureClientState();
   return reviewsState.filter((r) => r.productId === productId && r.status === 'published');
 }
@@ -315,7 +350,7 @@ export async function getReviews(productId: string): Promise<Review[]> {
 export async function addReview(
   reviewData: Omit<Review, 'id' | 'date' | 'status'>
 ): Promise<Review> {
-  await delay();
+  await delay(150);
   ensureClientState();
   const newReview: Review = {
     ...reviewData,
@@ -332,7 +367,6 @@ export async function addReview(
 // BANNERS & STOREFRONT CONFIG API
 // ----------------------------------------------------------------------
 export async function getBanners(storefront: StorefrontId): Promise<Banner[]> {
-  await delay();
   ensureClientState();
   return bannersState
     .filter((b) => b.active && (b.storefront === storefront || b.storefront === 'both'))
@@ -340,7 +374,6 @@ export async function getBanners(storefront: StorefrontId): Promise<Banner[]> {
 }
 
 export async function getStorefrontConfig(storefront: StorefrontId): Promise<StorefrontConfig> {
-  await delay();
   const configs = storefrontConfigData as Record<string, StorefrontConfig>;
   return configs[storefront] || configs['a'];
 }
@@ -585,6 +618,17 @@ export async function adminUpdateProductPrice(
   if (product) {
     product.price = newPrice;
     saveData('products', productsState);
+
+    const overrides = getInitialData<Record<string, Partial<Product>>>('product_overrides', {});
+    overrides[productId] = { ...(overrides[productId] || {}), price: newPrice };
+    saveData('product_overrides', overrides);
+
+    const adminCreated = getInitialData<Product[]>('admin_created_products', []);
+    const acIdx = adminCreated.findIndex((p) => p.id === productId);
+    if (acIdx !== -1) {
+      adminCreated[acIdx] = { ...adminCreated[acIdx], price: newPrice };
+      saveData('admin_created_products', adminCreated);
+    }
     return true;
   }
   return false;
@@ -648,6 +692,7 @@ export async function placeOrder(orderData: Omit<Order, 'id' | 'createdAt' | 'st
   }
 
   // 2. Decrement stock
+  const overrides = getInitialData<Record<string, Partial<Product>>>('product_overrides', {});
   for (const item of orderData.items) {
     for (const product of productsState) {
       const variant = product.variants.find((v) => v.sku === item.sku);
@@ -660,10 +705,16 @@ export async function placeOrder(orderData: Omit<Order, 'id' | 'createdAt' | 'st
         } else if (totalStock <= LOW_STOCK_THRESHOLD) {
           product.availability = 'low_stock';
         }
+        overrides[product.id] = {
+          ...(overrides[product.id] || {}),
+          variants: product.variants,
+          availability: product.availability,
+        };
       }
     }
   }
   saveData('products', productsState);
+  saveData('product_overrides', overrides);
 
   // 3. Create order
   const newOrder: Order = {
@@ -944,11 +995,13 @@ export async function adminUpdateProductStock(
   await delay(200);
   ensureClientState();
   let found = false;
+  let targetProduct: Product | undefined;
   for (const p of productsState) {
     const variant = p.variants.find((v) => v.sku === sku);
     if (variant) {
       variant.stock = Math.max(0, newStock);
       found = true;
+      targetProduct = p;
       const totalStock = p.variants.reduce((acc, v) => acc + v.stock, 0);
       if (totalStock === 0) {
         p.availability = 'out_of_stock';
@@ -961,8 +1014,16 @@ export async function adminUpdateProductStock(
     }
   }
 
-  if (found) {
+  if (found && targetProduct) {
     saveData('products', productsState);
+
+    const overrides = getInitialData<Record<string, Partial<Product>>>('product_overrides', {});
+    overrides[targetProduct.id] = {
+      ...(overrides[targetProduct.id] || {}),
+      variants: targetProduct.variants,
+      availability: targetProduct.availability,
+    };
+    saveData('product_overrides', overrides);
   }
   return found;
 }
@@ -1071,6 +1132,40 @@ export async function adminUpdateProduct(id: string, updates: Partial<Product>):
   const updatedProduct = { ...productsState[index], ...updates };
   productsState[index] = updatedProduct;
   saveData('products', productsState);
+
+  // Store only changed fields in product_overrides compared to original base product
+  const baseProduct = (productsData as Product[]).find((p) => p.id === id);
+  const overrides = getInitialData<Record<string, Partial<Product>>>('product_overrides', {});
+  const currentOverride = overrides[id] || {};
+  const mergedCandidate = { ...currentOverride, ...updates };
+  const minimalOverride: Partial<Product> = {};
+
+  if (baseProduct) {
+    for (const [k, v] of Object.entries(mergedCandidate)) {
+      const key = k as keyof Product;
+      if (JSON.stringify(v) !== JSON.stringify(baseProduct[key])) {
+        (minimalOverride as any)[key] = v;
+      }
+    }
+  } else {
+    Object.assign(minimalOverride, mergedCandidate);
+  }
+
+  if (Object.keys(minimalOverride).length > 0) {
+    overrides[id] = minimalOverride;
+  } else {
+    delete overrides[id];
+  }
+  saveData('product_overrides', overrides);
+
+  // Also update in admin_created_products if applicable
+  const adminCreated = getInitialData<Product[]>('admin_created_products', []);
+  const acIdx = adminCreated.findIndex((p) => p.id === id);
+  if (acIdx !== -1) {
+    adminCreated[acIdx] = { ...adminCreated[acIdx], ...updates };
+    saveData('admin_created_products', adminCreated);
+  }
+
   return updatedProduct;
 }
 
@@ -1082,6 +1177,22 @@ export async function adminDeleteProduct(id: string): Promise<boolean> {
   const deleted = productsState.length < initialLength;
   if (deleted) {
     saveData('products', productsState);
+
+    // Record in deleted_product_ids so it never reappears
+    const deletedIds = getInitialData<string[]>('deleted_product_ids', []);
+    if (!deletedIds.includes(id)) {
+      deletedIds.push(id);
+      saveData('deleted_product_ids', deletedIds);
+    }
+
+    // Clean up from admin_created_products
+    const adminCreated = getInitialData<Product[]>('admin_created_products', []);
+    saveData('admin_created_products', adminCreated.filter((p) => p.id !== id));
+
+    // Clean up from product_overrides
+    const overrides = getInitialData<Record<string, Partial<Product>>>('product_overrides', {});
+    delete overrides[id];
+    saveData('product_overrides', overrides);
   }
   return deleted;
 }

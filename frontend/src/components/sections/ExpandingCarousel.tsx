@@ -311,6 +311,7 @@ export const ExpandingCarousel: React.FC<ExpandingCarouselProps> = ({
             alt="Atelier Tailoring & Architecture Insignia"
             width={72}
             height={40}
+            sizes="72px"
             style={{
               width: 'auto',
               height: '38px',

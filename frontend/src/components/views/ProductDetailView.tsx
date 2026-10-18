@@ -4,7 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, useRouter } from 'next/navigation';
-import { getProductBySlug, getReviews, getProducts, getOrders } from '@/lib/mockApi';
+import { getProductBySlug, getReviews, getProducts, getOrders, ensureClientState } from '@/lib/mockApi';
+import { areProductsEqual } from '@/lib/catalogCompare';
 import { Product, Review, ProductVariant } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -49,6 +50,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
   initialAllProducts,
 }) => {
   const [product, setProduct] = useState<Product | null>(initialProduct);
+  const [missing, setMissing] = useState(false);
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
   const [allProducts, setAllProducts] = useState<Product[]>(initialAllProducts);
   const [loading, setLoading] = useState(!initialProduct);
@@ -139,8 +141,12 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
     user?.id && reviews.some((r) => r.userId === user.id)
   );
 
-  // Server pre-fetched data for this slug — skip redundant first-mount fetch
-  const isInitialMount = useRef(true);
+  const productRef = useRef(product);
+  productRef.current = product;
+  const reviewsRef = useRef(reviews);
+  reviewsRef.current = reviews;
+  const allProductsRef = useRef(allProducts);
+  allProductsRef.current = allProducts;
 
   // Gallery references for accessibility focus return
   const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -170,16 +176,64 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
     touchStartPos.current = null;
   };
 
+  // Mount-only silent reconciliation with localStorage (Strict Mode safe)
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      if (initialProduct) return;
+    let cancelled = false;
+    async function reconcileProductOnMount() {
+      ensureClientState();
+      try {
+        const [prod, catalogProds] = await Promise.all([
+          getProductBySlug(slug),
+          getProducts(),
+        ]);
+        if (cancelled) return;
+        if (!prod) {
+          setMissing(true);
+          setLoading(false);
+          return;
+        }
+        setMissing(false);
+        const revs = await getReviews(prod.id);
+        if (cancelled) return;
+        const currentProdArr = productRef.current ? [productRef.current] : null;
+        if (!areProductsEqual(currentProdArr, [prod])) {
+          console.log('[reconcile:product] product updated from localStorage', prod.id);
+          setProduct(prod);
+          setSelectedVariant((prev) => {
+            if (!prev) return prod.variants.find((v) => v.stock > 0) || prod.variants[0];
+            const updated = prod.variants.find((v) => v.sku === prev.sku);
+            return updated || prev;
+          });
+        }
+        if (JSON.stringify(reviewsRef.current) !== JSON.stringify(revs)) {
+          setReviews(revs);
+        }
+        if (!areProductsEqual(allProductsRef.current, catalogProds)) {
+          setAllProducts(catalogProds);
+        }
+        setLoading(false);
+      } catch {
+        // silent fallback
+      }
     }
+    reconcileProductOnMount();
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
+
+  // Separate effect when slug changes after initial mount
+  const prevSlugRef = useRef(slug);
+  useEffect(() => {
+    if (prevSlugRef.current === slug) {
+      return;
+    }
+    prevSlugRef.current = slug;
 
     let isMounted = true;
     async function loadProductData() {
+      setLoading(true);
       try {
-        // Concurrent fetch — no waterfall
         const [prod, catalogProds] = await Promise.all([
           getProductBySlug(slug),
           getProducts(),
@@ -188,9 +242,13 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
         if (!prod) {
           if (isMounted) {
             setProduct(null);
+            setMissing(true);
             setLoading(false);
           }
           return;
+        }
+        if (isMounted) {
+          setMissing(false);
         }
 
         const revs = await getReviews(prod.id);
@@ -205,6 +263,8 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
             setSelectedColor(firstInStock.color);
           }
         }
+      } catch {
+        // silent fallback
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -215,6 +275,10 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
       isMounted = false;
     };
   }, [slug]);
+
+  if (missing) {
+    notFound();
+  }
 
   if (loading) {
     return (

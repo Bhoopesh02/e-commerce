@@ -23,6 +23,7 @@ import {
   Calendar,
   X,
 } from 'lucide-react';
+import { useDropdownPosition } from '@/hooks/useDropdownPosition';
 
 type DatePreset = 'all' | 'today' | '7d' | '30d' | 'this_month' | 'custom';
 
@@ -41,6 +42,9 @@ export default function AdminReturnsPage() {
   const { showToast } = useToastStore();
   const filterRef = React.useRef<HTMLDivElement>(null);
   const dateFilterRef = React.useRef<HTMLDivElement>(null);
+
+  const filterDropdownStyle = useDropdownPosition(filterRef, isFilterOpen, 220);
+  const dateDropdownStyle = useDropdownPosition(dateFilterRef, isDateFilterOpen, 300);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -282,13 +286,12 @@ export default function AdminReturnsPage() {
                   style={{
                     position: 'absolute',
                     top: '100%',
-                    right: 0,
+                    ...filterDropdownStyle,
                     marginTop: '8px',
                     backgroundColor: 'var(--admin-surface)',
                     border: '1px solid var(--admin-border)',
                     borderRadius: 'var(--radius-md)',
                     boxShadow: '0 4px 20px var(--overlay-black-15)',
-                    width: '220px',
                     zIndex: 50,
                     padding: '8px',
                     overflow: 'hidden'
@@ -351,13 +354,12 @@ export default function AdminReturnsPage() {
                   style={{
                     position: 'absolute',
                     top: '100%',
-                    right: 0,
+                    ...dateDropdownStyle,
                     marginTop: '8px',
                     backgroundColor: 'var(--admin-surface)',
                     border: '1px solid var(--admin-border)',
                     borderRadius: 'var(--radius-md)',
                     boxShadow: '0 4px 20px var(--overlay-black-15)',
-                    width: '300px',
                     zIndex: 50,
                     overflow: 'hidden'
                   }}

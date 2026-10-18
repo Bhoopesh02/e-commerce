@@ -29,6 +29,7 @@
   --color-golden-800: #7A5B22;
 
   /* Icy Lake */
+  --color-icy-lake: #F5F8F8;
   --color-icy-lake-50: #F5F8F8;
   --color-icy-lake-200: #DFE7E9;
   --color-icy-lake-300: #CAD4D6;
@@ -124,6 +125,7 @@
   --nav-backdrop: var(--overlay-white-85);
   --announcement-bar-height: 37px;
   --navbar-height: 76px;
+  --header-h: var(--navbar-height);
 
   /* ===== Typography ===== */
   /* Moved to typography.css */
@@ -174,7 +176,7 @@
   --editorial-accent: var(--brand-primary);
   --carousel-card-ratio: 1.4;
   --hero-min-height: 100vh;
-  --hero-min-height: 100dvh;
+  --hero-min-height: 100svh;
   --heading-letter-spacing: -0.02em;
 }
 
@@ -182,6 +184,7 @@
   :root {
     --announcement-bar-height: 33px;
     --navbar-height: 64px;
+    --header-h: var(--navbar-height);
   }
 }
 

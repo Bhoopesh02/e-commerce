@@ -2,7 +2,14 @@
 
 import { useEffect, type ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { smoothScrollService } from '@/services/smooth-scroll';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });
+}
 
 export interface SmoothScrollProviderProps {
   children?: ReactNode;

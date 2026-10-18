@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Truck, CheckCircle2, Search, Filter, ChevronDown, Check, Calendar, X } from 'lucide-react';
+import { useDropdownPosition } from '@/hooks/useDropdownPosition';
 
 type DatePreset = 'all' | 'today' | '7d' | '30d' | 'this_month' | 'custom';
 
@@ -28,6 +29,9 @@ export default function AdminOrdersPage() {
   const { showToast } = useToastStore();
   const filterRef = React.useRef<HTMLDivElement>(null);
   const dateFilterRef = React.useRef<HTMLDivElement>(null);
+
+  const filterDropdownStyle = useDropdownPosition(filterRef, isFilterOpen, 240);
+  const dateDropdownStyle = useDropdownPosition(dateFilterRef, isDateFilterOpen, 300);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -173,7 +177,7 @@ export default function AdminOrdersPage() {
       {/* Filters and Search */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '8px' }}>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-          <div style={{ maxWidth: '400px', flex: 1 }}>
+          <div style={{ maxWidth: '400px', flex: 1, minWidth: '240px' }}>
             <Input 
               placeholder="Search commissions..." 
               value={searchQuery}
@@ -208,13 +212,12 @@ export default function AdminOrdersPage() {
                   style={{ 
                     position: 'absolute', 
                     top: '100%', 
-                    right: 0, 
+                    ...filterDropdownStyle,
                     marginTop: '8px',
                     backgroundColor: 'var(--admin-surface)',
                     border: '1px solid var(--admin-border)',
                     borderRadius: 'var(--radius-md)',
                     boxShadow: '0 4px 20px var(--overlay-black-15)',
-                    width: '240px',
                     zIndex: 50,
                     overflow: 'hidden'
                   }}
@@ -295,13 +298,12 @@ export default function AdminOrdersPage() {
                   style={{ 
                     position: 'absolute', 
                     top: '100%', 
-                    right: 0, 
+                    ...dateDropdownStyle,
                     marginTop: '8px',
                     backgroundColor: 'var(--admin-surface)',
                     border: '1px solid var(--admin-border)',
                     borderRadius: 'var(--radius-md)',
                     boxShadow: '0 4px 20px var(--overlay-black-15)',
-                    width: '300px',
                     zIndex: 50,
                     overflow: 'hidden'
                   }}

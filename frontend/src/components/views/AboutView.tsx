@@ -150,7 +150,6 @@ export const AboutView: React.FC = () => {
                 src="/images/about/about-hero-silhouette.webp"
                 alt="Bespoke sculpted hourglass tailoring jacket on artisanal mannequin"
                 fill
-                priority
                 sizes="(max-width: 768px) 240px, (max-width: 1200px) 360px, 440px"
                 className={styles.silhouetteImg}
                 quality={92}

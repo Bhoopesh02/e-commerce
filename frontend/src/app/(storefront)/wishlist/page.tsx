@@ -1,5 +1,7 @@
 import { WishlistView } from '@/components/views/WishlistView';
+import { getAllInitialProducts } from '@/lib/serverData';
 
 export default function WishlistPage() {
-  return <WishlistView />;
+  const allProducts = getAllInitialProducts();
+  return <WishlistView initialAllProducts={allProducts} />;
 }
