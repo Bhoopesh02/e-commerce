@@ -103,11 +103,9 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
         if (cancelled) return;
         const nextNewArrivals = prods.filter((p) => p.isNewArrival || p.tags?.includes('new-arrival'));
         if (!areProductsEqual(productsRef.current, nextNewArrivals)) {
-          console.log('[reconcile:new-arrivals] products updated from localStorage', nextNewArrivals.length);
           setProducts(nextNewArrivals);
         }
         if (!areCategoriesEqual(categoriesRef.current, cats)) {
-          console.log('[reconcile:new-arrivals] categories updated from localStorage', cats.length);
           setCategories(cats);
         }
       } catch {

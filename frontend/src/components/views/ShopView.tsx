@@ -324,11 +324,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
         ]);
         if (cancelled) return;
         if (!areProductsEqual(productsRef.current, prods)) {
-          console.log('[reconcile:shop] products updated from localStorage', prods.length);
           setProducts(prods);
         }
         if (!areCategoriesEqual(categoriesRef.current, cats)) {
-          console.log('[reconcile:shop] categories updated from localStorage', cats.length);
           setCategories(cats);
         }
       } catch {

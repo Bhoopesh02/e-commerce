@@ -319,23 +319,18 @@ export const HomeView: React.FC<HomeViewProps> = ({
         ]);
         if (cancelled) return;
         if (!areProductsEqual(productsRef.current, allProds)) {
-          console.log('[reconcile:home] products updated from localStorage', allProds.length);
           setProducts(allProds);
         }
         if (!areProductsEqual(newArrivalsRef.current, newArr)) {
-          console.log('[reconcile:home] newArrivals updated from localStorage', newArr.length);
           setNewArrivals(newArr);
         }
         if (!areProductsEqual(trendingRef.current, trend)) {
-          console.log('[reconcile:home] trending updated from localStorage', trend.length);
           setTrending(trend);
         }
         if (!areCategoriesEqual(categoriesRef.current, cats)) {
-          console.log('[reconcile:home] categories updated from localStorage', cats.length);
           setCategories(cats);
         }
         if (JSON.stringify(configRef.current) !== JSON.stringify(cfg)) {
-          console.log('[reconcile:home] storefront config updated from localStorage');
           setConfig(cfg);
         }
       } catch {

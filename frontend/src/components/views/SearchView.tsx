@@ -229,20 +229,16 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
         ]);
         if (cancelled) return;
         if (!areProductsEqual(allCatalogRef.current, allProds)) {
-          console.log('[reconcile:search] allCatalog updated from localStorage', allProds.length);
           setAllCatalog(allProds);
         }
         const fallbackSlice = arrivals.slice(0, 4);
         if (!areProductsEqual(curatedFallbackRef.current, fallbackSlice)) {
-          console.log('[reconcile:search] curatedFallback updated from localStorage', fallbackSlice.length);
           setCuratedFallback(fallbackSlice);
         }
         if (!areCategoriesEqual(categoriesRef.current, cats)) {
-          console.log('[reconcile:search] categories updated from localStorage', cats.length);
           setCategories(cats);
         }
         if (!initialQuery && !areProductsEqual(productsRef.current, allProds)) {
-          console.log('[reconcile:search] products updated from localStorage', allProds.length);
           setProducts(allProds);
         }
       } catch (err) {

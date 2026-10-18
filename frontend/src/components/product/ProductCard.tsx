@@ -232,10 +232,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           whileTap={shouldReduceMotion ? undefined : { scale: 0.92 }}
           style={{
             position: 'absolute',
-            top: '10px',
-            right: '10px',
-            width: '32px',
-            height: '32px',
+            top: '8px',
+            right: '8px',
+            width: '44px',
+            height: '44px',
+            minWidth: '44px',
+            minHeight: '44px',
             borderRadius: '50%',
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: 'none',
@@ -245,21 +247,54 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             color: isFavorited ? 'var(--brand-primary)' : 'var(--text-primary)',
             cursor: 'pointer',
             zIndex: 3,
-            boxShadow: '0 1px 5px rgba(0, 0, 0, 0.12)',
+            boxShadow: '0 1px 6px rgba(0, 0, 0, 0.12)',
             padding: 0,
             backdropFilter: 'blur(4px)',
             WebkitBackdropFilter: 'blur(4px)',
           }}
         >
           <Heart
-            size={16}
+            size={18}
             fill={isFavorited ? 'currentColor' : 'transparent'}
             stroke="currentColor"
             strokeWidth={1.8}
           />
         </motion.button>
 
-        {/* Quick Add Overlay on Hover */}
+        {/* Mobile Quick Add Button (Always visible on touch, 44x44px target) */}
+        <button
+          onClick={handleQuickAdd}
+          disabled={isAdding}
+          className="card-quick-add-mobile"
+          aria-label={`Quick add ${product.name} to bag`}
+          style={{
+            position: 'absolute',
+            bottom: '8px',
+            right: '8px',
+            width: '44px',
+            height: '44px',
+            minWidth: '44px',
+            minHeight: '44px',
+            borderRadius: '50%',
+            backgroundColor: isAdding ? 'var(--color-success)' : 'rgba(255, 255, 255, 0.95)',
+            border: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: isAdding ? 'var(--color-diamond)' : 'var(--text-primary)',
+            cursor: 'pointer',
+            zIndex: 3,
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.14)',
+            padding: 0,
+            backdropFilter: 'blur(4px)',
+            WebkitBackdropFilter: 'blur(4px)',
+            transition: 'background-color 200ms ease, color 200ms ease, transform 150ms ease',
+          }}
+        >
+          {isAdding ? <Check size={18} strokeWidth={2.5} /> : <ShoppingBag size={18} strokeWidth={1.8} />}
+        </button>
+
+        {/* Quick Add Overlay on Hover (Desktop) */}
         <div
           className="quick-add-overlay"
           style={{
@@ -279,7 +314,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             onClick={handleQuickAdd}
             disabled={isAdding}
-            className={`quick-add-btn ${variant === 'grid' ? 'h-9 text-[11px] md:h-[var(--btn-height)] md:text-[var(--btn-text)]' : ''}`}
+            className="quick-add-btn"
+            style={{ minHeight: '44px' }}
             aria-label={`Quick add ${product.name} to bag`}
           >
             {isAdding ? (
@@ -489,8 +525,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           {/* Second Line: Product Name (with space reserved for up to 2 lines) */}
-          <div style={{ minHeight: '2.6em', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
-            <Link href={`/product/${product.slug}`} onClick={onClick} style={{ textDecoration: 'none', minWidth: 0 }}>
+          <div style={{ minHeight: '44px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <Link
+              href={`/product/${product.slug}`}
+              onClick={onClick}
+              style={{
+                textDecoration: 'none',
+                minWidth: 0,
+                minHeight: '44px',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
               <h3
                 style={{
                   fontSize: 'clamp(0.92rem, 3.6vw, 1rem)',
@@ -554,32 +600,47 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                       setActiveColor(colorName);
                     }}
                     style={{
-                      width: '18px',
-                      height: '18px',
+                      width: '44px',
+                      height: '44px',
+                      minWidth: '44px',
+                      minHeight: '44px',
                       borderRadius: '50%',
                       display: 'inline-flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       padding: 0,
                       background: 'transparent',
-                      border: isSelected ? '1px solid var(--text-primary)' : '1px solid transparent',
+                      border: 'none',
                       cursor: 'pointer',
-                      transition: 'border-color 0.15s ease',
                       outline: 'none',
+                      margin: '-12px -10px',
                     }}
                   >
                     <span
                       style={{
-                        width: '12px',
-                        height: '12px',
+                        width: '18px',
+                        height: '18px',
                         borderRadius: '50%',
-                        background,
-                        boxShadow: isLight
-                          ? 'inset 0 0 0 1px rgba(0, 0, 0, 0.18)'
-                          : 'inset 0 0 0 1px rgba(255, 255, 255, 0.12)',
-                        display: 'block',
+                        border: isSelected ? '1px solid var(--text-primary)' : '1px solid transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'border-color 0.15s ease',
                       }}
-                    />
+                    >
+                      <span
+                        style={{
+                          width: '12px',
+                          height: '12px',
+                          borderRadius: '50%',
+                          background,
+                          boxShadow: isLight
+                            ? 'inset 0 0 0 1px rgba(0, 0, 0, 0.18)'
+                            : 'inset 0 0 0 1px rgba(255, 255, 255, 0.12)',
+                          display: 'block',
+                        }}
+                      />
+                    </span>
                   </button>
                 );
               })}

@@ -490,6 +490,7 @@ button.filter-btn:focus-visible,
   position: relative;
   overflow: hidden;
   width: 100%;
+  min-height: 44px;
   padding: 10px 16px;
   background-color: var(--cta-primary) !important;
   backdrop-filter: blur(8px) saturate(120%);
@@ -567,7 +568,13 @@ button.filter-btn:focus-visible,
   }
 }
 
-/* Hide Quick Add overlay on mobile — no hover on touch devices */
+/* Card Quick Add Mobile Button vs Desktop Overlay */
+@media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+  .card-quick-add-mobile {
+    display: none !important;
+  }
+}
+
 @media (max-width: 767px) {
   .quick-add-overlay {
     display: none !important;

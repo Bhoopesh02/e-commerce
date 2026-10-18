@@ -208,8 +208,10 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
             position: 'absolute',
             top: '4px',
             right: '4px',
-            width: '36px',
-            height: '36px',
+            width: '44px',
+            height: '44px',
+            minWidth: '44px',
+            minHeight: '44px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -289,7 +291,7 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
         </div>
         <Link
           href={`/product/${product.slug}`}
-          style={{ textDecoration: 'none', display: 'block', minHeight: '2.5em' }}
+          style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', minHeight: '44px' }}
         >
           <h4
             style={{
@@ -372,8 +374,8 @@ export const BannerProductCard: React.FC<BannerProductCardProps> = ({
           style={{
             marginTop: '5px',
             width: '100%',
-            minHeight: '28px',
-            padding: '4px 8px',
+            minHeight: '44px',
+            padding: '8px 12px',
             borderRadius: '6px',
             backgroundColor: isAdding ? 'var(--success-on-inverse-bg)' : 'rgba(255, 255, 255, 0.12)',
             border: isAdding ? '1px solid rgba(74, 222, 128, 0.5)' : '1px solid var(--overlay-white-20)',

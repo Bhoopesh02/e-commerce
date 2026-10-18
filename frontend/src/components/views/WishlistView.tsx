@@ -70,12 +70,10 @@ export const WishlistView: React.FC<WishlistViewProps> = ({
         ]);
         if (cancelled) return;
         if (!areProductsEqual(allCatalogRef.current, all)) {
-          console.log('[reconcile:wishlist] updating allCatalog from localStorage', all.length);
           setAllCatalog(all);
         }
         const nextWishlistProds = all.filter((p) => currentIds.includes(p.id));
         if (!areProductsEqual(productsRef.current, nextWishlistProds)) {
-          console.log('[reconcile:wishlist] updating wishlist products from localStorage', nextWishlistProds.length);
           setProducts(nextWishlistProds);
         }
       } catch {

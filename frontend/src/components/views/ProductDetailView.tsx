@@ -197,7 +197,6 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
         if (cancelled) return;
         const currentProdArr = productRef.current ? [productRef.current] : null;
         if (!areProductsEqual(currentProdArr, [prod])) {
-          console.log('[reconcile:product] product updated from localStorage', prod.id);
           setProduct(prod);
           setSelectedVariant((prev) => {
             if (!prev) return prod.variants.find((v) => v.stock > 0) || prod.variants[0];
