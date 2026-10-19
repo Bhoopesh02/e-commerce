@@ -793,10 +793,11 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     alignItems: 'center',
                     border: '1px solid var(--border-color)',
                     borderRadius: '2px',
-                    padding: '2px 10px',
-                    gap: '12px',
+                    padding: '0 2px',
+                    gap: '4px',
                     backgroundColor: 'var(--bg-surface)',
-                    height: '38px',
+                    height: '44px',
+                    minHeight: '44px',
                     boxSizing: 'border-box',
                   }}
                 >
@@ -804,12 +805,19 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     style={{
-                      fontSize: '1.1rem',
+                      width: '44px',
+                      height: '44px',
+                      minWidth: '44px',
+                      minHeight: '44px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '1.2rem',
                       color: 'var(--text-secondary)',
                       background: 'none',
                       border: 'none',
                       cursor: 'pointer',
-                      padding: '0 4px',
+                      padding: 0,
                       lineHeight: 1,
                     }}
                     aria-label="Decrease quantity"
@@ -820,7 +828,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     style={{
                       fontSize: '0.9rem',
                       fontWeight: 600,
-                      minWidth: '20px',
+                      minWidth: '24px',
                       textAlign: 'center',
                       color: 'var(--text-primary)',
                     }}
@@ -831,12 +839,19 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     type="button"
                     onClick={() => setQuantity(Math.min(selectedVariant?.stock || 5, quantity + 1))}
                     style={{
-                      fontSize: '1.1rem',
+                      width: '44px',
+                      height: '44px',
+                      minWidth: '44px',
+                      minHeight: '44px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '1.2rem',
                       color: 'var(--text-secondary)',
                       background: 'none',
                       border: 'none',
                       cursor: 'pointer',
-                      padding: '0 4px',
+                      padding: 0,
                       lineHeight: 1,
                     }}
                     aria-label="Increase quantity"
@@ -847,7 +862,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
               </div>
 
               {/* Action Buttons Stack (Styled after uploaded luxury reference) */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div ref={mainCtaRef} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {/* 1. Add to Atelier Bag */}
                 <Button
                   variant="primary"
@@ -1127,7 +1142,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
               </div>
               <Button
                 variant={isReviewFormOpen ? 'ghost' : 'outline'}
-                size="sm"
+                size="md"
                 onClick={() => setIsReviewFormOpen(!isReviewFormOpen)}
               >
                 {isReviewFormOpen ? 'Close Reflection' : 'Write Client Reflection'}
@@ -1206,7 +1221,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 )}
                 <Button
                   variant={isReviewFormOpen ? 'ghost' : 'outline'}
-                  size="sm"
+                  size="md"
                   onClick={() => setIsReviewFormOpen(!isReviewFormOpen)}
                 >
                   {isReviewFormOpen ? 'Close Reflection' : 'Write Client Reflection'}
@@ -1249,36 +1264,38 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
           <p style={{ marginBottom: '16px' }}>
             Our garments are tailored to European luxury standards. Measure directly against your frame with a flexible tape:
           </p>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', marginBottom: '20px' }}>
-            <thead>
-              <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-primary)' }}>
-                <th style={{ padding: '8px' }}>Size</th>
-                <th style={{ padding: '8px' }}>EU</th>
-                <th style={{ padding: '8px' }}>Chest (in)</th>
-                <th style={{ padding: '8px' }}>Waist (in)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style={{ borderBottom: '1px solid var(--border-light)' }}>
-                <td style={{ padding: '8px', fontWeight: 600 }}>S / 38R</td>
-                <td style={{ padding: '8px' }}>48</td>
-                <td style={{ padding: '8px' }}>37 – 39</td>
-                <td style={{ padding: '8px' }}>30 – 32</td>
-              </tr>
-              <tr style={{ borderBottom: '1px solid var(--border-light)' }}>
-                <td style={{ padding: '8px', fontWeight: 600 }}>M / 40R</td>
-                <td style={{ padding: '8px' }}>50</td>
-                <td style={{ padding: '8px' }}>39 – 41</td>
-                <td style={{ padding: '8px' }}>32 – 34</td>
-              </tr>
-              <tr style={{ borderBottom: '1px solid var(--border-light)' }}>
-                <td style={{ padding: '8px', fontWeight: 600 }}>L / 42R</td>
-                <td style={{ padding: '8px' }}>52</td>
-                <td style={{ padding: '8px' }}>41 – 43</td>
-                <td style={{ padding: '8px' }}>34 – 36</td>
-              </tr>
-            </tbody>
-          </table>
+          <div style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch', marginBottom: '20px' }}>
+            <table style={{ width: '100%', minWidth: '320px', borderCollapse: 'collapse', textAlign: 'left' }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-primary)' }}>
+                  <th style={{ padding: '8px' }}>Size</th>
+                  <th style={{ padding: '8px' }}>EU</th>
+                  <th style={{ padding: '8px' }}>Chest (in)</th>
+                  <th style={{ padding: '8px' }}>Waist (in)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style={{ borderBottom: '1px solid var(--border-light)' }}>
+                  <td style={{ padding: '8px', fontWeight: 600 }}>S / 38R</td>
+                  <td style={{ padding: '8px' }}>48</td>
+                  <td style={{ padding: '8px' }}>37 – 39</td>
+                  <td style={{ padding: '8px' }}>30 – 32</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid var(--border-light)' }}>
+                  <td style={{ padding: '8px', fontWeight: 600 }}>M / 40R</td>
+                  <td style={{ padding: '8px' }}>50</td>
+                  <td style={{ padding: '8px' }}>39 – 41</td>
+                  <td style={{ padding: '8px' }}>32 – 34</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid var(--border-light)' }}>
+                  <td style={{ padding: '8px', fontWeight: 600 }}>L / 42R</td>
+                  <td style={{ padding: '8px' }}>52</td>
+                  <td style={{ padding: '8px' }}>41 – 43</td>
+                  <td style={{ padding: '8px' }}>34 – 36</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
             For bespoke fitting advice, our client concierge is at your service via the support portal.
           </p>
@@ -1295,6 +1312,46 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
         onIndexChange={(newIdx) => setActiveImageIndex(newIdx)}
         returnFocusElement={thumbnailRefs.current[activeImageIndex] || mainImageRef.current}
       />
+
+      {/* Mobile Sticky Add-to-Cart Bar */}
+      <div className={`pdp-sticky-bar ${showStickyBar ? 'is-visible' : ''}`}>
+        <div className="pdp-sticky-inner">
+          <div className="pdp-sticky-info">
+            <span className="pdp-sticky-name">{product.name}</span>
+            <span className="pdp-sticky-sub">
+              <span className="pdp-sticky-price">{formatPrice(product.price)}</span>
+              {selectedVariant && (
+                <span className="pdp-sticky-variant">
+                  · {selectedVariant.color} · {selectedVariant.size}
+                </span>
+              )}
+            </span>
+          </div>
+          <div className="pdp-sticky-actions">
+            <button
+              type="button"
+              onClick={() => toggleItem(product.id)}
+              className="pdp-sticky-wishlist-btn"
+              aria-label={isFavorited ? 'Remove from Wishlist' : 'Add to Wishlist'}
+            >
+              <Heart
+                size={18}
+                fill={isFavorited ? 'var(--color-black-tie)' : 'none'}
+                stroke="currentColor"
+              />
+            </button>
+            <Button
+              variant="primary"
+              onClick={handleAddToCart}
+              disabled={isOutOfStock || isAddingToCart}
+              isLoading={isAddingToCart}
+              className="pdp-sticky-add-btn"
+            >
+              {isOutOfStock ? 'Sold Out' : 'Add to Bag'}
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
