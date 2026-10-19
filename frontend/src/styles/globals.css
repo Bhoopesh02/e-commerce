@@ -137,6 +137,20 @@ p {
   color: var(--text-muted);
 }
 
+/* Card Titles Word Wrapping & Hyphenation (strictly headings and card titles only) */
+.card-title,
+.card-filename,
+.product-card-title,
+.category-card-title,
+.guide-card-title,
+.silhouettes-card-title,
+.editorial-card-title,
+[class*="product-card"] h3,
+[class*="product-card"] h4 {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
 /* Luxury Layout Containers */
 .container {
   width: 100%;
