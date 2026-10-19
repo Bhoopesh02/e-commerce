@@ -78,6 +78,23 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  const mainCtaRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = mainCtaRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyBar(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [product]);
 
   const { user, isAuthenticated } = useAuthStore();
   const [isVerifiedBuyer, setIsVerifiedBuyer] = useState(false);
@@ -343,7 +360,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
           }}
           className="animated-back-btn"
           style={{
-            display: 'flex',
+            display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
             fontSize: '0.9rem',
@@ -351,8 +368,10 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
             background: 'none',
             border: 'none',
             cursor: 'pointer',
-            padding: 0,
-            marginBottom: '32px',
+            padding: '10px 12px',
+            margin: '-10px -12px 24px',
+            minHeight: '44px',
+            minWidth: '44px',
             fontWeight: 500,
           }}
         >
@@ -363,7 +382,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
         {/* Top Split: Gallery & Product Info */}
         <div className="pdp-split-layout">
           {/* Left: Multi-Image Gallery */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className="pdp-gallery-column" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {/* Primary Main Image - touch or click to view full screen */}
             <div
               ref={mainImageRef}
@@ -581,8 +600,10 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                               onMouseEnter={() => setHoveredColor(colorName)}
                               onMouseLeave={() => setHoveredColor(null)}
                               style={{
-                                width: '38px',
-                                height: '38px',
+                                width: '44px',
+                                height: '44px',
+                                minWidth: '44px',
+                                minHeight: '44px',
                                 borderRadius: '50%',
                                 display: 'inline-flex',
                                 alignItems: 'center',
@@ -602,8 +623,8 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                               {/* Inner Color Swatch Circle */}
                               <span
                                 style={{
-                                  width: '26px',
-                                  height: '26px',
+                                  width: '28px',
+                                  height: '28px',
                                   borderRadius: '50%',
                                   background,
                                   boxShadow: isLight
@@ -648,7 +669,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                         style={{
                           display: 'inline-flex',
                           alignItems: 'center',
-                          gap: '5px',
+                          gap: '6px',
                           fontSize: '0.84rem',
                           color: 'var(--text-secondary)',
                           textDecoration: 'underline',
@@ -656,7 +677,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                           cursor: 'pointer',
                           background: 'none',
                           border: 'none',
-                          padding: 0,
+                          padding: '8px 12px',
+                          margin: '-8px -12px',
+                          minHeight: '44px',
                           fontWeight: 400,
                         }}
                       >
