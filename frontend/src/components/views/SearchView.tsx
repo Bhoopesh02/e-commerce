@@ -729,14 +729,16 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
       <div className="container search-page-container" style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 24px' }}>
         {/* Search Header */}
         <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-          <h1 style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--brand-primary)', fontWeight: 600, marginBottom: '12px' }}>
+          <span className="type-eyebrow" style={{ color: 'var(--brand-primary)', display: 'block', marginBottom: '12px' }}>
             SEARCH
+          </span>
+          <h1 style={{ fontSize: 'var(--text-h2)', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontWeight: 400, marginBottom: '8px' }}>
+            {initialQuery ? (
+              <>Search results for &ldquo;{initialQuery}&rdquo;</>
+            ) : (
+              <>Search the Atelier Collection</>
+            )}
           </h1>
-          {initialQuery && (
-            <h2 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontWeight: 400, marginBottom: '8px' }}>
-              Search results for &ldquo;{initialQuery}&rdquo;
-            </h2>
-          )}
         </div>
 
         {/* Search Input & Interactive Suggestions Container */}

@@ -12,7 +12,7 @@
   -webkit-user-select: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .heroBanner {
     margin-top: var(--announcement-bar-height, 33px);
     height: calc(100vh - var(--announcement-bar-height, 33px));

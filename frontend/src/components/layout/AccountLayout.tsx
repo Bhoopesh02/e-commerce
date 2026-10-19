@@ -166,7 +166,7 @@ export const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
           display: none;
         }
         
-        @media (max-width: 768px) {
+        @media (max-width: 767px) {
           .account-page {
             padding-top: calc(var(--navbar-height, 64px) + var(--announcement-bar-height, 33px) + clamp(16px, 3vw, 24px));
             padding-bottom: 48px;

@@ -1752,7 +1752,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
         .hide-scrollbar::-webkit-scrollbar {
           display: none;
         }
-        @media (max-width: 768px) {
+        @media (max-width: 767px) {
           .silhouette-counter {
             display: none !important;
           }

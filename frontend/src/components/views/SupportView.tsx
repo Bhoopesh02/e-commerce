@@ -133,13 +133,13 @@ export const SupportView: React.FC = () => {
         {activeTab === 'concierge' && (
           <div className="tab-pane fade-in">
             <div style={{ marginBottom: '28px' }}>
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
+              <span className="type-eyebrow" style={{ color: 'var(--brand-primary)', display: 'block', marginBottom: '4px' }}>
                 Client Relations Desk
               </span>
-              <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', marginTop: '4px' }}>
+              <h1 className="type-h1" style={{ marginTop: '4px' }}>
                 Atelier Concierge Inquiries
               </h1>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', marginTop: '6px' }}>
+              <p className="type-body" style={{ color: 'var(--text-muted)', marginTop: '6px' }}>
                 Direct correspondence regarding custom tailoring sizing, delivery scheduling, and fabric provenance.
               </p>
             </div>
@@ -147,7 +147,7 @@ export const SupportView: React.FC = () => {
             <div className="support-grid">
               {/* Left: New Inquiry Form */}
               <div className="support-card inquiry-form-card">
-                <h2 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-display)', marginBottom: '16px' }}>
+                <h2 className="type-h3" style={{ marginBottom: '16px' }}>
                   Dispatch New Inquiry
                 </h2>
 
@@ -184,7 +184,7 @@ export const SupportView: React.FC = () => {
 
               {/* Right: Existing Threads */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <h2 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-display)' }}>Previous Threads</h2>
+                <h2 className="type-h3">Previous Threads</h2>
 
                 {tickets.length === 0 ? (
                   <div

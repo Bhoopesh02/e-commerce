@@ -135,14 +135,11 @@ export const WishlistView: React.FC<WishlistViewProps> = ({
         >
           <div>
             <div
+              className="type-eyebrow"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
                 color: 'var(--brand-primary)',
                 marginBottom: '8px',
               }}
@@ -150,7 +147,7 @@ export const WishlistView: React.FC<WishlistViewProps> = ({
               <Heart size={13} fill="currentColor" />
               <span>Personal Curation</span>
             </div>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)' }}>Wishlist</h1>
+            <h1 className="type-h1">Wishlist</h1>
           </div>
 
           {products.length > 0 && (
@@ -177,10 +174,10 @@ export const WishlistView: React.FC<WishlistViewProps> = ({
             }}
           >
             <Heart size={44} style={{ color: 'var(--border-color)', margin: '0 auto 16px' }} />
-            <h3 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-display)', marginBottom: '8px' }}>
+            <h3 className="type-h3" style={{ marginBottom: '8px' }}>
               Your Wishlist is Empty
             </h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', marginBottom: '24px' }}>
+            <p className="type-body" style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>
               Explore our runway collections and bookmark pieces to monitor atelier reserve and sizing.
             </p>
             <Link href="/shop">

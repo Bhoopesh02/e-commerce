@@ -122,8 +122,18 @@ video {
   display: block;
 }
 
-/* Typography Hierarchy */
-/* Typography system is now managed in typography.css */
+/* Typography Hierarchy & Global Responsive Safeguards */
+/* Typography token scale is managed in typography.css */
+
+p, span, li, a, label, dd, dt, blockquote {
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
 
 p {
   color: var(--text-secondary);
@@ -135,20 +145,6 @@ p {
 
 .text-muted {
   color: var(--text-muted);
-}
-
-/* Card Titles Word Wrapping & Hyphenation (strictly headings and card titles only) */
-.card-title,
-.card-filename,
-.product-card-title,
-.category-card-title,
-.guide-card-title,
-.silhouettes-card-title,
-.editorial-card-title,
-[class*="product-card"] h3,
-[class*="product-card"] h4 {
-  overflow-wrap: break-word;
-  hyphens: auto;
 }
 
 /* Luxury Layout Containers */
@@ -1176,7 +1172,7 @@ button.filter-btn:focus-visible,
 }
 
 .revenue-card__badge {
-  font-size: 0.72rem;
+  font-size: var(--text-xs);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -1443,7 +1439,7 @@ button.filter-btn:focus-visible,
   padding: 8px 10px;
   border-radius: 6px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
-  font-size: 0.72rem;
+  font-size: var(--text-xs);
   white-space: nowrap;
   z-index: 35;
   pointer-events: none;
@@ -1735,7 +1731,7 @@ button.filter-btn:focus-visible,
   }
 
   .admin-kpi-title {
-    font-size: 0.68rem !important;
+    font-size: var(--text-xs) !important;
   }
 
   .admin-kpi-pill {
@@ -1755,11 +1751,11 @@ button.filter-btn:focus-visible,
   }
 
   .admin-kpi-trend {
-    font-size: 0.68rem !important;
+    font-size: var(--text-xs) !important;
   }
 
   .admin-kpi-subtitle {
-    font-size: 0.65rem !important;
+    font-size: var(--text-xs) !important;
   }
 
   /* Overall Revenue Card Mobile Optimization */
@@ -1772,7 +1768,7 @@ button.filter-btn:focus-visible,
   }
 
   .revenue-card__badge {
-    font-size: 0.65rem !important;
+    font-size: var(--text-xs) !important;
     padding: 2px 6px !important;
   }
 
@@ -1831,7 +1827,7 @@ button.filter-btn:focus-visible,
   }
 
   .peak-sales-subtitle {
-    font-size: 0.7rem !important;
+    font-size: var(--text-xs) !important;
     max-width: none !important;
   }
 
@@ -1876,7 +1872,7 @@ button.filter-btn:focus-visible,
   }
 
   .peak-sales-stats span:first-child {
-    font-size: 0.62rem !important;
+    font-size: var(--text-xs) !important;
   }
 
   .peak-sales-stat-val {
@@ -2286,7 +2282,7 @@ button.filter-btn:focus-visible,
     gap: 4px !important;
   }
   .search-suggestions-header-title {
-    font-size: 0.75rem !important;
+    font-size: var(--text-xs) !important;
     letter-spacing: 0.06em !important;
     margin-bottom: 6px !important;
   }
@@ -2295,7 +2291,7 @@ button.filter-btn:focus-visible,
     height: 11px !important;
   }
   .search-suggestions-clear-btn {
-    font-size: 0.75rem !important;
+    font-size: var(--text-xs) !important;
   }
 
   /* Trending Suggestions Grid: compact, balanced 2-column alignment */
@@ -2305,7 +2301,7 @@ button.filter-btn:focus-visible,
   }
   .search-trending-btn {
     padding: 6px 8px !important;
-    font-size: 0.75rem !important;
+    font-size: var(--text-xs) !important;
     gap: 6px !important;
     border-radius: 6px !important;
     width: 100% !important;
@@ -2322,7 +2318,7 @@ button.filter-btn:focus-visible,
     flex-shrink: 0 !important;
   }
   .search-trending-text {
-    font-size: 0.75rem !important;
+    font-size: var(--text-xs) !important;
     line-height: 1.25 !important;
     flex: 1 1 0% !important;
     min-width: 0 !important;
@@ -2338,7 +2334,7 @@ button.filter-btn:focus-visible,
   }
   .search-category-btn {
     padding: 4px 9px !important;
-    font-size: 0.75rem !important;
+    font-size: var(--text-xs) !important;
     line-height: 1.2 !important;
     border-radius: 9999px !important;
   }
@@ -2346,7 +2342,7 @@ button.filter-btn:focus-visible,
   /* Recent Inquiries items */
   .search-recent-item {
     padding: 5px 8px !important;
-    font-size: 0.75rem !important;
+    font-size: var(--text-xs) !important;
     border-radius: 6px !important;
   }
   .search-recent-icon {
@@ -2354,13 +2350,13 @@ button.filter-btn:focus-visible,
     height: 12px !important;
   }
   .search-recent-text {
-    font-size: 0.75rem !important;
+    font-size: var(--text-xs) !important;
   }
 
   /* Query Active mode elements */
   .search-query-match-btn {
     padding: 5px 8px !important;
-    font-size: 0.75rem !important;
+    font-size: var(--text-xs) !important;
     border-radius: 6px !important;
   }
   .search-matching-cats-wrap {
@@ -2368,7 +2364,7 @@ button.filter-btn:focus-visible,
   }
   .search-matching-cat-btn {
     padding: 4px 9px !important;
-    font-size: 0.75rem !important;
+    font-size: var(--text-xs) !important;
   }
   .search-preview-item {
     padding: 4px 6px !important;
@@ -2380,13 +2376,13 @@ button.filter-btn:focus-visible,
     height: 42px !important;
   }
   .search-preview-name {
-    font-size: 0.75rem !important;
+    font-size: var(--text-xs) !important;
   }
   .search-preview-cat {
-    font-size: 0.75rem !important;
+    font-size: var(--text-xs) !important;
   }
   .search-preview-price {
-    font-size: 0.75rem !important;
+    font-size: var(--text-xs) !important;
   }
 
   /* Trending pills row under search input */
@@ -2437,12 +2433,13 @@ button.filter-btn:focus-visible,
   }
 }
 
-/* iOS Safari form input auto-zoom prevention */
+/* iOS Safari form input auto-zoom prevention & mobile touch accessibility */
 @media (max-width: 767px) {
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]),
   select,
   textarea {
     font-size: 16px !important;
+    min-height: 44px;
   }
 }
 

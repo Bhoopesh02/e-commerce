@@ -864,7 +864,7 @@ a:focus-visible .luxury-btn.no-sheen svg.lucide-arrow-right {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .reveal-banner__img {
     transform: translateX(40px) scale(1.04);
   }

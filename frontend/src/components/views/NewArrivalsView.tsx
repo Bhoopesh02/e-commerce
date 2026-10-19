@@ -1013,12 +1013,6 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
           </div>
         </div>
       </Drawer>
-      <style jsx global>{`
-        .category-pill-strip::-webkit-scrollbar { display: none; }
-        .nav-btn-custom { position: relative; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 4px; background: transparent; border: none; outline: none; cursor: pointer; user-select: none; white-space: nowrap; flex-shrink: 0; }
-        .nav-label-custom { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; transition: color 0.2s ease; color: var(--text-muted); font-weight: 400; font-family: inherit; }
-        .nav-label-custom.active { color: var(--text-primary); font-weight: 600; }
-      `}</style>
     </div>
   );
 };

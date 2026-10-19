@@ -524,15 +524,15 @@ export const CheckoutView: React.FC = () => {
             <CheckCircle2 size={36} />
           </div>
 
-          <span style={{ fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
+          <span className="type-eyebrow" style={{ color: 'var(--brand-primary)' }}>
             Atelier Order Confirmed
           </span>
 
-          <h1 style={{ fontSize: 'clamp(2.2rem, 4vw, 3rem)', marginTop: '8px', marginBottom: '16px' }}>
+          <h1 className="type-h1" style={{ marginTop: '8px', marginBottom: '16px' }}>
             Thank You, {confirmedOrder.customerName}
           </h1>
 
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '24px' }}>
+          <p className="type-lead" style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>
             Your commission has been registered successfully.
             Our master tailors are preparing your pieces for white-glove dispatch.
           </p>
@@ -855,10 +855,10 @@ export const CheckoutView: React.FC = () => {
       <div className="container">
         {/* Step Progression Header */}
         <div style={{ maxWidth: '780px', margin: '0 auto 48px', textAlign: 'center' }}>
-          <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', marginBottom: '16px' }}>
+          <h1 className="type-h1" style={{ marginBottom: '16px' }}>
             Atelier Checkout
           </h1>
-          <div className="checkout-step-container" style={{ display: 'flex', justifyContent: 'center', fontSize: '0.85rem' }}>
+          <div className="checkout-step-container" style={{ display: 'flex', justifyContent: 'center', fontSize: 'var(--text-sm)' }}>
             <span style={{ color: step >= 1 ? 'var(--brand-primary)' : 'var(--text-muted)', fontWeight: step === 1 ? 700 : 500, textAlign: 'center' }}>
               <span className="step-num">1. </span><span className="step-text">Contact</span>
             </span>

@@ -65,7 +65,7 @@
    Section Banner Mobile Responsive Styles (.section-banner-split)
    Ensure the top banner image occupies 100% full width on mobile viewports.
    ========================================================================== */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .section-banner-split {
     flex-direction: column !important;
     min-height: auto !important;

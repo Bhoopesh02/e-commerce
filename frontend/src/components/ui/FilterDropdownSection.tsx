@@ -78,7 +78,7 @@ export const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
           {badge && (
             <span
               style={{
-                fontSize: 'var(--text-xs)',
+                fontSize: '0.72rem',
                 letterSpacing: '0.03em',
                 fontWeight: 600,
                 padding: '2px 8px',

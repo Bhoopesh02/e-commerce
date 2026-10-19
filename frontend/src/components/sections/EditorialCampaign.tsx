@@ -333,7 +333,7 @@ export const EditorialCampaign: React.FC<EditorialCampaignProps> = ({
           }
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 767px) {
           .editorial-banner-section {
             padding: 60px 16px 70px;
           }

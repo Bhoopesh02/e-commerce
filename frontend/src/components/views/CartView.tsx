@@ -109,7 +109,7 @@ export const CartView: React.FC = () => {
   return (
     <div style={{ paddingTop: '110px', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       <div className="container">
-        <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)', marginBottom: '36px' }}>Your Atelier Bag</h1>
+        <h1 className="type-h1" style={{ marginBottom: '36px' }}>Your Atelier Bag</h1>
 
         <div
           className="cart-main-grid"

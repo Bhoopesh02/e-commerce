@@ -295,7 +295,7 @@
 /* =========================================================
    Mobile View Responsiveness (Crop Like Uploaded Image)
    ========================================================= */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .carouselSection {
     margin-top: var(--announcement-bar-height, 33px);
     height: calc(100vh - var(--announcement-bar-height, 33px));

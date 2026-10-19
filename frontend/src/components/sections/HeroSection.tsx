@@ -126,7 +126,7 @@ export const HeroSection: React.FC = () => {
               className="hero-eyebrow text-left block mb-4"
               style={{
                 fontFamily: 'var(--font-accent)',
-                fontSize: 'clamp(0.72rem, 0.58rem + 0.18vw, 0.85rem)',
+                fontSize: 'var(--text-xs)',
                 fontWeight: 600,
                 letterSpacing: 'clamp(0.12em, 0.08em + 0.08vw, 0.18em)',
                 textTransform: 'uppercase',
@@ -143,7 +143,7 @@ export const HeroSection: React.FC = () => {
               className="hero-heading text-left"
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(2.1rem, 1.2rem + 2.5vw, 5rem)',
+                fontSize: 'var(--text-hero)',
                 lineHeight: 1.05,
                 fontWeight: 500,
                 letterSpacing: '-0.02em',
@@ -158,22 +158,6 @@ export const HeroSection: React.FC = () => {
               <LineReveal bottomPadding="8px">NOCTURNAL</LineReveal>
               <LineReveal bottomPadding="8px">SILHOUETTES</LineReveal>
             </h1>
-
-            <StaggerFadeUp
-              as="p"
-              className="hero-description text-left max-w-[38ch] mb-6"
-              style={{
-                fontSize: 'clamp(0.85rem, 0.65rem + 0.32vw, 1.05rem)',
-                color: 'var(--bg-subtle)',
-                lineHeight: 1.6,
-                maxWidth: '38ch',
-                marginBottom: '24px',
-                textAlign: 'left',
-              }}
-            >
-              The new collection arrives at Aurelia. Hand-finished Italian nappa
-              leather, double-faced cashmere, and bias-cut mulberry silk.
-            </StaggerFadeUp>
 
             <div className="hero-cta-group flex flex-wrap gap-4 items-center justify-start text-left">
               <StaggerFadeUp className="hero-cta-link text-left inline-flex self-start w-auto">
@@ -214,7 +198,7 @@ export const HeroSection: React.FC = () => {
               className="hero-eyebrow text-left block mb-4"
               style={{
                 fontFamily: 'var(--font-accent)',
-                fontSize: 'clamp(0.72rem, 0.58rem + 0.18vw, 0.85rem)',
+                fontSize: 'var(--text-xs)',
                 fontWeight: 600,
                 letterSpacing: 'clamp(0.12em, 0.08em + 0.08vw, 0.18em)',
                 textTransform: 'uppercase',
@@ -231,7 +215,7 @@ export const HeroSection: React.FC = () => {
               className="hero-heading text-left"
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(2.1rem, 1.2rem + 2.5vw, 5rem)',
+                fontSize: 'var(--text-hero)',
                 lineHeight: 1.1,
                 fontWeight: 500,
                 marginBottom: '20px',

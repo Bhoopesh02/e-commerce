@@ -804,7 +804,7 @@ export const FaqView: React.FC<FaqViewProps> = ({
           margin-top: auto;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 767px) {
           .faq-concierge-contact-card {
             padding: 20px;
           }
