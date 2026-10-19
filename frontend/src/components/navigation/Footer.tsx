@@ -609,6 +609,8 @@ export const Footer: React.FC = () => {
           background-color: rgba(255, 255, 255, 0.07);
           border-radius: var(--radius-pill, 999px);
           padding: 5px 6px 5px 18px;
+          min-height: 52px;
+          box-sizing: border-box;
           border: 1px solid var(--overlay-white-10, rgba(255, 255, 255, 0.12));
           transition: border-color 200ms ease, box-shadow 200ms ease;
         }
@@ -624,7 +626,8 @@ export const Footer: React.FC = () => {
           border: none;
           outline: none;
           color: var(--color-diamond);
-          font-size: 0.88rem;
+          font-size: 1rem;
+          min-height: 44px;
           min-width: 0;
         }
 
@@ -640,7 +643,12 @@ export const Footer: React.FC = () => {
           font-weight: 600;
           letter-spacing: 0.08em;
           text-transform: uppercase;
-          padding: 10px 22px;
+          min-height: 44px;
+          padding: 0 22px;
+          box-sizing: border-box;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
           border-radius: var(--radius-pill, 999px);
           border: none;
           cursor: pointer;
@@ -727,8 +735,10 @@ export const Footer: React.FC = () => {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          width: 36px;
-          height: 36px;
+          width: 44px;
+          height: 44px;
+          min-width: 44px;
+          min-height: 44px;
           border-radius: 50%;
           background-color: var(--color-diamond);
           color: var(--color-black-tie);
@@ -848,14 +858,22 @@ export const Footer: React.FC = () => {
 
           .footer-input-wrapper {
             padding: 4px 5px 4px 16px;
+            min-height: 52px;
+            box-sizing: border-box;
           }
 
           .footer-newsletter-input {
-            font-size: 0.84rem;
+            font-size: 1rem;
+            min-height: 44px;
           }
 
           .footer-inscribe-btn {
-            padding: 9px 18px;
+            min-height: 44px;
+            padding: 0 20px;
+            box-sizing: border-box;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             font-size: 0.78rem;
           }
 
@@ -924,15 +942,16 @@ export const Footer: React.FC = () => {
           }
 
           .footer-mobile-columns-wrapper .footer-links-list {
-            gap: 2px;
+            gap: 4px;
           }
 
           .footer-link {
-            font-size: 0.72rem;
-            min-height: unset;
-            padding: 2px 0;
+            font-size: 0.8rem;
+            min-height: 38px;
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 0;
             line-height: 1.35;
-            white-space: nowrap;
           }
 
           /* 4. Mobile Connect With Us & Social Icons */
@@ -959,6 +978,10 @@ export const Footer: React.FC = () => {
           .footer-contact-link {
             color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            box-sizing: border-box;
             transition: color 150ms ease;
           }
 
@@ -977,8 +1000,10 @@ export const Footer: React.FC = () => {
           }
 
           .footer-social-circle {
-            width: 38px;
-            height: 38px;
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            min-height: 44px;
           }
 
           /* 5. Mobile Bottom Bar */

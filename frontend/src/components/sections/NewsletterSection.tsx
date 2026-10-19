@@ -101,15 +101,17 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
         ) : (
           <form
             onSubmit={handleSubmit}
+            className="newsletter-form"
             style={{
               display: 'flex',
-              flexDirection: 'row',
               gap: '12px',
               maxWidth: '520px',
               margin: '0 auto',
+              width: '100%',
             }}
           >
             <div
+              className="newsletter-input-wrapper"
               style={{
                 flex: 1,
                 display: 'flex',
@@ -117,8 +119,10 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
                 backgroundColor: 'rgba(255, 255, 255, 0.18)',
                 backdropFilter: 'blur(8px)',
                 borderRadius: 'var(--radius-pill)',
-                padding: '12px 20px',
+                padding: '0 20px',
+                minHeight: '48px',
                 border: '1px solid rgba(224, 224, 224, 0.35)',
+                boxSizing: 'border-box',
               }}
             >
               <Mail size={18} style={{ color: 'var(--border-color)', marginRight: '10px', flexShrink: 0 }} />
@@ -131,7 +135,12 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
                 style={{
                   width: '100%',
                   color: "var(--text-inverse)",
-                  fontSize: '0.92rem',
+                  fontSize: '1rem',
+                  minHeight: '44px',
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  boxSizing: 'border-box',
                 }}
               />
             </div>
@@ -140,8 +149,12 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
               variant="white"
               size="md"
               isLoading={isLoading}
+              className="newsletter-submit-btn"
               style={{
                 flexShrink: 0,
+                minHeight: '48px',
+                minWidth: '120px',
+                boxSizing: 'border-box',
               }}
             >
               Inscribe
@@ -149,6 +162,17 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({
           </form>
         )}
       </div>
+
+      <style jsx>{`
+        @media (max-width: 480px) {
+          :global(.newsletter-form) {
+            flex-direction: column !important;
+          }
+          :global(.newsletter-submit-btn) {
+            width: 100% !important;
+          }
+        }
+      `}</style>
     </section>
   );
 };

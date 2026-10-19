@@ -567,9 +567,14 @@ export const CheckoutView: React.FC = () => {
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
-                  padding: '4px',
+                  width: 44,
+                  height: 44,
+                  minWidth: 44,
+                  minHeight: 44,
                   display: 'inline-flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '-10px 0 -10px 0',
                   color: copiedField === 'order' ? 'var(--color-success)' : 'var(--text-muted)',
                   borderRadius: 'var(--radius-xs)',
                   transition: 'color 0.2s',
@@ -577,7 +582,7 @@ export const CheckoutView: React.FC = () => {
                 title="Copy Order ID"
                 aria-label="Copy Order ID"
               >
-                {copiedField === 'order' ? <Check size={14} /> : <Copy size={14} />}
+                {copiedField === 'order' ? <Check size={16} /> : <Copy size={16} />}
               </button>
             </div>
 
@@ -598,9 +603,14 @@ export const CheckoutView: React.FC = () => {
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
-                    padding: '4px',
+                    width: 44,
+                    height: 44,
+                    minWidth: 44,
+                    minHeight: 44,
                     display: 'inline-flex',
                     alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '-10px 0 -10px 0',
                     color: copiedField === 'tracking' ? 'var(--color-success)' : 'var(--text-muted)',
                     borderRadius: 'var(--radius-xs)',
                     transition: 'color 0.2s',
@@ -608,7 +618,7 @@ export const CheckoutView: React.FC = () => {
                   title="Copy Tracking ID"
                   aria-label="Copy Tracking ID"
                 >
-                  {copiedField === 'tracking' ? <Check size={14} /> : <Copy size={14} />}
+                  {copiedField === 'tracking' ? <Check size={16} /> : <Copy size={16} />}
                 </button>
               )}
             </div>
@@ -897,11 +907,11 @@ export const CheckoutView: React.FC = () => {
               </div>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <Button variant="outline" size="sm" onClick={fixStockIssues}>
+              <Button variant="outline" size="md" onClick={fixStockIssues} style={{ minHeight: 44 }}>
                 Auto-Adjust Bag
               </Button>
               <Link href="/cart">
-                <Button variant="secondary" size="sm">
+                <Button variant="secondary" size="md" style={{ minHeight: 44 }}>
                   Return to Bag
                 </Button>
               </Link>
@@ -937,7 +947,7 @@ export const CheckoutView: React.FC = () => {
                 </span>
               </div>
             </div>
-            <Button variant="outline" size="sm" onClick={syncPrices} leftIcon={<RefreshCw size={13} />}>
+            <Button variant="outline" size="md" onClick={syncPrices} leftIcon={<RefreshCw size={13} />} style={{ minHeight: 44 }}>
               Update Prices & Totals
             </Button>
           </div>
@@ -1044,7 +1054,10 @@ export const CheckoutView: React.FC = () => {
                           setSignInError(null);
                         }}
                         style={{
-                          padding: '11px 16px',
+                          padding: '0 16px',
+                          minHeight: 44,
+                          height: 44,
+                          boxSizing: 'border-box',
                           fontSize: '0.88rem',
                           fontWeight: authMode === 'signin' ? 600 : 500,
                           borderRadius: 'var(--radius-xs, 4px)',
@@ -1074,7 +1087,10 @@ export const CheckoutView: React.FC = () => {
                           setRegisterError(null);
                         }}
                         style={{
-                          padding: '11px 16px',
+                          padding: '0 16px',
+                          minHeight: 44,
+                          height: 44,
+                          boxSizing: 'border-box',
                           fontSize: '0.88rem',
                           fontWeight: authMode === 'register' ? 600 : 500,
                           borderRadius: 'var(--radius-xs, 4px)',
@@ -1175,7 +1191,10 @@ export const CheckoutView: React.FC = () => {
                                 border: 'none',
                                 cursor: 'pointer',
                                 fontWeight: 600,
-                                padding: 0,
+                                minHeight: 44,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                padding: '0 4px',
                               }}
                             >
                               Create an account →
@@ -1263,7 +1282,10 @@ export const CheckoutView: React.FC = () => {
                                 border: 'none',
                                 cursor: 'pointer',
                                 fontWeight: 600,
-                                padding: 0,
+                                minHeight: 44,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                padding: '0 4px',
                               }}
                             >
                               Sign in here →
@@ -1331,7 +1353,10 @@ export const CheckoutView: React.FC = () => {
                             background: 'none',
                             border: 'none',
                             cursor: 'pointer',
-                            padding: '4px 6px',
+                            padding: '0 8px',
+                            minHeight: 44,
+                            display: 'inline-flex',
+                            alignItems: 'center',
                             textDecoration: 'underline',
                           }}
                         >
@@ -1451,7 +1476,10 @@ export const CheckoutView: React.FC = () => {
                       border: 'none',
                       cursor: 'pointer',
                       fontWeight: 500,
-                      padding: 0,
+                      minHeight: 44,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      padding: '0 8px',
                     }}
                   >
                     ← Edit Contact
@@ -1583,8 +1611,8 @@ export const CheckoutView: React.FC = () => {
                       style={{
                         marginTop: '3px',
                         accentColor: 'var(--brand-primary)',
-                        width: '18px',
-                        height: '18px',
+                        width: '20px',
+                        height: '20px',
                         cursor: 'pointer',
                       }}
                     />
@@ -1640,8 +1668,9 @@ export const CheckoutView: React.FC = () => {
                                 if (billingError) setBillingError(null);
                               }}
                               style={{
-                                padding: '6px 12px',
-                                fontSize: '0.76rem',
+                                minHeight: 44,
+                                padding: '0 16px',
+                                fontSize: '0.82rem',
                                 borderRadius: 'var(--radius-pill)',
                                 border: '1px solid var(--border-color)',
                                 backgroundColor: 'var(--bg-surface)',
@@ -1762,7 +1791,21 @@ export const CheckoutView: React.FC = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>Delivery Method</h3>
-                  <button onClick={() => goToStep(2)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
+                  <button
+                    onClick={() => goToStep(2)}
+                    style={{
+                      fontSize: '0.8rem',
+                      color: 'var(--brand-primary)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontWeight: 500,
+                      minHeight: 44,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      padding: '0 8px',
+                    }}
+                  >
                     ← Edit Address
                   </button>
                 </div>
@@ -1816,7 +1859,21 @@ export const CheckoutView: React.FC = () => {
               <div className="checkout-step-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0, overflow: 'visible' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>Select Payment Method</h3>
-                  <button onClick={() => goToStep(3)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
+                  <button
+                    onClick={() => goToStep(3)}
+                    style={{
+                      fontSize: '0.8rem',
+                      color: 'var(--brand-primary)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontWeight: 500,
+                      minHeight: 44,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      padding: '0 8px',
+                    }}
+                  >
                     ← Edit Delivery
                   </button>
                 </div>

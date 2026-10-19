@@ -163,8 +163,11 @@ export const CheckoutAuthModal: React.FC<CheckoutAuthModalProps> = ({
               setError(null);
             }}
             style={{
-              padding: '10px 14px',
-              fontSize: '0.85rem',
+              padding: '0 14px',
+              minHeight: 44,
+              height: 44,
+              boxSizing: 'border-box',
+              fontSize: '0.88rem',
               fontWeight: tab === 'signin' ? 600 : 500,
               borderRadius: 'var(--radius-xs, 4px)',
               border: 'none',
@@ -192,8 +195,11 @@ export const CheckoutAuthModal: React.FC<CheckoutAuthModalProps> = ({
               setError(null);
             }}
             style={{
-              padding: '10px 14px',
-              fontSize: '0.85rem',
+              padding: '0 14px',
+              minHeight: 44,
+              height: 44,
+              boxSizing: 'border-box',
+              fontSize: '0.88rem',
               fontWeight: tab === 'register' ? 600 : 500,
               borderRadius: 'var(--radius-xs, 4px)',
               border: 'none',

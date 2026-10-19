@@ -68,7 +68,10 @@
 
 .readMoreLink {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  box-sizing: border-box;
   margin-top: 8px;
   font-size: 0.8rem;
   font-weight: 500;
@@ -77,7 +80,6 @@
   color: var(--text-primary);
   text-decoration: none;
   width: fit-content;
-  padding-bottom: 4px;
   outline: none;
 }
 

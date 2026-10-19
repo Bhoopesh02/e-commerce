@@ -165,10 +165,12 @@ export function CollectionsBannerCarousel() {
         }}
       >
         {slides.map((slide, index) => {
+          const isInitial = index === 1;
           const common = {
             alt: slide.alt,
             fill: true,
-            priority: index === 0,
+            priority: isInitial,
+            loading: isInitial ? ('eager' as const) : ('lazy' as const),
             quality: 80,
             sizes: '100vw',
           };
@@ -218,6 +220,8 @@ export function CollectionsBannerCarousel() {
                     {...desktopRest}
                     srcSet={desktopSrcSet}
                     alt={slide.alt}
+                    loading={isInitial ? 'eager' : 'lazy'}
+                    fetchPriority={isInitial ? 'high' : 'auto'}
                     style={{
                       ...desktopRest.style,
                       ['--pos-desktop' as string]: slide.objectPosition || 'center 26%',
@@ -374,7 +378,8 @@ export function CollectionsBannerCarousel() {
           right: '0',
           display: 'flex',
           justifyContent: 'center',
-          gap: '8px',
+          alignItems: 'center',
+          gap: '2px',
           zIndex: 10,
         }}
       >
@@ -392,16 +397,28 @@ export function CollectionsBannerCarousel() {
               }}
               aria-label={`Go to slide ${i + 1}`}
               style={{
-                width: activeIndex === i ? '24px' : '8px',
-                height: '4px',
-                borderRadius: '4px',
-                backgroundColor: activeIndex === i ? 'var(--bg-subtle)' : 'rgba(245, 248, 248, 0.4)',
+                minWidth: '44px',
+                minHeight: '44px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'transparent',
                 border: 'none',
-                padding: 0,
+                padding: '0 4px',
                 cursor: 'pointer',
-                transition: 'all 0.3s ease',
               }}
-            />
+            >
+              <span
+                style={{
+                  display: 'block',
+                  width: activeIndex === i ? '24px' : '8px',
+                  height: '4px',
+                  borderRadius: '4px',
+                  backgroundColor: activeIndex === i ? 'var(--bg-subtle)' : 'rgba(245, 248, 248, 0.4)',
+                  transition: 'all 0.3s ease',
+                }}
+              />
+            </button>
           );
         })}
       </div>
@@ -538,6 +555,7 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
             alt: banner.alt,
             fill: true,
             priority: true,
+            loading: 'eager' as const,
             quality: 80,
             sizes: '100vw',
           };
@@ -570,6 +588,8 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
                 {...desktopRest}
                 srcSet={desktopSrcSet}
                 alt={banner.alt}
+                loading="eager"
+                fetchPriority="high"
                 style={{
                   ...desktopRest.style,
                   ['--pos-desktop' as string]: banner.objectPosition || 'center 26%',

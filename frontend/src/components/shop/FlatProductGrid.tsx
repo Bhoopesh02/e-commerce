@@ -71,7 +71,7 @@ export const FlatProductGrid: React.FC<FlatProductGridProps> = ({ products, gend
                   viewport={{ once: true, margin: '-30px' }}
                   transition={shouldReduceMotion ? undefined : { duration: 0.45, delay: (idx % 4) * 0.06 }}
                 >
-                  <ProductCard product={product} />
+                  <ProductCard product={product} priority={chunkIndex === 0 && idx < 4} />
                 </motion.div>
               ))}
             </div>

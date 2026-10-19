@@ -98,9 +98,13 @@ export default function PreferencesPage() {
         /* Toggle Switch Styles */
         .switch {
           position: relative;
-          display: inline-block;
-          width: 44px;
-          height: 24px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 52px;
+          height: 44px;
+          min-height: 44px;
+          cursor: pointer;
         }
 
         .switch input {
@@ -112,10 +116,10 @@ export default function PreferencesPage() {
         .slider {
           position: absolute;
           cursor: pointer;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
+          top: 10px;
+          left: 4px;
+          right: 4px;
+          bottom: 10px;
           background-color: var(--overlay-black-20);
           transition: .3s;
         }
@@ -155,7 +159,12 @@ export default function PreferencesPage() {
           background-color: var(--text-primary);
           color: var(--text-inverse);
           border: none;
-          padding: 12px 24px;
+          padding: 0 24px;
+          min-height: 44px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
           font-size: 0.9rem;
           cursor: pointer;
           transition: opacity 0.2s ease;

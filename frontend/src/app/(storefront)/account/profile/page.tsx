@@ -125,7 +125,7 @@ export default function ProfilePage() {
         
         .text-action-sm {
           font-size: 0.85rem;
-          display: flex;
+          display: inline-flex;
           align-items: center;
           gap: 4px;
           color: var(--overlay-black-70);
@@ -134,7 +134,9 @@ export default function ProfilePage() {
           cursor: pointer;
           background: none;
           border: none;
-          padding: 0;
+          padding: 0 12px;
+          min-height: 44px;
+          box-sizing: border-box;
         }
         
         .text-action-sm:hover {

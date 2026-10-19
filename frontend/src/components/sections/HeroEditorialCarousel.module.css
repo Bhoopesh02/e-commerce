@@ -216,7 +216,10 @@
 .ctaButton {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
+  min-height: 44px;
+  box-sizing: border-box;
   padding: clamp(10px, 0.6rem + 0.4vw, 14px) clamp(18px, 0.9rem + 0.9vw, 28px);
   border-radius: 0px;
   background-color: var(--color-diamond);
@@ -263,9 +266,18 @@
   height: 3px;
   background: rgba(255, 255, 255, 0.22);
   border-radius: 2px;
-  overflow: hidden;
+  overflow: visible;
   cursor: pointer;
   transition: width 0.3s ease, background 0.3s ease;
+}
+
+.indicatorBar::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  bottom: -20px;
+  left: 0;
+  right: 0;
 }
 
 .indicatorBar.activeIndicator {

@@ -52,6 +52,7 @@ export const AboutView: React.FC = () => {
                 alt="Aurelia sartorial tailoring in charcoal virgin wool with bespoke shears and measuring tape in the atelier"
                 fill
                 priority
+                loading="eager"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 45vw, 520px"
                 className={styles.portraitImage}
                 quality={90}

@@ -495,10 +495,12 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
                   aria-label="Search new arrivals"
                   style={{
                     width: '180px',
-                    padding: '7px 30px 7px 34px',
+                    minHeight: '44px',
+                    boxSizing: 'border-box',
+                    padding: '8px 30px 8px 34px',
                     border: '1px solid var(--border-color)',
                     borderRadius: 'var(--radius-pill, 999px)',
-                    fontSize: '0.82rem',
+                    fontSize: '1rem',
                     fontFamily: 'inherit',
                     backgroundColor: 'var(--bg-surface)',
                     color: 'var(--text-primary)',
@@ -559,8 +561,12 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: '44px',
+                  minWidth: '44px',
+                  boxSizing: 'border-box',
                   gap: '8px',
-                  padding: '7px 0px',
+                  padding: '0 10px',
                   border: 'none',
                   fontSize: '0.82rem',
                   fontWeight: 600,
@@ -645,8 +651,11 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
                     disabled={currentPage === 1}
                     aria-label="Previous Page"
                     style={{
-                      width: '38px',
-                      height: '38px',
+                      width: '44px',
+                      height: '44px',
+                      minWidth: '44px',
+                      minHeight: '44px',
+                      boxSizing: 'border-box',
                       borderRadius: '50%',
                       display: 'flex',
                       alignItems: 'center',
@@ -692,8 +701,11 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
                         aria-label={`Page ${pageNum}`}
                         aria-current={isActive ? 'page' : undefined}
                         style={{
-                          width: '38px',
-                          height: '38px',
+                          width: '44px',
+                          height: '44px',
+                          minWidth: '44px',
+                          minHeight: '44px',
+                          boxSizing: 'border-box',
                           borderRadius: '50%',
                           display: 'flex',
                           alignItems: 'center',
@@ -721,8 +733,11 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
                     disabled={currentPage === totalPages}
                     aria-label="Next Page"
                     style={{
-                      width: '38px',
-                      height: '38px',
+                      width: '44px',
+                      height: '44px',
+                      minWidth: '44px',
+                      minHeight: '44px',
+                      boxSizing: 'border-box',
                       borderRadius: '50%',
                       display: 'flex',
                       alignItems: 'center',
@@ -750,7 +765,7 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
         )}
 
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: filteredProducts.length > PRODUCTS_PER_PAGE ? '36px' : '60px' }}>
-          <button onClick={() => smoothScrollService.scrollTo(0)} className="hover-fill-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 24px', borderRadius: 'var(--radius-pill)', border: '1px solid var(--border-color)', fontSize: '0.85rem', fontWeight: 500, backgroundColor: 'var(--bg-surface)', cursor: 'pointer' }}>
+          <button onClick={() => smoothScrollService.scrollTo(0)} className="hover-fill-btn" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '0 24px', minHeight: '44px', boxSizing: 'border-box', borderRadius: 'var(--radius-pill)', border: '1px solid var(--border-color)', fontSize: '0.85rem', fontWeight: 500, backgroundColor: 'var(--bg-surface)', cursor: 'pointer' }}>
             <ArrowUp size={16} />
             <span>Return to Top</span>
           </button>

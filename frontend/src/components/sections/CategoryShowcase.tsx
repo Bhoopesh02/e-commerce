@@ -77,14 +77,15 @@ const CategoryCardItem: React.FC<{ category: Category }> = ({ category }) => {
   }, []);
 
   return (
-    <div 
-      onClick={() => router.push(`/shop?categorySlug=${category.slug}`)}
+    <Link 
+      href={`/shop?categorySlug=${category.slug}`}
       className="category-card group"
       style={{
         display: 'flex',
         flexDirection: 'column',
         gap: '16px',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        textDecoration: 'none',
       }}
     >
       <div 
@@ -133,7 +134,7 @@ const CategoryCardItem: React.FC<{ category: Category }> = ({ category }) => {
       </div>
       
       <div style={{
-        display: 'flex',
+        display: 'inline-flex',
         alignItems: 'center',
         gap: '8px',
         textTransform: 'uppercase',
@@ -141,11 +142,12 @@ const CategoryCardItem: React.FC<{ category: Category }> = ({ category }) => {
         letterSpacing: '0.05em',
         color: 'var(--text-secondary)',
         fontWeight: 500,
+        minHeight: '44px',
         transition: 'color 0.3s ease'
       }} className="category-card-title">
         {category.name} <ChevronRight size={14} />
       </div>
-    </div>
+    </Link>
   );
 };
 

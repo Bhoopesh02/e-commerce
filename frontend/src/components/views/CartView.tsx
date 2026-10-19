@@ -149,7 +149,7 @@ export const CartView: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" onClick={fixStockIssues}>
+                <Button variant="outline" size="md" onClick={fixStockIssues} style={{ minHeight: 44 }}>
                   Auto-Adjust Bag
                 </Button>
               </div>
@@ -180,7 +180,7 @@ export const CartView: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" onClick={syncPrices} leftIcon={<RefreshCw size={13} />}>
+                <Button variant="outline" size="md" onClick={syncPrices} leftIcon={<RefreshCw size={13} />} style={{ minHeight: 44 }}>
                   Update Prices
                 </Button>
               </div>
@@ -196,6 +196,7 @@ export const CartView: React.FC = () => {
               return (
                 <div
                   key={item.sku}
+                  className="cart-item-row"
                   style={{
                     display: 'flex',
                     gap: '20px',
@@ -211,6 +212,7 @@ export const CartView: React.FC = () => {
                   }}
                 >
                   <div
+                    className="cart-item-thumb"
                     style={{
                       position: 'relative',
                       width: '110px',
@@ -242,8 +244,8 @@ export const CartView: React.FC = () => {
                     )}
                   </div>
 
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                       <Link href={`/product/${item.product.slug}`}>
                         <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                           {item.product.name}
@@ -251,7 +253,20 @@ export const CartView: React.FC = () => {
                       </Link>
                       <button
                         onClick={() => removeItem(item.sku)}
-                        style={{ color: 'var(--text-muted)', cursor: 'pointer' }}
+                        style={{
+                          color: 'var(--text-muted)',
+                          width: 44,
+                          height: 44,
+                          minWidth: 44,
+                          minHeight: 44,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          margin: '-10px -10px -10px 0',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                        }}
                         aria-label="Remove item"
                       >
                         <AnimatedTrashIcon size={16} />
@@ -264,7 +279,7 @@ export const CartView: React.FC = () => {
 
                     {/* Stock Warning Badges */}
                     {isOutOfStock && (
-                      <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                         <span
                           style={{
                             display: 'inline-flex',
@@ -284,12 +299,16 @@ export const CartView: React.FC = () => {
                         <button
                           onClick={() => removeItem(item.sku)}
                           style={{
-                            fontSize: '0.78rem',
+                            fontSize: '0.8rem',
                             color: 'var(--color-error)',
                             textDecoration: 'underline',
                             background: 'none',
                             border: 'none',
                             cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            minHeight: 44,
+                            padding: '0 4px',
                           }}
                         >
                           Remove from bag
@@ -298,7 +317,7 @@ export const CartView: React.FC = () => {
                     )}
 
                     {!isOutOfStock && isExceeded && (
-                      <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                         <span
                           style={{
                             display: 'inline-flex',
@@ -318,12 +337,16 @@ export const CartView: React.FC = () => {
                         <button
                           onClick={() => updateQuantity(item.sku, val.availableStock)}
                           style={{
-                            fontSize: '0.78rem',
+                            fontSize: '0.8rem',
                             color: 'var(--color-warning)',
                             textDecoration: 'underline',
                             background: 'none',
                             border: 'none',
                             cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            minHeight: 44,
+                            padding: '0 4px',
                           }}
                         >
                           Adjust to {val.availableStock}
@@ -360,19 +383,34 @@ export const CartView: React.FC = () => {
                           alignItems: 'center',
                           border: '1px solid var(--border-color)',
                           borderRadius: 'var(--radius-pill)',
-                          padding: '4px 12px',
-                          gap: '12px',
+                          padding: '0 2px',
+                          height: 44,
+                          boxSizing: 'border-box',
                           opacity: isOutOfStock ? 0.5 : 1,
                         }}
                       >
                         <button
                           onClick={() => updateQuantity(item.sku, item.quantity - 1)}
+                          style={{
+                            width: 44,
+                            height: 44,
+                            minWidth: 44,
+                            minHeight: 44,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'var(--text-muted)',
+                            background: 'none',
+                            border: 'none',
+                            cursor: isOutOfStock ? 'not-allowed' : 'pointer',
+                            padding: 0,
+                          }}
                           aria-label="Decrease"
                           disabled={isOutOfStock}
                         >
                           <Minus size={13} />
                         </button>
-                        <span style={{ fontSize: '0.9rem', fontWeight: 600, minWidth: '18px', textAlign: 'center' }}>
+                        <span style={{ fontSize: '0.9rem', fontWeight: 600, minWidth: '20px', textAlign: 'center', userSelect: 'none' }}>
                           {item.quantity}
                         </span>
                         <button
@@ -384,8 +422,19 @@ export const CartView: React.FC = () => {
                           aria-label="Increase"
                           disabled={isOutOfStock || item.quantity >= maxStock}
                           style={{
+                            width: 44,
+                            height: 44,
+                            minWidth: 44,
+                            minHeight: 44,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: item.quantity >= maxStock ? 'var(--text-muted)' : 'var(--text-primary)',
                             opacity: item.quantity >= maxStock ? 0.35 : 1,
                             cursor: item.quantity >= maxStock ? 'not-allowed' : 'pointer',
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
                           }}
                           title={item.quantity >= maxStock ? `Maximum available stock (${maxStock}) reached` : undefined}
                         >
@@ -454,12 +503,28 @@ export const CartView: React.FC = () => {
                       {appliedCoupon.code} applied (-{formatPrice(discountAmount)})
                     </span>
                   </div>
-                  <button onClick={removeCoupon} style={{ fontSize: '0.75rem', color: 'var(--color-error)' }}>
+                  <button
+                    onClick={removeCoupon}
+                    style={{
+                      fontSize: '0.8rem',
+                      color: 'var(--color-error)',
+                      textDecoration: 'underline',
+                      minHeight: 44,
+                      minWidth: 44,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '0 8px',
+                    }}
+                  >
                     Remove
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleApplyCoupon} style={{ display: 'flex', gap: '8px' }}>
+                <form onSubmit={handleApplyCoupon} style={{ display: 'flex', gap: '8px', alignItems: 'stretch' }}>
                   <div
                     style={{
                       flex: 1,
@@ -467,19 +532,37 @@ export const CartView: React.FC = () => {
                       alignItems: 'center',
                       border: '1px solid var(--border-color)',
                       borderRadius: 'var(--radius-sm)',
-                      padding: '8px 12px',
+                      padding: '0 12px',
+                      minHeight: 44,
+                      backgroundColor: 'var(--bg-surface)',
                     }}
                   >
-                    <Tag size={15} style={{ color: 'var(--text-muted)', marginRight: '8px' }} />
+                    <Tag size={15} style={{ color: 'var(--text-muted)', marginRight: '8px', flexShrink: 0 }} />
                     <input
                       type="text"
                       placeholder="Privilege Code (e.g. WELCOME10)"
                       value={couponInput}
                       onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                      style={{ width: '100%', fontSize: '0.85rem', textTransform: 'uppercase' }}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        minHeight: 44,
+                        fontSize: '1rem',
+                        textTransform: 'uppercase',
+                        border: 'none',
+                        outline: 'none',
+                        background: 'transparent',
+                      }}
                     />
                   </div>
-                  <Button type="submit" variant="outline" size="sm" isLoading={isApplyingCoupon}>
+                  <Button
+                    type="submit"
+                    variant="outline"
+                    size="md"
+                    isLoading={isApplyingCoupon}
+                    disabled={!couponInput.trim()}
+                    style={{ minHeight: 44, minWidth: 80 }}
+                  >
                     Apply
                   </Button>
                 </form>
@@ -570,7 +653,7 @@ export const CartView: React.FC = () => {
                 <button
                   onClick={fixStockIssues}
                   style={{
-                    fontSize: '0.75rem',
+                    fontSize: '0.8rem',
                     fontWeight: 600,
                     color: 'var(--color-error)',
                     textDecoration: 'underline',
@@ -578,6 +661,10 @@ export const CartView: React.FC = () => {
                     border: 'none',
                     cursor: 'pointer',
                     whiteSpace: 'nowrap',
+                    minHeight: 44,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    padding: '0 8px',
                   }}
                 >
                   Auto-Adjust
@@ -596,6 +683,16 @@ export const CartView: React.FC = () => {
         @media (max-width: 640px) {
           .cart-main-grid {
             gap: 24px !important;
+          }
+
+          .cart-item-row {
+            padding: 16px !important;
+            gap: 14px !important;
+          }
+
+          .cart-item-thumb {
+            width: 80px !important;
+            height: 104px !important;
           }
 
           .cart-summary-card {

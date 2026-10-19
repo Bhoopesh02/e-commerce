@@ -229,10 +229,12 @@ export const CuratedEditsHeroBanner: React.FC = () => {
         }}
       >
         {slides.map((slide, index) => {
+          const isInitial = index === 1;
           const common = {
             alt: `${slide.title} - ${slide.badge}`,
             fill: true,
-            priority: index === 0,
+            priority: isInitial,
+            loading: isInitial ? ('eager' as const) : ('lazy' as const),
             quality: 80,
             sizes: '100vw',
           };
@@ -271,6 +273,8 @@ export const CuratedEditsHeroBanner: React.FC = () => {
                   <img
                     {...desktopRest}
                     srcSet={desktopSrcSet}
+                    loading={isInitial ? 'eager' : 'lazy'}
+                    fetchPriority={isInitial ? 'high' : 'auto'}
                     className={styles.bannerImage}
                     style={{
                       ...desktopRest.style,

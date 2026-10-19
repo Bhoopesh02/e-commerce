@@ -692,14 +692,16 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
   const chipStyle: React.CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '6px',
-    padding: '3px 10px',
+    gap: '8px',
+    minHeight: 44,
+    padding: '0 14px',
     backgroundColor: 'var(--bg-surface)',
     borderRadius: 'var(--radius-pill)',
     border: '1px solid var(--border-color)',
     fontSize: '0.78rem',
     color: 'var(--text-primary)',
     whiteSpace: 'nowrap',
+    boxSizing: 'border-box',
   };
 
   return (
@@ -786,7 +788,7 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
               style={{
                 width: '100%',
                 padding: '16px 50px 16px 52px',
-                fontSize: '0.95rem',
+                fontSize: '1rem',
                 borderRadius: 'var(--radius-pill)',
                 border: isInputFocused
                   ? '1px solid var(--brand-primary)'
@@ -814,14 +816,17 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                 aria-label="Clear search input"
                 style={{
                   position: 'absolute',
-                  right: '18px',
+                  right: '12px',
                   top: '50%',
                   transform: 'translateY(-50%)',
                   background: 'none',
                   border: 'none',
                   color: 'var(--text-muted)',
                   cursor: 'pointer',
-                  padding: '4px',
+                  width: 44,
+                  height: 44,
+                  minHeight: 44,
+                  padding: 0,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -831,7 +836,7 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                 onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--text-primary)')}
                 onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
               >
-                <X size={16} />
+                <X size={18} />
               </button>
             )}
           </form>
@@ -878,7 +883,10 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                               color: 'var(--brand-primary)',
                               cursor: 'pointer',
                               fontWeight: 600,
-                              padding: 0,
+                              minHeight: 44,
+                              padding: '0 8px',
+                              display: 'inline-flex',
+                              alignItems: 'center',
                             }}
                           >
                             Clear all
@@ -894,7 +902,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
-                                padding: '8px 12px',
+                                minHeight: 44,
+                                padding: '0 12px',
+                                boxSizing: 'border-box',
                                 borderRadius: '8px',
                                 cursor: 'pointer',
                                 fontSize: '0.86rem',
@@ -922,9 +932,13 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                                   border: 'none',
                                   color: 'var(--text-muted)',
                                   cursor: 'pointer',
-                                  padding: '2px',
+                                  width: 44,
+                                  height: 44,
+                                  minHeight: 44,
+                                  padding: 0,
                                   display: 'flex',
                                   alignItems: 'center',
+                                  justifyContent: 'center',
                                   flexShrink: 0,
                                 }}
                               >
@@ -957,7 +971,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '8px',
-                                padding: '8px 12px',
+                                minHeight: 44,
+                                padding: '0 14px',
+                                boxSizing: 'border-box',
                                 borderRadius: '8px',
                                 border: 'none',
                                 backgroundColor: highlightedSuggestionIdx === itemIndex ? 'var(--surface-brand)' : 'var(--bg-surface)',
@@ -1005,7 +1021,11 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                               setShowSuggestions(false);
                             }}
                             style={{
-                              padding: '5px 12px',
+                              minHeight: 44,
+                              padding: '0 16px',
+                              boxSizing: 'border-box',
+                              display: 'inline-flex',
+                              alignItems: 'center',
                               borderRadius: 'var(--radius-pill)',
                               border: '1px solid var(--border-color)',
                               backgroundColor: 'transparent',
@@ -1051,7 +1071,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
-                                padding: '8px 12px',
+                                minHeight: 44,
+                                padding: '0 14px',
+                                boxSizing: 'border-box',
                                 borderRadius: '8px',
                                 border: 'none',
                                 textAlign: 'left',
@@ -1101,7 +1123,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                                 display: 'inline-flex',
                                 alignItems: 'center',
                                 gap: '6px',
-                                padding: '6px 12px',
+                                minHeight: 44,
+                                padding: '0 16px',
+                                boxSizing: 'border-box',
                                 borderRadius: 'var(--radius-pill)',
                                 border: '1px solid var(--border-brand)',
                                 backgroundColor: 'var(--surface-brand)',
@@ -1229,7 +1253,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '4px',
-                padding: '4px 12px',
+                minHeight: 44,
+                padding: '0 16px',
+                boxSizing: 'border-box',
                 borderRadius: 'var(--radius-pill)',
                 border:
                   query.toLowerCase() === item.toLowerCase()
@@ -1243,7 +1269,7 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                   query.toLowerCase() === item.toLowerCase()
                     ? 'var(--brand-primary)'
                     : 'var(--text-secondary)',
-                fontSize: '0.78rem',
+                fontSize: '0.8rem',
                 fontWeight: query.toLowerCase() === item.toLowerCase() ? 600 : 400,
                 cursor: 'pointer',
                 transition: 'all 180ms ease',
@@ -1402,14 +1428,15 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                         style={{
                           display: 'inline-flex',
                           alignItems: 'center',
-                          gap: '4px',
+                          gap: '6px',
                           background: 'none',
                           border: 'none',
                           fontSize: '0.78rem',
                           color: 'var(--brand-primary)',
                           cursor: 'pointer',
                           marginLeft: '4px',
-                          padding: 0,
+                          minHeight: 44,
+                          padding: '0 8px',
                           whiteSpace: 'nowrap',
                         }}
                       >
@@ -1434,7 +1461,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '8px',
-                        padding: '6px 14px',
+                        padding: '0 16px',
+                        minHeight: 44,
+                        boxSizing: 'border-box',
                         borderRadius: 'var(--radius-pill)',
                         border: '1px solid var(--border-color)',
                         backgroundColor: 'var(--bg-surface)',
@@ -1482,7 +1511,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                               alignItems: 'center',
                               justifyContent: 'space-between',
                               width: '100%',
-                              padding: '8px 16px',
+                              padding: '0 16px',
+                              minHeight: 44,
+                              boxSizing: 'border-box',
                               border: 'none',
                               backgroundColor: 'transparent',
                               color: selectedSort === opt.id ? 'var(--brand-primary)' : 'var(--text-primary)',
@@ -1528,7 +1559,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '8px',
-                      padding: '7px 0px',
+                      padding: '0 12px',
+                      minHeight: 44,
+                      boxSizing: 'border-box',
                       border: 'none',
                       fontSize: '0.82rem',
                       fontWeight: 600,
@@ -1577,7 +1610,7 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                       viewport={{ once: true, margin: '-20px' }}
                       transition={shouldReduceMotion ? undefined : { duration: 0.4, delay: (idx % 4) * 0.05 }}
                     >
-                      <ProductCard product={product} />
+                      <ProductCard product={product} priority={idx < 4} />
                     </motion.div>
                   ))}
                 </div>
@@ -1621,8 +1654,10 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                         disabled={currentPage === 1}
                         aria-label="Previous Page"
                         style={{
-                          width: '40px',
-                          height: '40px',
+                          width: '44px',
+                          height: '44px',
+                          minWidth: '44px',
+                          minHeight: '44px',
                           borderRadius: '50%',
                           display: 'flex',
                           alignItems: 'center',
@@ -1665,8 +1700,10 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                             aria-label={`Page ${pageNum}`}
                             aria-current={isActive ? 'page' : undefined}
                             style={{
-                              width: '40px',
-                              height: '40px',
+                              width: '44px',
+                              height: '44px',
+                              minWidth: '44px',
+                              minHeight: '44px',
                               borderRadius: '50%',
                               display: 'flex',
                               alignItems: 'center',
@@ -1691,8 +1728,10 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                         disabled={currentPage === totalPages}
                         aria-label="Next Page"
                         style={{
-                          width: '40px',
-                          height: '40px',
+                          width: '44px',
+                          height: '44px',
+                          minWidth: '44px',
+                          minHeight: '44px',
                           borderRadius: '50%',
                           display: 'flex',
                           alignItems: 'center',
@@ -1729,7 +1768,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '8px',
-                      padding: '10px 24px',
+                      padding: '0 24px',
+                      minHeight: 44,
+                      boxSizing: 'border-box',
                       borderRadius: 'var(--radius-pill)',
                       border: '1px solid var(--border-color)',
                       fontSize: '0.85rem',
@@ -1839,7 +1880,11 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                           className="search-empty-state-pill-btn"
                           onClick={() => applySearchQuery(item)}
                           style={{
-                            padding: '6px 14px',
+                            minHeight: 44,
+                            padding: '0 16px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            boxSizing: 'border-box',
                             borderRadius: 'var(--radius-pill)',
                             border: '1px solid var(--border-color)',
                             backgroundColor: 'var(--bg-primary)',
@@ -1875,7 +1920,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '6px',
-                          padding: '12px 24px',
+                          padding: '0 24px',
+                          minHeight: 44,
+                          boxSizing: 'border-box',
                           backgroundColor: 'var(--surface-brand)',
                           color: 'var(--brand-primary)',
                           border: '1px solid var(--border-brand)',
@@ -1902,7 +1949,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '6px',
-                        padding: '12px 28px',
+                        padding: '0 28px',
+                        minHeight: 44,
+                        boxSizing: 'border-box',
                         backgroundColor: 'var(--text-primary)',
                         color: 'var(--bg-primary)',
                         borderRadius: 'var(--radius-pill)',
@@ -2008,7 +2057,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                   fontSize: '0.95rem',
                   cursor: 'pointer',
                   color: 'var(--text-primary)',
-                  padding: '8px 10px',
+                  minHeight: 44,
+                  padding: '0 10px',
+                  boxSizing: 'border-box',
                   borderRadius: '8px',
                   backgroundColor: stagedCategory === 'all' ? 'var(--overlay-black-5)' : 'transparent',
                   transition: 'background-color 0.2s ease, opacity 0.2s ease',
@@ -2073,7 +2124,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                       fontSize: '0.95rem',
                       cursor: 'pointer',
                       color: 'var(--text-primary)',
-                      padding: '8px 10px',
+                      minHeight: 44,
+                      padding: '0 10px',
+                      boxSizing: 'border-box',
                       borderRadius: '8px',
                       backgroundColor: isSelected ? 'var(--overlay-black-5)' : 'transparent',
                       transition: 'background-color 0.2s ease, opacity 0.2s ease',
@@ -2145,7 +2198,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                   fontSize: '0.95rem',
                   cursor: 'pointer',
                   color: 'var(--text-primary)',
-                  padding: '8px 10px',
+                  minHeight: 44,
+                  padding: '0 10px',
+                  boxSizing: 'border-box',
                   borderRadius: '8px',
                   backgroundColor: stagedCollection === 'all' ? 'var(--overlay-black-5)' : 'transparent',
                   transition: 'background-color 0.2s ease, opacity 0.2s ease',
@@ -2210,7 +2265,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                       fontSize: '0.95rem',
                       cursor: 'pointer',
                       color: 'var(--text-primary)',
-                      padding: '8px 10px',
+                      minHeight: 44,
+                      padding: '0 10px',
+                      boxSizing: 'border-box',
                       borderRadius: '8px',
                       backgroundColor: isSelected ? 'var(--overlay-black-5)' : 'transparent',
                       transition: 'background-color 0.2s ease, opacity 0.2s ease',
@@ -2297,8 +2354,10 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                       }}
                       style={{
                         minWidth: '44px',
-                        height: '40px',
+                        height: '44px',
+                        minHeight: '44px',
                         padding: '0 14px',
+                        boxSizing: 'border-box',
                         borderRadius: 'var(--radius-pill)',
                         border: isSelected
                           ? '1.5px solid var(--color-black-tie)'
@@ -2350,7 +2409,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                       display: 'flex',
                       alignItems: 'center',
                       gap: '10px',
-                      padding: '8px 10px',
+                      minHeight: 44,
+                      padding: '0 10px',
+                      boxSizing: 'border-box',
                       borderRadius: '8px',
                       cursor: 'pointer',
                       backgroundColor: isSelected ? 'var(--overlay-black-5)' : 'transparent',
@@ -2424,7 +2485,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                         gap: '10px',
                         fontSize: '0.95rem',
                         cursor: 'pointer',
-                        padding: '8px 10px',
+                        minHeight: 44,
+                        padding: '0 10px',
+                        boxSizing: 'border-box',
                         backgroundColor: isChecked && p.id !== 'all' ? 'var(--color-diamond)' : 'transparent',
                         borderRadius: '8px',
                         border: isChecked && p.id !== 'all' ? '1px solid var(--overlay-black-5)' : '1px solid transparent',
@@ -2497,7 +2560,9 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                 fontSize: '0.95rem',
                 cursor: 'pointer',
                 color: 'var(--text-primary)',
-                padding: '8px 10px',
+                minHeight: 44,
+                padding: '0 10px',
+                boxSizing: 'border-box',
                 borderRadius: '8px',
                 userSelect: 'none',
               }}

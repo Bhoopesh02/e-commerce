@@ -163,6 +163,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 44px;
+  box-sizing: border-box;
   background-color: var(--color-diamond);
   color: var(--color-black-tie);
   font-size: clamp(0.76rem, 0.64rem + 0.18vw, 0.88rem);

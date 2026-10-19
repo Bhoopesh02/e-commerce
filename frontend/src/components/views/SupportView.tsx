@@ -260,6 +260,8 @@ export const SupportView: React.FC = () => {
           display: inline-flex;
           align-items: center;
           gap: 8px;
+          min-height: 44px;
+          box-sizing: border-box;
           padding: 10px 18px;
           background: none;
           border: none;
@@ -308,6 +310,8 @@ export const SupportView: React.FC = () => {
 
         .ticket-card {
           padding: 20px;
+          min-height: 44px;
+          box-sizing: border-box;
           background-color: var(--bg-surface);
           border-radius: var(--radius-sm);
           cursor: pointer;
@@ -320,7 +324,7 @@ export const SupportView: React.FC = () => {
           border-radius: var(--radius-sm);
           border: 1px solid var(--border-color);
           background-color: var(--bg-surface);
-          font-size: 0.95rem;
+          font-size: 1rem;
           color: var(--text-primary);
           resize: none;
           width: 100%;

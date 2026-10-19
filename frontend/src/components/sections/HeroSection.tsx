@@ -31,6 +31,7 @@ export const HeroSection: React.FC = () => {
     alt: 'Aurelia Luxury Campaign - The Winter Collection',
     fill: true,
     priority: true,
+    loading: 'eager' as const,
     quality: 80,
     sizes: '100vw',
   };
@@ -77,6 +78,7 @@ export const HeroSection: React.FC = () => {
         <img
           {...desktopRest}
           ref={imgRef}
+          loading="eager"
           fetchPriority="high"
           onLoad={() => setLoaded(true)}
           className="object-cover object-center hero-image w-full h-full"

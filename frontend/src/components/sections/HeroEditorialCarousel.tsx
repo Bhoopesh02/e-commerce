@@ -200,10 +200,12 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
       >
         {slides.map((slide, index) => {
           const isActive = index === currentIndex;
+          const isInitial = index === 0;
           const common = {
             alt: `${slide.title} — ${slide.subtitle}`,
             fill: true,
-            priority: index === 0,
+            priority: isInitial,
+            loading: isInitial ? ('eager' as const) : ('lazy' as const),
             quality: 80,
             sizes: '100vw',
           };
@@ -242,6 +244,8 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
                   <img
                     {...desktopRest}
                     srcSet={desktopSrcSet}
+                    loading={isInitial ? 'eager' : 'lazy'}
+                    fetchPriority={isInitial ? 'high' : 'auto'}
                     className={styles.bannerImage}
                     style={{
                       ...desktopRest.style,

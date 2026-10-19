@@ -182,6 +182,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           quality={quality}
           sizes={sizes}
           priority={priority}
+          loading={priority ? 'eager' : 'lazy'}
+          fetchPriority={priority ? 'high' : 'auto'}
           onLoad={() => setIsImageLoaded(true)}
           onError={() => setIsImageLoaded(true)}
           className={variant === 'grid' ? 'product-image-primary w-full h-auto object-cover rounded-lg md:rounded-none md:absolute md:h-full md:inset-0' : 'product-image-primary'}

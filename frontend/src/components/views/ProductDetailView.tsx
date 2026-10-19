@@ -419,6 +419,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 alt={product.name}
                 fill
                 priority
+                loading="eager"
                 quality={95}
                 sizes="(max-width: 1024px) 100vw, 55vw"
                 style={{

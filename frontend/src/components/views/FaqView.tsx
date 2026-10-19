@@ -444,7 +444,7 @@ export const FaqView: React.FC<FaqViewProps> = ({
           flex: 1;
           border: none;
           background: transparent;
-          font-size: 0.95rem;
+          font-size: 1rem;
           color: var(--text-primary);
           outline: none;
           width: 100%;
@@ -459,10 +459,13 @@ export const FaqView: React.FC<FaqViewProps> = ({
           background: none;
           color: var(--text-muted);
           cursor: pointer;
-          display: flex;
+          display: inline-flex;
           align-items: center;
           justify-content: center;
-          padding: 4px;
+          width: 44px;
+          height: 44px;
+          min-height: 44px;
+          padding: 0;
           border-radius: 50%;
           transition: color 0.2s ease;
         }
@@ -482,7 +485,9 @@ export const FaqView: React.FC<FaqViewProps> = ({
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          padding: 8px 16px;
+          min-height: 44px;
+          padding: 0 18px;
+          box-sizing: border-box;
           font-size: 0.82rem;
           font-weight: 500;
           letter-spacing: 0.03em;
@@ -545,7 +550,11 @@ export const FaqView: React.FC<FaqViewProps> = ({
         .faq-action-link {
           background: none;
           border: none;
-          padding: 0;
+          padding: 0 8px;
+          min-height: 44px;
+          display: inline-flex;
+          align-items: center;
+          box-sizing: border-box;
           font-size: 0.8rem;
           color: var(--brand-primary);
           cursor: pointer;
@@ -696,12 +705,14 @@ export const FaqView: React.FC<FaqViewProps> = ({
           display: inline-flex;
           align-items: center;
           gap: 6px;
+          min-height: 44px;
+          box-sizing: border-box;
+          padding: 0 4px;
           font-size: 0.8rem;
           font-weight: 600;
           color: var(--brand-primary);
           background: none;
           border: none;
-          padding: 0;
           cursor: pointer;
           margin-top: auto;
         }

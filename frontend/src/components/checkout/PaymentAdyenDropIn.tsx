@@ -130,6 +130,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 name="payment"
                 checked={selectedMethod === 'UPI'}
                 onChange={() => handleMethodChange('UPI')}
+                style={{ width: '20px', height: '20px', accentColor: 'var(--brand-primary)', cursor: 'pointer', flexShrink: 0 }}
               />
               <Smartphone size={20} style={{ color: 'var(--brand-primary)' }} />
               <div>
@@ -159,10 +160,12 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 style={{
                   width: '100%',
                   maxWidth: '360px',
-                  padding: '10px 14px',
+                  padding: '0 14px',
+                  minHeight: 44,
                   border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-sm)',
-                  fontSize: '0.9rem',
+                  fontSize: '1rem',
+                  boxSizing: 'border-box',
                 }}
               />
             </div>
@@ -188,6 +191,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 name="payment"
                 checked={selectedMethod === 'Card'}
                 onChange={() => handleMethodChange('Card')}
+                style={{ width: '20px', height: '20px', accentColor: 'var(--brand-primary)', cursor: 'pointer', flexShrink: 0 }}
               />
               <CreditCard size={20} style={{ color: 'var(--brand-primary)' }} />
               <div>
@@ -215,11 +219,13 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                   style={{
                     width: '100%',
                     maxWidth: '360px',
-                    padding: '10px 14px',
+                    padding: '0 14px',
+                    minHeight: 44,
                     border: '1px solid var(--border-color)',
                     borderRadius: 'var(--radius-sm)',
-                    fontSize: '0.9rem',
+                    fontSize: '1rem',
                     letterSpacing: '0.08em',
+                    boxSizing: 'border-box',
                   }}
                 />
               </div>
@@ -235,10 +241,12 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                     onChange={(e) => setCardExpiry(e.target.value)}
                     style={{
                       width: '100%',
-                      padding: '10px 14px',
+                      padding: '0 14px',
+                      minHeight: 44,
                       border: '1px solid var(--border-color)',
                       borderRadius: 'var(--radius-sm)',
-                      fontSize: '0.9rem',
+                      fontSize: '1rem',
+                      boxSizing: 'border-box',
                     }}
                   />
                 </div>
@@ -253,10 +261,12 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                     onChange={(e) => setCardCvv(e.target.value)}
                     style={{
                       width: '100%',
-                      padding: '10px 14px',
+                      padding: '0 14px',
+                      minHeight: 44,
                       border: '1px solid var(--border-color)',
                       borderRadius: 'var(--radius-sm)',
-                      fontSize: '0.9rem',
+                      fontSize: '1rem',
+                      boxSizing: 'border-box',
                     }}
                   />
                 </div>
@@ -273,11 +283,13 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                   style={{
                     width: '100%',
                     maxWidth: '360px',
-                    padding: '10px 14px',
+                    padding: '0 14px',
+                    minHeight: 44,
                     border: '1px solid var(--border-color)',
                     borderRadius: 'var(--radius-sm)',
-                    fontSize: '0.9rem',
+                    fontSize: '1rem',
                     textTransform: 'uppercase',
+                    boxSizing: 'border-box',
                   }}
                 />
               </div>
@@ -304,6 +316,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 name="payment"
                 checked={selectedMethod === 'NetBanking'}
                 onChange={() => handleMethodChange('NetBanking')}
+                style={{ width: '20px', height: '20px', accentColor: 'var(--brand-primary)', cursor: 'pointer', flexShrink: 0 }}
               />
               <Building2 size={20} style={{ color: 'var(--brand-primary)' }} />
               <div>
@@ -337,14 +350,17 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                   onClick={() => setIsBankDropdownOpen((prev) => !prev)}
                   className="bank-dropdown-trigger"
                   style={{
-                    padding: '10px 14px',
+                    padding: '0 14px',
+                    minHeight: 44,
+                    height: 44,
+                    boxSizing: 'border-box',
                     border: isBankDropdownOpen
                       ? '1px solid var(--brand-primary)'
                       : '1px solid var(--border-color)',
                     borderRadius: 'var(--radius-sm)',
                     backgroundColor: 'var(--bg-surface)',
                     width: '100%',
-                    fontSize: '0.9rem',
+                    fontSize: '1rem',
                     color: 'var(--text-primary)',
                     display: 'flex',
                     alignItems: 'center',
@@ -388,7 +404,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                       top: 'calc(100% + 4px)',
                       left: 0,
                       right: 0,
-                      maxHeight: '160px',
+                      maxHeight: '176px',
                       overflowY: 'auto',
                       overflowX: 'hidden',
                       backgroundColor: 'var(--bg-surface)',
@@ -412,13 +428,14 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                             setIsBankDropdownOpen(false);
                           }}
                           style={{
-                            height: '40px',
+                            height: '44px',
+                            minHeight: '44px',
                             boxSizing: 'border-box',
                             padding: '0 14px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'space-between',
-                            fontSize: '0.9rem',
+                            fontSize: '1rem',
                             cursor: 'pointer',
                             backgroundColor: isSelected ? 'rgba(36, 75, 87, 0.08)' : 'transparent',
                             color: isSelected ? 'var(--brand-primary)' : 'var(--text-primary)',
@@ -470,6 +487,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 name="payment"
                 checked={selectedMethod === 'Wallet'}
                 onChange={() => handleMethodChange('Wallet')}
+                style={{ width: '20px', height: '20px', accentColor: 'var(--brand-primary)', cursor: 'pointer', flexShrink: 0 }}
               />
               <Wallet size={20} style={{ color: 'var(--brand-primary)' }} />
               <div>
@@ -506,6 +524,7 @@ export const PaymentAdyenDropIn: React.FC<PaymentAdyenDropInProps> = ({
                 name="payment"
                 checked={selectedMethod === 'COD'}
                 onChange={() => handleMethodChange('COD')}
+                style={{ width: '20px', height: '20px', accentColor: 'var(--brand-primary)', cursor: 'pointer', flexShrink: 0 }}
               />
               <Banknote size={20} style={{ color: 'var(--brand-primary)' }} />
               <div>
