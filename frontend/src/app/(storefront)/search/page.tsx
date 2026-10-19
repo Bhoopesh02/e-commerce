@@ -14,7 +14,7 @@ export default function SearchPage() {
   const initialCuratedFallback = getInitialNewArrivals('a').slice(0, 4);
 
   return (
-    <Suspense fallback={<div style={{ paddingTop: '140px', textAlign: 'center' }}><ProductGridSkeleton count={8} /></div>}>
+    <Suspense fallback={<div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', textAlign: 'center' }}><ProductGridSkeleton count={8} /></div>}>
       <SearchView
         initialProducts={initialProducts}
         initialCategories={initialCategories}
