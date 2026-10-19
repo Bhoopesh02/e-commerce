@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 
 export default function ProductLoading() {
   return (
-    <div style={{ paddingTop: '110px', paddingBottom: '96px', backgroundColor: 'var(--bg-primary)', minHeight: '100vh' }}>
+    <div style={{ paddingTop: 'var(--header-total-height, 113px)', paddingBottom: '96px', backgroundColor: 'var(--bg-primary)', minHeight: '100vh' }}>
       <div className="container">
         {/* Back navigation skeleton */}
         <div style={{ marginBottom: '32px' }}>

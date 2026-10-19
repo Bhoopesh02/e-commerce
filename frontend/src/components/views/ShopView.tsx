@@ -21,7 +21,7 @@ import { COLOR_GROUPS } from '@/lib/colorUtils';
 
 export const ShopViewSkeleton: React.FC = () => {
   return (
-    <div style={{ minHeight: '100vh', paddingBottom: '96px', paddingTop: '110px' }} aria-busy="true">
+    <div style={{ minHeight: '100vh', paddingBottom: '96px', paddingTop: 'var(--header-total-height, 113px)' }} aria-busy="true">
       {/* Banner Skeleton */}
       <div
         style={{
@@ -589,7 +589,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const bannerKey = gender ? `${gender}-${activeCategory}` : (currentCategory?.id ?? 'none');
 
   return (
-    <div style={{ paddingTop: '110px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+    <div style={{ paddingTop: 'var(--header-total-height, 113px)', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       {/* Category Hero Banner */}
       <AnimatePresence mode="wait">
         {(gender || currentCategory) && (
@@ -635,7 +635,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
             }}
           >
             {/* Search Bar, Filters & Sort */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0, flexWrap: 'wrap' }}>
+            <div className="shop-controls-cluster" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
               {/* Inline Search Bar */}
               <div
                 className="shop-search-bar"
@@ -711,6 +711,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
               {/* Divider */}
               <div
+                className="shop-controls-divider"
                 style={{
                   width: '1px',
                   height: '24px',
@@ -789,7 +790,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     transition: 'border-color 0.2s ease',
                   }}
                 >
-                  <span style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>Sort:</span>
+                  <span className="shop-sort-prefix" style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>Sort:</span>
                   <span>{SORT_OPTIONS.find((s) => s.id === selectedSort)?.label}</span>
                   <ChevronDown
                     size={14}

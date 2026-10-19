@@ -346,7 +346,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
 
 
   return (
-    <div style={{ paddingTop: '110px', paddingBottom: '96px', backgroundColor: 'var(--bg-primary)' }}>
+    <div style={{ paddingTop: 'var(--header-total-height, 113px)', paddingBottom: '96px', backgroundColor: 'var(--bg-primary)' }}>
       <div className="container">
         {/* Back Navigation */}
         <button

@@ -113,7 +113,7 @@ export const WishlistView: React.FC<WishlistViewProps> = ({
 
   if (!hydrated || !isStoreHydrated || loading) {
     return (
-      <div style={{ paddingTop: '110px', paddingBottom: '96px' }} className="container">
+      <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '96px' }} className="container">
         <Skeleton height="40px" width="300px" style={{ marginBottom: '32px' }} />
         <ProductGridSkeleton count={4} />
       </div>
@@ -121,7 +121,7 @@ export const WishlistView: React.FC<WishlistViewProps> = ({
   }
 
   return (
-    <div style={{ paddingTop: '110px', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+    <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       <div className="container">
         <div
           style={{

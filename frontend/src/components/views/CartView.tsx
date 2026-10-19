@@ -65,7 +65,7 @@ export const CartView: React.FC = () => {
 
   if (!mounted) {
     return (
-      <div style={{ paddingTop: '140px', paddingBottom: '120px', minHeight: '80vh', backgroundColor: 'var(--bg-primary)' }}>
+      <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '120px', minHeight: '80vh', backgroundColor: 'var(--bg-primary)' }}>
         <div className="container" style={{ maxWidth: '640px', textAlign: 'center' }}>
           <div style={{ minHeight: '300px' }} />
         </div>
@@ -75,7 +75,7 @@ export const CartView: React.FC = () => {
 
   if (items.length === 0) {
     return (
-      <div style={{ paddingTop: '140px', paddingBottom: '120px', minHeight: '80vh', backgroundColor: 'var(--bg-primary)' }}>
+      <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '120px', minHeight: '80vh', backgroundColor: 'var(--bg-primary)' }}>
         <div className="container" style={{ maxWidth: '640px', textAlign: 'center' }}>
           <div
             style={{
@@ -107,7 +107,7 @@ export const CartView: React.FC = () => {
   }
 
   return (
-    <div style={{ paddingTop: '110px', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+    <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       <div className="container">
         <h1 className="type-h1" style={{ marginBottom: '36px' }}>Your Atelier Bag</h1>
 

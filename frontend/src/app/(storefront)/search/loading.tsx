@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 
 export default function SearchLoading() {
   return (
-    <main style={{ minHeight: '100vh', backgroundColor: 'var(--bg-primary)', paddingTop: '130px', paddingBottom: '80px' }}>
+    <main style={{ minHeight: '100vh', backgroundColor: 'var(--bg-primary)', paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '80px' }}>
       <div className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {/* Search Input Bar Skeleton */}
         <div style={{ width: '100%', maxWidth: '640px', marginBottom: '48px' }}>
