@@ -29,21 +29,47 @@ export const RatingStars: React.FC<RatingStarsProps> = ({
           const starValue = i + 1;
           const isFilled = starValue <= Math.round(rating);
 
+          if (!interactive) {
+            return (
+              <span
+                key={i}
+                aria-hidden="true"
+                style={{
+                  color: isFilled ? 'var(--brand-accent)' : 'var(--border-color)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                }}
+              >
+                <Star
+                  size={size}
+                  fill={isFilled ? 'currentColor' : 'transparent'}
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                />
+              </span>
+            );
+          }
+
           return (
             <button
               key={i}
               type="button"
-              disabled={!interactive}
-              onClick={() => interactive && onChange && onChange(starValue)}
+              onClick={() => onChange && onChange(starValue)}
               aria-label={`${starValue} stars`}
               style={{
+                width: '44px',
+                height: '44px',
+                minWidth: '44px',
+                minHeight: '44px',
                 background: 'transparent',
                 border: 'none',
-                padding: interactive ? '2px' : '0',
-                cursor: interactive ? 'pointer' : 'default',
+                padding: 0,
+                cursor: 'pointer',
                 color: isFilled ? 'var(--brand-accent)' : 'var(--border-color)',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent: 'center',
+                margin: '-12px -10px',
               }}
             >
               <Star

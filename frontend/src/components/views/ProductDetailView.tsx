@@ -82,19 +82,19 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
   const mainCtaRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const el = mainCtaRef.current;
-    if (!el) return;
+    const handleScroll = () => {
+      const cta = document.querySelector('.pdp-btn-bag');
+      if (!cta) return;
+      const rect = cta.getBoundingClientRect();
+      setShowStickyBar(rect.bottom < 64);
+    };
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowStickyBar(!entry.isIntersecting && entry.boundingClientRect.top < 0);
-      },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [product]);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const { user, isAuthenticated } = useAuthStore();
   const [isVerifiedBuyer, setIsVerifiedBuyer] = useState(false);
