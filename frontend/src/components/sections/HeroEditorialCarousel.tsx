@@ -33,6 +33,8 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     ctaText: 'Explore Silhouettes',
     image: '/images/banners/new-arrivals/new-arrivals-hero.webp',
     mobileImage: '/images/banners/new-arrivals/new-arrivals-hero-mobile.webp',
+    objectPosition: '80% center',
+    mobileObjectPosition: '68% center',
   },
   {
     id: 'outerwear',
@@ -46,6 +48,8 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     ctaText: 'Explore Outerwear',
     image: '/images/banners/new-arrivals/new-arrivals-outerwear.webp',
     mobileImage: '/images/banners/new-arrivals/new-arrivals-outerwear-mobile.webp',
+    objectPosition: '80% center',
+    mobileObjectPosition: '80% center',
   },
   {
     id: 'eveningwear',
@@ -59,6 +63,8 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     ctaText: 'Explore Eveningwear',
     image: '/images/banners/new-arrivals/new-arrivals-eveningwear.webp',
     mobileImage: '/images/banners/new-arrivals/new-arrivals-eveningwear-mobile.webp',
+    objectPosition: '82% center',
+    mobileObjectPosition: '84% center',
   },
   {
     id: 'leather-goods',
@@ -72,6 +78,8 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     ctaText: 'Explore Leather Goods',
     image: '/images/banners/new-arrivals/new-arrivals-leather.webp',
     mobileImage: '/images/banners/new-arrivals/new-arrivals-leather-mobile.webp',
+    objectPosition: '80% center',
+    mobileObjectPosition: '78% center',
   },
 ];
 
@@ -172,14 +180,6 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
   return (
     <section
       className={styles.carouselSection}
-      style={{
-        position: 'relative',
-        width: '100%',
-        marginTop: 'var(--announcement-bar-height, 37px)',
-        minHeight: 'calc(100svh - var(--announcement-bar-height, 37px))',
-        height: 'calc(100svh - var(--announcement-bar-height, 37px))',
-        overflow: 'hidden',
-      }}
       onMouseEnter={() => {
         if (pauseOnHover) setIsHovered(true);
       }}
@@ -210,13 +210,13 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
             sizes: '100vw',
           };
           const {
-            props: { srcSet: desktopSrcSet, ...desktopRest },
+            props: { srcSet: desktopSrcSet },
           } = getImageProps({
             ...common,
             src: slide.image,
           });
           const {
-            props: { srcSet: mobileSrcSet },
+            props: { srcSet: mobileSrcSet, ...mobileRest },
           } = getImageProps({
             ...common,
             src: slide.mobileImage || slide.image,
@@ -242,15 +242,15 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
                     srcSet={desktopSrcSet}
                   />
                   <img
-                    {...desktopRest}
-                    srcSet={desktopSrcSet}
+                    {...mobileRest}
+                    srcSet={undefined}
                     loading={isInitial ? 'eager' : 'lazy'}
                     fetchPriority={isInitial ? 'high' : 'auto'}
                     className={styles.bannerImage}
                     style={{
-                      ...desktopRest.style,
-                      ['--pos-desktop' as string]: slide.objectPosition || 'right 20% center',
-                      ['--pos-mobile' as string]: slide.mobileObjectPosition || 'right 5% center',
+                      ...mobileRest.style,
+                      ['--pos-desktop' as string]: slide.objectPosition || '80% center',
+                      ['--pos-mobile' as string]: slide.mobileObjectPosition || '84% center',
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',

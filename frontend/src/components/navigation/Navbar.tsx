@@ -12,6 +12,7 @@ import { useStorefrontStore } from '@/store/useStorefrontStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { BRAND_NAME } from '@/lib/constants';
 import { AnnouncementBar } from './AnnouncementBar';
+import { Drawer } from '@/components/ui/Drawer';
 
 interface NavbarProps {
   onOpenSearch?: () => void;
@@ -29,7 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const { getCartItemCount, openDrawer } = useCartStore();
   const { productIds } = useWishlistStore();
   const { storefront } = useStorefrontStore();
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -241,7 +242,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             {/* Mobile Menu Button (48x48px touch target) */}
             <button
               ref={mobileToggleRef}
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -259,12 +260,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 filter: isLightNav ? 'drop-shadow(0 2px 6px var(--overlay-black-70))' : 'none',
                 transition: 'filter 350ms var(--ease-luxury), color 350ms var(--ease-luxury)',
               }}
-              aria-label="Toggle Navigation Menu"
+              aria-label="Open Navigation Sidebar"
               aria-expanded={mobileMenuOpen}
-              aria-controls="mobile-navigation-flyout"
+              aria-controls="mobile-navigation-sidebar"
               className="mobile-nav-toggle"
             >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              <Menu size={24} />
             </button>
 
             {/* Left: Category-Neutral Luxury Nav Links (Desktop) */}
@@ -458,197 +459,208 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           </div>
         </div>
         </div>
-
-        {/* Mobile Flyout Navigation */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              ref={mobileMenuRef}
-              id="mobile-navigation-flyout"
-              data-lenis-prevent
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
-              className="mobile-menu-drawer"
-              style={{
-                overflowY: 'auto',
-                WebkitOverflowScrolling: 'touch',
-                maxHeight: 'calc(100dvh - var(--header-h, 64px))',
-                position: 'absolute',
-                top: '100%',
-                left: 0,
-                width: 'fit-content',
-                minWidth: '240px',
-                backgroundColor: 'var(--bg-surface)',
-                borderBottom: '1px solid var(--border-color)',
-                borderRight: '1px solid var(--border-color)',
-                borderBottomRightRadius: '12px',
-                boxShadow: '4px 8px 24px rgba(0,0,0,0.12)',
-              }}
-            >
-              <div
-                style={{
-                  padding: '24px',
-                  paddingBottom: 'max(24px, env(safe-area-inset-bottom, 24px))',
-                  paddingLeft: 'max(24px, env(safe-area-inset-left, 24px))',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px',
-                  color: 'var(--text-primary)',
-                }}
-              >
-                <Link
-                  href="/"
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    letterSpacing: '0.08em',
-                    minHeight: '44px',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  Home
-                </Link>
-                <Link
-                  href="/collections"
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    letterSpacing: '0.08em',
-                    minHeight: '44px',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  Collections
-                </Link>
-                <Link
-                  href="/collections"
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    fontSize: '0.95rem',
-                    fontWeight: pathname === '/collections' ? 600 : 400,
-                    letterSpacing: '0.04em',
-                    minHeight: '44px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '10px 16px',
-                    color: pathname === '/collections' ? 'var(--brand-primary)' : 'var(--text-primary)',
-                  }}
-                >
-                  All Collections
-                </Link>
-                <Link
-                  href="/collections/men"
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    fontSize: '0.95rem',
-                    fontWeight: pathname === '/collections/men' ? 600 : 400,
-                    letterSpacing: '0.04em',
-                    minHeight: '44px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '10px 16px',
-                    color: pathname === '/collections/men' ? 'var(--brand-primary)' : 'var(--text-primary)',
-                  }}
-                >
-                  Men
-                </Link>
-                <Link
-                  href="/collections/women"
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    fontSize: '0.95rem',
-                    fontWeight: pathname === '/collections/women' ? 600 : 400,
-                    letterSpacing: '0.04em',
-                    minHeight: '44px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '10px 16px',
-                    color: pathname === '/collections/women' ? 'var(--brand-primary)' : 'var(--text-primary)',
-                  }}
-                >
-                  Women
-                </Link>
-                <Link
-                  href={newArrivalsHref}
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    letterSpacing: '0.08em',
-                    minHeight: '44px',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  New Arrivals
-                </Link>
-                <Link
-                  href="/offers"
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    letterSpacing: '0.08em',
-                    minHeight: '44px',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  Private Client Offers
-                </Link>
-                <Link
-                  href="/about"
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    letterSpacing: '0.08em',
-                    minHeight: '44px',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  About Us
-                </Link>
-                <Link
-                  href="/wishlist"
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    letterSpacing: '0.08em',
-                    minHeight: '44px',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
-                </Link>
-                <Link
-                  href={accountHref}
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    letterSpacing: '0.08em',
-                    minHeight: '44px',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  {user?.role === 'admin' ? 'Admin Portal' : 'My Account'}
-                </Link>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </header>
+
+      {/* Mobile Navigation Sidebar Drawer */}
+      <Drawer
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        position="left"
+        width="min(300px, 80vw)"
+        ariaLabel="Navigation Menu"
+        title={BRAND_NAME}
+        titleStyle={{
+          fontFamily: 'var(--font-display)',
+          fontSize: '1.25rem',
+          fontWeight: 600,
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase',
+          color: 'var(--text-primary)',
+          margin: 0,
+        }}
+        contentStyle={{
+          backgroundColor: 'var(--bg-surface)',
+          borderRight: '1px solid var(--border-color)',
+        }}
+        headerStyle={{
+          padding: '20px 24px',
+          borderBottom: '1px solid var(--border-light)',
+          backgroundColor: 'var(--bg-surface)',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+            color: 'var(--text-primary)',
+          }}
+        >
+          <Link
+            href="/"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              fontSize: '1rem',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              minHeight: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              color: 'var(--text-primary)',
+              textDecoration: 'none',
+            }}
+          >
+            Home
+          </Link>
+          <Link
+            href="/collections"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              fontSize: '1rem',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              minHeight: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              color: 'var(--text-primary)',
+              textDecoration: 'none',
+            }}
+          >
+            Collections
+          </Link>
+          <Link
+            href="/collections"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              fontSize: '0.95rem',
+              fontWeight: pathname === '/collections' ? 600 : 400,
+              letterSpacing: '0.04em',
+              minHeight: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '10px 16px',
+              color: pathname === '/collections' ? 'var(--brand-primary)' : 'var(--text-primary)',
+              textDecoration: 'none',
+            }}
+          >
+            All Collections
+          </Link>
+          <Link
+            href="/collections/men"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              fontSize: '0.95rem',
+              fontWeight: pathname === '/collections/men' ? 600 : 400,
+              letterSpacing: '0.04em',
+              minHeight: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '10px 16px',
+              color: pathname === '/collections/men' ? 'var(--brand-primary)' : 'var(--text-primary)',
+              textDecoration: 'none',
+            }}
+          >
+            Men
+          </Link>
+          <Link
+            href="/collections/women"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              fontSize: '0.95rem',
+              fontWeight: pathname === '/collections/women' ? 600 : 400,
+              letterSpacing: '0.04em',
+              minHeight: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '10px 16px',
+              color: pathname === '/collections/women' ? 'var(--brand-primary)' : 'var(--text-primary)',
+              textDecoration: 'none',
+            }}
+          >
+            Women
+          </Link>
+          <Link
+            href={newArrivalsHref}
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              fontSize: '1rem',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              minHeight: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              color: 'var(--text-primary)',
+              textDecoration: 'none',
+            }}
+          >
+            New Arrivals
+          </Link>
+          <Link
+            href="/offers"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              fontSize: '1rem',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              minHeight: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              color: 'var(--text-primary)',
+              textDecoration: 'none',
+            }}
+          >
+            Private Client Offers
+          </Link>
+          <Link
+            href="/about"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              fontSize: '1rem',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              minHeight: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              color: 'var(--text-primary)',
+              textDecoration: 'none',
+            }}
+          >
+            About Us
+          </Link>
+          <Link
+            href="/wishlist"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              fontSize: '1rem',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              minHeight: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              color: 'var(--text-primary)',
+              textDecoration: 'none',
+            }}
+          >
+            Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
+          </Link>
+          <Link
+            href={accountHref}
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              fontSize: '1rem',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              minHeight: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              color: 'var(--text-primary)',
+              textDecoration: 'none',
+            }}
+          >
+            {user?.role === 'admin' ? 'Admin Portal' : 'My Account'}
+          </Link>
+        </div>
+      </Drawer>
 
       {/* Desktop Mega Menu Dropdown */}
       <AnimatePresence>

@@ -11,7 +11,6 @@ import {
   X,
   Crop,
   ShieldCheck,
-  Sparkles,
   Info,
   CheckCircle2,
 } from 'lucide-react';

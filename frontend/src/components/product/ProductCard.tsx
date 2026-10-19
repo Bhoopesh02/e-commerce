@@ -232,68 +232,36 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           aria-label={isFavorited ? 'Remove from wishlist' : 'Add to wishlist'}
           animate={heartControls}
           whileTap={shouldReduceMotion ? undefined : { scale: 0.92 }}
+          className="card-wishlist-btn card-action-btn"
           style={{
-            position: 'absolute',
-            top: '8px',
-            right: '8px',
-            width: '44px',
-            height: '44px',
-            minWidth: '44px',
-            minHeight: '44px',
-            borderRadius: '50%',
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-            border: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             color: isFavorited ? 'var(--brand-primary)' : 'var(--text-primary)',
-            cursor: 'pointer',
-            zIndex: 3,
-            boxShadow: '0 1px 6px rgba(0, 0, 0, 0.12)',
-            padding: 0,
-            backdropFilter: 'blur(4px)',
-            WebkitBackdropFilter: 'blur(4px)',
           }}
         >
           <Heart
             size={18}
+            className="card-action-icon"
             fill={isFavorited ? 'currentColor' : 'transparent'}
             stroke="currentColor"
             strokeWidth={1.8}
           />
         </motion.button>
 
-        {/* Mobile Quick Add Button (Always visible on touch, 44x44px target) */}
+        {/* Mobile Quick Add Button (Always visible on touch, responsive target) */}
         <button
           onClick={handleQuickAdd}
           disabled={isAdding}
-          className="card-quick-add-mobile"
+          className="card-quick-add-mobile card-action-btn"
           aria-label={`Quick add ${product.name} to bag`}
           style={{
-            position: 'absolute',
-            bottom: '8px',
-            right: '8px',
-            width: '44px',
-            height: '44px',
-            minWidth: '44px',
-            minHeight: '44px',
-            borderRadius: '50%',
             backgroundColor: isAdding ? 'var(--color-success)' : 'rgba(255, 255, 255, 0.95)',
-            border: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             color: isAdding ? 'var(--color-diamond)' : 'var(--text-primary)',
-            cursor: 'pointer',
-            zIndex: 3,
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.14)',
-            padding: 0,
-            backdropFilter: 'blur(4px)',
-            WebkitBackdropFilter: 'blur(4px)',
-            transition: 'background-color 200ms ease, color 200ms ease, transform 150ms ease',
           }}
         >
-          {isAdding ? <Check size={18} strokeWidth={2.5} /> : <ShoppingBag size={18} strokeWidth={1.8} />}
+          {isAdding ? (
+            <Check size={18} className="card-action-icon" strokeWidth={2.5} />
+          ) : (
+            <ShoppingBag size={18} className="card-action-icon" strokeWidth={1.8} />
+          )}
         </button>
 
         {/* Quick Add Overlay on Hover (Desktop) */}

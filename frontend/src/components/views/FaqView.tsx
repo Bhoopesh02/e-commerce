@@ -18,7 +18,7 @@ import {
   Mail,
   MapPin,
   Clock,
-  Sparkles,
+  Headphones,
   ShieldCheck,
   ArrowRight,
 } from 'lucide-react';
@@ -317,7 +317,7 @@ export const FaqView: React.FC<FaqViewProps> = ({
       <section className="faq-concierge-contact-card">
         <div className="faq-concierge-left">
           <div className="faq-concierge-icon-box">
-            <Sparkles size={24} />
+            <Headphones size={24} />
           </div>
           <div>
             <span className="faq-badge" style={{ color: 'var(--brand-accent)' }}>

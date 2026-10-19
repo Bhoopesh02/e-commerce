@@ -9,7 +9,7 @@ import { Product } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { Package, Search, Plus, Sparkles, Filter, ChevronDown, Check, Edit2 } from 'lucide-react';
+import { Package, Search, Plus, Filter, ChevronDown, Check, Edit2 } from 'lucide-react';
 import { AnimatedTrashIcon } from '@/components/ui/AnimatedTrashIcon';
 import { useDropdownPosition } from '@/hooks/useDropdownPosition';
 

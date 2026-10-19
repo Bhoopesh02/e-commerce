@@ -14,7 +14,6 @@ import {
   User as UserIcon,
   LogIn,
   UserPlus,
-  Sparkles,
   AlertTriangle,
   ShieldCheck,
 } from 'lucide-react';
@@ -277,7 +276,6 @@ export const CheckoutAuthModal: React.FC<CheckoutAuthModalProps> = ({
                 variant="outline"
                 onClick={handleDemoSignIn}
                 disabled={isLoading}
-                leftIcon={<Sparkles size={15} />}
                 disableSheen
                 style={{ width: '100%' }}
               >

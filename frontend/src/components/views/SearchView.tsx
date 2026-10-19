@@ -705,7 +705,7 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
   };
 
   return (
-    <div className="search-page-root" style={{ paddingTop: '100px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+    <div className="search-page-root" style={{ paddingTop: 'calc(var(--navbar-height, 76px) + var(--announcement-bar-height, 37px) + 24px)', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(10px); }
@@ -713,7 +713,7 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
         }
         @media (max-width: 767px) {
           .search-page-root {
-            padding-top: 80px !important;
+            padding-top: calc(var(--navbar-height, 64px) + var(--announcement-bar-height, 33px) + 16px) !important;
             padding-bottom: 80px !important;
           }
           .search-page-container {
@@ -727,19 +727,10 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
       `}} />
 
       <div className="container search-page-container" style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 24px' }}>
-        {/* Search Header */}
-        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-          <span className="type-eyebrow" style={{ color: 'var(--brand-primary)', display: 'block', marginBottom: '12px' }}>
-            SEARCH
-          </span>
-          <h1 style={{ fontSize: 'var(--text-h2)', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontWeight: 400, marginBottom: '8px' }}>
-            {initialQuery ? (
-              <>Search results for &ldquo;{initialQuery}&rdquo;</>
-            ) : (
-              <>Search the Atelier Collection</>
-            )}
-          </h1>
-        </div>
+        {/* Accessible Heading for Screen Readers & SEO */}
+        <h1 className="sr-only">
+          {initialQuery ? `Search results for "${initialQuery}"` : 'Search Aurelia Atelier Collection'}
+        </h1>
 
         {/* Search Input & Interactive Suggestions Container */}
         <div

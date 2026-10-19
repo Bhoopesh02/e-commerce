@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useScrollLock } from '@/hooks/useScrollLock';
@@ -8,7 +9,7 @@ import { useScrollLock } from '@/hooks/useScrollLock';
 export interface DrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  title?: string;
+  title?: React.ReactNode;
   children: React.ReactNode;
   position?: 'right' | 'left';
   width?: string;
@@ -16,6 +17,7 @@ export interface DrawerProps {
   contentStyle?: React.CSSProperties;
   headerStyle?: React.CSSProperties;
   titleStyle?: React.CSSProperties;
+  bodyStyle?: React.CSSProperties;
 }
 
 export const Drawer: React.FC<DrawerProps> = ({
@@ -29,11 +31,17 @@ export const Drawer: React.FC<DrawerProps> = ({
   contentStyle,
   headerStyle,
   titleStyle,
+  bodyStyle,
 }) => {
+  const [mounted, setMounted] = useState(false);
   const generatedId = React.useId();
   const titleId = `drawer-title-${generatedId.replace(/:/g, '')}`;
 
   useScrollLock(isOpen);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -48,7 +56,9 @@ export const Drawer: React.FC<DrawerProps> = ({
     };
   }, [isOpen, onClose]);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div
       role="dialog"
       aria-modal={isOpen}
@@ -62,9 +72,11 @@ export const Drawer: React.FC<DrawerProps> = ({
         left: 0,
         right: 0,
         bottom: 0,
+        width: '100vw',
+        height: '100dvh',
         backgroundColor: 'var(--overlay-black-50)',
         backdropFilter: 'blur(6px)',
-        zIndex: 9998,
+        zIndex: 9999,
         display: 'flex',
         justifyContent: position === 'right' ? 'flex-end' : 'flex-start',
         opacity: isOpen ? 1 : 0,
@@ -97,6 +109,7 @@ export const Drawer: React.FC<DrawerProps> = ({
           transform: isOpen ? 'translateX(0)' : `translateX(${position === 'right' ? '100%' : '-100%'})`,
           transition: 'transform 500ms var(--ease-luxury)',
           boxSizing: 'border-box',
+          color: 'var(--text-primary)',
           ...contentStyle,
         }}
         onClick={(e) => e.stopPropagation()}
@@ -112,9 +125,15 @@ export const Drawer: React.FC<DrawerProps> = ({
           }}
         >
           {title && (
-            <h3 id={titleId} style={{ fontSize: '1.25rem', color: 'var(--text-primary)', ...titleStyle }}>
-              {title}
-            </h3>
+            typeof title === 'string' ? (
+              <h3 id={titleId} style={{ fontSize: '1.25rem', color: 'var(--text-primary)', margin: 0, ...titleStyle }}>
+                {title}
+              </h3>
+            ) : (
+              <div id={titleId} style={{ display: 'flex', alignItems: 'center', ...titleStyle }}>
+                {title}
+              </div>
+            )
           )}
           <motion.button
             onClick={onClose}
@@ -173,11 +192,13 @@ export const Drawer: React.FC<DrawerProps> = ({
             paddingBottom: 'max(24px, env(safe-area-inset-bottom, 24px))',
             paddingLeft: 'max(24px, env(safe-area-inset-left, 24px))',
             paddingRight: 'max(24px, env(safe-area-inset-right, 24px))',
+            ...bodyStyle,
           }}
         >
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

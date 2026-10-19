@@ -7,7 +7,7 @@ import { formatPrice } from '@/lib/formatPrice';
 import { useCartStore } from '@/store/useCartStore';
 import { useToastStore } from '@/store/useToastStore';
 import { Button } from '@/components/ui/Button';
-import { Sparkles, Copy, Check, Tag } from 'lucide-react';
+import { Copy, Check, Tag } from 'lucide-react';
 
 export const OffersView: React.FC = () => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
@@ -55,7 +55,6 @@ export const OffersView: React.FC = () => {
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '6px',
               fontSize: '0.75rem',
               fontWeight: 600,
               letterSpacing: '0.14em',
@@ -64,7 +63,6 @@ export const OffersView: React.FC = () => {
               marginBottom: '10px',
             }}
           >
-            <Sparkles size={14} />
             <span>Private Client Privileges</span>
           </div>
 

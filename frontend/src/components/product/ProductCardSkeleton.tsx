@@ -44,14 +44,13 @@ export const ProductCardSkeleton: React.FC<ProductCardSkeletonProps> = ({
 
         {/* Top-right Wishlist Button Skeleton */}
         <div
+          className="card-wishlist-skeleton"
           style={{
             position: 'absolute',
-            top: '12px',
-            right: '12px',
             zIndex: 2,
           }}
         >
-          <Skeleton width="34px" height="34px" borderRadius="50%" />
+          <Skeleton borderRadius="50%" className="card-action-skeleton-circle" />
         </div>
       </div>
 

@@ -56,13 +56,13 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: var(--pos-desktop, right 20% center);
+  object-position: var(--pos-desktop, 80% center);
   transition: transform 8s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 @media (max-width: 767px) {
   .bannerImage {
-    object-position: var(--pos-mobile, right 5% center) !important;
+    object-position: var(--pos-mobile, 84% center) !important;
   }
 }
 

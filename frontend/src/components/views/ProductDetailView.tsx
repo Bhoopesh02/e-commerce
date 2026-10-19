@@ -30,7 +30,6 @@ import {
   ShieldCheck,
   Truck,
   RotateCcw,
-  Sparkles,
   ChevronDown,
   ChevronLeft,
 } from 'lucide-react';
@@ -474,7 +473,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
           {/* Right: Garment Information & Purchasing Panel */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <div className="pdp-header-meta">
                 <span
                   style={{
                     fontSize: '0.78rem',
@@ -482,12 +481,23 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     letterSpacing: '0.14em',
                     textTransform: 'uppercase',
                     color: 'var(--brand-primary)',
+                    minWidth: 0,
                   }}
                 >
                   {product.subtitle || 'Atelier Master Edition'}
                 </span>
 
-                <RatingStars rating={product.rating.average} size={14} showScore totalReviews={product.rating.count} />
+                <a
+                  href="#reviews"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="pdp-rating-badge"
+                  aria-label={`Rated ${product.rating.average.toFixed(1)} out of 5 stars based on ${product.rating.count} reviews. Scroll to reflections.`}
+                >
+                  <RatingStars rating={product.rating.average} size={14} showScore totalReviews={product.rating.count} />
+                </a>
               </div>
 
               <h1
@@ -1078,8 +1088,11 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
         />
 
         {/* Client Reflections / Reviews Section */}
-        <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '64px', marginBottom: '80px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '32px' }}>
+        <section
+          id="reviews"
+          style={{ borderTop: '1px solid var(--border-color)', paddingTop: '64px', marginBottom: '80px' }}
+        >
+          <div className="pdp-reviews-header">
             <div>
               <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
                 Client Impressions
@@ -1087,7 +1100,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
               <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)' }}>Reflections & Fit Notes</h2>
             </div>
 
-            <div style={{ textAlign: 'right' }}>
+            <div className="pdp-reviews-summary">
               <span style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 600 }}>
                 {product.rating.average.toFixed(1)}
               </span>

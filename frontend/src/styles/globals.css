@@ -578,6 +578,92 @@ button.filter-btn:focus-visible,
   }
 }
 
+/* Responsive Product Card Action Buttons (Wishlist & Mobile Quick Add) */
+.card-action-btn {
+  --action-btn-size: clamp(26px, 1.4rem + 1.2vw, 38px);
+  --action-icon-size: clamp(12px, 0.7rem + 0.5vw, 17px);
+  --action-btn-offset: clamp(5px, 0.3rem + 0.4vw, 10px);
+
+  position: absolute;
+  width: var(--action-btn-size) !important;
+  height: var(--action-btn-size) !important;
+  min-width: var(--action-btn-size) !important;
+  min-height: var(--action-btn-size) !important;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  z-index: 3;
+  border: none;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: transform 180ms ease, background-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
+}
+
+/* Touch hit target expansion: ensures >=44px touch area on touchscreens without enlarging visual circle */
+.card-action-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 44px;
+  min-height: 44px;
+  width: 100%;
+  height: 100%;
+}
+
+.card-wishlist-btn {
+  top: var(--action-btn-offset) !important;
+  right: var(--action-btn-offset) !important;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+}
+
+.card-quick-add-mobile {
+  bottom: var(--action-btn-offset) !important;
+  right: var(--action-btn-offset) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+}
+
+.card-action-icon {
+  width: var(--action-icon-size) !important;
+  height: var(--action-icon-size) !important;
+  max-width: var(--action-icon-size) !important;
+  max-height: var(--action-icon-size) !important;
+  flex-shrink: 0;
+}
+
+/* Skeleton loader matching responsive sizes */
+.card-wishlist-skeleton {
+  top: var(--action-btn-offset, 8px) !important;
+  right: var(--action-btn-offset, 8px) !important;
+}
+
+.card-action-skeleton-circle {
+  width: var(--action-btn-size, 34px) !important;
+  height: var(--action-btn-size, 34px) !important;
+}
+
+/* Breakpoint fine-tuning for mobile and small screens */
+@media (max-width: 767px) {
+  .card-action-btn {
+    --action-btn-size: clamp(26px, 18px + 2.5vw, 32px);
+    --action-icon-size: clamp(12px, 8.5px + 1.1vw, 15px);
+    --action-btn-offset: clamp(5px, 3.5px + 0.7vw, 7px);
+  }
+}
+
+@media (max-width: 380px) {
+  .card-action-btn {
+    --action-btn-size: 26px;
+    --action-icon-size: 12px;
+    --action-btn-offset: 5px;
+  }
+}
+
 /* Card Quick Add Mobile Button vs Desktop Overlay */
 @media (min-width: 768px) and (hover: hover) and (pointer: fine) {
   .card-quick-add-mobile {
@@ -2025,6 +2111,67 @@ button.filter-btn:focus-visible,
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 56px;
     margin-bottom: 80px;
+  }
+}
+
+/* PDP Header Subtitle & Rating Meta */
+.pdp-header-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 8px;
+}
+
+.pdp-rating-badge {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity var(--duration-fast, 150ms) ease;
+}
+
+.pdp-rating-badge:hover {
+  opacity: 0.8;
+}
+
+.pdp-rating-badge:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-xs);
+}
+
+.pdp-reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.pdp-reviews-summary {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+@media (max-width: 640px) {
+  .pdp-header-meta {
+    gap: 6px 12px;
+  }
+
+  .pdp-reviews-header {
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .pdp-reviews-summary {
+    text-align: left;
+    align-items: flex-start;
   }
 }
 

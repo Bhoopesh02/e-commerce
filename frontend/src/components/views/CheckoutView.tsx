@@ -29,7 +29,6 @@ import {
   LogIn,
   UserPlus,
   Lock,
-  Sparkles,
   Tag,
   RefreshCw,
   AlertCircle,
@@ -1168,7 +1167,6 @@ export const CheckoutView: React.FC = () => {
                             variant="outline"
                             onClick={handleDemoSignIn}
                             disabled={isSigningIn}
-                            leftIcon={<Sparkles size={16} />}
                             disableSheen
                             style={{ width: '100%' }}
                           >

@@ -31,7 +31,7 @@ const BANNER_DATA: BannerSlideItem[] = [
   {
     src: '/images/banners/new-arrivals/new-arrivals-hero.webp',
     mobileSrc: '/images/banners/new-arrivals/new-arrivals-hero-mobile.webp',
-    mobileObjectPosition: 'right 5% center',
+    mobileObjectPosition: '68% center',
     alt: 'Autumn Winter Collection',
     heading: 'The Outerwear Edit',
     description: 'Sculpted coats and hand-stitched leather, cut for the colder months and made to last for years.',
@@ -225,7 +225,7 @@ export function CollectionsBannerCarousel() {
                     style={{
                       ...desktopRest.style,
                       ['--pos-desktop' as string]: slide.objectPosition || 'center 26%',
-                      ['--pos-mobile' as string]: slide.mobileObjectPosition || 'right 5% center',
+                      ['--pos-mobile' as string]: slide.mobileObjectPosition || '80% center',
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
@@ -469,7 +469,7 @@ export function CollectionsBannerCarousel() {
         }
         @media (max-width: 767px) {
           .collections-banner-img {
-            object-position: var(--pos-mobile, right 5% center) !important;
+            object-position: var(--pos-mobile, 80% center) !important;
           }
           .hero-master-banner {
             height: 100vh !important;
@@ -593,7 +593,7 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
                 style={{
                   ...desktopRest.style,
                   ['--pos-desktop' as string]: banner.objectPosition || 'center 26%',
-                  ['--pos-mobile' as string]: banner.mobileObjectPosition || 'right 5% center',
+                  ['--pos-mobile' as string]: banner.mobileObjectPosition || '80% center',
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',

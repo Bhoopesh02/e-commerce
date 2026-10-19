@@ -28,7 +28,6 @@ import {
   ExternalLink,
   Printer,
   Boxes,
-  Sparkles,
   CreditCard,
   Smartphone,
   Landmark,
