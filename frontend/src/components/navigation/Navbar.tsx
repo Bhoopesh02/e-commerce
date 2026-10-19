@@ -873,26 +873,78 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             letter-spacing: clamp(0.12em, 0.04em + 0.1vw, 0.22em) !important;
           }
         }
-        @media (min-width: 768px) and (max-width: 1100px) {
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .navbar-container {
+            padding-left: max(16px, env(safe-area-inset-left, 0px)) !important;
+            padding-right: max(16px, env(safe-area-inset-right, 0px)) !important;
+            gap: 8px !important;
+          }
           .desktop-nav-links {
-            gap: clamp(10px, 1.2vw, 16px) !important;
+            gap: clamp(6px, 1vw, 12px) !important;
+          }
+          .desktop-nav-links .nav-link-expand {
+            font-size: 0.72rem !important;
+            letter-spacing: 0.05em !important;
+            padding: 0 2px !important;
+          }
+          .navbar-brand-text {
+            font-size: clamp(1.05rem, 1.8vw, 1.45rem) !important;
+            letter-spacing: clamp(0.08em, 0.12vw, 0.16em) !important;
           }
           .navbar-actions {
-            gap: clamp(4px, 0.6vw, 8px) !important;
+            gap: 2px !important;
+          }
+          .navbar-action-item,
+          .navbar-action-btn {
+            width: 42px !important;
+            height: 42px !important;
+            min-width: 42px !important;
+            min-height: 42px !important;
           }
         }
         @media (max-width: 767px) {
           .navbar-container {
-            grid-template-columns: 48px 1fr auto !important;
-            gap: 4px !important;
+            padding-left: max(12px, env(safe-area-inset-left, 0px)) !important;
+            padding-right: max(12px, env(safe-area-inset-right, 0px)) !important;
+            grid-template-columns: auto 1fr auto !important;
+            gap: 6px !important;
             height: var(--navbar-height, 64px) !important;
+            box-sizing: border-box !important;
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          .mobile-nav-toggle {
+            width: 40px !important;
+            height: 40px !important;
+            min-width: 40px !important;
+            min-height: 40px !important;
+          }
+          .navbar-brand-link {
+            max-width: 100% !important;
+            min-width: 0 !important;
+            padding: 0 4px !important;
           }
           .navbar-brand-text {
-            font-size: clamp(1.15rem, 4.5vw, 1.55rem) !important;
-            letter-spacing: clamp(0.1em, 1.5vw, 0.18em) !important;
+            font-size: clamp(0.95rem, 4vw, 1.35rem) !important;
+            letter-spacing: clamp(0.06em, 1.2vw, 0.14em) !important;
+            max-width: 100% !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
           }
           .navbar-actions {
             gap: 2px !important;
+          }
+          .navbar-action-item {
+            width: 40px !important;
+            height: 40px !important;
+            min-width: 40px !important;
+            min-height: 40px !important;
+          }
+          .navbar-action-btn {
+            width: 40px !important;
+            height: 40px !important;
+            min-width: 40px !important;
+            min-height: 40px !important;
           }
           .navbar-account-item,
           .navbar-account-link {
