@@ -409,6 +409,10 @@ export const ProductImageLightbox: React.FC<ProductImageLightboxProps> = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          width: '44px',
+          height: '44px',
+          minWidth: '44px',
+          minHeight: '44px',
           transition: 'transform 0.15s ease, opacity 0.15s ease',
         }}
       >
@@ -577,16 +581,33 @@ export const ProductImageLightbox: React.FC<ProductImageLightboxProps> = ({
                 }}
                 aria-label={`Go to slide ${idx + 1}`}
                 style={{
-                  width: isActive ? '20px' : '7px',
-                  height: '7px',
-                  borderRadius: '4px',
-                  backgroundColor: isActive ? 'var(--color-black-tie)' : 'rgba(0, 0, 0, 0.22)',
+                  width: '44px',
+                  height: '44px',
+                  minWidth: '44px',
+                  minHeight: '44px',
+                  borderRadius: '50%',
                   border: 'none',
+                  background: 'transparent',
                   padding: 0,
                   cursor: 'pointer',
-                  transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                  margin: '-18px -12px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  outline: 'none',
                 }}
-              />
+              >
+                <span
+                  style={{
+                    width: isActive ? '20px' : '7px',
+                    height: '7px',
+                    borderRadius: '4px',
+                    backgroundColor: isActive ? 'var(--color-black-tie)' : 'rgba(0, 0, 0, 0.22)',
+                    display: 'block',
+                    transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                  }}
+                />
+              </button>
             );
           })}
         </div>

@@ -263,15 +263,9 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
               <div className={styles.contentLayer}>
                 <div className="container">
                   <div className={styles.contentWrapper}>
-                    <div className={styles.badge}>
-                      <span>{slide.badge}</span>
-                    </div>
-
                     <h1 className={styles.headline}>{slide.title}</h1>
 
                     <p className={styles.subtitle}>{slide.subtitle}</p>
-
-                    <p className={styles.description}>{slide.description}</p>
 
                     <div className={styles.actions}>
                       <button

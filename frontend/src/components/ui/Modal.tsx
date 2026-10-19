@@ -73,7 +73,7 @@ export const Modal: React.FC<ModalProps> = ({
           borderRadius: 'var(--radius-md)',
           width: '100%',
           maxWidth,
-          maxHeight: '90vh',
+          maxHeight: '90dvh',
           overflowY: 'auto',
           boxShadow: 'var(--shadow-editorial)',
           padding: '28px',

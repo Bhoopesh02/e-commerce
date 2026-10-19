@@ -2018,6 +2018,18 @@ button.filter-btn:focus-visible,
   }
 }
 
+.pdp-gallery-column {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .pdp-gallery-column {
+    max-width: 540px;
+    margin: 0 auto;
+  }
+}
+
 .pdp-guarantees {
   display: grid;
   grid-template-columns: 1fr;
@@ -2101,6 +2113,127 @@ button.filter-btn:focus-visible,
 /* Grid Blowout Fix for PDP */
 .pdp-split-layout > div {
   min-width: 0;
+}
+
+/* --- PDP Mobile Sticky Add-to-Cart Bar --- */
+.pdp-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border-top: 1px solid var(--border-color);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  padding: 10px 16px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+  transform: translateY(100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 300ms var(--ease-luxury), opacity 300ms ease, visibility 300ms;
+  pointer-events: none;
+}
+
+@supports (padding: max(0px)) {
+  .pdp-sticky-bar {
+    padding-bottom: max(14px, env(safe-area-inset-bottom, 14px)) !important;
+  }
+}
+
+.pdp-sticky-bar.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.pdp-sticky-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 100%;
+}
+
+.pdp-sticky-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.pdp-sticky-name {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.pdp-sticky-sub {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.pdp-sticky-price {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pdp-sticky-variant {
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pdp-sticky-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pdp-sticky-wishlist-btn {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-black-tie);
+  transition: background-color 150ms ease;
+  padding: 0;
+}
+
+.pdp-sticky-add-btn {
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0 16px !important;
+  font-size: 0.82rem !important;
+  letter-spacing: 0.05em !important;
+  white-space: nowrap !important;
+}
+
+/* Hide PDP Sticky Bar on Desktop / Tablet (>= 768px) */
+@media (min-width: 768px) {
+  .pdp-sticky-bar {
+    display: none !important;
+  }
 }
 
 .home-banner-btn:hover {
