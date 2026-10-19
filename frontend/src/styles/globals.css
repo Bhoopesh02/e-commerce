@@ -125,6 +125,11 @@ body {
   .shop-sort-prefix {
     display: none !important;
   }
+  .shop-controls-cluster [style*="position: relative"] > div[style*="position: absolute"] {
+    right: 0 !important;
+    left: auto !important;
+    max-width: calc(100vw - 24px) !important;
+  }
 }
 
 a {

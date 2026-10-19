@@ -805,9 +805,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     style={{
                       position: 'absolute',
                       top: 'calc(100% + 6px)',
-                      left: 0,
+                      right: 0,
                       zIndex: 60,
                       minWidth: '190px',
+                      maxWidth: 'calc(100vw - 32px)',
                       backgroundColor: 'var(--bg-primary)',
                       border: '1px solid var(--border-color)',
                       boxShadow: 'var(--shadow-editorial)',

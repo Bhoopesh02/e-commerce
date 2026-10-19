@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Search, Heart, ShoppingBag, User, Menu, X } from 'lucide-react';
+import { Search, Heart, ShoppingBag, User, Menu, X, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '@/store/useCartStore';
 import { useWishlistStore } from '@/store/useWishlistStore';
@@ -21,6 +21,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileCollectionsExpanded, setMobileCollectionsExpanded] = useState(true);
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const pathname = usePathname();
 
@@ -492,7 +493,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '8px',
+            gap: '4px',
             color: 'var(--text-primary)',
           }}
         >
@@ -506,79 +507,145 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               minHeight: '44px',
               display: 'flex',
               alignItems: 'center',
+              padding: '0 8px',
               color: 'var(--text-primary)',
               textDecoration: 'none',
+              borderRadius: '6px',
             }}
           >
             Home
           </Link>
-          <Link
-            href="/collections"
-            onClick={() => setMobileMenuOpen(false)}
-            style={{
-              fontSize: '1rem',
-              fontWeight: 600,
-              letterSpacing: '0.08em',
-              minHeight: '44px',
-              display: 'flex',
-              alignItems: 'center',
-              color: 'var(--text-primary)',
-              textDecoration: 'none',
-            }}
-          >
-            Collections
-          </Link>
-          <Link
-            href="/collections"
-            onClick={() => setMobileMenuOpen(false)}
-            style={{
-              fontSize: '0.95rem',
-              fontWeight: pathname === '/collections' ? 600 : 400,
-              letterSpacing: '0.04em',
-              minHeight: '44px',
-              display: 'flex',
-              alignItems: 'center',
-              padding: '10px 16px',
-              color: pathname === '/collections' ? 'var(--brand-primary)' : 'var(--text-primary)',
-              textDecoration: 'none',
-            }}
-          >
-            All Collections
-          </Link>
-          <Link
-            href="/collections/men"
-            onClick={() => setMobileMenuOpen(false)}
-            style={{
-              fontSize: '0.95rem',
-              fontWeight: pathname === '/collections/men' ? 600 : 400,
-              letterSpacing: '0.04em',
-              minHeight: '44px',
-              display: 'flex',
-              alignItems: 'center',
-              padding: '10px 16px',
-              color: pathname === '/collections/men' ? 'var(--brand-primary)' : 'var(--text-primary)',
-              textDecoration: 'none',
-            }}
-          >
-            Men
-          </Link>
-          <Link
-            href="/collections/women"
-            onClick={() => setMobileMenuOpen(false)}
-            style={{
-              fontSize: '0.95rem',
-              fontWeight: pathname === '/collections/women' ? 600 : 400,
-              letterSpacing: '0.04em',
-              minHeight: '44px',
-              display: 'flex',
-              alignItems: 'center',
-              padding: '10px 16px',
-              color: pathname === '/collections/women' ? 'var(--brand-primary)' : 'var(--text-primary)',
-              textDecoration: 'none',
-            }}
-          >
-            Women
-          </Link>
+
+          {/* Collapsible Collections Dropdown Bar */}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                minHeight: '44px',
+                padding: '0 0 0 8px',
+              }}
+            >
+              <Link
+                href="/collections"
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.08em',
+                  color: 'var(--text-primary)',
+                  textDecoration: 'none',
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  minHeight: '44px',
+                }}
+              >
+                Collections
+              </Link>
+              <button
+                type="button"
+                onClick={() => setMobileCollectionsExpanded(!mobileCollectionsExpanded)}
+                aria-label={mobileCollectionsExpanded ? 'Collapse Collections' : 'Expand Collections'}
+                aria-expanded={mobileCollectionsExpanded}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '44px',
+                  height: '44px',
+                  border: 'none',
+                  background: 'transparent',
+                  color: 'var(--text-primary)',
+                  cursor: 'pointer',
+                  padding: 0,
+                  borderRadius: 'var(--radius-pill)',
+                }}
+              >
+                <ChevronDown
+                  size={18}
+                  style={{
+                    transform: mobileCollectionsExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 250ms cubic-bezier(0.16, 1, 0.3, 1)',
+                  }}
+                />
+              </button>
+            </div>
+            {mobileCollectionsExpanded && (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px',
+                  paddingLeft: '14px',
+                  borderLeft: '1.5px solid var(--border-color)',
+                  marginLeft: '8px',
+                  marginTop: '2px',
+                  marginBottom: '6px',
+                }}
+              >
+                <Link
+                  href="/collections"
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    fontSize: '0.9rem',
+                    fontWeight: pathname === '/collections' ? 600 : 400,
+                    letterSpacing: '0.04em',
+                    minHeight: '40px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    backgroundColor: pathname === '/collections' ? 'var(--overlay-black-5)' : 'transparent',
+                    color: pathname === '/collections' ? 'var(--brand-primary)' : 'var(--text-primary)',
+                    textDecoration: 'none',
+                  }}
+                >
+                  All Collections
+                </Link>
+                <Link
+                  href="/collections/men"
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    fontSize: '0.9rem',
+                    fontWeight: pathname === '/collections/men' ? 600 : 400,
+                    letterSpacing: '0.04em',
+                    minHeight: '40px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    backgroundColor: pathname === '/collections/men' ? 'var(--overlay-black-5)' : 'transparent',
+                    color: pathname === '/collections/men' ? 'var(--brand-primary)' : 'var(--text-primary)',
+                    textDecoration: 'none',
+                  }}
+                >
+                  Men
+                </Link>
+                <Link
+                  href="/collections/women"
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    fontSize: '0.9rem',
+                    fontWeight: pathname === '/collections/women' ? 600 : 400,
+                    letterSpacing: '0.04em',
+                    minHeight: '40px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    backgroundColor: pathname === '/collections/women' ? 'var(--overlay-black-5)' : 'transparent',
+                    color: pathname === '/collections/women' ? 'var(--brand-primary)' : 'var(--text-primary)',
+                    textDecoration: 'none',
+                  }}
+                >
+                  Women
+                </Link>
+              </div>
+            )}
+          </div>
+
           <Link
             href={newArrivalsHref}
             onClick={() => setMobileMenuOpen(false)}
@@ -589,8 +656,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               minHeight: '44px',
               display: 'flex',
               alignItems: 'center',
+              padding: '0 8px',
               color: 'var(--text-primary)',
               textDecoration: 'none',
+              borderRadius: '6px',
             }}
           >
             New Arrivals
@@ -605,8 +674,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               minHeight: '44px',
               display: 'flex',
               alignItems: 'center',
+              padding: '0 8px',
               color: 'var(--text-primary)',
               textDecoration: 'none',
+              borderRadius: '6px',
             }}
           >
             Private Client Offers
@@ -621,8 +692,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               minHeight: '44px',
               display: 'flex',
               alignItems: 'center',
+              padding: '0 8px',
               color: 'var(--text-primary)',
               textDecoration: 'none',
+              borderRadius: '6px',
             }}
           >
             About Us
@@ -637,8 +710,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               minHeight: '44px',
               display: 'flex',
               alignItems: 'center',
+              padding: '0 8px',
               color: 'var(--text-primary)',
               textDecoration: 'none',
+              borderRadius: '6px',
             }}
           >
             Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
@@ -653,8 +728,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               minHeight: '44px',
               display: 'flex',
               alignItems: 'center',
+              padding: '0 8px',
               color: 'var(--text-primary)',
               textDecoration: 'none',
+              borderRadius: '6px',
             }}
           >
             {user?.role === 'admin' ? 'Admin Portal' : 'My Account'}
@@ -673,6 +750,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             onMouseEnter={() => setHoveredNav(hoveredNav)}
             onMouseLeave={() => setHoveredNav(null)}
+            className="navbar-mega-menu-dropdown"
             style={{
               position: 'fixed',
               top: isScrolled
@@ -686,12 +764,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
               padding: '24px 0',
               pointerEvents: 'auto',
+              maxHeight: 'calc(100dvh - var(--navbar-height, 76px) - 24px)',
+              overflowY: 'auto',
             }}
           >
-            <div className="container" style={{ display: 'grid', gridTemplateColumns: 'minmax(120px, 0.6fr) 1.5fr 1fr 1.3fr', gap: 'clamp(16px, 1rem + 1vw, 32px)' }}>
+            <div className="container navbar-mega-menu-container">
               
               {/* Column 1: Shop by Department */}
-              <div>
+              <div className="navbar-mega-col navbar-mega-col-dept">
                 <h4 style={{ fontSize: 'clamp(0.72rem, 0.6rem + 0.15vw, 0.8rem)', letterSpacing: 'clamp(0.06em, 0.03em + 0.05vw, 0.1em)', textTransform: 'uppercase', marginBottom: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>
                   Shop by Department
                 </h4>
@@ -701,7 +781,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     onClick={() => setHoveredNav(null)} 
                     style={{ 
                       fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', 
-                      color: pathname === '/collections' ? 'var(--text-primary)' : 'var(--text-primary)',
+                      color: pathname === '/collections' ? 'var(--brand-primary)' : 'var(--text-primary)',
                       fontWeight: pathname === '/collections' ? 600 : 400,
                       textDecoration: pathname === '/collections' ? 'underline' : 'none',
                     }}
@@ -713,7 +793,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     onClick={() => setHoveredNav(null)} 
                     style={{ 
                       fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', 
-                      color: pathname === '/collections/men' ? 'var(--text-primary)' : 'var(--text-primary)',
+                      color: pathname === '/collections/men' ? 'var(--brand-primary)' : 'var(--text-primary)',
                       fontWeight: pathname === '/collections/men' ? 600 : 400,
                       textDecoration: pathname === '/collections/men' ? 'underline' : 'none',
                     }}
@@ -725,7 +805,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     onClick={() => setHoveredNav(null)} 
                     style={{ 
                       fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', 
-                      color: pathname === '/collections/women' ? 'var(--text-primary)' : 'var(--text-primary)',
+                      color: pathname === '/collections/women' ? 'var(--brand-primary)' : 'var(--text-primary)',
                       fontWeight: pathname === '/collections/women' ? 600 : 400,
                       textDecoration: pathname === '/collections/women' ? 'underline' : 'none',
                     }}
@@ -736,11 +816,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               </div>
 
               {/* Column 2: Categories */}
-              <div>
+              <div className="navbar-mega-col navbar-mega-col-cats">
                 <h4 style={{ fontSize: 'clamp(0.72rem, 0.6rem + 0.15vw, 0.8rem)', letterSpacing: 'clamp(0.06em, 0.03em + 0.05vw, 0.1em)', textTransform: 'uppercase', marginBottom: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>
                   Shop by Category
                 </h4>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '10px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <Link href="/shop?categorySlug=outerwear" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>Outerwear</Link>
                     <Link href="/shop?categorySlug=tailoring" onClick={() => setHoveredNav(null)} style={{ fontSize: 'clamp(0.82rem, 0.72rem + 0.18vw, 0.95rem)', color: 'var(--text-primary)' }}>Tailoring</Link>
@@ -757,7 +837,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               </div>
 
               {/* Column 3: Trends/Featured */}
-              <div>
+              <div className="navbar-mega-col navbar-mega-col-edits">
                 <h4 style={{ fontSize: 'clamp(0.72rem, 0.6rem + 0.15vw, 0.8rem)', letterSpacing: 'clamp(0.06em, 0.03em + 0.05vw, 0.1em)', textTransform: 'uppercase', marginBottom: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>
                   Shop by Edit
                 </h4>
@@ -771,17 +851,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               </div>
 
               {/* Column 4: Featured Image */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div className="navbar-mega-col navbar-mega-col-featured" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <Link
                   href="/collections"
                   onClick={() => setHoveredNav(null)}
-                  style={{ position: 'relative', width: '100%', paddingBottom: '80%', overflow: 'hidden', backgroundColor: 'var(--bg-subtle)', display: 'block' }}
+                  style={{ position: 'relative', width: '100%', paddingBottom: '80%', overflow: 'hidden', backgroundColor: 'var(--bg-subtle)', display: 'block', borderRadius: '4px' }}
                 >
                   <Image 
                     src="/images/categories/cat-tailoring.webp" 
                     alt="The New-Season Collections" 
                     fill
-                    sizes="280px"
+                    sizes="(max-width: 1024px) 200px, 280px"
                     quality={85}
                     loading="lazy"
                     style={{ objectFit: 'cover' }}
@@ -873,6 +953,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             letter-spacing: clamp(0.12em, 0.04em + 0.1vw, 0.22em) !important;
           }
         }
+        .navbar-mega-menu-container {
+          display: grid;
+          grid-template-columns: minmax(130px, 0.7fr) 1.5fr 1fr 1.3fr;
+          gap: clamp(16px, 1rem + 1vw, 32px);
+          align-items: start;
+        }
         @media (min-width: 768px) and (max-width: 1024px) {
           .navbar-container {
             padding-left: max(16px, env(safe-area-inset-left, 0px)) !important;
@@ -901,8 +987,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             min-width: 42px !important;
             min-height: 42px !important;
           }
+          .navbar-mega-menu-dropdown {
+            padding: 18px 0 !important;
+          }
+          .navbar-mega-menu-container {
+            grid-template-columns: 1fr 1.8fr 1.2fr !important;
+            gap: 16px !important;
+          }
+          .navbar-mega-col-featured {
+            display: none !important;
+          }
         }
         @media (max-width: 767px) {
+          .navbar-mega-menu-dropdown {
+            display: none !important;
+          }
           .navbar-container {
             padding-left: max(12px, env(safe-area-inset-left, 0px)) !important;
             padding-right: max(12px, env(safe-area-inset-right, 0px)) !important;
