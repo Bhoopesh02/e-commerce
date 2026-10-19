@@ -48,7 +48,7 @@ export const OffersView: React.FC = () => {
   };
 
   return (
-    <div style={{ paddingTop: '110px', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+    <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       <div className="container" style={{ maxWidth: '960px' }}>
         <div style={{ textAlign: 'center', marginBottom: '56px' }}>
           <div

@@ -297,7 +297,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
 
   if (loading) {
     return (
-      <div style={{ paddingTop: '110px', paddingBottom: '96px' }} className="container">
+      <div style={{ paddingTop: 'var(--header-total-height, 113px)', paddingBottom: '96px' }} className="container">
         <div className="pdp-split-layout">
           <Skeleton height="620px" borderRadius="var(--radius-sm)" />
           <div>
@@ -419,7 +419,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 fill
                 priority
                 loading="eager"
-                quality={95}
+                quality={85}
                 sizes="(max-width: 1024px) 100vw, 55vw"
                 style={{
                   objectFit: 'cover',
@@ -463,7 +463,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                       transition: 'border-color var(--duration-fast)',
                     }}
                   >
-                    <Image src={img} alt={`${product.name} view ${idx + 1}`} fill sizes="160px" quality={90} style={{ objectFit: 'cover' }} />
+                    <Image src={img} alt={`${product.name} view ${idx + 1}`} fill sizes="160px" quality={75} style={{ objectFit: 'cover' }} />
                   </button>
                 ))}
               </div>

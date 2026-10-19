@@ -27,7 +27,7 @@ export default function SignOutPage() {
   return (
     <div
       style={{
-        paddingTop: '120px',
+        paddingTop: 'calc(var(--header-total-height, 113px) + 24px)',
         paddingBottom: '96px',
         minHeight: '100vh',
         background: 'radial-gradient(ellipse at 50% 20%, var(--bg-subtle) 0%, var(--bg-secondary) 50%, var(--bg-muted) 100%)',

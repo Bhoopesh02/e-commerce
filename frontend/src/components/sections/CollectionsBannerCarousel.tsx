@@ -249,6 +249,7 @@ export function CollectionsBannerCarousel() {
                 height: '100%',
                 display: 'flex',
                 alignItems: 'center',
+                paddingTop: 'var(--header-total-height, 113px)',
               }}
             >
               <div
@@ -503,7 +504,7 @@ export function CollectionsBannerCarousel() {
           }
           .collections-banner-container {
             align-items: center !important;
-            padding-top: var(--navbar-height, 64px) !important;
+            padding-top: var(--header-total-height, 97px) !important;
           }
           .collections-banner-content {
             max-width: min(310px, 68vw) !important;

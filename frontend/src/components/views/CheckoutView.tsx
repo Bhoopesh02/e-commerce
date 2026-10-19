@@ -505,7 +505,7 @@ export const CheckoutView: React.FC = () => {
   // Confirmation View
   if (step === 5 && confirmedOrder) {
     return (
-      <div style={{ paddingTop: '120px', paddingBottom: '96px', minHeight: '85vh', backgroundColor: 'var(--bg-primary)' }}>
+      <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '96px', minHeight: '85vh', backgroundColor: 'var(--bg-primary)' }}>
         <div className="container" style={{ maxWidth: '680px', textAlign: 'center' }}>
           <div
             style={{
@@ -823,7 +823,7 @@ export const CheckoutView: React.FC = () => {
 
   if (!mounted) {
     return (
-      <div style={{ paddingTop: '140px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+      <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
         <div className="container" style={{ maxWidth: '640px', textAlign: 'center' }}>
           <div style={{ minHeight: '300px' }} />
         </div>
@@ -834,7 +834,7 @@ export const CheckoutView: React.FC = () => {
   // If cart is empty, show empty bag state
   if (items.length === 0) {
     return (
-      <div style={{ paddingTop: '140px', paddingBottom: '120px', textAlign: 'center', backgroundColor: 'var(--bg-primary)' }}>
+      <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '120px', textAlign: 'center', backgroundColor: 'var(--bg-primary)' }}>
         <div className="container" style={{ maxWidth: '540px' }}>
           <ShoppingBag size={48} style={{ color: 'var(--border-color)', margin: '0 auto 16px' }} />
           <h2 style={{ fontSize: '1.8rem', marginBottom: '12px' }}>Your Bag is Empty</h2>
@@ -850,7 +850,7 @@ export const CheckoutView: React.FC = () => {
   }
 
   return (
-    <div style={{ paddingTop: '110px', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+    <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       <div className="container">
         {/* Step Progression Header */}
         <div style={{ maxWidth: '780px', margin: '0 auto 48px', textAlign: 'center' }}>

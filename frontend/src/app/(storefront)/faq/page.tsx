@@ -15,7 +15,7 @@ export default async function FaqPage({
   const { category } = await searchParams;
 
   return (
-    <div style={{ paddingTop: 'calc(var(--navbar-height, 80px) + 32px)', paddingBottom: '96px' }}>
+    <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 32px)', paddingBottom: '96px' }}>
       <div className="container">
         <FaqView initialCategory={category || 'all'} />
       </div>

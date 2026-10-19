@@ -107,7 +107,7 @@
   align-items: center;
   width: 100%;
   pointer-events: none;
-  padding-top: var(--navbar-height, 76px);
+  padding-top: var(--header-total-height, 113px);
 }
 
 .contentWrapper {
@@ -337,7 +337,7 @@
   /* Constrain Text Width to Never Overlap Model on Right */
   .contentLayer {
     align-items: center;
-    padding-top: var(--navbar-height, 64px);
+    padding-top: var(--header-total-height, 97px);
   }
 
   .contentWrapper {
