@@ -109,7 +109,7 @@ export const Footer: React.FC = () => {
                     <input
                       type="email"
                       required
-                      placeholder="Enter your email address..."
+                      placeholder="Enter your email..."
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       aria-label="Email address for private ledger"
@@ -264,7 +264,7 @@ export const Footer: React.FC = () => {
         {/* ================================================================= */}
         <div className="desktop-only footer-columns-grid">
           {/* COLUMN 1 — AURELIA BRAND & OPERATIONS */}
-          <div style={{ maxWidth: '340px' }} className="footer-col-brand">
+          <div className="footer-col-brand">
             <Link
               href="/"
               style={{
@@ -443,34 +443,33 @@ export const Footer: React.FC = () => {
           {/* COLUMN 4 — THE HOUSE */}
           <div className="footer-nav-col">
             <h3 className="footer-column-heading">The House</h3>
-            <div className="footer-links-list">
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <li>
-                  <Link href="/about" className="footer-link">
-                    About Us & Journey
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/#house-philosophy" className="footer-link">
-                    The House Philosophy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/#new-arrivals" className="footer-link">
-                    New Arrivals
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/#signature-icons" className="footer-link">
-                    Signature Icons
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/#house-favorites" className="footer-link">
-                    House Favorites
-                  </Link>
-                </li>
-              </ul>
+            <ul className="footer-links-list">
+              <li>
+                <Link href="/about" className="footer-link">
+                  About Us & Journey
+                </Link>
+              </li>
+              <li>
+                <Link href="/#house-philosophy" className="footer-link">
+                  The House Philosophy
+                </Link>
+              </li>
+              <li>
+                <Link href="/#new-arrivals" className="footer-link">
+                  New Arrivals
+                </Link>
+              </li>
+              <li>
+                <Link href="/#signature-icons" className="footer-link">
+                  Signature Icons
+                </Link>
+              </li>
+              <li>
+                <Link href="/#house-favorites" className="footer-link">
+                  House Favorites
+                </Link>
+              </li>
+            </ul>
 
               {/* Non-linked editorial hallmarks */}
               <div
@@ -490,7 +489,6 @@ export const Footer: React.FC = () => {
                 <span>Traceable European materials.</span>
                 <span>Timeless heirloom construction.</span>
               </div>
-            </div>
           </div>
         </div>
 
@@ -531,8 +529,8 @@ export const Footer: React.FC = () => {
         }
 
         .footer-inner-container {
-          padding-left: 24px;
-          padding-right: 24px;
+          padding-left: max(24px, env(safe-area-inset-left, 0px));
+          padding-right: max(24px, env(safe-area-inset-right, 0px));
         }
 
         /* Newsletter Section */
@@ -544,8 +542,8 @@ export const Footer: React.FC = () => {
 
         .footer-newsletter-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 40px;
+          grid-template-columns: 1.25fr 0.75fr;
+          gap: 48px;
           align-items: center;
         }
 
@@ -595,6 +593,8 @@ export const Footer: React.FC = () => {
           display: flex;
           align-items: center;
           gap: 12px;
+          word-break: break-word;
+          overflow-wrap: anywhere;
         }
 
         .footer-newsletter-form {
@@ -652,6 +652,7 @@ export const Footer: React.FC = () => {
           border-radius: var(--radius-pill, 999px);
           border: none;
           cursor: pointer;
+          white-space: nowrap;
           transition: background-color 200ms ease, color 200ms ease, transform 150ms ease;
         }
 
@@ -758,12 +759,16 @@ export const Footer: React.FC = () => {
           outline-offset: 2px;
         }
 
-        /* Desktop Grid */
+        /* Desktop Grid (>= 1024px) */
+        .footer-col-brand {
+          max-width: 360px;
+        }
+
         .footer-columns-grid {
           padding-top: 64px;
           padding-bottom: 56px;
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          grid-template-columns: 1.35fr 1fr 1fr 1fr;
           gap: 48px;
         }
 
@@ -802,6 +807,57 @@ export const Footer: React.FC = () => {
         }
 
         /* =============================================================== */
+        /* TABLET OPTIMIZATIONS (768px - 1023px)                           */
+        /* =============================================================== */
+        @media (min-width: 768px) and (max-width: 1023px) {
+          .footer-newsletter-section {
+            padding-top: 48px;
+            padding-bottom: 40px;
+          }
+
+          .footer-newsletter-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+          }
+
+          .footer-newsletter-copy {
+            max-width: 100%;
+          }
+
+          .footer-newsletter-desc {
+            max-width: 560px;
+          }
+
+          .footer-newsletter-form-wrapper {
+            max-width: 500px;
+            justify-self: start;
+          }
+
+          .footer-columns-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 44px 36px;
+            padding-top: 48px;
+            padding-bottom: 44px;
+          }
+
+          .footer-col-brand {
+            max-width: 100%;
+          }
+
+          .footer-bottom-bar {
+            justify-content: space-between;
+            gap: 16px;
+            padding-top: 20px;
+            padding-bottom: 28px;
+            font-size: 0.78rem;
+          }
+
+          .footer-bottom-meta {
+            gap: 12px;
+          }
+        }
+
+        /* =============================================================== */
         /* MOBILE OPTIMIZATIONS (<768px)                                   */
         /* =============================================================== */
         @media (max-width: 767px) {
@@ -814,20 +870,20 @@ export const Footer: React.FC = () => {
           }
 
           .footer-inner-container {
-            padding-left: 20px;
-            padding-right: 20px;
+            padding-left: max(16px, env(safe-area-inset-left, 0px));
+            padding-right: max(16px, env(safe-area-inset-right, 0px));
           }
 
           /* 1. Newsletter on Mobile */
           .footer-newsletter-section {
-            padding-top: 44px;
-            padding-bottom: 36px;
+            padding-top: 40px;
+            padding-bottom: 32px;
             text-align: center;
           }
 
           .footer-newsletter-grid {
             grid-template-columns: 1fr;
-            gap: 24px;
+            gap: 20px;
           }
 
           .footer-newsletter-copy {
@@ -840,41 +896,47 @@ export const Footer: React.FC = () => {
           }
 
           .footer-newsletter-title {
-            font-size: 1.7rem;
+            font-size: clamp(1.45rem, 6vw, 1.75rem);
             margin-bottom: 8px;
           }
 
           .footer-newsletter-desc {
             font-size: 0.84rem;
-            max-width: 320px;
+            max-width: 360px;
+            width: 100%;
             margin: 0 auto;
             line-height: 1.55;
           }
 
           .footer-newsletter-form-wrapper {
-            max-width: 100%;
+            max-width: 440px;
+            width: 100%;
             justify-self: center;
+            margin: 0 auto;
           }
 
           .footer-input-wrapper {
             padding: 4px 5px 4px 16px;
-            min-height: 52px;
+            min-height: 50px;
+            width: 100%;
             box-sizing: border-box;
           }
 
           .footer-newsletter-input {
             font-size: 1rem;
             min-height: 44px;
+            min-width: 0;
           }
 
           .footer-inscribe-btn {
             min-height: 44px;
-            padding: 0 20px;
+            padding: 0 18px;
             box-sizing: border-box;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-size: 0.78rem;
+            white-space: nowrap;
           }
 
           .footer-privacy-note {
@@ -886,8 +948,8 @@ export const Footer: React.FC = () => {
           /* 2. Centered Mobile Brand Header */
           .footer-mobile-brand-header {
             text-align: center;
-            padding-top: 36px;
-            padding-bottom: 24px;
+            padding-top: 32px;
+            padding-bottom: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -901,7 +963,7 @@ export const Footer: React.FC = () => {
 
           .footer-mobile-brand-title {
             font-family: var(--font-display);
-            font-size: 1.85rem;
+            font-size: clamp(1.5rem, 6vw, 1.85rem);
             letter-spacing: 0.22em;
             font-weight: 600;
             color: var(--color-diamond);
@@ -920,19 +982,20 @@ export const Footer: React.FC = () => {
 
           /* 3. Mobile 2-Column Links Grid */
           .footer-mobile-columns-wrapper {
-            padding-bottom: 36px;
+            padding-bottom: 32px;
           }
 
           .footer-mobile-two-col-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 16px;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
           }
 
           .footer-mobile-nav-column {
             display: flex;
             flex-direction: column;
+            min-width: 0;
           }
 
           .footer-column-heading {
@@ -942,16 +1005,18 @@ export const Footer: React.FC = () => {
           }
 
           .footer-mobile-columns-wrapper .footer-links-list {
-            gap: 4px;
+            gap: 2px;
           }
 
           .footer-link {
-            font-size: 0.8rem;
-            min-height: 38px;
+            font-size: 0.82rem;
+            min-height: 40px;
             display: inline-flex;
             align-items: center;
             padding: 4px 0;
             line-height: 1.35;
+            word-break: break-word;
+            overflow-wrap: anywhere;
           }
 
           /* 4. Mobile Connect With Us & Social Icons */
@@ -973,6 +1038,7 @@ export const Footer: React.FC = () => {
             font-size: 0.8rem;
             color: rgba(255, 255, 255, 0.75);
             line-height: 1.6;
+            width: 100%;
           }
 
           .footer-contact-link {
@@ -981,7 +1047,13 @@ export const Footer: React.FC = () => {
             min-height: 44px;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
+            text-align: center;
             box-sizing: border-box;
+            padding: 4px 8px;
+            max-width: 100%;
+            word-break: break-word;
+            overflow-wrap: anywhere;
             transition: color 150ms ease;
           }
 
@@ -991,11 +1063,15 @@ export const Footer: React.FC = () => {
 
           .footer-contact-text {
             color: rgba(255, 255, 255, 0.6);
-            max-width: 280px;
+            max-width: 100%;
+            text-align: center;
+            padding: 0 8px;
+            line-height: 1.5;
           }
 
           .footer-social-icons-row {
             justify-content: center;
+            flex-wrap: wrap;
             gap: 12px;
           }
 
@@ -1011,21 +1087,70 @@ export const Footer: React.FC = () => {
             flex-direction: column;
             align-items: center;
             text-align: center;
-            gap: 10px;
-            padding-top: 24px;
-            padding-bottom: 36px;
+            gap: 12px;
+            padding-top: 20px;
+            padding-bottom: 32px;
           }
 
           .footer-bottom-meta {
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             font-size: 0.74rem;
+            text-align: center;
+            line-height: 1.5;
           }
 
           .footer-mobile-hallmark {
             font-size: 0.72rem;
             color: rgba(255, 255, 255, 0.45);
             margin-top: 2px;
+            text-align: center;
+          }
+        }
+
+        /* Extra-small screens (< 360px) */
+        @media (max-width: 359px) {
+          .footer-inner-container {
+            padding-left: max(12px, env(safe-area-inset-left, 0px));
+            padding-right: max(12px, env(safe-area-inset-right, 0px));
+          }
+
+          .footer-newsletter-title {
+            font-size: 1.4rem;
+          }
+
+          .footer-input-wrapper {
+            padding: 3px 4px 3px 12px;
+            min-height: 48px;
+          }
+
+          .footer-inscribe-btn {
+            padding: 0 12px;
+            font-size: 0.72rem;
+          }
+
+          .footer-mobile-two-col-grid {
+            gap: 10px;
+          }
+
+          .footer-column-heading {
+            font-size: 0.72rem;
+          }
+
+          .footer-link {
+            font-size: 0.76rem;
+            min-height: 38px;
+          }
+
+          .footer-social-icons-row {
+            gap: 8px;
+          }
+
+          .footer-social-circle {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            min-height: 40px;
           }
         }
       `}</style>
