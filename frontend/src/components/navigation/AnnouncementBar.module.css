@@ -139,6 +139,11 @@
     height: var(--announcement-bar-height, 33px);
   }
 
+  .marqueeContainer::before,
+  .marqueeContainer::after {
+    width: 16px;
+  }
+
   .marqueeItem {
     gap: 8px;
     padding: 0 16px;
