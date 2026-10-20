@@ -34,7 +34,7 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     image: '/images/banners/new-arrivals/new-arrivals-hero.webp',
     mobileImage: '/images/banners/new-arrivals/new-arrivals-hero-mobile.webp',
     objectPosition: '80% center',
-    mobileObjectPosition: '68% center',
+    mobileObjectPosition: '60% center',
   },
   {
     id: 'outerwear',
@@ -49,7 +49,7 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     image: '/images/banners/new-arrivals/new-arrivals-outerwear.webp',
     mobileImage: '/images/banners/new-arrivals/new-arrivals-outerwear-mobile.webp',
     objectPosition: '80% center',
-    mobileObjectPosition: '80% center',
+    mobileObjectPosition: '60% center',
   },
   {
     id: 'eveningwear',
@@ -64,7 +64,7 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     image: '/images/banners/new-arrivals/new-arrivals-eveningwear.webp',
     mobileImage: '/images/banners/new-arrivals/new-arrivals-eveningwear-mobile.webp',
     objectPosition: '82% center',
-    mobileObjectPosition: '84% center',
+    mobileObjectPosition: '60% center',
   },
   {
     id: 'leather-goods',
@@ -79,7 +79,7 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     image: '/images/banners/new-arrivals/new-arrivals-leather.webp',
     mobileImage: '/images/banners/new-arrivals/new-arrivals-leather-mobile.webp',
     objectPosition: '80% center',
-    mobileObjectPosition: '78% center',
+    mobileObjectPosition: '60% center',
   },
 ];
 
@@ -298,9 +298,8 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
         {slides.map((slide, idx) => (
           <div
             key={slide.id}
-            className={`${styles.indicatorBar} ${
-              idx === currentIndex ? styles.activeIndicator : ''
-            }`}
+            className={`${styles.indicatorBar} ${idx === currentIndex ? styles.activeIndicator : ''
+              }`}
             onClick={() => goToSlide(idx)}
             title={slide.title}
           >

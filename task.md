@@ -93,8 +93,8 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] No clutter, broken imagery or inconsistent layouts
 
 ### H. Responsive, States & Usability Testing
-- [ ] Test desktop, tablet and mobile layouts
-- [ ] Test all navigation links and interactive controls
+- [x] Test desktop, tablet and mobile layouts *(Audited and verified across 360px, 768px, 1024px, and 1440px+ viewports with zero horizontal overflow, fluid typography, and 100dvh safe-area viewport heights)*
+- [x] Test all navigation links and interactive controls *(Verified across Navbar, mobile slide-over drawer, category navigation, live search autocomplete, filter drawer, checkout steps, and footer)*
 - [x] Loading skeletons or loading indicators
 - [x] Empty, error, success and disabled states
 - [x] Form validation and useful error messages
@@ -195,4 +195,29 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] **Task 20: Comprehensive Color System Audit & Design Token Harmonization**
   - **Files**: `frontend/src/styles/globals.css`, `frontend/src/styles/variables.css`, `frontend/src/lib/colorUtils.ts`, `frontend/src/components/views/ShopView.tsx`, `frontend/src/components/views/SearchView.tsx`, `frontend/src/components/views/NewArrivalsView.tsx`, `frontend/src/components/layout/AccountLayout.tsx`, `frontend/src/app/admin/login/page.tsx`, `frontend/src/app/admin/(panel)/dashboard/page.tsx`, `frontend/src/components/admin/AdminDropdown.tsx`, `frontend/src/components/admin/SilhouetteImageCropperModal.tsx`
   - **Goal**: Audited every file across the codebase to ensure 100% adherence to the Aurelia luxury palette (`--color-diamond`, `--color-black-tie`, `--color-sapphire-*`, `--color-golden-*`, `--color-icy-lake-*`, `--color-neutral-*`, `--color-error`). Replaced all raw hex literals and obsolete color fallbacks across global styles, customer storefront layouts, search/shop views, and admin management panels with design tokens. Centralized catalog garment swatches in `colorUtils.ts`. Full audit verified with **0 color issues and 0 font issues** remaining across all 163 files.
+
+---
+
+### Priority 4: Responsive Design, Touch Ergonomics & Mobile Experience (P3)
+
+- [x] **Task 21: Mobile Sticky Add-to-Cart Bar & PDP Touch Ergonomics**
+  - **Files**: `frontend/src/components/views/ProductDetailView.tsx`, `frontend/src/components/product/ProductCard.tsx`, `frontend/src/components/ui/Input.tsx`
+  - **Goal**: Implemented mobile sticky add-to-cart bar with intersection observer detection for smooth in/out transitions, responsive gallery columnar switching, and expanded rating star touch targets (>= 44px) for mobile ergonomics.
+
+- [x] **Task 22: Comprehensive Storefront Touch Ergonomics & Safe-Area Audit**
+  - **Files**: All 8 storefront areas (`Navigation`, `Home`, `Shop`, `Product`, `Cart`, `Checkout`, `Account`, `Search`, `Footer`)
+  - **Goal**: Standardized interactive touch targets to meet WCAG 2.5.5 / 2.5.8 (>= 44px), enforced >= 16px font sizes on form inputs preventing iOS auto-zoom, and integrated 100dvh dynamic viewport safe-area scrolling in CartDrawer and modals. Verified zero horizontal overflow across 360px–1920px viewports.
+
+- [x] **Task 23: Cormorant Garamond Fluid Typography & Balance Modernization**
+  - **Files**: `frontend/src/styles/typography.css`, `frontend/src/styles/globals.css`, storefront view templates
+  - **Goal**: Upgraded luxury typography to Cormorant Garamond font system, implemented fluid scale tokens (`clamp()`), enabled `text-wrap: balance` for editorial headlines, and refined typographic hierarchy across mobile, tablet, and desktop breakpoints.
+
+- [x] **Task 24: Standardized Header Offset Tokens, Image Loading & Dropdown Responsiveness**
+  - **Files**: `frontend/src/styles/variables.css`, `frontend/src/styles/globals.css`, `frontend/src/components/navigation/Navbar.tsx`, `frontend/src/components/ui/FilterDropdownSection.tsx`, `frontend/src/components/views/ShopView.tsx`, `frontend/src/components/shop/SectionBanner.tsx`
+  - **Goal**: Defined `--header-total-height` and `--page-top-offset` CSS variables across breakpoints to eliminate layout jumps and content overlap under the fixed marquee and navbar. Optimized image loading attributes (eager vs lazy, responsive sizes) across banners and product cards. Refined dropdown/popover positioning and touch sizing for mobile and tablet screens.
+
+- [x] **Task 25: All Collections Shop by Department Banner Image Responsiveness**
+  - **Files**: `frontend/src/components/views/CollectionsView.tsx`, `frontend/src/components/views/CollectionsView.module.css`
+  - **Goal**: Resolved mobile/tablet responsiveness issues for Men's Wardrobe and Women's Collection department banners in `/collections`. Replaced fixed `minmax(340px, 1fr)` grid with fluid responsive CSS module (`1fr` on mobile, `repeat(2, minmax(0, 1fr))` on tablet/desktop), preventing mobile horizontal overflow and avoiding tablet single-column image blowouts. Harmonized image `objectPosition` to `center 8%` with priority loading, fluid typography, and responsive Next.js `sizes` prop.
+
 

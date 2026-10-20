@@ -7,6 +7,7 @@ import { ArrowRight } from 'lucide-react';
 import { Product, Category } from '@/types';
 import { ProductCard } from '@/components/product/ProductCard';
 import { CuratedEditsHeroBanner } from '@/components/sections/CuratedEditsHeroBanner';
+import styles from './CollectionsView.module.css';
 
 interface CollectionsViewProps {
   initialProducts: Product[];
@@ -44,7 +45,7 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
       tagline: 'Italian tailoring & natural fibers',
       itemCount: initialProducts.filter((p) => p.genders?.includes('men')).length,
       cta: 'Shop the collection',
-      objectPosition: 'center 15%',
+      objectPosition: 'center 8%',
     },
     {
       id: 'women',
@@ -57,7 +58,7 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
       tagline: 'Mulberry silks & tactile tailoring',
       itemCount: initialProducts.filter((p) => p.genders?.includes('women')).length,
       cta: 'Shop now',
-      objectPosition: 'center 20%',
+      objectPosition: 'center 8%',
     },
     {
       id: 'runway',
@@ -79,86 +80,55 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
   const runwayDepartment = departmentCollections.find((d) => d.id === 'runway');
 
   return (
-    <div style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', minHeight: '100vh', paddingBottom: '96px' }}>
+    <div className={styles.pageContainer}>
       {/* Top Banner: Curated Edits Editorial Campaign Banner */}
       <CuratedEditsHeroBanner />
 
       {/* Main Container */}
-      <div className="container" style={{ maxWidth: '1440px', margin: '0 auto', padding: '48px 24px 0' }}>
+      <div className={styles.mainContainer}>
         
         {/* Section 1: Department Pillars */}
-        <section style={{ marginBottom: '80px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '28px', borderBottom: '1px solid var(--border-color)', paddingBottom: '14px' }}>
+        <section className={styles.departmentSection}>
+          <div className={styles.sectionHeader}>
             <div>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 400, margin: 0 }}>
+              <h2 className={styles.sectionTitle}>
                 Shop by Department
               </h2>
             </div>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+            <span className={styles.sectionCount}>
               {departmentCollections.length} Main Collections
             </span>
           </div>
 
-          {/* Row 1: Men's & Women's Collections in a 2-Column Row */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '36px' }}>
+          {/* Row 1: Men's & Women's Collections in a 2-Column Responsive Row */}
+          <div className={styles.departmentGrid}>
             {primaryDepartments.map((dept) => (
               <Link
                 key={dept.id}
                 href={dept.href}
-                className="group"
-                style={{
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  textDecoration: 'none',
-                  backgroundColor: 'transparent',
-                }}
+                className={`group ${styles.departmentCard}`}
               >
-                <div
-                  style={{
-                    position: 'relative',
-                    width: '100%',
-                    aspectRatio: '4 / 5',
-                    overflow: 'hidden',
-                    backgroundColor: 'var(--bg-subtle)',
-                  }}
-                >
+                <div className={styles.imageContainer}>
                   <Image
                     src={dept.image}
                     alt={dept.title}
                     fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority
+                    loading="eager"
+                    sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1200px) 50vw, 680px"
+                    quality={85}
                     style={{
-                      objectFit: 'cover',
-                      objectPosition: dept.objectPosition || 'center',
-                      transition: 'transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
+                      objectPosition: dept.objectPosition || 'center 8%',
                     }}
-                    className="group-hover:scale-105"
+                    className={styles.departmentImage}
                   />
                 </div>
 
-                <div style={{ paddingTop: '18px', display: 'flex', flexDirection: 'column' }}>
-                  <h3
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '1.45rem',
-                      fontWeight: 400,
-                      color: 'var(--text-primary)',
-                      margin: '0 0 8px 0',
-                      lineHeight: 1.25,
-                      letterSpacing: '-0.01em',
-                    }}
-                  >
+                <div className={styles.cardContent}>
+                  <h3 className={styles.cardTitle}>
                     {dept.title}
                   </h3>
-                  <p
-                    style={{
-                      fontSize: '0.92rem',
-                      color: 'var(--text-secondary)',
-                      lineHeight: 1.55,
-                      margin: '0 0 16px 0',
-                    }}
-                  >
+                  <p className={styles.cardSubtitle}>
                     {dept.subtitle}
                   </p>
                   <div>
@@ -181,35 +151,21 @@ export const CollectionsView: React.FC<CollectionsViewProps> = ({
 
           {/* Row 2: The New-Season Drop / Runway below them in 16:9 ratio */}
           {runwayDepartment && (
-            <div style={{ marginTop: '56px' }}>
+            <div className={styles.runwayContainer}>
               <Link
                 href={runwayDepartment.href}
-                className="group"
-                style={{
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  textDecoration: 'none',
-                  backgroundColor: 'transparent',
-                }}
+                className={`group ${styles.departmentCard}`}
               >
-                <div
-                  style={{
-                    position: 'relative',
-                    width: '100%',
-                    aspectRatio: '16 / 9',
-                    overflow: 'hidden',
-                    backgroundColor: 'var(--bg-subtle)',
-                  }}
-                >
+                <div className={styles.runwayImageContainer}>
                   <Image
                     src={runwayDepartment.image}
                     alt={runwayDepartment.title}
                     fill
                     sizes="(max-width: 1200px) 100vw, 1440px"
+                    quality={85}
                     style={{
                       objectFit: 'cover',
-                      objectPosition: 'center',
+                      objectPosition: runwayDepartment.objectPosition || '76% center',
                       transition: 'transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
                     }}
                     className="group-hover:scale-105"

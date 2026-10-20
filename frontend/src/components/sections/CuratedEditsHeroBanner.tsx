@@ -229,7 +229,7 @@ export const CuratedEditsHeroBanner: React.FC = () => {
         }}
       >
         {slides.map((slide, index) => {
-          const isInitial = index === 1;
+          const isInitial = slide.id === CURATED_EDIT_SLIDES[0].id;
           const common = {
             alt: `${slide.title} - ${slide.badge}`,
             fill: true,
