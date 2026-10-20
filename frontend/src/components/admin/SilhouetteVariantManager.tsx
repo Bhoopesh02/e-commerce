@@ -322,6 +322,7 @@ export const SilhouetteVariantManager: React.FC<SilhouetteVariantManagerProps> =
 
   return (
     <div
+      className="admin-variant-manager-card"
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -352,7 +353,7 @@ export const SilhouetteVariantManager: React.FC<SilhouetteVariantManagerProps> =
           </span>
           <h2
             style={{
-              fontSize: '1.25rem',
+              fontSize: 'clamp(1.15rem, 3.5vw, 1.25rem)',
               fontWeight: 600,
               fontFamily: 'var(--font-display)',
               color: 'var(--admin-text-primary)',
@@ -362,7 +363,7 @@ export const SilhouetteVariantManager: React.FC<SilhouetteVariantManagerProps> =
             Silhouette Colors, Sizes & Atelier Inventory
           </h2>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           <Badge variant={selectedColors.length > 0 ? 'success' : 'warning'}>
             {selectedColors.length} {selectedColors.length === 1 ? 'Color' : 'Colors'} Selected
           </Badge>
@@ -374,10 +375,11 @@ export const SilhouetteVariantManager: React.FC<SilhouetteVariantManagerProps> =
 
       {/* ----------------- SEARCHABLE DROPDOWNS ROW (FULL WIDTH 2-COL) ----------------- */}
       <div
+        className="admin-variant-dropdowns-grid"
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '24px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+          gap: '20px',
           width: '100%',
           alignItems: 'start',
         }}
@@ -1087,91 +1089,244 @@ export const SilhouetteVariantManager: React.FC<SilhouetteVariantManagerProps> =
             </span>
           </div>
         ) : (
-          <div
-            style={{
-              width: '100%',
-              overflowX: 'auto',
-              borderRadius: 'var(--radius-sm)',
-              border: '1px solid var(--admin-border)',
-              backgroundColor: 'var(--admin-surface)',
-            }}
-          >
-            <table
+          <>
+            {/* Desktop Table View */}
+            <div
+              className="admin-variant-desktop-view"
               style={{
                 width: '100%',
-                borderCollapse: 'collapse',
-                textAlign: 'left',
-                fontSize: '0.84rem',
+                overflowX: 'auto',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid var(--admin-border)',
+                backgroundColor: 'var(--admin-surface)',
               }}
             >
-              <thead>
-                <tr
-                  style={{
-                    backgroundColor: 'var(--admin-canvas)',
-                    borderBottom: '1px solid var(--admin-border)',
-                    color: 'var(--admin-text-secondary)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.06em',
-                    fontSize: '0.72rem',
-                  }}
-                >
-                  <th style={{ padding: '12px 16px', width: '25%' }}>Color Shade</th>
-                  <th style={{ padding: '12px 16px', width: '15%' }}>Size</th>
-                  <th style={{ padding: '12px 16px', width: '25%' }}>SKU Code</th>
-                  <th style={{ padding: '12px 16px', width: '15%' }}>Reserve Stock</th>
-                  <th style={{ padding: '12px 16px', width: '12%' }}>Status</th>
-                  <th style={{ padding: '12px 16px', width: '8%', textAlign: 'right' }}>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {variants.map((variant, idx) => {
-                  const { background, isLight } = getLuxuryColorStyle(variant.color);
-                  const isDepleted = variant.stock === 0;
-                  const isLow = variant.stock > 0 && variant.stock <= 5;
+              <table
+                style={{
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                  textAlign: 'left',
+                  fontSize: '0.84rem',
+                }}
+              >
+                <thead>
+                  <tr
+                    style={{
+                      backgroundColor: 'var(--admin-canvas)',
+                      borderBottom: '1px solid var(--admin-border)',
+                      color: 'var(--admin-text-secondary)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em',
+                      fontSize: '0.72rem',
+                    }}
+                  >
+                    <th style={{ padding: '12px 16px', width: '25%' }}>Color Shade</th>
+                    <th style={{ padding: '12px 16px', width: '15%' }}>Size</th>
+                    <th style={{ padding: '12px 16px', width: '25%' }}>SKU Code</th>
+                    <th style={{ padding: '12px 16px', width: '15%' }}>Reserve Stock</th>
+                    <th style={{ padding: '12px 16px', width: '12%' }}>Status</th>
+                    <th style={{ padding: '12px 16px', width: '8%', textAlign: 'right' }}>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {variants.map((variant, idx) => {
+                    const { background, isLight } = getLuxuryColorStyle(variant.color);
+                    const isDepleted = variant.stock === 0;
+                    const isLow = variant.stock > 0 && variant.stock <= 5;
 
-                  return (
-                    <tr
-                      key={`${variant.sku || idx}_${variant.color}_${variant.size}`}
-                      style={{
-                        borderBottom: '1px solid var(--admin-border-light)',
-                        transition: 'background 0.15s ease',
-                      }}
-                    >
-                      {/* Color */}
-                      <td style={{ padding: '12px 16px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span
-                            style={{
-                              width: '15px',
-                              height: '15px',
-                              borderRadius: '50%',
-                              background,
-                              border: isLight ? '1px solid rgba(0,0,0,0.15)' : '1px solid rgba(255,255,255,0.2)',
-                              display: 'inline-block',
-                              flexShrink: 0,
-                            }}
-                          />
+                    return (
+                      <tr
+                        key={`${variant.sku || idx}_${variant.color}_${variant.size}`}
+                        style={{
+                          borderBottom: '1px solid var(--admin-border-light)',
+                          transition: 'background 0.15s ease',
+                        }}
+                      >
+                        {/* Color */}
+                        <td style={{ padding: '12px 16px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span
+                              style={{
+                                width: '15px',
+                                height: '15px',
+                                borderRadius: '50%',
+                                background,
+                                border: isLight ? '1px solid rgba(0,0,0,0.15)' : '1px solid rgba(255,255,255,0.2)',
+                                display: 'inline-block',
+                                flexShrink: 0,
+                              }}
+                            />
+                            <input
+                              type="text"
+                              value={variant.color}
+                              onChange={(e) => handleUpdateVariant(idx, 'color', e.target.value)}
+                              style={{
+                                border: '1px solid transparent',
+                                backgroundColor: 'transparent',
+                                color: 'var(--admin-text-primary)',
+                                fontSize: '0.84rem',
+                                fontWeight: 600,
+                                width: '100%',
+                                maxWidth: '180px',
+                                padding: '2px 4px',
+                                borderRadius: '3px',
+                              }}
+                            />
+                          </div>
+                        </td>
+
+                        {/* Size */}
+                        <td style={{ padding: '12px 16px' }}>
                           <input
                             type="text"
-                            value={variant.color}
-                            onChange={(e) => handleUpdateVariant(idx, 'color', e.target.value)}
+                            value={variant.size}
+                            onChange={(e) => handleUpdateVariant(idx, 'size', e.target.value)}
                             style={{
-                              border: '1px solid transparent',
-                              backgroundColor: 'transparent',
+                              border: '1px solid var(--admin-border)',
+                              backgroundColor: 'var(--admin-canvas)',
+                              color: 'var(--admin-text-primary)',
+                              fontSize: '0.82rem',
+                              fontWeight: 600,
+                              width: '90px',
+                              padding: '4px 8px',
+                              borderRadius: '4px',
+                            }}
+                          />
+                        </td>
+
+                        {/* SKU */}
+                        <td style={{ padding: '12px 16px' }}>
+                          <input
+                            type="text"
+                            value={variant.sku}
+                            onChange={(e) => handleUpdateVariant(idx, 'sku', e.target.value.toUpperCase())}
+                            style={{
+                              fontFamily: 'monospace',
+                              fontSize: '0.82rem',
+                              padding: '4px 8px',
+                              borderRadius: '4px',
+                              border: '1px solid var(--admin-border)',
+                              backgroundColor: 'var(--admin-canvas)',
+                              color: 'var(--admin-text-primary)',
+                              width: '100%',
+                              maxWidth: '200px',
+                            }}
+                          />
+                        </td>
+
+                        {/* Reserve Units */}
+                        <td style={{ padding: '12px 16px' }}>
+                          <input
+                            type="number"
+                            min="0"
+                            value={variant.stock}
+                            onChange={(e) => handleUpdateVariant(idx, 'stock', e.target.value)}
+                            style={{
+                              width: '90px',
+                              padding: '4px 8px',
+                              borderRadius: '4px',
+                              border: '1px solid var(--admin-border)',
+                              backgroundColor: 'var(--admin-canvas)',
                               color: 'var(--admin-text-primary)',
                               fontSize: '0.84rem',
                               fontWeight: 600,
-                              width: '100%',
-                              maxWidth: '180px',
-                              padding: '2px 4px',
-                              borderRadius: '3px',
+                              textAlign: 'center',
                             }}
                           />
-                        </div>
-                      </td>
+                        </td>
 
-                      {/* Size */}
-                      <td style={{ padding: '12px 16px' }}>
+                        {/* Status */}
+                        <td style={{ padding: '12px 16px' }}>
+                          {isDepleted ? (
+                            <Badge variant="danger">Depleted</Badge>
+                          ) : isLow ? (
+                            <Badge variant="warning">Low ({variant.stock})</Badge>
+                          ) : (
+                            <Badge variant="success">In Stock ({variant.stock})</Badge>
+                          )}
+                        </td>
+
+                        {/* Action */}
+                        <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteVariant(idx)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              cursor: 'pointer',
+                              color: 'var(--text-muted)',
+                              padding: '4px',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              borderRadius: '4px',
+                            }}
+                            title="Remove variant combination"
+                          >
+                            <AnimatedTrashIcon size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile View: Touch-Optimized Cards */}
+            <div className="admin-variant-mobile-view">
+              {variants.map((variant, idx) => {
+                const { background, isLight } = getLuxuryColorStyle(variant.color);
+                const isDepleted = variant.stock === 0;
+                const isLow = variant.stock > 0 && variant.stock <= 5;
+
+                return (
+                  <div
+                    key={`mobile_${variant.sku || idx}_${variant.color}_${variant.size}`}
+                    style={{
+                      backgroundColor: 'var(--admin-surface)',
+                      border: '1px solid var(--admin-border)',
+                      borderRadius: 'var(--radius-sm)',
+                      padding: '14px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '12px',
+                      boxShadow: '0 1px 3px var(--overlay-black-5)',
+                    }}
+                  >
+                    {/* Top Line: Color Swatch + Name, Size Badge, Trash Button */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: 0 }}>
+                        <span
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                            borderRadius: '50%',
+                            background,
+                            border: isLight ? '1px solid rgba(0,0,0,0.2)' : '1px solid rgba(255,255,255,0.25)',
+                            flexShrink: 0,
+                          }}
+                        />
+                        <input
+                          type="text"
+                          value={variant.color}
+                          onChange={(e) => handleUpdateVariant(idx, 'color', e.target.value)}
+                          style={{
+                            border: '1px solid transparent',
+                            backgroundColor: 'transparent',
+                            color: 'var(--admin-text-primary)',
+                            fontSize: '0.86rem',
+                            fontWeight: 600,
+                            width: '100%',
+                            padding: '2px 4px',
+                            borderRadius: '3px',
+                          }}
+                          placeholder="Color shade"
+                        />
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <input
                           type="text"
                           value={variant.size}
@@ -1180,69 +1335,16 @@ export const SilhouetteVariantManager: React.FC<SilhouetteVariantManagerProps> =
                             border: '1px solid var(--admin-border)',
                             backgroundColor: 'var(--admin-canvas)',
                             color: 'var(--admin-text-primary)',
-                            fontSize: '0.82rem',
-                            fontWeight: 600,
-                            width: '90px',
-                            padding: '4px 8px',
+                            fontSize: '0.8rem',
+                            fontWeight: 700,
+                            width: '64px',
+                            padding: '4px 6px',
                             borderRadius: '4px',
-                          }}
-                        />
-                      </td>
-
-                      {/* SKU */}
-                      <td style={{ padding: '12px 16px' }}>
-                        <input
-                          type="text"
-                          value={variant.sku}
-                          onChange={(e) => handleUpdateVariant(idx, 'sku', e.target.value.toUpperCase())}
-                          style={{
-                            fontFamily: 'monospace',
-                            fontSize: '0.82rem',
-                            padding: '4px 8px',
-                            borderRadius: '4px',
-                            border: '1px solid var(--admin-border)',
-                            backgroundColor: 'var(--admin-canvas)',
-                            color: 'var(--admin-text-primary)',
-                            width: '100%',
-                            maxWidth: '200px',
-                          }}
-                        />
-                      </td>
-
-                      {/* Reserve Units */}
-                      <td style={{ padding: '12px 16px' }}>
-                        <input
-                          type="number"
-                          min="0"
-                          value={variant.stock}
-                          onChange={(e) => handleUpdateVariant(idx, 'stock', e.target.value)}
-                          style={{
-                            width: '90px',
-                            padding: '4px 8px',
-                            borderRadius: '4px',
-                            border: '1px solid var(--admin-border)',
-                            backgroundColor: 'var(--admin-canvas)',
-                            color: 'var(--admin-text-primary)',
-                            fontSize: '0.84rem',
-                            fontWeight: 600,
                             textAlign: 'center',
                           }}
+                          placeholder="Size"
                         />
-                      </td>
 
-                      {/* Status */}
-                      <td style={{ padding: '12px 16px' }}>
-                        {isDepleted ? (
-                          <Badge variant="danger">Depleted</Badge>
-                        ) : isLow ? (
-                          <Badge variant="warning">Low ({variant.stock})</Badge>
-                        ) : (
-                          <Badge variant="success">In Stock ({variant.stock})</Badge>
-                        )}
-                      </td>
-
-                      {/* Action */}
-                      <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                         <button
                           type="button"
                           onClick={() => handleDeleteVariant(idx)}
@@ -1251,23 +1353,84 @@ export const SilhouetteVariantManager: React.FC<SilhouetteVariantManagerProps> =
                             border: 'none',
                             cursor: 'pointer',
                             color: 'var(--text-muted)',
-                            padding: '4px',
+                            padding: '6px',
                             display: 'inline-flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             borderRadius: '4px',
+                            minWidth: '32px',
+                            minHeight: '32px',
                           }}
-                          title="Remove variant combination"
+                          title="Remove variant"
                         >
-                          <AnimatedTrashIcon size={14} />
+                          <AnimatedTrashIcon size={15} />
                         </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom Line: SKU Code, Reserve Stock & Status */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1, minWidth: '130px' }}>
+                        <label style={{ fontSize: '0.68rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--admin-text-secondary)', display: 'block', marginBottom: '3px' }}>
+                          SKU Code
+                        </label>
+                        <input
+                          type="text"
+                          value={variant.sku}
+                          onChange={(e) => handleUpdateVariant(idx, 'sku', e.target.value.toUpperCase())}
+                          style={{
+                            fontFamily: 'monospace',
+                            fontSize: '0.8rem',
+                            padding: '6px 8px',
+                            borderRadius: '4px',
+                            border: '1px solid var(--admin-border)',
+                            backgroundColor: 'var(--admin-canvas)',
+                            color: 'var(--admin-text-primary)',
+                            width: '100%',
+                          }}
+                        />
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
+                        <div>
+                          <label style={{ fontSize: '0.68rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--admin-text-secondary)', display: 'block', marginBottom: '3px' }}>
+                            Reserve
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={variant.stock}
+                            onChange={(e) => handleUpdateVariant(idx, 'stock', e.target.value)}
+                            style={{
+                              width: '60px',
+                              padding: '6px 8px',
+                              borderRadius: '4px',
+                              border: '1px solid var(--admin-border)',
+                              backgroundColor: 'var(--admin-canvas)',
+                              color: 'var(--admin-text-primary)',
+                              fontSize: '0.84rem',
+                              fontWeight: 600,
+                              textAlign: 'center',
+                            }}
+                          />
+                        </div>
+
+                        <div style={{ paddingBottom: '3px' }}>
+                          {isDepleted ? (
+                            <Badge variant="danger">Depleted</Badge>
+                          ) : isLow ? (
+                            <Badge variant="warning">Low ({variant.stock})</Badge>
+                          ) : (
+                            <Badge variant="success">In Stock</Badge>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
     </div>

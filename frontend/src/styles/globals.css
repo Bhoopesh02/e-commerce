@@ -2126,6 +2126,61 @@ button.filter-btn:focus-visible,
     line-height: 1.25 !important;
     margin-bottom: 0 !important;
   }
+
+  /* Admin Silhouette New & Edit Form Mobile Responsiveness */
+  .admin-silhouette-form-card {
+    padding: 18px 14px !important;
+    gap: 20px !important;
+  }
+
+  .admin-form-header-title {
+    font-size: 1.45rem !important;
+  }
+
+  .admin-variant-manager-card {
+    padding: 16px 12px !important;
+    gap: 18px !important;
+  }
+
+  .admin-variant-dropdowns-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .admin-images-grid-mobile {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .admin-variant-desktop-view {
+    display: none !important;
+  }
+
+  .admin-variant-mobile-view {
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .admin-form-footer-mobile {
+    flex-direction: column-reverse !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+
+  .admin-form-footer-mobile button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+.admin-variant-desktop-view {
+  display: block;
+}
+
+.admin-variant-mobile-view {
+  display: none;
 }
 
 /* Product Detail Page Full-Screen Trigger Interactive Styling */

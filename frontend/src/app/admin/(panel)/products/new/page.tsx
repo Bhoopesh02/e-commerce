@@ -264,8 +264,9 @@ export default function NewProductPage() {
             Inventory & Catalog Management
           </span>
           <h1
+            className="admin-form-header-title"
             style={{
-              fontSize: '2rem',
+              fontSize: 'clamp(1.35rem, 4vw, 2rem)',
               fontFamily: 'var(--font-display)',
               color: 'var(--admin-text-primary)',
               marginTop: '4px',
@@ -278,6 +279,7 @@ export default function NewProductPage() {
 
       {/* Main Form */}
       <form
+        className="admin-silhouette-form-card"
         onSubmit={handleSubmit}
         style={{
           display: 'flex',
@@ -383,10 +385,11 @@ export default function NewProductPage() {
           {/* Stored 3:4 Cropped Images Grid */}
           {silhouetteImages.length > 0 && (
             <div
+              className="admin-images-grid-mobile"
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-                gap: '16px',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 150px), 1fr))',
+                gap: '14px',
                 marginTop: '6px',
               }}
             >
@@ -667,6 +670,7 @@ export default function NewProductPage() {
 
         {/* Action Controls */}
         <div
+          className="admin-form-footer-mobile"
           style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -674,6 +678,8 @@ export default function NewProductPage() {
             marginTop: '16px',
             paddingTop: '20px',
             borderTop: '1px solid var(--admin-border)',
+            flexWrap: 'wrap',
+            gap: '12px',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
