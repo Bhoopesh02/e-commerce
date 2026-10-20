@@ -328,35 +328,67 @@ export default function NewProductPage() {
 
         {/* Silhouette Images Upload with 3:4 Enforcement */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <label
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '8px 12px',
+            }}
+          >
+            <div
               style={{
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
-                color: 'var(--text-secondary)',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
+                flexWrap: 'wrap',
                 gap: '8px',
               }}
             >
-              Silhouette Imagery (1-8 Images)
+              <label
+                style={{
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.05em',
+                  textTransform: 'uppercase',
+                  color: 'var(--text-secondary)',
+                  margin: 0,
+                  display: 'inline',
+                }}
+              >
+                Silhouette Imagery (1–8 Images)
+              </label>
               <span
                 style={{
-                  fontSize: '0.72rem',
+                  fontSize: '0.68rem',
                   fontWeight: 700,
+                  letterSpacing: '0.05em',
+                  textTransform: 'uppercase',
                   color: 'var(--brand-accent)',
                   backgroundColor: 'var(--overlay-golden-10)',
-                  padding: '2px 8px',
+                  padding: '3px 8px',
                   borderRadius: '4px',
                   border: '1px solid var(--overlay-golden-35)',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  lineHeight: 1.2,
                 }}
               >
                 3:4 Ratio Locked
               </span>
-            </label>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+            </div>
+            <span
+              style={{
+                fontSize: '0.78rem',
+                color: 'var(--text-muted)',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+                marginLeft: 'auto',
+              }}
+            >
               {silhouetteImages.length} / 8 stored
             </span>
           </div>

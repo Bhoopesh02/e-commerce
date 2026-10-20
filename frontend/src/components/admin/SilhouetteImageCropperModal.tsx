@@ -602,7 +602,7 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
               <Crop size={20} />
             </div>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                 <h3 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', margin: 0 }}>
                   Crop Silhouette Photography
                 </h3>
@@ -617,9 +617,11 @@ export const SilhouetteImageCropperModal: React.FC<SilhouetteImageCropperModalPr
                     backgroundColor: 'rgba(36, 75, 87, 0.4)',
                     color: 'var(--color-sapphire-300)',
                     border: '1px solid rgba(126, 195, 216, 0.3)',
-                    display: 'flex',
+                    display: 'inline-flex',
                     alignItems: 'center',
                     gap: '4px',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
                   }}
                 >
                   <ShieldCheck size={12} />
