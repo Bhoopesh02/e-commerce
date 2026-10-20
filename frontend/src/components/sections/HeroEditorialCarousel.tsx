@@ -64,7 +64,7 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     image: '/images/banners/new-arrivals/new-arrivals-eveningwear.webp',
     mobileImage: '/images/banners/new-arrivals/new-arrivals-eveningwear-mobile.webp',
     objectPosition: '82% center',
-    mobileObjectPosition: '60% center',
+    mobileObjectPosition: '100% center',
   },
   {
     id: 'leather-goods',
@@ -79,7 +79,7 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     image: '/images/banners/new-arrivals/new-arrivals-leather.webp',
     mobileImage: '/images/banners/new-arrivals/new-arrivals-leather-mobile.webp',
     objectPosition: '80% center',
-    mobileObjectPosition: '60% center',
+    mobileObjectPosition: '0% center',
   },
 ];
 
