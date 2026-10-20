@@ -136,16 +136,12 @@ export function ensureClientState() {
         const override = overrides[fresh.id];
         if (!override) return fresh;
 
-        const overrideVariants = override.variants || [];
-        const mergedVariants = (fresh.variants || []).map((freshVariant) => {
-          const cachedVariant = overrideVariants.find((v) => v.sku === freshVariant.sku);
-          return cachedVariant !== undefined ? cachedVariant : freshVariant;
-        });
+        const variants = override.variants !== undefined ? override.variants : fresh.variants;
 
         return {
           ...fresh,
           ...override,
-          variants: mergedVariants.length > 0 ? mergedVariants : fresh.variants,
+          variants,
         };
       });
 
@@ -1128,6 +1124,11 @@ export async function adminUpdateProduct(id: string, updates: Partial<Product>):
   ensureClientState();
   const index = productsState.findIndex((p) => p.id === id);
   if (index === -1) throw new Error('Product not found');
+
+  if (updates.variants && !updates.availability) {
+    const totalStock = updates.variants.reduce((acc, v) => acc + (v.stock || 0), 0);
+    updates.availability = totalStock === 0 ? 'out_of_stock' : totalStock <= LOW_STOCK_THRESHOLD ? 'low_stock' : 'in_stock';
+  }
 
   const updatedProduct = { ...productsState[index], ...updates };
   productsState[index] = updatedProduct;

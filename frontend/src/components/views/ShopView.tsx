@@ -15,7 +15,7 @@ import { FilterDropdownSection } from '@/components/ui/FilterDropdownSection';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FlatProductGrid, PAGE_SIZE } from '@/components/shop/FlatProductGrid';
 import { useStorefrontStore } from '@/store/useStorefrontStore';
-import { SlidersHorizontal, X, RotateCcw, ArrowUp, Check, Search, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { SlidersHorizontal, X, RotateCcw, ArrowUp, Check, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { smoothScrollService } from '@/services/smooth-scroll';
 import { COLOR_GROUPS } from '@/lib/colorUtils';
 
@@ -152,8 +152,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
   });
 
   const [selectedSort, setSelectedSort] = useState<string>('popularity');
-  const [sortOpen, setSortOpen] = useState(false);
-  const sortDropdownRef = useRef<HTMLDivElement>(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     sort: false,
@@ -163,17 +161,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
     price: false,
     availability: false,
   });
-
-  useEffect(() => {
-    if (!sortOpen) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (sortDropdownRef.current && !sortDropdownRef.current.contains(e.target as Node)) {
-        setSortOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [sortOpen]);
 
   const toggleFilterSection = (key: string) => {
     setOpenSections((prev) => ({
@@ -766,87 +753,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   />
                 )}
               </button>
-
-              {/* Sort Select Dropdown */}
-              <div ref={sortDropdownRef} style={{ position: 'relative' }}>
-                <button
-                  id="collection-sort-btn"
-                  onClick={() => setSortOpen(!sortOpen)}
-                  aria-expanded={sortOpen}
-                  aria-label="Sort collection items"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    minHeight: '44px',
-                    padding: '8px 14px',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: 'var(--radius-pill)',
-                    fontSize: '0.82rem',
-                    fontWeight: 500,
-                    backgroundColor: 'var(--bg-surface)',
-                    color: 'var(--text-primary)',
-                    cursor: 'pointer',
-                    transition: 'border-color 0.2s ease',
-                  }}
-                >
-                  <span className="shop-sort-prefix" style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>Sort:</span>
-                  <span>{SORT_OPTIONS.find((s) => s.id === selectedSort)?.label}</span>
-                  <ChevronDown
-                    size={14}
-                    style={{
-                      transform: sortOpen ? 'rotate(180deg)' : 'rotate(0)',
-                      transition: 'transform 0.2s ease',
-                    }}
-                  />
-                </button>
-                {sortOpen && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 'calc(100% + 6px)',
-                      right: 0,
-                      zIndex: 60,
-                      minWidth: '190px',
-                      maxWidth: 'calc(100vw - 32px)',
-                      backgroundColor: 'var(--bg-primary)',
-                      border: '1px solid var(--border-color)',
-                      boxShadow: 'var(--shadow-editorial)',
-                      borderRadius: 'var(--radius-sm)',
-                      padding: '6px 0',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {SORT_OPTIONS.map((opt) => (
-                      <button
-                        key={opt.id}
-                        onClick={() => {
-                          setSelectedSort(opt.id);
-                          setSortOpen(false);
-                        }}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          width: '100%',
-                          minHeight: '44px',
-                          padding: '10px 16px',
-                          border: 'none',
-                          backgroundColor: selectedSort === opt.id ? 'var(--overlay-black-5)' : 'transparent',
-                          color: selectedSort === opt.id ? 'var(--brand-primary)' : 'var(--text-primary)',
-                          fontSize: '0.85rem',
-                          fontWeight: selectedSort === opt.id ? 600 : 400,
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                        }}
-                      >
-                        <span>{opt.label}</span>
-                        {selectedSort === opt.id && <Check size={14} />}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
             </div>
             {/* Active Filters inside the Navbar */}
             <div

@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { ArrowLeft, Save, UploadCloud, X } from 'lucide-react';
 import { getProductById, adminUpdateProduct } from '@/lib/mockApi';
-import { Product } from '@/types';
+import { Product, ProductVariant } from '@/types';
 import { AdminDropdown, DropdownOption } from '@/components/admin/AdminDropdown';
+import { SilhouetteVariantManager } from '@/components/admin/SilhouetteVariantManager';
 import { downscaleImage } from '@/lib/imageCompression';
 
 const CATEGORY_OPTIONS: DropdownOption[] = [
@@ -42,6 +43,7 @@ export default function EditProductPage() {
   });
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [imageFiles, setImageFiles] = useState<File[]>([]); // for new images if any
+  const [variants, setVariants] = useState<ProductVariant[]>([]);
 
   useEffect(() => {
     async function load() {
@@ -57,6 +59,7 @@ export default function EditProductPage() {
             description: product.description,
           });
           setImagePreviews(product.images || []);
+          setVariants(product.variants || []);
         } else {
           router.push('/admin/products');
         }
@@ -118,6 +121,11 @@ export default function EditProductPage() {
       return;
     }
 
+    if (variants.length === 0) {
+      alert('Please maintain at least 1 color and size variant with reserve stock.');
+      return;
+    }
+
     // Diff against initial product so only changed fields are sent to adminUpdateProduct
     const updates: Partial<Product> = {};
     if (initialProduct) {
@@ -129,12 +137,16 @@ export default function EditProductPage() {
       if (JSON.stringify(imagePreviews) !== JSON.stringify(initialProduct.images || [])) {
         updates.images = imagePreviews;
       }
+      if (JSON.stringify(variants) !== JSON.stringify(initialProduct.variants || [])) {
+        updates.variants = variants;
+      }
     } else {
       updates.name = formData.name;
       updates.categoryId = formData.categoryId;
       updates.price = parseFloat(formData.price) || 0;
       updates.description = formData.description;
       updates.images = imagePreviews;
+      updates.variants = variants;
     }
 
     if (initialProduct && Object.keys(updates).length === 0) {
@@ -177,7 +189,7 @@ export default function EditProductPage() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', maxWidth: '800px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', width: '100%', maxWidth: '1440px', margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <button
           onClick={() => router.back()}
@@ -208,36 +220,39 @@ export default function EditProductPage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px', backgroundColor: 'var(--admin-surface)', padding: '32px', borderRadius: 'var(--radius-md)', border: '1px solid var(--admin-border)', boxShadow: '0 2px 8px var(--overlay-black-5)' }}>
-        <Input
-          label="Silhouette Name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="e.g. The Midnight Trench"
-          required
-        />
-        
-        <AdminDropdown
-          label="Category Division"
-          name="categoryId"
-          value={formData.categoryId}
-          onChange={(val) => setFormData((prev) => ({ ...prev, categoryId: val }))}
-          options={CATEGORY_OPTIONS}
-          searchPlaceholder="Search category divisions..."
-          placeholder="Select a category division"
-          required
-        />
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '28px', backgroundColor: 'var(--admin-surface)', padding: '32px', borderRadius: 'var(--radius-md)', border: '1px solid var(--admin-border)', boxShadow: '0 2px 8px var(--overlay-black-5)', width: '100%' }}>
+        {/* Garment Essentials Responsive Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', width: '100%' }}>
+          <Input
+            label="Silhouette Name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="e.g. The Midnight Trench"
+            required
+          />
+          
+          <AdminDropdown
+            label="Category Division"
+            name="categoryId"
+            value={formData.categoryId}
+            onChange={(val) => setFormData((prev) => ({ ...prev, categoryId: val }))}
+            options={CATEGORY_OPTIONS}
+            searchPlaceholder="Search category divisions..."
+            placeholder="Select a category division"
+            required
+          />
 
-        <Input
-          label="Atelier Price (₹)"
-          name="price"
-          type="number"
-          value={formData.price}
-          onChange={handleChange}
-          placeholder="e.g. 15000"
-          required
-        />
+          <Input
+            label="Atelier Price (₹)"
+            name="price"
+            type="number"
+            value={formData.price}
+            onChange={handleChange}
+            placeholder="e.g. 15000"
+            required
+          />
+        </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           <label style={{ fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
@@ -336,6 +351,13 @@ export default function EditProductPage() {
             )}
           </div>
         </div>
+
+        {/* Silhouette Colors, Sizes & Atelier Inventory Matrix */}
+        <SilhouetteVariantManager
+          productName={formData.name}
+          variants={variants}
+          onChange={setVariants}
+        />
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           <label style={{ fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>

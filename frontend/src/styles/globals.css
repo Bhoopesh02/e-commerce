@@ -114,21 +114,6 @@ body {
     flex-shrink: 0 !important;
     padding: 8px 10px !important;
     gap: 4px !important;
-    font-size: 0.78rem !important;
-  }
-  #collection-sort-btn {
-    flex-shrink: 0 !important;
-    padding: 8px 10px !important;
-    gap: 4px !important;
-    font-size: 0.78rem !important;
-  }
-  .shop-sort-prefix {
-    display: none !important;
-  }
-  .shop-controls-cluster [style*="position: relative"] > div[style*="position: absolute"] {
-    right: 0 !important;
-    left: auto !important;
-    max-width: calc(100vw - 24px) !important;
   }
 }
 
@@ -1575,12 +1560,41 @@ button.filter-btn:focus-visible,
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
   font-size: var(--text-xs);
   white-space: nowrap;
+  overflow-wrap: normal !important;
+  text-wrap: nowrap !important;
   z-index: 35;
   pointer-events: none;
   min-width: 130px;
   opacity: 0;
   visibility: hidden;
   transition: opacity 180ms var(--ease-editorial), visibility 180ms var(--ease-editorial);
+}
+
+.peak-sales-tooltip * {
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+}
+
+/* Value Pill pinned above the peak or selected bar */
+.peak-sales-pill {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap !important;
+  pointer-events: none;
+  z-index: 10;
+  width: max-content !important;
+}
+
+.peak-sales-pill-badge {
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  text-wrap: nowrap !important;
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
 }
 
 .peak-sales-tooltip--visible {

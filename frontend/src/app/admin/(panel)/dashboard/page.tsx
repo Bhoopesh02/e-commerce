@@ -3018,6 +3018,7 @@ export default function AdminDashboardPage() {
                         {/* Value Pill pinned above the bar: for Peak day, Selected day, or Hovered bar */}
                         {(day.isPeak || isSelected || isHovered) && (
                           <div
+                            className="peak-sales-pill"
                             style={{
                               position: 'absolute',
                               bottom: 'calc(100% + 6px)',
@@ -3026,9 +3027,11 @@ export default function AdminDashboardPage() {
                               whiteSpace: 'nowrap',
                               pointerEvents: 'none',
                               zIndex: 10,
+                              width: 'max-content',
                             }}
                           >
                             <span
+                              className="peak-sales-pill-badge"
                               style={{
                                 fontSize: '0.68rem',
                                 fontWeight: 700,
@@ -3039,6 +3042,11 @@ export default function AdminDashboardPage() {
                                 border: day.isPeak ? '1px solid rgba(36, 75, 87, 0.25)' : '1px solid var(--admin-border)',
                                 boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
                                 display: 'inline-block',
+                                whiteSpace: 'nowrap',
+                                overflowWrap: 'normal',
+                                wordBreak: 'keep-all',
+                                textWrap: 'nowrap',
+                                lineHeight: '1.2',
                               }}
                             >
                               {day.valueLabel}

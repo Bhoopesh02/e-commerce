@@ -16,8 +16,16 @@ import { SlidersHorizontal, X, RotateCcw, ArrowUp, ArrowDown, Check, Search, Che
 import { motion } from 'framer-motion';
 import { smoothScrollService } from '@/services/smooth-scroll';
 import { HeroEditorialCarousel } from '@/components/sections/HeroEditorialCarousel';
+import { COLOR_GROUPS } from '@/lib/colorUtils';
 
 export const PRODUCTS_PER_PAGE = 36;
+
+const PRICE_MILESTONES = [
+  { value: 0, label: '₹0' },
+  { value: 20000, label: '₹20K' },
+  { value: 35000, label: '₹35K' },
+  { value: 100000, label: '₹100K+' },
+];
 
 export interface NewArrivalsViewProps {
   initialProducts?: Product[];
@@ -28,6 +36,7 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
   initialProducts,
   initialCategories = [],
 }) => {
+  const searchParams = useSearchParams();
   const { storefront } = useStorefrontStore();
   const [products, setProducts] = useState<Product[]>(() =>
     initialProducts
@@ -41,16 +50,43 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   // Filters
-  const [activeCategory, setActiveCategory] = useState<string>('all');
-  const [stagedCategory, setStagedCategory] = useState<string>('all');
+  const [activeCategory, setActiveCategory] = useState<string>(
+    () => searchParams?.get('categorySlug') || 'all'
+  );
+  const [stagedCategory, setStagedCategory] = useState<string>(
+    () => searchParams?.get('categorySlug') || 'all'
+  );
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [appliedPriceRange, setAppliedPriceRange] = useState<[number, number]>([0, 100000]);
   const [selectedAvailability, setSelectedAvailability] = useState<string>('all');
   const [appliedAvailability, setAppliedAvailability] = useState<string>('all');
+
+  // Size filter states
+  const [stagedSizes, setStagedSizes] = useState<string[]>(() => {
+    const s = searchParams?.get('size');
+    return s ? s.split(',').filter(Boolean) : [];
+  });
+  const [appliedSizes, setAppliedSizes] = useState<string[]>(() => {
+    const s = searchParams?.get('size');
+    return s ? s.split(',').filter(Boolean) : [];
+  });
+
+  // Color filter states
+  const [stagedColors, setStagedColors] = useState<string[]>(() => {
+    const c = searchParams?.get('color');
+    return c ? c.split(',').filter(Boolean) : [];
+  });
+  const [appliedColors, setAppliedColors] = useState<string[]>(() => {
+    const c = searchParams?.get('color');
+    return c ? c.split(',').filter(Boolean) : [];
+  });
+
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     category: false,
+    size: false,
+    color: false,
     price: false,
     availability: false,
   });
@@ -62,10 +98,48 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
     }));
   };
 
+  // Extract all available sizes from catalog products
+  const availableSizes = useMemo(() => {
+    const sizes = new Set<string>();
+    products.forEach((p) =>
+      p.variants?.forEach((v) => {
+        if (v.size && v.size !== 'undefined') sizes.add(v.size);
+      })
+    );
+
+    const sizeArray = Array.from(sizes);
+    const order = ['XS', 'S', 'M', 'L', 'XL', 'One Size'];
+    return sizeArray.sort((a, b) => {
+      const idxA = order.indexOf(a);
+      const idxB = order.indexOf(b);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      return a.localeCompare(b);
+    });
+  }, [products]);
+
   // Alphabetically sorted categories
   const sortedCategories = useMemo(() => {
     return [...categories].sort((a, b) => a.name.localeCompare(b.name));
   }, [categories]);
+
+  // Sync size and color filters to URL search parameters
+  const syncFilterParamsToUrl = useCallback((newSizes: string[], newColors: string[]) => {
+    if (typeof window === 'undefined') return;
+    const url = new URL(window.location.href);
+    if (newSizes.length > 0) {
+      url.searchParams.set('size', newSizes.join(','));
+    } else {
+      url.searchParams.delete('size');
+    }
+    if (newColors.length > 0) {
+      url.searchParams.set('color', newColors.join(','));
+    } else {
+      url.searchParams.delete('color');
+    }
+    window.history.replaceState(null, '', url.pathname + url.search);
+  }, []);
 
   // Offload sticky state detection to an IntersectionObserver to eliminate main-thread layout thrashing
   useEffect(() => {
@@ -174,8 +248,28 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
       list = list.filter(p => p.availability !== 'out_of_stock');
     }
 
+    // Size filter
+    if (appliedSizes.length > 0) {
+      list = list.filter((p) =>
+        p.variants?.some((v) => v.stock > 0 && appliedSizes.includes(v.size))
+      );
+    }
+
+    // Color filter
+    if (appliedColors.length > 0) {
+      list = list.filter((p) => {
+        return p.variants?.some((v) => {
+          const matchedGroup = COLOR_GROUPS.find((g) => appliedColors.includes(g.name));
+          if (!matchedGroup) return false;
+          return matchedGroup.matches.some((m) =>
+            v.color?.toLowerCase().includes(m.toLowerCase())
+          );
+        });
+      });
+    }
+
     return list;
-  }, [products, categories, searchQuery, activeCategory, appliedPriceRange, appliedAvailability]);
+  }, [products, categories, searchQuery, activeCategory, appliedPriceRange, appliedAvailability, appliedSizes, appliedColors]);
 
   const resetFilters = () => {
     setActiveCategory('all');
@@ -184,6 +278,11 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
     setAppliedPriceRange([0, 100000]);
     setSelectedAvailability('all');
     setAppliedAvailability('all');
+    setStagedSizes([]);
+    setAppliedSizes([]);
+    setStagedColors([]);
+    setAppliedColors([]);
+    syncFilterParamsToUrl([], []);
     setSearchQuery('');
   };
 
@@ -192,6 +291,8 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
     appliedPriceRange[0] > 0 ||
     appliedPriceRange[1] < 100000 ||
     appliedAvailability !== 'all' ||
+    appliedSizes.length > 0 ||
+    appliedColors.length > 0 ||
     searchQuery.trim().length > 0;
 
   const activeCategoryName = useMemo(() => {
@@ -200,7 +301,6 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
   }, [categories, activeCategory]);
 
   // Pagination (36 products per page)
-  const searchParams = useSearchParams();
   const getPageFromParam = useCallback((param: string | null): number => {
     if (!param) return 1;
     const parsed = parseInt(param, 10);
@@ -256,7 +356,7 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
   // Reset to page 1 on active category, filter, or search query change
   useEffect(() => {
     handlePageChange(1, false);
-  }, [activeCategory, appliedPriceRange, appliedAvailability, searchQuery, handlePageChange]);
+  }, [activeCategory, appliedPriceRange, appliedAvailability, appliedSizes, appliedColors, searchQuery, handlePageChange]);
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE));
 
@@ -384,6 +484,66 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
                       />
                     </span>
                   )}
+                  {appliedSizes.map((s) => (
+                    <span
+                      key={s}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '3px 10px',
+                        backgroundColor: 'var(--bg-surface)',
+                        borderRadius: 'var(--radius-pill)',
+                        border: '1px solid var(--border-color)',
+                        fontSize: '0.78rem',
+                        color: 'var(--text-primary)',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <span>Size: {s}</span>
+                      <X
+                        size={12}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          const updated = appliedSizes.filter((item) => item !== s);
+                          setAppliedSizes(updated);
+                          setStagedSizes(updated);
+                          syncFilterParamsToUrl(updated, appliedColors);
+                        }}
+                        aria-label={`Remove ${s} size filter`}
+                      />
+                    </span>
+                  ))}
+                  {appliedColors.map((c) => (
+                    <span
+                      key={c}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '3px 10px',
+                        backgroundColor: 'var(--bg-surface)',
+                        borderRadius: 'var(--radius-pill)',
+                        border: '1px solid var(--border-color)',
+                        fontSize: '0.78rem',
+                        color: 'var(--text-primary)',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <span>Color: {c}</span>
+                      <X
+                        size={12}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          const updated = appliedColors.filter((item) => item !== c);
+                          setAppliedColors(updated);
+                          setStagedColors(updated);
+                          syncFilterParamsToUrl(appliedSizes, updated);
+                        }}
+                        aria-label={`Remove ${c} color filter`}
+                      />
+                    </span>
+                  ))}
                   {(appliedPriceRange[0] > 0 || appliedPriceRange[1] < 100000) && (
                     <span
                       style={{
@@ -457,11 +617,7 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
                     <RotateCcw size={12} /> Reset all
                   </button>
                 </>
-              ) : (
-                <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', letterSpacing: '0.02em' }}>
-                  {filteredProducts.length} Silhouettes
-                </span>
-              )}
+              ) : null}
             </div>
 
             {/* Search Bar & Filters */}
@@ -555,6 +711,8 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
                   setStagedCategory(activeCategory);
                   setPriceRange(appliedPriceRange);
                   setSelectedAvailability(appliedAvailability);
+                  setStagedSizes(appliedSizes);
+                  setStagedColors(appliedColors);
                   setMobileFiltersOpen(true);
                 }}
                 aria-label="Open Filters"
@@ -778,6 +936,8 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
           setStagedCategory(activeCategory);
           setPriceRange(appliedPriceRange);
           setSelectedAvailability(appliedAvailability);
+          setStagedSizes(appliedSizes);
+          setStagedColors(appliedColors);
           setMobileFiltersOpen(false);
         }}
         title="REFINE COLLECTION"
@@ -930,6 +1090,141 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
             </div>
           </FilterDropdownSection>
 
+          {/* Size Filter Dropdown */}
+          {availableSizes.length > 0 && (
+            <FilterDropdownSection
+              title="Size"
+              isOpen={openSections.size}
+              onToggle={() => toggleFilterSection('size')}
+              badge={stagedSizes.length > 0 ? `${stagedSizes.length} selected` : null}
+            >
+              <div
+                className="filter-scroll-container"
+                style={{
+                  height: '130px',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '8px',
+                  alignContent: 'flex-start',
+                }}
+              >
+                {availableSizes.map((s) => {
+                  const isSelected = stagedSizes.includes(s);
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => {
+                        setStagedSizes((prev) =>
+                          prev.includes(s) ? prev.filter((item) => item !== s) : [...prev, s]
+                        );
+                      }}
+                      style={{
+                        minWidth: '44px',
+                        height: '44px',
+                        minHeight: '44px',
+                        padding: '0 14px',
+                        borderRadius: 'var(--radius-pill)',
+                        border: isSelected
+                          ? '1.5px solid var(--color-black-tie)'
+                          : '1px solid var(--border-color)',
+                        backgroundColor: isSelected ? 'var(--color-black-tie)' : 'var(--bg-surface)',
+                        color: isSelected ? 'var(--color-diamond)' : 'var(--text-primary)',
+                        fontSize: '0.85rem',
+                        fontWeight: isSelected ? 600 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      {s}
+                    </button>
+                  );
+                })}
+              </div>
+            </FilterDropdownSection>
+          )}
+
+          {/* Color Filter Dropdown */}
+          <FilterDropdownSection
+            title="Color"
+            isOpen={openSections.color}
+            onToggle={() => toggleFilterSection('color')}
+            badge={stagedColors.length > 0 ? `${stagedColors.length} selected` : null}
+          >
+            <div
+              className="filter-scroll-container"
+              style={{
+                height: '210px',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '10px',
+                alignContent: 'flex-start',
+              }}
+            >
+              {COLOR_GROUPS.map((g) => {
+                const isSelected = stagedColors.includes(g.name);
+                return (
+                  <label
+                    key={g.name}
+                    onClick={() => {
+                      setStagedColors((prev) =>
+                        prev.includes(g.name) ? prev.filter((c) => c !== g.name) : [...prev, g.name]
+                      );
+                    }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      minHeight: '44px',
+                      padding: '8px 10px',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      backgroundColor: isSelected ? 'var(--overlay-black-5)' : 'transparent',
+                      transition: 'all 0.2s ease',
+                      userSelect: 'none',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '20px',
+                        height: '20px',
+                        borderRadius: '50%',
+                        backgroundColor: g.hex,
+                        border: '1px solid var(--border-color)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            width: '6px',
+                            height: '6px',
+                            borderRadius: '50%',
+                            backgroundColor: g.isLight ? 'var(--color-black-tie)' : 'var(--color-diamond)',
+                          }}
+                        />
+                      )}
+                    </div>
+                    <span
+                      style={{
+                        fontSize: '0.9rem',
+                        color: 'var(--text-primary)',
+                        fontWeight: isSelected ? 600 : 400,
+                        opacity: isSelected ? 1 : 0.85,
+                      }}
+                    >
+                      {g.name}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </FilterDropdownSection>
+
           {/* Price Range Dropdown */}
           <FilterDropdownSection
             title="Price Tier"
@@ -962,7 +1257,7 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
                 })}
               </div>
               <div style={{ width: '100%', maxWidth: '420px', boxSizing: 'border-box', minWidth: 0 }}>
-                <RangeSlider min={0} max={100000} step={5000} value={priceRange} onChange={setPriceRange} milestones={[{ value: 0, label: '₹0' }, { value: 20000, label: '₹20K' }, { value: 35000, label: '₹35K' }, { value: 100000, label: '₹100K+' }]} />
+                <RangeSlider min={0} max={100000} step={5000} value={priceRange} onChange={setPriceRange} milestones={PRICE_MILESTONES} />
               </div>
             </div>
           </FilterDropdownSection>
@@ -983,7 +1278,21 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
             </label>
           </FilterDropdownSection>
         </div>
-        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '24px 32px 32px', display: 'flex', gap: '16px', background: 'linear-gradient(to top, var(--bg-surface) 70%, transparent 100%)', borderTop: 'none', pointerEvents: 'none' }}>
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          width: '100%',
+          padding: '24px 24px',
+          paddingBottom: 'max(24px, env(safe-area-inset-bottom, 24px))',
+          paddingLeft: 'max(24px, env(safe-area-inset-left, 24px))',
+          paddingRight: 'max(24px, env(safe-area-inset-right, 24px))',
+          display: 'flex',
+          gap: '16px',
+          background: 'linear-gradient(to top, var(--bg-surface) 75%, transparent 100%)',
+          borderTop: 'none',
+          pointerEvents: 'none',
+        }}>
           <div style={{ display: 'flex', gap: '12px', width: '100%', pointerEvents: 'auto' }}>
             <Button
               variant="outline"
@@ -992,6 +1301,8 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
                 setStagedCategory('all');
                 setPriceRange([0, 100000]);
                 setSelectedAvailability('all');
+                setStagedSizes([]);
+                setStagedColors([]);
               }}
               style={{ borderRadius: '30px', borderColor: 'var(--text-accent)', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600, height: '48px', backgroundColor: 'transparent' }}
             >
@@ -1004,6 +1315,9 @@ export const NewArrivalsView: React.FC<NewArrivalsViewProps> = ({
                 setActiveCategory(stagedCategory);
                 setAppliedPriceRange(priceRange);
                 setAppliedAvailability(selectedAvailability);
+                setAppliedSizes(stagedSizes);
+                setAppliedColors(stagedColors);
+                syncFilterParamsToUrl(stagedSizes, stagedColors);
                 setMobileFiltersOpen(false);
               }}
               style={{ borderRadius: '30px', backgroundColor: 'var(--text-primary)', color: 'var(--bg-primary)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600, height: '48px', boxShadow: '0 8px 16px var(--overlay-golden-35)', border: 'none' }}

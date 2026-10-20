@@ -1437,7 +1437,7 @@ function SearchContent({ initialProducts = [], initialCategories = [], initialCu
                       </button>
                     </>
                   ) : (
-                    <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', letterSpacing: '0.02em' }}>
+                    <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
                       {!loading ? `${filteredProducts.length} Results` : 'Searching...'}
                     </span>
                   )}
