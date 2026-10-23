@@ -442,8 +442,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
             {/* Shopping Bag Trigger */}
             <div className="navbar-action-item">
-              <button
+              <motion.button
                 onClick={openDrawer}
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                 aria-label="Shopping Bag"
                 className="navbar-action-btn nav-icon bag"
                 style={actionBtnStyle}
@@ -454,7 +457,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     {cartCount}
                   </span>
                 )}
-              </button>
+              </motion.button>
               <span className="nav-tooltip" aria-hidden="true">Shopping Bag</span>
             </div>
           </div>

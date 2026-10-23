@@ -261,7 +261,7 @@ export default function AdminReturnsPage() {
           </div>
 
           {/* Status Filter Dropdown */}
-          <div style={{ position: 'relative' }} ref={filterRef}>
+          <div style={{ position: 'relative', flexShrink: 0 }} ref={filterRef}>
             <Button
               variant="outline"
               size="sm"
@@ -269,7 +269,7 @@ export default function AdminReturnsPage() {
                 setIsFilterOpen(!isFilterOpen);
                 setIsDateFilterOpen(false);
               }}
-              style={{ height: '40px' }}
+              style={{ height: '40px', whiteSpace: 'nowrap' }}
               leftIcon={<Filter size={16} strokeWidth={1.8} />}
               rightIcon={<ChevronDown size={16} style={{ opacity: 0.7 }} />}
             >
@@ -329,7 +329,7 @@ export default function AdminReturnsPage() {
           </div>
 
           {/* Date Filter Dropdown */}
-          <div style={{ position: 'relative' }} ref={dateFilterRef}>
+          <div style={{ position: 'relative', flexShrink: 0 }} ref={dateFilterRef}>
             <Button
               variant="outline"
               size="sm"
@@ -337,7 +337,7 @@ export default function AdminReturnsPage() {
                 setIsDateFilterOpen(!isDateFilterOpen);
                 setIsFilterOpen(false);
               }}
-              style={{ height: '40px' }}
+              style={{ height: '40px', whiteSpace: 'nowrap' }}
               leftIcon={<Calendar size={16} strokeWidth={2.1} />}
               rightIcon={<ChevronDown size={16} style={{ opacity: 0.7 }} />}
             >
@@ -588,13 +588,13 @@ export default function AdminReturnsPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
             <thead>
               <tr className="admin-table-header">
-                <th style={{ padding: '12px 14px' }}>Return ID</th>
-                <th style={{ padding: '12px 14px' }}>Commission ID</th>
-                <th style={{ padding: '12px 14px' }}>Client</th>
-                <th style={{ padding: '12px 14px' }}>Reason & Notes</th>
-                <th style={{ padding: '12px 14px' }}>Refund Settlement</th>
-                <th style={{ padding: '12px 14px' }}>Status</th>
-                <th style={{ padding: '12px 14px' }}>Operations Action</th>
+                <th style={{ padding: '12px 14px', width: '120px', whiteSpace: 'nowrap' }}>Return ID</th>
+                <th style={{ padding: '12px 14px', width: '140px', whiteSpace: 'nowrap' }}>Commission ID</th>
+                <th style={{ padding: '12px 14px', minWidth: '160px', width: '180px', whiteSpace: 'nowrap' }}>Client</th>
+                <th style={{ padding: '12px 14px', minWidth: '240px' }}>Reason & Notes</th>
+                <th style={{ padding: '12px 14px', width: '150px', whiteSpace: 'nowrap' }}>Refund Settlement</th>
+                <th style={{ padding: '12px 14px', width: '130px', whiteSpace: 'nowrap' }}>Status</th>
+                <th style={{ padding: '12px 14px', width: '220px', minWidth: '220px', whiteSpace: 'nowrap' }}>Operations Action</th>
               </tr>
             </thead>
             <tbody>
@@ -698,7 +698,7 @@ export default function AdminReturnsPage() {
                       </td>
 
                       {/* Status Badge */}
-                      <td style={{ padding: '14px' }}>
+                      <td style={{ padding: '14px', whiteSpace: 'nowrap', width: '130px' }}>
                         <Badge
                           variant={
                             ret.status === 'Approved'
@@ -707,22 +707,23 @@ export default function AdminReturnsPage() {
                               ? 'gold'
                               : 'warning'
                           }
+                          style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
                         >
                           {ret.status}
                         </Badge>
                       </td>
 
                       {/* Operations Action */}
-                      <td style={{ padding: '14px' }}>
+                      <td style={{ padding: '14px', whiteSpace: 'nowrap', width: '220px', minWidth: '220px' }}>
                         {ret.status === 'Requested' ? (
-                          <div style={{ display: 'flex', gap: '8px' }}>
+                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'nowrap' }}>
                             <Button
                               variant="primary"
                               size="sm"
                               isLoading={isProcessing}
                               onClick={() => handleProcess(ret.id, 'Approved', 'completed')}
                               leftIcon={<CheckCircle2 size={13} />}
-                              style={{ fontSize: '0.75rem', padding: '6px 10px' }}
+                              style={{ fontSize: '0.75rem', padding: '6px 14px', whiteSpace: 'nowrap', flexShrink: 0 }}
                             >
                               Approve
                             </Button>
@@ -732,13 +733,13 @@ export default function AdminReturnsPage() {
                               isLoading={isProcessing}
                               onClick={() => handleProcess(ret.id, 'Rejected', 'failed')}
                               leftIcon={<XCircle size={13} />}
-                              style={{ fontSize: '0.75rem', padding: '6px 10px' }}
+                              style={{ fontSize: '0.75rem', padding: '6px 14px', whiteSpace: 'nowrap', flexShrink: 0 }}
                             >
                               Reject
                             </Button>
                           </div>
                         ) : (
-                          <span style={{ fontSize: '0.78rem', color: 'var(--admin-text-secondary)' }}>
+                          <span style={{ fontSize: '0.78rem', color: 'var(--admin-text-secondary)', whiteSpace: 'nowrap' }}>
                             Resolved {ret.resolvedAt ? new Date(ret.resolvedAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }) : ''}
                           </span>
                         )}

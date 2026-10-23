@@ -9,8 +9,19 @@ import { useToastStore } from '@/store/useToastStore';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Truck, CheckCircle2, Search, Filter, ChevronDown, Check, Calendar, X } from 'lucide-react';
+import {
+  Truck,
+  CheckCircle2,
+  Search,
+  Filter,
+  ChevronDown,
+  Check,
+  Calendar,
+  X,
+  Eye,
+} from 'lucide-react';
 import { useDropdownPosition } from '@/hooks/useDropdownPosition';
+import { AdminOrderDetailsModal } from '@/components/admin/AdminOrderDetailsModal';
 
 type DatePreset = 'all' | 'today' | '7d' | '30d' | 'this_month' | 'custom';
 
@@ -26,6 +37,8 @@ export default function AdminOrdersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 20;
   const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const { showToast } = useToastStore();
   const filterRef = React.useRef<HTMLDivElement>(null);
   const dateFilterRef = React.useRef<HTMLDivElement>(null);
@@ -63,6 +76,9 @@ export default function AdminOrdersPage() {
     try {
       const updated = await adminUpdateOrderStatus(orderId, nextStatus);
       setOrders((prev) => prev.map((o) => (o.id === orderId ? updated : o)));
+      if (selectedOrder && selectedOrder.id === orderId) {
+        setSelectedOrder(updated);
+      }
       showToast(`Commission #${orderId} status set to "${nextStatus}".`, 'success');
     } catch {
       showToast('Status update failed.', 'error');
@@ -152,13 +168,37 @@ export default function AdminOrdersPage() {
     const q = searchQuery.toLowerCase();
     const idMatch = o.id.toLowerCase().includes(q);
     const nameMatch = (o.customerName || 'Client').toLowerCase().includes(q);
+    const emailMatch = (o.customerEmail || '').toLowerCase().includes(q);
     const cityMatch = (o.address?.city || '').toLowerCase().includes(q);
     const stateMatch = (o.address?.state || '').toLowerCase().includes(q);
     const statusMatch = o.status.toLowerCase().includes(q);
     const carrierMatch = (o.trackingInfo?.carrier || '').toLowerCase().includes(q);
     const trackingIdMatch = (o.trackingInfo?.trackingId || '').toLowerCase().includes(q);
+    const paymentMatch =
+      (o.payment?.method || '').toLowerCase().includes(q) ||
+      (o.paymentMethod || '').toLowerCase().includes(q) ||
+      (o.payment?.transactionId || '').toLowerCase().includes(q) ||
+      (o.payment?.upiVpa || '').toLowerCase().includes(q);
+    const itemsMatch = o.items?.some(
+      (item) =>
+        item.productName?.toLowerCase().includes(q) ||
+        item.sku?.toLowerCase().includes(q) ||
+        item.size?.toLowerCase().includes(q) ||
+        item.color?.toLowerCase().includes(q)
+    );
 
-    return idMatch || nameMatch || cityMatch || stateMatch || statusMatch || carrierMatch || trackingIdMatch;
+    return (
+      idMatch ||
+      nameMatch ||
+      emailMatch ||
+      cityMatch ||
+      stateMatch ||
+      statusMatch ||
+      carrierMatch ||
+      trackingIdMatch ||
+      paymentMatch ||
+      itemsMatch
+    );
   });
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginatedOrders = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
@@ -435,7 +475,7 @@ export default function AdminOrdersPage() {
         </div>
 
         {/* Active Filters Summary */}
-        {(filterStatus !== 'all' || isDateFilterActive) && (
+        {(filterStatus !== 'all' || isDateFilterActive || searchQuery.trim() !== '') && (
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '0.78rem', color: 'var(--admin-text-secondary)' }}>Active filters:</span>
             {filterStatus !== 'all' && (
@@ -482,10 +522,33 @@ export default function AdminOrdersPage() {
                 />
               </span>
             )}
+            {searchQuery.trim() !== '' && (
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  padding: '3px 10px',
+                  fontSize: '0.75rem',
+                  borderRadius: 'var(--radius-pill)',
+                  backgroundColor: 'var(--admin-surface)',
+                  border: '1px solid var(--admin-border)',
+                  color: 'var(--admin-text-primary)'
+                }}
+              >
+                Query: "{searchQuery}"
+                <X
+                  size={12}
+                  style={{ cursor: 'pointer', opacity: 0.7 }}
+                  onClick={() => setSearchQuery('')}
+                />
+              </span>
+            )}
             <button
               onClick={() => {
                 setFilterStatus('all');
                 handleResetDateFilter();
+                setSearchQuery('');
               }}
               style={{
                 background: 'none',
@@ -505,7 +568,7 @@ export default function AdminOrdersPage() {
 
       {/* Orders Table */}
       <div className="admin-table-wrapper" style={{ padding: '24px', overflowX: 'auto' }}>
-        <div style={{ minWidth: '800px' }}>
+        <div style={{ minWidth: '920px' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
             <thead>
               <tr className="admin-table-header">
@@ -514,7 +577,7 @@ export default function AdminOrdersPage() {
                 <th style={{ padding: '12px 14px' }}>Total Amount</th>
                 <th style={{ padding: '12px 14px' }}>Carrier & Tracking</th>
                 <th style={{ padding: '12px 14px' }}>Status</th>
-                <th style={{ padding: '12px 14px' }}>Operations Action</th>
+                <th style={{ padding: '12px 14px', minWidth: '250px' }}>Operations Action</th>
               </tr>
             </thead>
             <tbody>
@@ -547,13 +610,27 @@ export default function AdminOrdersPage() {
                 </tr>
               ) :
                 paginatedOrders.map((o) => (
-                  <tr key={o.id} className="admin-table-row">
+                  <tr
+                    key={o.id}
+                    className="admin-table-row"
+                    onClick={() => {
+                      setSelectedOrder(o);
+                      setIsDetailsModalOpen(true);
+                    }}
+                    style={{ cursor: 'pointer' }}
+                    title="Click row to inspect full order dossier"
+                  >
+                    {/* Commission ID and Date */}
                     <td style={{ padding: '14px', fontWeight: 600, color: 'var(--admin-text-primary)' }}>
-                      <div>#{o.id}</div>
+                      <div>
+                        <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--brand-primary)' }}>#{o.id}</span>
+                      </div>
                       <div style={{ fontSize: '0.74rem', fontWeight: 400, color: 'var(--admin-text-secondary)', marginTop: '2px' }}>
                         {o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
                       </div>
                     </td>
+
+                    {/* Client */}
                     <td style={{ padding: '14px' }}>
                       <span style={{ fontWeight: 600, color: 'var(--admin-text-primary)', display: 'block' }}>
                         {o.customerName || 'Client'}
@@ -562,9 +639,13 @@ export default function AdminOrdersPage() {
                         {o.address.city}, {o.address.state}
                       </span>
                     </td>
+
+                    {/* Total Amount */}
                     <td style={{ padding: '14px', fontWeight: 600, color: 'var(--admin-text-primary)' }}>
                       {formatPrice(o.totals.total)}
                     </td>
+
+                    {/* Carrier & Tracking */}
                     <td style={{ padding: '14px' }}>
                       {o.trackingInfo ? (
                         <div>
@@ -579,79 +660,114 @@ export default function AdminOrdersPage() {
                         <span style={{ color: 'var(--admin-text-secondary)' }}>Pending</span>
                       )}
                     </td>
-                  <td style={{ padding: '14px' }}>
-                    <Badge variant={o.status === 'Delivered' ? 'success' : o.status === 'Shipped' ? 'gold' : 'warning'}>
-                      {o.status}
-                    </Badge>
-                  </td>
-                  <td style={{ padding: '14px' }}>
-                    {o.status === 'Placed' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        style={{ minWidth: '136px' }}
-                        onClick={() => handleAdvanceStatus(o.id, 'Confirmed')}
-                      >
-                        Confirm
-                      </Button>
-                    )}
-                    {o.status === 'Confirmed' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        style={{ minWidth: '136px' }}
-                        onClick={() => handleAdvanceStatus(o.id, 'Packed')}
-                      >
-                        Pack
-                      </Button>
-                    )}
-                    {o.status === 'Packed' && (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        style={{ minWidth: '136px' }}
-                        onClick={() => handleAdvanceStatus(o.id, 'Shipped')}
-                      >
-                        Dispatch / Ship
-                      </Button>
-                    )}
-                    {o.status === 'Shipped' && (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        style={{ minWidth: '136px' }}
-                        onClick={() => handleAdvanceStatus(o.id, 'Delivered')}
-                      >
-                        Mark Delivered
-                      </Button>
-                    )}
-                    {o.status === 'Delivered' && (
-                      <span
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '6px',
-                          height: '36px',
-                          minWidth: '136px',
-                          padding: '0 18px',
-                          fontSize: '0.75rem',
-                          fontWeight: 600,
-                          letterSpacing: '0.04em',
-                          textTransform: 'uppercase',
-                          color: 'var(--color-success)',
-                          borderRadius: 'var(--radius-pill)',
-                          backgroundColor: 'var(--color-success-bg)',
-                          border: '1px solid var(--color-success-bg)',
-                          boxSizing: 'border-box',
-                        }}
-                      >
-                        <CheckCircle2 size={14} /> Completed
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
+
+                    {/* Status Badge */}
+                    <td style={{ padding: '14px' }}>
+                      <Badge variant={o.status === 'Delivered' ? 'success' : o.status === 'Shipped' ? 'gold' : 'warning'}>
+                        {o.status}
+                      </Badge>
+                    </td>
+
+                    {/* Operations Action */}
+                    <td style={{ padding: '14px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        {/* Details Button */}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          style={{ height: '36px', padding: '0 12px' }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedOrder(o);
+                            setIsDetailsModalOpen(true);
+                          }}
+                          leftIcon={<Eye size={14} />}
+                          title="Inspect Order Details & Dossier"
+                        >
+                          Details
+                        </Button>
+
+                        {/* State Transition Button */}
+                        {o.status === 'Placed' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            style={{ minWidth: '136px', height: '36px' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAdvanceStatus(o.id, 'Confirmed');
+                            }}
+                          >
+                            Confirm
+                          </Button>
+                        )}
+                        {o.status === 'Confirmed' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            style={{ minWidth: '136px', height: '36px' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAdvanceStatus(o.id, 'Packed');
+                            }}
+                          >
+                            Pack
+                          </Button>
+                        )}
+                        {o.status === 'Packed' && (
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            style={{ minWidth: '136px', height: '36px' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAdvanceStatus(o.id, 'Shipped');
+                            }}
+                          >
+                            Dispatch / Ship
+                          </Button>
+                        )}
+                        {o.status === 'Shipped' && (
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            style={{ minWidth: '136px', height: '36px' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAdvanceStatus(o.id, 'Delivered');
+                            }}
+                          >
+                            Mark Delivered
+                          </Button>
+                        )}
+                        {o.status === 'Delivered' && (
+                          <span
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '6px',
+                              height: '36px',
+                              minWidth: '136px',
+                              padding: '0 14px',
+                              fontSize: '0.75rem',
+                              fontWeight: 600,
+                              letterSpacing: '0.04em',
+                              textTransform: 'uppercase',
+                              color: 'var(--color-success)',
+                              borderRadius: 'var(--radius-pill)',
+                              backgroundColor: 'var(--color-success-bg)',
+                              border: '1px solid var(--color-success-bg)',
+                              boxSizing: 'border-box',
+                            }}
+                          >
+                            <CheckCircle2 size={14} /> Completed
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -681,6 +797,17 @@ export default function AdminOrdersPage() {
           </div>
         )}
       </div>
+
+      {/* Comprehensive Order Details Dossier Modal */}
+      <AdminOrderDetailsModal
+        order={selectedOrder}
+        isOpen={isDetailsModalOpen}
+        onClose={() => {
+          setIsDetailsModalOpen(false);
+          setSelectedOrder(null);
+        }}
+        onAdvanceStatus={handleAdvanceStatus}
+      />
     </div>
   );
 }

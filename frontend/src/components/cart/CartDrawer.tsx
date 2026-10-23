@@ -11,6 +11,7 @@ import { CheckoutAuthModal } from '@/components/checkout/CheckoutAuthModal';
 import { formatPrice } from '@/lib/formatPrice';
 import { Plus, Minus, Tag, Check, ArrowRight, ShoppingBag, AlertTriangle, AlertCircle, RefreshCw } from 'lucide-react';
 import { AnimatedTrashIcon } from '@/components/ui/AnimatedTrashIcon';
+import { motion } from 'framer-motion';
 
 export const CartDrawer: React.FC = () => {
   const router = useRouter();
@@ -70,57 +71,55 @@ export const CartDrawer: React.FC = () => {
     router.push('/checkout');
   };
 
-  if (!isDrawerOpen && !isAuthModalOpen) {
-    return null;
-  }
-
   return (
     <>
-      {isDrawerOpen && (
-        <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} title="Your Atelier Bag" width="480px">
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        {items.length === 0 ? (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '70%',
-              textAlign: 'center',
-              padding: '32px',
-            }}
-          >
-            <div
+      <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} title="Your Atelier Bag" width="480px">
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          {items.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.35, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               style={{
-                width: 64,
-                height: 64,
-                borderRadius: 'var(--radius-pill)',
-                backgroundColor: 'var(--color-golden-100)',
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '20px',
-                color: 'var(--cta-primary)',
+                height: '70%',
+                textAlign: 'center',
+                padding: '32px',
               }}
             >
-              <ShoppingBag size={28} />
-            </div>
-            <h3 style={{ fontSize: '1.35rem', marginBottom: '8px' }}>Your Bag is Empty</h3>
-            <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '24px' }}>
-              Explore our latest curated silhouettes from the Milan and Florentine ateliers.
-            </p>
-            <Button
-              onClick={() => {
-                closeDrawer();
-                router.push('/shop');
-              }}
-              variant="primary"
-            >
-              Explore Collections
-            </Button>
-          </div>
-        ) : (
+              <div
+                style={{
+                  width: 64,
+                  height: 64,
+                  borderRadius: 'var(--radius-pill)',
+                  backgroundColor: 'var(--color-golden-100)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '20px',
+                  color: 'var(--cta-primary)',
+                }}
+              >
+                <ShoppingBag size={28} />
+              </div>
+              <h3 style={{ fontSize: '1.35rem', marginBottom: '8px' }}>Your Bag is Empty</h3>
+              <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '24px' }}>
+                Explore our latest curated silhouettes from the Milan and Florentine ateliers.
+              </p>
+              <Button
+                onClick={() => {
+                  closeDrawer();
+                  router.push('/shop');
+                }}
+                variant="primary"
+              >
+                Explore Collections
+              </Button>
+            </motion.div>
+          ) : (
           <>
             {/* Real-time Inventory & Price Feedback Banners */}
             {cartValidation?.hasStockIssues && (
@@ -236,7 +235,7 @@ export const CartDrawer: React.FC = () => {
                 marginBottom: '24px',
               }}
             >
-              {items.map((item) => {
+              {items.map((item, index) => {
                 const val = cartValidation?.itemValidations[item.sku];
                 const isOutOfStock = val?.isOutOfStock;
                 const isExceeded = val?.isQuantityExceeded;
@@ -244,8 +243,15 @@ export const CartDrawer: React.FC = () => {
                 const maxStock = val ? val.availableStock : 99;
 
                 return (
-                  <div
+                  <motion.div
                     key={item.sku}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.35,
+                      delay: 0.08 + Math.min(index, 6) * 0.04,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
                     style={{
                       display: 'flex',
                       gap: '16px',
@@ -531,7 +537,7 @@ export const CartDrawer: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
@@ -716,7 +722,6 @@ export const CartDrawer: React.FC = () => {
         )}
       </div>
     </Drawer>
-      )}
 
       <CheckoutAuthModal
         isOpen={isAuthModalOpen}

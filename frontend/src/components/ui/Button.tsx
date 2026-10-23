@@ -144,6 +144,7 @@ export const Button = React.forwardRef<any, ButtonProps>(
           target={target}
           data-full-width={fullWidth ? 'true' : undefined}
           data-no-sheen={isNoSheen ? 'true' : undefined}
+          data-admin-btn={isAdminRoute ? 'true' : undefined}
           style={{ ...baseStyle, ...variantStyle, textDecoration: 'none', ...style }}
           className={`luxury-btn luxury-btn-${variant} ${fullWidth ? 'luxury-btn-fullwidth' : ''} ${isNoSheen ? 'no-sheen' : ''} ${className}`}
           onClick={props.onClick as any}
@@ -159,7 +160,7 @@ export const Button = React.forwardRef<any, ButtonProps>(
           )}
           <style jsx global>{`
             @media (max-width: 640px) {
-              .luxury-btn {
+              .luxury-btn:not([data-admin-btn="true"]) {
                 box-sizing: border-box !important;
                 max-width: 100% !important;
                 white-space: normal !important;
@@ -176,17 +177,17 @@ export const Button = React.forwardRef<any, ButtonProps>(
                 min-width: 0 !important;
               }
 
-              .luxury-btn.luxury-btn-fullwidth,
-              .luxury-btn[data-full-width="true"] {
+              .luxury-btn:not([data-admin-btn="true"]).luxury-btn-fullwidth,
+              .luxury-btn:not([data-admin-btn="true"])[data-full-width="true"] {
                 width: 100% !important;
                 max-width: 100% !important;
               }
 
-              .luxury-btn::after {
+              .luxury-btn:not([data-admin-btn="true"])::after {
                 display: none !important;
               }
 
-              .luxury-btn-label {
+              .luxury-btn:not([data-admin-btn="true"]) .luxury-btn-label {
                 white-space: normal !important;
                 text-align: center !important;
                 line-height: 1.3 !important;
@@ -195,8 +196,21 @@ export const Button = React.forwardRef<any, ButtonProps>(
                 overflow-wrap: break-word !important;
               }
 
-              .luxury-btn-icon {
+              .luxury-btn:not([data-admin-btn="true"]) .luxury-btn-icon {
                 flex-shrink: 0 !important;
+              }
+
+              .luxury-btn[data-admin-btn="true"],
+              [data-admin="true"] .luxury-btn {
+                white-space: nowrap !important;
+                max-width: none !important;
+              }
+
+              .luxury-btn[data-admin-btn="true"] .luxury-btn-label,
+              [data-admin="true"] .luxury-btn .luxury-btn-label {
+                white-space: nowrap !important;
+                overflow-wrap: normal !important;
+                word-break: keep-all !important;
               }
             }
           `}</style>
@@ -211,6 +225,7 @@ export const Button = React.forwardRef<any, ButtonProps>(
         disabled={disabled || isLoading}
         data-full-width={fullWidth ? 'true' : undefined}
         data-no-sheen={isNoSheen ? 'true' : undefined}
+        data-admin-btn={isAdminRoute ? 'true' : undefined}
         style={{ ...baseStyle, ...variantStyle, ...style }}
         className={`luxury-btn luxury-btn-${variant} ${fullWidth ? 'luxury-btn-fullwidth' : ''} ${isNoSheen ? 'no-sheen' : ''} ${className}`}
         {...props}
@@ -226,7 +241,7 @@ export const Button = React.forwardRef<any, ButtonProps>(
         )}
         <style jsx global>{`
           @media (max-width: 640px) {
-            .luxury-btn {
+            .luxury-btn:not([data-admin-btn="true"]) {
               box-sizing: border-box !important;
               max-width: 100% !important;
               white-space: normal !important;
@@ -243,17 +258,17 @@ export const Button = React.forwardRef<any, ButtonProps>(
               min-width: 0 !important;
             }
 
-            .luxury-btn.luxury-btn-fullwidth,
-            .luxury-btn[data-full-width="true"] {
+            .luxury-btn:not([data-admin-btn="true"]).luxury-btn-fullwidth,
+            .luxury-btn:not([data-admin-btn="true"])[data-full-width="true"] {
               width: 100% !important;
               max-width: 100% !important;
             }
 
-            .luxury-btn::after {
+            .luxury-btn:not([data-admin-btn="true"])::after {
               display: none !important;
             }
 
-            .luxury-btn-label {
+            .luxury-btn:not([data-admin-btn="true"]) .luxury-btn-label {
               white-space: normal !important;
               text-align: center !important;
               line-height: 1.3 !important;
@@ -262,8 +277,21 @@ export const Button = React.forwardRef<any, ButtonProps>(
               overflow-wrap: break-word !important;
             }
 
-            .luxury-btn-icon {
+            .luxury-btn:not([data-admin-btn="true"]) .luxury-btn-icon {
               flex-shrink: 0 !important;
+            }
+
+            .luxury-btn[data-admin-btn="true"],
+            [data-admin="true"] .luxury-btn {
+              white-space: nowrap !important;
+              max-width: none !important;
+            }
+
+            .luxury-btn[data-admin-btn="true"] .luxury-btn-label,
+            [data-admin="true"] .luxury-btn .luxury-btn-label {
+              white-space: nowrap !important;
+              overflow-wrap: normal !important;
+              word-break: keep-all !important;
             }
           }
         `}</style>

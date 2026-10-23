@@ -377,6 +377,21 @@ button.filter-btn:focus-visible,
   background-color: rgba(202, 212, 214, 0.20) !important;
 }
 
+/* All Buttons in Admin must maintain single-line nowrap alignment */
+[data-admin="true"] .luxury-btn,
+.admin-table-wrapper .luxury-btn,
+.luxury-btn[data-admin-btn="true"] {
+  white-space: nowrap !important;
+}
+
+[data-admin="true"] .luxury-btn-label,
+.admin-table-wrapper .luxury-btn-label,
+.luxury-btn[data-admin-btn="true"] .luxury-btn-label {
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+}
+
 /* Admin Tables */
 .admin-table-wrapper {
   background-color: var(--admin-surface);

@@ -28,6 +28,9 @@ export const Badge: React.FC<BadgeProps> = ({
     fontSize: size === 'sm' ? '0.68rem' : '0.78rem',
     padding: size === 'sm' ? '3px 10px' : '5px 14px',
     lineHeight: 1.2,
+    whiteSpace: 'nowrap',
+    wordBreak: 'keep-all',
+    flexShrink: 0,
     ...style,
   };
 
