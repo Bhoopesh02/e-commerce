@@ -43,8 +43,8 @@ export default function AdminReturnsPage() {
   const filterRef = React.useRef<HTMLDivElement>(null);
   const dateFilterRef = React.useRef<HTMLDivElement>(null);
 
-  const filterDropdownStyle = useDropdownPosition(filterRef, isFilterOpen, 220);
-  const dateDropdownStyle = useDropdownPosition(dateFilterRef, isDateFilterOpen, 300);
+  const filterDropdownStyle = useDropdownPosition(filterRef, isFilterOpen, 230);
+  const dateDropdownStyle = useDropdownPosition(dateFilterRef, isDateFilterOpen, 230);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -269,60 +269,83 @@ export default function AdminReturnsPage() {
                 setIsFilterOpen(!isFilterOpen);
                 setIsDateFilterOpen(false);
               }}
-              style={{ height: '40px', whiteSpace: 'nowrap' }}
-              leftIcon={<Filter size={16} strokeWidth={1.8} />}
-              rightIcon={<ChevronDown size={16} style={{ opacity: 0.7 }} />}
+              style={{
+                height: '40px',
+                width: '160px',
+                minWidth: '160px',
+                maxWidth: '160px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0 12px',
+                whiteSpace: 'nowrap',
+                boxSizing: 'border-box'
+              }}
+              leftIcon={<Filter size={16} strokeWidth={1.8} style={{ flexShrink: 0 }} />}
+              rightIcon={<ChevronDown size={16} style={{ opacity: 0.7, flexShrink: 0 }} />}
             >
-              {filterStatus === 'all' ? 'All Returns' : filterStatus}
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, textAlign: 'left' }}>
+                {filterStatus === 'all' ? 'All Returns' : filterStatus}
+              </span>
             </Button>
 
             <AnimatePresence>
               {isFilterOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: -10, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: 'auto' }}
-                  exit={{ opacity: 0, y: -10, height: 0 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.15, ease: 'easeOut' }}
                   style={{
                     position: 'absolute',
                     top: '100%',
                     ...filterDropdownStyle,
+                    width: '230px',
+                    minWidth: '230px',
+                    maxWidth: '230px',
+                    boxSizing: 'border-box',
                     marginTop: '8px',
                     backgroundColor: 'var(--admin-surface)',
                     border: '1px solid var(--admin-border)',
                     borderRadius: 'var(--radius-md)',
                     boxShadow: '0 4px 20px var(--overlay-black-15)',
                     zIndex: 50,
-                    padding: '8px',
                     overflow: 'hidden'
                   }}
                 >
-                  {['all', 'Requested', 'Approved', 'Rejected'].map((status) => (
-                    <button
-                      key={status}
-                      onClick={() => {
-                        setFilterStatus(status);
-                        setIsFilterOpen(false);
-                      }}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        width: '100%',
-                        padding: '8px 12px',
-                        borderRadius: 'var(--radius-sm)',
-                        border: 'none',
-                        backgroundColor: filterStatus === status ? 'var(--admin-background)' : 'transparent',
-                        color: 'var(--admin-text-primary)',
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                        fontSize: '0.85rem',
-                      }}
+                  <div style={{ padding: '10px' }}>
+                    <div 
+                      className="admin-dropdown-scroll-container"
+                      style={{ maxHeight: '190px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '3px' }}
                     >
-                      {status === 'all' ? 'All Returns' : status}
-                      {filterStatus === status && <Check size={14} style={{ color: 'var(--brand-primary)' }} />}
-                    </button>
-                  ))}
+                      {['all', 'Requested', 'Approved', 'Rejected'].map((status) => (
+                        <button
+                          key={status}
+                          onClick={() => {
+                            setFilterStatus(status);
+                            setIsFilterOpen(false);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            width: '100%',
+                            padding: '7px 10px',
+                            borderRadius: 'var(--radius-sm)',
+                            border: 'none',
+                            backgroundColor: filterStatus === status ? 'var(--admin-background)' : 'transparent',
+                            color: 'var(--admin-text-primary)',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            fontSize: '0.82rem',
+                          }}
+                        >
+                          {status === 'all' ? 'All Returns' : status}
+                          {filterStatus === status && <Check size={14} style={{ color: 'var(--brand-primary)' }} />}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -337,24 +360,42 @@ export default function AdminReturnsPage() {
                 setIsDateFilterOpen(!isDateFilterOpen);
                 setIsFilterOpen(false);
               }}
-              style={{ height: '40px', whiteSpace: 'nowrap' }}
-              leftIcon={<Calendar size={16} strokeWidth={2.1} />}
-              rightIcon={<ChevronDown size={16} style={{ opacity: 0.7 }} />}
+              style={{
+                height: '40px',
+                width: '160px',
+                minWidth: '160px',
+                maxWidth: '160px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0 12px',
+                whiteSpace: 'nowrap',
+                boxSizing: 'border-box'
+              }}
+              leftIcon={<Calendar size={16} strokeWidth={2.1} style={{ flexShrink: 0 }} />}
+              rightIcon={<ChevronDown size={16} style={{ opacity: 0.7, flexShrink: 0 }} />}
+              title={getDateFilterLabel()}
             >
-              {getDateFilterLabel()}
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, textAlign: 'left' }}>
+                {getDateFilterLabel()}
+              </span>
             </Button>
 
             <AnimatePresence>
               {isDateFilterOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: -10, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: 'auto' }}
-                  exit={{ opacity: 0, y: -10, height: 0 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.15, ease: 'easeOut' }}
                   style={{
                     position: 'absolute',
                     top: '100%',
                     ...dateDropdownStyle,
+                    width: '230px',
+                    minWidth: '230px',
+                    maxWidth: '230px',
+                    boxSizing: 'border-box',
                     marginTop: '8px',
                     backgroundColor: 'var(--admin-surface)',
                     border: '1px solid var(--admin-border)',
@@ -364,9 +405,9 @@ export default function AdminReturnsPage() {
                     overflow: 'hidden'
                   }}
                 >
-                  <div style={{ padding: '14px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--brand-primary)' }}>
+                  <div style={{ padding: '10px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', padding: '0 2px' }}>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--brand-primary)' }}>
                         Filter by Date
                       </span>
                       {isDateFilterActive && (
@@ -375,7 +416,7 @@ export default function AdminReturnsPage() {
                           style={{
                             background: 'none',
                             border: 'none',
-                            fontSize: '0.75rem',
+                            fontSize: '0.72rem',
                             color: 'var(--admin-text-secondary)',
                             cursor: 'pointer',
                             display: 'flex',
@@ -389,97 +430,108 @@ export default function AdminReturnsPage() {
                       )}
                     </div>
 
-                    {/* Presets */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                      {[
-                        { id: 'all', label: 'All Dates' },
-                        { id: 'today', label: 'Today' },
-                        { id: '7d', label: 'Last 7 Days' },
-                        { id: '30d', label: 'Last 30 Days' },
-                        { id: 'this_month', label: 'This Month' },
-                      ].map((preset) => {
-                        const isSelected = datePreset === preset.id && !customStartDate && !customEndDate;
-                        return (
-                          <button
-                            key={preset.id}
-                            onClick={() => {
-                              setDatePreset(preset.id as DatePreset);
-                              setCustomStartDate('');
-                              setCustomEndDate('');
-                              setIsDateFilterOpen(false);
-                            }}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'space-between',
-                              padding: '8px 12px',
-                              borderRadius: 'var(--radius-sm)',
-                              border: 'none',
-                              backgroundColor: isSelected ? 'var(--admin-background)' : 'transparent',
-                              color: 'var(--admin-text-primary)',
-                              cursor: 'pointer',
-                              textAlign: 'left',
-                              fontSize: '0.85rem'
-                            }}
-                          >
-                            {preset.label}
-                            {isSelected && <Check size={16} style={{ color: 'var(--brand-primary)' }} />}
-                          </button>
-                        );
-                      })}
-                    </div>
+                    <div 
+                      className="admin-dropdown-scroll-container" 
+                      style={{ 
+                        maxHeight: '190px', 
+                        overflowY: 'auto', 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '3px' 
+                      }}
+                    >
+                      {/* Presets */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        {[
+                          { id: 'all', label: 'All Dates' },
+                          { id: 'today', label: 'Today' },
+                          { id: '7d', label: 'Last 7 Days' },
+                          { id: '30d', label: 'Last 30 Days' },
+                          { id: 'this_month', label: 'This Month' },
+                        ].map((preset) => {
+                          const isSelected = datePreset === preset.id && !customStartDate && !customEndDate;
+                          return (
+                            <button
+                              key={preset.id}
+                              onClick={() => {
+                                setDatePreset(preset.id as DatePreset);
+                                setCustomStartDate('');
+                                setCustomEndDate('');
+                                setIsDateFilterOpen(false);
+                              }}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                padding: '7px 10px',
+                                borderRadius: 'var(--radius-sm)',
+                                border: 'none',
+                                backgroundColor: isSelected ? 'var(--admin-background)' : 'transparent',
+                                color: 'var(--admin-text-primary)',
+                                cursor: 'pointer',
+                                textAlign: 'left',
+                                fontSize: '0.82rem'
+                              }}
+                            >
+                              {preset.label}
+                              {isSelected && <Check size={14} style={{ color: 'var(--brand-primary)' }} />}
+                            </button>
+                          );
+                        })}
+                      </div>
 
-                    <div style={{ height: '1px', backgroundColor: 'var(--admin-border)', margin: '12px 0 10px 0' }} />
+                      <div style={{ height: '1px', backgroundColor: 'var(--admin-border)', margin: '6px 0 4px 0' }} />
 
-                    {/* Custom Range */}
-                    <div>
-                      <span style={{ fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--admin-text-secondary)', display: 'block', marginBottom: '8px' }}>
-                        Custom Range
-                      </span>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontSize: '0.78rem', color: 'var(--admin-text-secondary)', width: '38px' }}>From</span>
-                          <input
-                            type="date"
-                            value={customStartDate}
-                            onChange={(e) => {
-                              setCustomStartDate(e.target.value);
-                              setDatePreset('custom');
-                            }}
-                            style={{
-                              flex: 1,
-                              padding: '6px 10px',
-                              borderRadius: 'var(--radius-sm)',
-                              border: '1px solid var(--admin-border)',
-                              backgroundColor: 'var(--admin-background)',
-                              color: 'var(--admin-text-primary)',
-                              fontSize: '0.82rem',
-                              outline: 'none',
-                              fontFamily: 'inherit'
-                            }}
-                          />
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontSize: '0.78rem', color: 'var(--admin-text-secondary)', width: '38px' }}>To</span>
-                          <input
-                            type="date"
-                            value={customEndDate}
-                            onChange={(e) => {
-                              setCustomEndDate(e.target.value);
-                              setDatePreset('custom');
-                            }}
-                            style={{
-                              flex: 1,
-                              padding: '6px 10px',
-                              borderRadius: 'var(--radius-sm)',
-                              border: '1px solid var(--admin-border)',
-                              backgroundColor: 'var(--admin-background)',
-                              color: 'var(--admin-text-primary)',
-                              fontSize: '0.82rem',
-                              outline: 'none',
-                              fontFamily: 'inherit'
-                            }}
-                          />
+                      {/* Custom Range */}
+                      <div>
+                        <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--admin-text-secondary)', display: 'block', marginBottom: '5px' }}>
+                          Custom Range
+                        </span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span style={{ fontSize: '0.74rem', color: 'var(--admin-text-secondary)', width: '34px' }}>From</span>
+                            <input
+                              type="date"
+                              value={customStartDate}
+                              onChange={(e) => {
+                                setCustomStartDate(e.target.value);
+                                setDatePreset('custom');
+                              }}
+                              style={{
+                                flex: 1,
+                                padding: '4px 6px',
+                                borderRadius: 'var(--radius-sm)',
+                                border: '1px solid var(--admin-border)',
+                                backgroundColor: 'var(--admin-background)',
+                                color: 'var(--admin-text-primary)',
+                                fontSize: '0.76rem',
+                                outline: 'none',
+                                fontFamily: 'inherit'
+                              }}
+                            />
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span style={{ fontSize: '0.74rem', color: 'var(--admin-text-secondary)', width: '34px' }}>To</span>
+                            <input
+                              type="date"
+                              value={customEndDate}
+                              onChange={(e) => {
+                                setCustomEndDate(e.target.value);
+                                setDatePreset('custom');
+                              }}
+                              style={{
+                                flex: 1,
+                                padding: '4px 6px',
+                                borderRadius: 'var(--radius-sm)',
+                                border: '1px solid var(--admin-border)',
+                                backgroundColor: 'var(--admin-background)',
+                                color: 'var(--admin-text-primary)',
+                                fontSize: '0.76rem',
+                                outline: 'none',
+                                fontFamily: 'inherit'
+                              }}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -698,7 +750,7 @@ export default function AdminReturnsPage() {
                       </td>
 
                       {/* Status Badge */}
-                      <td style={{ padding: '14px', whiteSpace: 'nowrap', width: '130px' }}>
+                      <td style={{ padding: '14px', whiteSpace: 'nowrap' }}>
                         <Badge
                           variant={
                             ret.status === 'Approved'
@@ -707,14 +759,14 @@ export default function AdminReturnsPage() {
                               ? 'gold'
                               : 'warning'
                           }
-                          style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+                          size="sm"
                         >
                           {ret.status}
                         </Badge>
                       </td>
 
                       {/* Operations Action */}
-                      <td style={{ padding: '14px', whiteSpace: 'nowrap', width: '220px', minWidth: '220px' }}>
+                      <td style={{ padding: '14px', whiteSpace: 'nowrap' }}>
                         {ret.status === 'Requested' ? (
                           <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'nowrap' }}>
                             <Button
@@ -722,8 +774,8 @@ export default function AdminReturnsPage() {
                               size="sm"
                               isLoading={isProcessing}
                               onClick={() => handleProcess(ret.id, 'Approved', 'completed')}
-                              leftIcon={<CheckCircle2 size={13} />}
-                              style={{ fontSize: '0.75rem', padding: '6px 14px', whiteSpace: 'nowrap', flexShrink: 0 }}
+                              leftIcon={<CheckCircle2 size={13} className="admin-action-btn-icon" />}
+                              className="admin-action-btn"
                             >
                               Approve
                             </Button>
@@ -732,8 +784,8 @@ export default function AdminReturnsPage() {
                               size="sm"
                               isLoading={isProcessing}
                               onClick={() => handleProcess(ret.id, 'Rejected', 'failed')}
-                              leftIcon={<XCircle size={13} />}
-                              style={{ fontSize: '0.75rem', padding: '6px 14px', whiteSpace: 'nowrap', flexShrink: 0 }}
+                              leftIcon={<XCircle size={13} className="admin-action-btn-icon" />}
+                              className="admin-action-btn"
                             >
                               Reject
                             </Button>

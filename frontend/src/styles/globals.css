@@ -377,21 +377,6 @@ button.filter-btn:focus-visible,
   background-color: rgba(202, 212, 214, 0.20) !important;
 }
 
-/* All Buttons in Admin must maintain single-line nowrap alignment */
-[data-admin="true"] .luxury-btn,
-.admin-table-wrapper .luxury-btn,
-.luxury-btn[data-admin-btn="true"] {
-  white-space: nowrap !important;
-}
-
-[data-admin="true"] .luxury-btn-label,
-.admin-table-wrapper .luxury-btn-label,
-.luxury-btn[data-admin-btn="true"] .luxury-btn-label {
-  white-space: nowrap !important;
-  overflow-wrap: normal !important;
-  word-break: keep-all !important;
-}
-
 /* Admin Tables */
 .admin-table-wrapper {
   background-color: var(--admin-surface);
@@ -664,10 +649,20 @@ button.filter-btn:focus-visible,
 }
 
 .card-wishlist-btn {
+  --action-btn-size: clamp(24px, 0.85rem + 0.4vw, 28px);
+  --action-icon-size: clamp(12px, 0.7rem + 0.2vw, 15px);
+  --action-btn-offset: clamp(6px, 0.4rem + 0.3vw, 10px);
   top: var(--action-btn-offset) !important;
   right: var(--action-btn-offset) !important;
-  background-color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+  background-color: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.card-wishlist-btn:hover {
+  background-color: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
 .card-quick-add-mobile {
@@ -686,8 +681,15 @@ button.filter-btn:focus-visible,
 
 /* Skeleton loader matching responsive sizes */
 .card-wishlist-skeleton {
+  --action-btn-size: clamp(24px, 0.85rem + 0.4vw, 28px);
+  --action-btn-offset: clamp(6px, 0.4rem + 0.3vw, 10px);
   top: var(--action-btn-offset, 8px) !important;
   right: var(--action-btn-offset, 8px) !important;
+}
+
+.card-wishlist-skeleton .card-action-skeleton-circle {
+  width: var(--action-btn-size) !important;
+  height: var(--action-btn-size) !important;
 }
 
 .card-action-skeleton-circle {
@@ -702,11 +704,25 @@ button.filter-btn:focus-visible,
     --action-icon-size: clamp(12px, 8.5px + 1.1vw, 15px);
     --action-btn-offset: clamp(5px, 3.5px + 0.7vw, 7px);
   }
+
+  .card-wishlist-btn,
+  .card-wishlist-skeleton {
+    --action-btn-size: clamp(22px, 16px + 1.5vw, 26px);
+    --action-icon-size: 13px;
+    --action-btn-offset: clamp(5px, 3.5px + 0.7vw, 7px);
+  }
 }
 
 @media (max-width: 380px) {
   .card-action-btn {
     --action-btn-size: 26px;
+    --action-icon-size: 12px;
+    --action-btn-offset: 5px;
+  }
+
+  .card-wishlist-btn,
+  .card-wishlist-skeleton {
+    --action-btn-size: 22px;
     --action-icon-size: 12px;
     --action-btn-offset: 5px;
   }
@@ -2736,5 +2752,89 @@ button.filter-btn:focus-visible,
   }
 }
 
+/* Responsive Badges & Admin Operations Alignment */
+:root {
+  --badge-font-size-sm: 0.68rem;
+  --badge-padding-sm: 3px 10px;
+  --badge-font-size-md: 0.78rem;
+  --badge-padding-md: 5px 14px;
+  --badge-letter-spacing: 0.06em;
+  
+  --admin-action-btn-font-size: 0.75rem;
+  --admin-action-btn-padding: 6px 12px;
+  --admin-action-btn-height: 32px;
+}
 
+@media (max-width: 1024px) {
+  :root {
+    --badge-font-size-sm: 0.62rem;
+    --badge-padding-sm: 2.5px 8px;
+    --badge-font-size-md: 0.72rem;
+    --badge-padding-md: 4px 12px;
+    --badge-letter-spacing: 0.05em;
 
+    --admin-action-btn-font-size: 0.68rem;
+    --admin-action-btn-padding: 5px 10px;
+    --admin-action-btn-height: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --badge-font-size-sm: 0.58rem;
+    --badge-padding-sm: 2px 7px;
+    --badge-font-size-md: 0.66rem;
+    --badge-padding-md: 3px 10px;
+    --badge-letter-spacing: 0.04em;
+
+    --admin-action-btn-font-size: 0.62rem;
+    --admin-action-btn-padding: 4px 8px;
+    --admin-action-btn-height: 26px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --badge-font-size-sm: 0.52rem;
+    --badge-padding-sm: 2px 5.5px;
+    --badge-font-size-md: 0.60rem;
+    --badge-padding-md: 2.5px 8px;
+    --badge-letter-spacing: 0.03em;
+
+    --admin-action-btn-font-size: 0.54rem;
+    --admin-action-btn-padding: 3px 6px;
+    --admin-action-btn-height: 24px;
+  }
+}
+
+.badge {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  flex-shrink: 0 !important;
+}
+
+.badge-sm {
+  font-size: var(--badge-font-size-sm) !important;
+  padding: var(--badge-padding-sm) !important;
+}
+
+.badge-md {
+  font-size: var(--badge-font-size-md) !important;
+  padding: var(--badge-padding-md) !important;
+}
+
+.admin-action-btn {
+  font-size: var(--admin-action-btn-font-size) !important;
+  padding: var(--admin-action-btn-padding) !important;
+  height: var(--admin-action-btn-height) !important;
+  min-height: var(--admin-action-btn-height) !important;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  flex-shrink: 0 !important;
+}
+
+.admin-action-btn .luxury-btn-label {
+  font-size: inherit !important;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+}

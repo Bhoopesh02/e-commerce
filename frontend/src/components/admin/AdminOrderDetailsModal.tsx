@@ -8,6 +8,7 @@ import { formatPrice } from '@/lib/formatPrice';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { useToastStore } from '@/store/useToastStore';
+import { useScrollLock } from '@/hooks/useScrollLock';
 import {
   X,
   CreditCard,
@@ -47,6 +48,8 @@ export const AdminOrderDetailsModal: React.FC<AdminOrderDetailsModalProps> = ({
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
+
+  useScrollLock(isOpen);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -129,6 +132,8 @@ export const AdminOrderDetailsModal: React.FC<AdminOrderDetailsModalProps> = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby="admin-order-modal-title"
+        data-lenis-prevent
+        onWheel={(e) => e.stopPropagation()}
         style={{
           position: 'fixed',
           inset: 0,
@@ -289,6 +294,7 @@ export const AdminOrderDetailsModal: React.FC<AdminOrderDetailsModalProps> = ({
 
           {/* Modal Scrollable Body */}
           <div
+            data-lenis-prevent
             style={{
               padding: '28px',
               overflowY: 'auto',

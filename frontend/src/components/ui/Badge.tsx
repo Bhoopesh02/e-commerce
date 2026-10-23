@@ -23,10 +23,10 @@ export const Badge: React.FC<BadgeProps> = ({
     justifyContent: 'center',
     borderRadius: 'var(--radius-pill)',
     fontWeight: 600,
-    letterSpacing: '0.06em',
     textTransform: 'uppercase',
-    fontSize: size === 'sm' ? '0.68rem' : '0.78rem',
-    padding: size === 'sm' ? '3px 10px' : '5px 14px',
+    fontSize: size === 'sm' ? 'var(--badge-font-size-sm, 0.68rem)' : 'var(--badge-font-size-md, 0.78rem)',
+    padding: size === 'sm' ? 'var(--badge-padding-sm, 3px 10px)' : 'var(--badge-padding-md, 5px 14px)',
+    letterSpacing: 'var(--badge-letter-spacing, 0.06em)',
     lineHeight: 1.2,
     whiteSpace: 'nowrap',
     wordBreak: 'keep-all',
@@ -78,8 +78,88 @@ export const Badge: React.FC<BadgeProps> = ({
   }
 
   return (
-    <span style={{ ...baseStyle, ...variantStyle }} className={`badge ${className}`}>
-      {children}
-    </span>
+    <>
+      <span style={{ ...baseStyle, ...variantStyle }} className={`badge badge-${size} ${className}`}>
+        {children}
+      </span>
+      <style jsx global>{`
+        :root {
+          --badge-font-size-sm: 0.68rem;
+          --badge-padding-sm: 3px 10px;
+          --badge-font-size-md: 0.78rem;
+          --badge-padding-md: 5px 14px;
+          --badge-letter-spacing: 0.06em;
+        }
+
+        @media (max-width: 1024px) {
+          :root {
+            --badge-font-size-sm: 0.62rem;
+            --badge-padding-sm: 2.5px 8px;
+            --badge-font-size-md: 0.72rem;
+            --badge-padding-md: 4px 12px;
+            --badge-letter-spacing: 0.05em;
+          }
+          .badge {
+            white-space: nowrap !important;
+            word-break: keep-all !important;
+            flex-shrink: 0 !important;
+          }
+          .badge-sm {
+            font-size: var(--badge-font-size-sm) !important;
+            padding: var(--badge-padding-sm) !important;
+          }
+          .badge-md {
+            font-size: var(--badge-font-size-md) !important;
+            padding: var(--badge-padding-md) !important;
+          }
+        }
+
+        @media (max-width: 768px) {
+          :root {
+            --badge-font-size-sm: 0.58rem;
+            --badge-padding-sm: 2px 7px;
+            --badge-font-size-md: 0.66rem;
+            --badge-padding-md: 3px 10px;
+            --badge-letter-spacing: 0.04em;
+          }
+          .badge {
+            white-space: nowrap !important;
+            word-break: keep-all !important;
+            flex-shrink: 0 !important;
+          }
+          .badge-sm {
+            font-size: var(--badge-font-size-sm) !important;
+            padding: var(--badge-padding-sm) !important;
+          }
+          .badge-md {
+            font-size: var(--badge-font-size-md) !important;
+            padding: var(--badge-padding-md) !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          :root {
+            --badge-font-size-sm: 0.52rem;
+            --badge-padding-sm: 2px 5.5px;
+            --badge-font-size-md: 0.60rem;
+            --badge-padding-md: 2.5px 8px;
+            --badge-letter-spacing: 0.03em;
+          }
+          .badge {
+            white-space: nowrap !important;
+            word-break: keep-all !important;
+            flex-shrink: 0 !important;
+          }
+          .badge-sm {
+            font-size: var(--badge-font-size-sm) !important;
+            padding: var(--badge-padding-sm) !important;
+          }
+          .badge-md {
+            font-size: var(--badge-font-size-md) !important;
+            padding: var(--badge-padding-md) !important;
+          }
+        }
+      `}</style>
+    </>
   );
 };

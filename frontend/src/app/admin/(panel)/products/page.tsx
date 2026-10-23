@@ -435,7 +435,7 @@ function AdminProductsPageContent() {
                         Across {p.variants.length} sizes
                       </span>
                     </td>
-                    <td style={{ padding: '16px' }}>
+                    <td style={{ padding: '16px', whiteSpace: 'nowrap' }}>
                       {p.availability === 'in_stock' && <Badge variant="success">In Stock</Badge>}
                       {p.availability === 'low_stock' && <Badge variant="warning">Low Stock</Badge>}
                       {p.availability === 'out_of_stock' && <Badge variant="danger">Depleted</Badge>}

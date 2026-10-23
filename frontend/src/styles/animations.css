@@ -618,13 +618,21 @@ a:focus-visible .luxury-btn.no-sheen svg.lucide-arrow-right {
   }
 
   .luxury-btn[data-admin-btn="true"],
-  [data-admin="true"] .luxury-btn {
+  [data-admin="true"] .luxury-btn,
+  .admin-panel .luxury-btn,
+  .admin-table-wrapper .luxury-btn,
+  .admin-action-btn {
     white-space: nowrap !important;
     max-width: none !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
   }
 
   .luxury-btn[data-admin-btn="true"] .luxury-btn-label,
-  [data-admin="true"] .luxury-btn .luxury-btn-label {
+  [data-admin="true"] .luxury-btn .luxury-btn-label,
+  .admin-panel .luxury-btn .luxury-btn-label,
+  .admin-table-wrapper .luxury-btn .luxury-btn-label,
+  .admin-action-btn .luxury-btn-label {
     white-space: nowrap !important;
     overflow-wrap: normal !important;
     word-break: keep-all !important;

@@ -232,11 +232,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           }}
         >
           <Heart
-            size={18}
+            size={15}
             className="card-action-icon"
             fill={isFavorited ? 'currentColor' : 'transparent'}
             stroke="currentColor"
-            strokeWidth={1.8}
+            strokeWidth={1.7}
           />
         </motion.button>
 
