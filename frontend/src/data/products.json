@@ -426,8 +426,7 @@
     "categoryId": "cat_jewelry",
     "price": 11999,
     "images": [
-      "/images/products/fine-jewelry/auric-twisted-vermeil-cuff-4k-1.webp",
-      "/images/products/fine-jewelry/auric-twisted-vermeil-cuff-4k-2.webp"
+      "/images/products/fine-jewelry/auric-twisted-vermeil-cuff-4k-1.webp"
     ],
     "variants": [
       {
@@ -1479,8 +1478,7 @@
     "categoryId": "cat_knitwear",
     "price": 18499,
     "images": [
-      "/images/sections/products/knitwear/brushed-mohair-v-neck-jumper-1.webp",
-      "/images/sections/products/knitwear/brushed-mohair-v-neck-jumper-2.webp"
+      "/images/sections/products/knitwear/brushed-mohair-v-neck-jumper-1.webp"
     ],
     "variants": [
       {

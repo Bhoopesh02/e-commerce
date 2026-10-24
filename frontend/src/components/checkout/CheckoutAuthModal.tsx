@@ -10,7 +10,6 @@ import { useToastStore } from '@/store/useToastStore';
 import { loginUser, registerUser } from '@/lib/mockApi';
 import {
   Mail,
-  Lock,
   User as UserIcon,
   LogIn,
   UserPlus,
@@ -36,12 +35,10 @@ export const CheckoutAuthModal: React.FC<CheckoutAuthModalProps> = ({
 
   // Sign In fields
   const [signInEmail, setSignInEmail] = useState('');
-  const [signInPassword, setSignInPassword] = useState('');
 
   // Register fields
   const [regName, setRegName] = useState('');
   const [regEmail, setRegEmail] = useState('');
-  const [regPassword, setRegPassword] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -251,15 +248,6 @@ export const CheckoutAuthModal: React.FC<CheckoutAuthModalProps> = ({
               required
             />
 
-            <Input
-              label="Password"
-              type="password"
-              value={signInPassword}
-              onChange={(e) => setSignInPassword(e.target.value)}
-              placeholder="••••••••"
-              leftIcon={<Lock size={16} />}
-            />
-
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '6px' }}>
               <Button
                 type="submit"
@@ -329,15 +317,6 @@ export const CheckoutAuthModal: React.FC<CheckoutAuthModalProps> = ({
               placeholder="client@example.com"
               leftIcon={<Mail size={16} />}
               required
-            />
-
-            <Input
-              label="Password"
-              type="password"
-              value={regPassword}
-              onChange={(e) => setRegPassword(e.target.value)}
-              placeholder="Create a password"
-              leftIcon={<Lock size={16} />}
             />
 
             <div style={{ marginTop: '6px' }}>

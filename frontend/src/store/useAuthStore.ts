@@ -12,6 +12,7 @@ interface AuthState {
   setUser: (user: User | null) => void;
   setRole: (role: UserRole) => void;
   loginAsCustomer: () => void;
+  loginWithPhone: (phone: string, username?: string) => void;
   loginAsAdmin: () => void;
   logout: () => void;
 }
@@ -45,6 +46,34 @@ export const useAuthStore = create<AuthState>()(
         loginAsCustomer: () => {
           set({
             user: defaultCustomer,
+            role: 'customer',
+            isAuthenticated: true,
+          });
+        },
+
+        loginWithPhone: (phone: string, username?: string) => {
+          const cleanPhone = phone.trim();
+          const existingUser = (usersData as User[]).find(
+            (u) => u.phone && u.phone.replace(/\s+/g, '') === cleanPhone.replace(/\s+/g, '')
+          );
+
+          const userToSet: User = {
+            id: existingUser?.id || `usr_${Date.now()}`,
+            name: username?.trim() || existingUser?.name || 'Valued Client',
+            email: existingUser?.email || `${(username || 'client').toLowerCase().replace(/[^a-z0-9]/g, '') || 'client'}@atelier.com`,
+            role: 'customer',
+            phone: cleanPhone,
+            addresses: existingUser?.addresses || [],
+            notificationPreferences: existingUser?.notificationPreferences || {
+              emailPromotions: true,
+              emailOrderUpdates: true,
+              emailNewsletter: true,
+              emailSecurityAlerts: true,
+            },
+          };
+
+          set({
+            user: userToSet,
             role: 'customer',
             isAuthenticated: true,
           });

@@ -163,14 +163,12 @@ export const CheckoutView: React.FC = () => {
 
   // Inline Sign-in state
   const [signInEmail, setSignInEmail] = useState('');
-  const [signInPassword, setSignInPassword] = useState('');
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [signInError, setSignInError] = useState<string | null>(null);
 
   // Inline Register state
   const [regName, setRegName] = useState('');
   const [regEmail, setRegEmail] = useState('');
-  const [regPassword, setRegPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
   const [registerError, setRegisterError] = useState<string | null>(null);
 
@@ -1056,15 +1054,6 @@ export const CheckoutView: React.FC = () => {
                           required
                         />
 
-                        <Input
-                          label="Password"
-                          type="password"
-                          value={signInPassword}
-                          onChange={(e) => setSignInPassword(e.target.value)}
-                          placeholder="••••••••"
-                          leftIcon={<Lock size={16} />}
-                        />
-
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '6px' }}>
                           <Button
                             type="submit"
@@ -1156,15 +1145,6 @@ export const CheckoutView: React.FC = () => {
                           placeholder="client@example.com"
                           leftIcon={<Mail size={16} />}
                           required
-                        />
-
-                        <Input
-                          label="Password"
-                          type="password"
-                          value={regPassword}
-                          onChange={(e) => setRegPassword(e.target.value)}
-                          placeholder="Create a secure password"
-                          leftIcon={<Lock size={16} />}
                         />
 
                         <div style={{ marginTop: '6px' }}>

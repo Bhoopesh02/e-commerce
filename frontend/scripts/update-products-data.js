@@ -506,8 +506,7 @@ const newProducts = [
     price: 18499,
     compareAtPrice: 22500,
     images: [
-      "/images/sections/products/knitwear/brushed-mohair-v-neck-jumper-1.webp",
-      "/images/sections/products/knitwear/brushed-mohair-v-neck-jumper-2.webp"
+      "/images/sections/products/knitwear/brushed-mohair-v-neck-jumper-1.webp"
     ],
     variants: [
       { sku: "MHR-MNT-S", size: "S", color: "Sage Frost", stock: 3 },
