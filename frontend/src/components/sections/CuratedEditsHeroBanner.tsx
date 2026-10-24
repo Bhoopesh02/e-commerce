@@ -93,25 +93,30 @@ export const CURATED_EDIT_SLIDES: CuratedEditSlide[] = [
   },
 ];
 
-// 1 second per slide auto-scroll with 600ms smooth gliding transition
-const AUTOPLAY_INTERVAL_MS = 2000;
-const TRANSITION_DURATION_MS = 600;
+// Autoplay interval for curated editorial collection banner
+const AUTOPLAY_INTERVAL_MS = 5000;
 
 export const CuratedEditsHeroBanner: React.FC = () => {
-  const [currentIndex, setCurrentIndex] = useState(1);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const slides = CURATED_EDIT_SLIDES;
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const touchStartXRef = useRef<number | null>(null);
 
-  // Cloned slides for seamless infinite loop: [last, ...slides, first]
-  const slides = [
-    CURATED_EDIT_SLIDES[CURATED_EDIT_SLIDES.length - 1],
-    ...CURATED_EDIT_SLIDES,
-    CURATED_EDIT_SLIDES[0],
-  ];
+  // Eager Background Pre-Caching: Download all 5 high-resolution WebP images in background immediately on page load
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    slides.forEach((slide) => {
+      const img = new window.Image();
+      img.src = slide.image;
+      if (slide.mobileImage) {
+        const mobImg = new window.Image();
+        mobImg.src = slide.mobileImage;
+      }
+    });
+  }, [slides]);
 
   // Check prefers-reduced-motion
   useEffect(() => {
@@ -123,43 +128,32 @@ export const CuratedEditsHeroBanner: React.FC = () => {
   }, []);
 
   const goToNextSlide = useCallback(() => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex((prev) => prev + 1);
-  }, [isTransitioning]);
+    setCurrentIndex((prev) => (prev + 1) % slides.length);
+  }, [slides.length]);
 
   const goToPrevSlide = useCallback(() => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex((prev) => prev - 1);
-  }, [isTransitioning]);
+    setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
+  }, [slides.length]);
 
-  const handleTransitionEnd = () => {
-    setIsTransitioning(false);
-    if (currentIndex >= slides.length - 1) {
-      setCurrentIndex(1);
-    } else if (currentIndex <= 0) {
-      setCurrentIndex(slides.length - 2);
-    }
-  };
+  const goToSlide = useCallback((index: number) => {
+    setCurrentIndex(index);
+  }, []);
 
-  // Autoplay timer: auto-scrolls per second
+  // Autoplay timer
   useEffect(() => {
     if (isReducedMotion || isPaused) {
       if (timerRef.current) clearTimeout(timerRef.current);
       return;
     }
 
-    if (!isTransitioning) {
-      timerRef.current = setTimeout(() => {
-        goToNextSlide();
-      }, AUTOPLAY_INTERVAL_MS);
-    }
+    timerRef.current = setTimeout(() => {
+      goToNextSlide();
+    }, AUTOPLAY_INTERVAL_MS);
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [currentIndex, isPaused, isReducedMotion, isTransitioning, goToNextSlide]);
+  }, [currentIndex, isPaused, isReducedMotion, goToNextSlide]);
 
   // Pause when document is hidden/backgrounded
   useEffect(() => {
@@ -201,8 +195,6 @@ export const CuratedEditsHeroBanner: React.FC = () => {
     touchStartXRef.current = null;
   };
 
-  const offset = -(currentIndex * 100);
-
   return (
     <section
       role="region"
@@ -218,24 +210,16 @@ export const CuratedEditsHeroBanner: React.FC = () => {
       onTouchEnd={handleTouchEnd}
       tabIndex={0}
     >
-      <div
-        className={styles.track}
-        onTransitionEnd={handleTransitionEnd}
-        style={{
-          transform: `translate3d(${offset}%, 0, 0)`,
-          transition: isTransitioning
-            ? `transform ${TRANSITION_DURATION_MS}ms cubic-bezier(0.22, 0.61, 0.36, 1)`
-            : 'none',
-        }}
-      >
+      {/* Container stacking crossfading slides on GPU layers */}
+      <div className={styles.track}>
         {slides.map((slide, index) => {
-          const isInitial = slide.id === CURATED_EDIT_SLIDES[0].id;
+          const isActive = index === currentIndex;
           const common = {
             alt: `${slide.title} - ${slide.badge}`,
             fill: true,
-            priority: isInitial,
-            loading: isInitial ? ('eager' as const) : ('lazy' as const),
-            quality: 80,
+            priority: true,
+            loading: 'eager' as const,
+            quality: 85,
             sizes: '100vw',
           };
           const {
@@ -253,9 +237,8 @@ export const CuratedEditsHeroBanner: React.FC = () => {
 
           return (
             <div
-              key={`${slide.id}-${index}`}
-              className={styles.slideContainer}
-              aria-hidden={index !== currentIndex}
+              key={slide.id}
+              className={`${styles.slideContainer} ${isActive ? styles.active : ''}`}
             >
               {/* Background Editorial Image via Next.js getImageProps */}
               <div className={styles.imageWrapper}>
@@ -272,52 +255,72 @@ export const CuratedEditsHeroBanner: React.FC = () => {
                   />
                   <img
                     {...desktopRest}
-                    srcSet={desktopSrcSet}
-                    loading={isInitial ? 'eager' : 'lazy'}
-                    fetchPriority={isInitial ? 'high' : 'auto'}
+                    srcSet={undefined}
+                    alt={`${slide.title} - ${slide.badge}`}
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
                     className={styles.bannerImage}
                     style={{
                       ...desktopRest.style,
                       ['--pos-desktop' as string]: slide.objectPosition || 'center 26%',
                       ['--pos-mobile' as string]: slide.mobileObjectPosition || 'center center',
+                      width: '100%',
+                      height: '100%',
                       objectFit: 'cover',
                     }}
                   />
                 </picture>
               </div>
 
-            {/* Atmosphere Scrim Overlays */}
-            <div className={styles.scrim} />
-            <div className={styles.scrimBottom} />
+              {/* Atmosphere Scrim Overlays */}
+              <div className={styles.scrim} />
+              <div className={styles.scrimBottom} />
 
-            {/* Bottom-Left Content Stack */}
-            <div className={styles.contentWrapper}>
-              <div className={styles.kicker}>
-                <span>CURATED EDIT {slide.number}</span>
-                <span className={styles.kickerDot} />
-                <span>{slide.badge}</span>
-              </div>
+              {/* Bottom-Left Content Stack */}
+              <div className={styles.contentWrapper}>
+                <div className={styles.kicker}>
+                  <span>CURATED EDIT {slide.number}</span>
+                  <span className={styles.kickerDot} />
+                  <span>{slide.badge}</span>
+                </div>
 
-              <h1 className={styles.headline}>
-                {slide.title}
-              </h1>
+                <h1 className={styles.headline}>
+                  {slide.title}
+                </h1>
 
-              <p className={styles.subtitle}>
-                {slide.subtitle}
-              </p>
+                <p className={styles.subtitle}>
+                  {slide.subtitle}
+                </p>
 
-              <div>
-                <Link
-                  href={`/shop?categorySlug=${slide.categorySlug}`}
-                  className={styles.ctaButton}
-                >
-                  {slide.ctaText}
-                </Link>
+                <div>
+                  <Link
+                    href={`/shop?categorySlug=${slide.categorySlug}`}
+                    className={styles.ctaButton}
+                  >
+                    {slide.ctaText}
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
           );
         })}
+      </div>
+
+      {/* Bottom Track Indicators */}
+      <div className={styles.bottomIndicators}>
+        {slides.map((slide, idx) => (
+          <button
+            key={slide.id}
+            type="button"
+            className={`${styles.indicatorBar} ${
+              idx === currentIndex ? styles.activeIndicator : ''
+            }`}
+            onClick={() => goToSlide(idx)}
+            title={slide.title}
+            aria-label={`Go to slide ${idx + 1}: ${slide.title}`}
+          />
+        ))}
       </div>
     </section>
   );

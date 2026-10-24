@@ -1,496 +1,516 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { getImageProps } from 'next/image';
-import { useStorefrontStore } from '@/store/useStorefrontStore';
-import { Button } from '@/components/ui/Button';
-import { ArrowRight } from 'lucide-react';
-import {
-  StaggerContainer,
-  StaggerFadeUp,
-  LineReveal,
-} from '@/components/ui/StaggerReveal';
-import heroImg from '../../../public/images/banners/home/hero.webp';
-import heroMobileImg from '../../../public/images/banners/home/hero-mobile.webp';
+import Image, { StaticImageData } from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
+
+import slide1Img from '../../../public/images/banners/home/hero-estuary.webp';
+import slide2Img from '../../../public/images/banners/home/hero-dunes.webp';
+import slide3Img from '../../../public/images/banners/home/hero-coast.webp';
+import slide4Img from '../../../public/images/banners/home/hero-highland.webp';
+import slide5Img from '../../../public/images/banners/home/hero-forest.webp';
+
+export interface HeroSlide {
+  id: string;
+  img: StaticImageData;
+  alt: string;
+  heading: string;
+  subtitle: string;
+  ctaText: string;
+  ctaLink: string;
+  objectPosition: string;
+}
+
+export const HERO_SLIDES: HeroSlide[] = [
+  {
+    id: 'slide-estuary',
+    img: slide1Img,
+    alt: "Fall Winter '26 Collection — Coastal Estuary",
+    heading: "Fall Winter '26",
+    subtitle: 'Drop 2 is now available.',
+    ctaText: 'SHOP ALL NEW ARRIVALS',
+    ctaLink: '/shop?categorySlug=outerwear',
+    objectPosition: '55% 25%',
+  },
+  {
+    id: 'slide-dunes',
+    img: slide2Img,
+    alt: 'The Dune Collection — Double-Faced Cashmere & Structural Wool',
+    heading: 'The Dune Collection',
+    subtitle: 'Double-faced cashmere & structural wool.',
+    ctaText: 'EXPLORE OUTERWEAR',
+    ctaLink: '/shop?categorySlug=outerwear',
+    objectPosition: '65% 20%',
+  },
+  {
+    id: 'slide-coast',
+    img: slide3Img,
+    alt: 'Atmospheric Layers — Obsidian Shearling & Cold Weather Elements',
+    heading: 'Atmospheric Layers',
+    subtitle: 'Engineered for climate resilience and warmth.',
+    ctaText: 'DISCOVER SHEARLING',
+    ctaLink: '/shop?categorySlug=outerwear',
+    objectPosition: '60% 25%',
+  },
+  {
+    id: 'slide-highland',
+    img: slide4Img,
+    alt: 'Highland Knitwear — Pure Un-dyed Scottish Wool & Alpaca',
+    heading: 'Highland Knitwear',
+    subtitle: 'Pure un-dyed Scottish wool & alpaca blends.',
+    ctaText: 'SHOP KNITWEAR EDITIONS',
+    ctaLink: '/shop?categorySlug=knitwear',
+    objectPosition: '65% 20%',
+  },
+  {
+    id: 'slide-forest',
+    img: slide5Img,
+    alt: "Modern Tailoring '26 — Fluid Silhouettes For Everyday Movement",
+    heading: "Modern Tailoring '26",
+    subtitle: 'Fluid silhouettes tailored for everyday movement.',
+    ctaText: 'VIEW THE LOOKBOOK',
+    ctaLink: '/shop?categorySlug=tailoring',
+    objectPosition: '65% 25%',
+  },
+];
+
+const AUTO_ROTATE_SECONDS = 5;
 
 export const HeroSection: React.FC = () => {
-  const { storefront } = useStorefrontStore();
-  const isEditorial = storefront === 'a';
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [isHeroReady, setIsHeroReady] = useState(false);
+  const [loadedSlides, setLoadedSlides] = useState<Record<number, boolean>>({});
 
-  const [loaded, setLoaded] = useState(false);
-  const imgRef = useRef<HTMLImageElement>(null);
+  const touchStartXRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number>(Date.now());
+  const rafIdRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    if (imgRef.current?.complete) {
-      setLoaded(true);
+  const currentSlide = HERO_SLIDES[currentIndex];
+
+  const handleSlideLoad = useCallback((idx: number) => {
+    setLoadedSlides((prev) => ({ ...prev, [idx]: true }));
+    if (idx === 0) {
+      setIsHeroReady(true);
     }
   }, []);
 
-  const common = {
-    alt: 'Aurelia Luxury Campaign - The Winter Collection',
-    fill: true,
-    priority: true,
-    loading: 'eager' as const,
-    quality: 80,
-    sizes: '100vw',
+  // Check if first slide is cached, then pre-cache the rest after initial paint
+  useEffect(() => {
+    const firstImg = new window.Image();
+    firstImg.src = HERO_SLIDES[0].img.src;
+    if (firstImg.complete) {
+      setIsHeroReady(true);
+      setLoadedSlides((prev) => ({ ...prev, 0: true }));
+    } else {
+      firstImg.onload = () => {
+        setIsHeroReady(true);
+        setLoadedSlides((prev) => ({ ...prev, 0: true }));
+      };
+    }
+
+    const timer = setTimeout(() => {
+      HERO_SLIDES.slice(1).forEach((slide, offset) => {
+        const img = new window.Image();
+        img.src = slide.img.src;
+        img.onload = () => {
+          setLoadedSlides((prev) => ({ ...prev, [offset + 1]: true }));
+        };
+      });
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const goToSlide = useCallback((index: number) => {
+    setCurrentIndex((index + HERO_SLIDES.length) % HERO_SLIDES.length);
+    startTimeRef.current = Date.now();
+    setProgress(0);
+  }, []);
+
+  const nextSlide = useCallback(() => {
+    goToSlide(currentIndex + 1);
+  }, [currentIndex, goToSlide]);
+
+  const prevSlide = useCallback(() => {
+    goToSlide(currentIndex - 1);
+  }, [currentIndex, goToSlide]);
+
+  // Smooth auto-scroll loop (runs only when hero is ready and not hovered)
+  useEffect(() => {
+    if (!isHeroReady || isHovered) {
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+      return;
+    }
+
+    startTimeRef.current = Date.now();
+    const durationMs = AUTO_ROTATE_SECONDS * 1000;
+
+    const tick = () => {
+      const elapsed = Date.now() - startTimeRef.current;
+      const curProgress = Math.min(elapsed / durationMs, 1);
+      setProgress(curProgress);
+
+      if (curProgress >= 1) {
+        goToSlide(currentIndex + 1);
+      } else {
+        rafIdRef.current = requestAnimationFrame(tick);
+      }
+    };
+
+    rafIdRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    };
+  }, [currentIndex, isHeroReady, isHovered, goToSlide]);
+
+  // Touch Swipe for Mobile Navigation
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
   };
 
-  const {
-    props: { srcSet: desktopSrcSet, ...desktopRest },
-  } = getImageProps({
-    ...common,
-    src: heroImg,
-  });
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null) return;
+    const diff = touchStartXRef.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) nextSlide();
+      else prevSlide();
+    }
+    touchStartXRef.current = null;
+  };
 
-  const {
-    props: { srcSet: mobileSrcSet },
-  } = getImageProps({
-    ...common,
-    src: heroMobileImg,
-  });
+  // Keyboard navigation
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowRight') nextSlide();
+    else if (e.key === 'ArrowLeft') prevSlide();
+  };
 
   return (
     <section
-      className="relative w-full overflow-hidden flex flex-col hero-section"
-      style={{
-        position: 'relative',
-        width: '100%',
-        marginTop: 'var(--announcement-bar-height, 37px)',
-        overflow: 'hidden',
-        backgroundColor: 'var(--color-black-tie)',
-      }}
+      className="hero-section"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      aria-label="Editorial Seasonal Banners Carousel"
+      aria-roledescription="carousel"
     >
-      {/* Background Image Container - Responsive Art Direction via HTML5 <picture> */}
-      <picture
-        className="hero-image-picture absolute inset-0 z-0 w-full h-full pointer-events-none overflow-hidden"
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 0,
-        }}
-      >
-        <source media="(max-width: 767px)" srcSet={mobileSrcSet} />
-        <source media="(min-width: 768px)" srcSet={desktopSrcSet} />
-        <img
-          {...desktopRest}
-          ref={imgRef}
-          loading="eager"
-          fetchPriority="high"
-          onLoad={() => setLoaded(true)}
-          className="object-cover object-center hero-image w-full h-full"
-          style={{
-            ...desktopRest.style,
-            objectFit: 'cover',
-            objectPosition: 'center center',
-          }}
-        />
-      </picture>
-
-      {/* Dark gradient overlay behind text on mobile for readability */}
-      <div className="hero-mobile-overlay" aria-hidden="true" />
-
-      {/* Hero Content Wrapper */}
+      {/* Sleek Dark Veil while initial image is loading — prevents any pop-in or flash */}
       <div
-        className={`relative z-10 flex flex-col justify-center text-left w-full h-full px-6 sm:px-10 md:px-16 lg:px-24 hero-content-container ${isEditorial ? 'editorial-layout' : 'refined-layout'
-          }`}
-        style={{
-          position: 'relative',
-          zIndex: 10,
-          color: 'var(--bg-subtle)',
-          width: '100%',
-          minHeight: 'calc(100svh - var(--announcement-bar-height, 37px))',
-          height: '100%',
-        }}
-      >
-        {isEditorial ? (
-          /* Editorial Experience Layout */
-          <StaggerContainer
-            key="editorial-hero"
-            className="hero-text-block editorial-text-block max-w-xl w-full text-left"
-            delayChildren={0.3}
-            staggerChildren={0.14}
-            animate={loaded ? 'show' : 'hidden'}
-            style={{
-              maxWidth: '600px',
-              width: '100%',
-              textAlign: 'left',
-              textShadow: '0 2px 10px rgba(0, 0, 0, 0.45)',
-            }}
-          >
-            <StaggerFadeUp
-              as="span"
-              className="hero-eyebrow text-left block mb-4"
-              style={{
-                fontFamily: 'var(--font-accent)',
-                fontSize: 'var(--text-xs)',
-                fontWeight: 600,
-                letterSpacing: 'clamp(0.12em, 0.08em + 0.08vw, 0.18em)',
-                textTransform: 'uppercase',
-                color: 'var(--bg-subtle)',
-                marginBottom: '16px',
-                display: 'block',
-                textAlign: 'left',
-              }}
-            >
-              EXCLUSIVE: AURELIA ATELIER
-            </StaggerFadeUp>
+        className={`hero-initial-loader ${isHeroReady ? 'is-loaded' : ''}`}
+        aria-hidden="true"
+      />
 
-            <h1
-              className="hero-heading text-left"
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'var(--text-hero)',
-                lineHeight: 1.05,
-                fontWeight: 500,
-                letterSpacing: '-0.02em',
-                marginBottom: '16px',
-                color: 'var(--bg-subtle)',
-                textTransform: 'uppercase',
-                overflowWrap: 'break-word',
-                wordBreak: 'break-word',
-                textAlign: 'left',
-              }}
-            >
-              <LineReveal bottomPadding="8px">NOCTURNAL</LineReveal>
-              <LineReveal bottomPadding="8px">SILHOUETTES</LineReveal>
-            </h1>
+      {/* Background Slides Layer */}
+      <div className="hero-slides-layer" aria-hidden="true">
+        {HERO_SLIDES.map((slide, idx) => {
+          const isActive = idx === currentIndex;
+          const isLoaded = loadedSlides[idx];
 
-            <div className="hero-cta-group flex flex-wrap gap-4 items-center justify-start text-left">
-              <StaggerFadeUp className="hero-cta-link text-left inline-flex self-start w-auto">
-                <Link
-                  href="/shop?categorySlug=outerwear"
-                  style={{ textDecoration: 'none', display: 'inline-block' }}
-                  className="inline-flex self-start w-auto"
-                >
-                  <Button
-                    variant="white"
-                    size="lg"
-                    disableSheen
-                    className="hero-cta-button inline-flex items-center justify-center w-auto self-start px-7 py-3.5 sm:px-9 sm:py-4 md:px-10 lg:px-12 min-h-[48px] text-xs tracking-[0.2em] sm:text-sm uppercase whitespace-nowrap max-w-full"
-                    style={{ borderRadius: '0', transition: 'none', transform: 'none' }}
-                  >
-                    Discover more
-                  </Button>
-                </Link>
-              </StaggerFadeUp>
+          return (
+            <div
+              key={slide.id}
+              className={`hero-slide-item ${isActive && isLoaded ? 'is-active' : ''}`}
+            >
+              <Image
+                src={slide.img}
+                alt={slide.alt}
+                fill
+                priority={idx === 0}
+                loading={idx === 0 ? 'eager' : 'lazy'}
+                quality={88}
+                sizes="100vw"
+                draggable={false}
+                onLoad={() => handleSlideLoad(idx)}
+                className="hero-slide-image select-none pointer-events-none"
+                style={{
+                  objectFit: 'cover',
+                  objectPosition: slide.objectPosition,
+                  opacity: isLoaded ? 1 : 0,
+                  transition: 'opacity 600ms ease-in-out',
+                }}
+              />
             </div>
-          </StaggerContainer>
-        ) : (
-          /* Refined Shopping Mode Layout */
-          <StaggerContainer
-            key="refined-hero"
-            className="hero-text-block refined-mode-inner max-w-xl w-full text-left"
-            delayChildren={0.3}
-            staggerChildren={0.14}
-            animate={loaded ? 'show' : 'hidden'}
-            style={{
-              maxWidth: '600px',
-              width: '100%',
-              textAlign: 'left',
-            }}
-          >
-            <StaggerFadeUp
-              as="span"
-              className="hero-eyebrow text-left block mb-4"
-              style={{
-                fontFamily: 'var(--font-accent)',
-                fontSize: 'var(--text-xs)',
-                fontWeight: 600,
-                letterSpacing: 'clamp(0.12em, 0.08em + 0.08vw, 0.18em)',
-                textTransform: 'uppercase',
-                color: 'var(--brand-accent)',
-                marginBottom: '16px',
-                display: 'block',
-                textAlign: 'left',
-              }}
-            >
-              Aurelia Wardrobe Foundations
-            </StaggerFadeUp>
-
-            <h1
-              className="hero-heading text-left"
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'var(--text-hero)',
-                lineHeight: 1.1,
-                fontWeight: 500,
-                marginBottom: '20px',
-                color: 'var(--bg-subtle)',
-                overflowWrap: 'break-word',
-                wordBreak: 'break-word',
-                textAlign: 'left',
-              }}
-            >
-              <LineReveal bottomPadding="8px">The Permanent</LineReveal>
-              <LineReveal bottomPadding="8px">Collection</LineReveal>
-            </h1>
-
-            <StaggerFadeUp
-              as="p"
-              className="hero-description text-left max-w-[38ch] mb-8"
-              style={{
-                fontSize: 'clamp(0.85rem, 0.65rem + 0.32vw, 1.05rem)',
-                color: 'var(--border-color)',
-                lineHeight: 1.6,
-                maxWidth: '38ch',
-                marginBottom: '32px',
-                textAlign: 'left',
-              }}
-            >
-              Essential Italian tailoring, pure Mongolian cashmere, and artisan
-              leather accessories engineered for effortless longevity.
-            </StaggerFadeUp>
-
-            <div className="hero-cta-group flex flex-wrap gap-4 items-center justify-start text-left">
-              <StaggerFadeUp className="hero-cta-link text-left">
-                <Link
-                  href="/shop"
-                  style={{ textDecoration: 'none', display: 'block' }}
-                >
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    rightIcon={<ArrowRight size={16} />}
-                    className="hero-cta-button"
-                  >
-                    Shop Full Catalog
-                  </Button>
-                </Link>
-              </StaggerFadeUp>
-              <StaggerFadeUp className="hero-cta-link text-left">
-                <Link
-                  href="/shop?categorySlug=tailoring"
-                  style={{ textDecoration: 'none', display: 'block' }}
-                >
-                  <Button variant="white" size="lg" disableSheen className="hero-cta-button">
-                    Explore Tailoring
-                  </Button>
-                </Link>
-              </StaggerFadeUp>
-            </div>
-          </StaggerContainer>
-        )}
+          );
+        })}
       </div>
 
-      <style jsx global>{`
+      {/* Main Content Area — revealed gracefully once initial hero is ready */}
+      <div className="hero-content-wrapper">
+        <AnimatePresence mode="wait">
+          {isHeroReady && (
+            <motion.div
+              key={currentSlide.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+              className="hero-text-block"
+            >
+              <h1 className="hero-title">{currentSlide.heading}</h1>
+              <p className="hero-subtitle">{currentSlide.subtitle}</p>
+
+              <div className="hero-cta-wrapper">
+                <Link href={currentSlide.ctaLink} className="hero-cta-link">
+                  <button
+                    type="button"
+                    className="hero-btn-white"
+                    aria-label={`${currentSlide.ctaText} — ${currentSlide.heading}`}
+                  >
+                    {currentSlide.ctaText}
+                  </button>
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Minimalist Slide Indicators (Bottom Right) */}
+      {isHeroReady && (
+        <div className="hero-carousel-controls" aria-label="Slide indicators">
+          <div className="hero-progress-bars">
+            {HERO_SLIDES.map((_, idx) => {
+              const isCurrent = idx === currentIndex;
+              const isPast = idx < currentIndex;
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => goToSlide(idx)}
+                  className={`hero-progress-bar-slot ${isCurrent ? 'active' : ''}`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                >
+                  <div
+                    className="hero-progress-bar-fill"
+                    style={{
+                      width: isCurrent
+                        ? `${progress * 100}%`
+                        : isPast
+                        ? '100%'
+                        : '0%',
+                    }}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
         .hero-section {
           position: relative;
           width: 100%;
           margin-top: var(--announcement-bar-height, 37px);
           height: calc(100vh - var(--announcement-bar-height, 37px));
           height: calc(100svh - var(--announcement-bar-height, 37px));
-          min-height: calc(100vh - var(--announcement-bar-height, 37px));
-          min-height: calc(100svh - var(--announcement-bar-height, 37px));
+          min-height: 520px;
           box-sizing: border-box;
           display: flex;
           flex-direction: column;
+          justify-content: flex-end;
           overflow: hidden;
-          background-color: var(--color-black-tie);
+          background-color: #121212;
+          outline: none;
         }
 
-        .hero-image-picture {
+        .hero-initial-loader {
           position: absolute;
           inset: 0;
           width: 100%;
           height: 100%;
+          background: var(--color-black-tie, #141414);
+          z-index: 15;
+          opacity: 1;
           pointer-events: none;
-          overflow: hidden;
-          z-index: 0;
+          transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .hero-image {
+        .hero-initial-loader.is-loaded {
+          opacity: 0;
+        }
+
+        .hero-slides-layer {
+          position: absolute;
+          inset: 0;
           width: 100%;
           height: 100%;
-          object-fit: cover !important;
-          object-position: center center !important;
-          filter: none !important;
+          z-index: 0;
+          overflow: hidden;
         }
 
-        .hero-content-container {
+        .hero-slide-item {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          opacity: 0;
+          z-index: 0;
+          pointer-events: none;
+          transition: opacity 800ms cubic-bezier(0.25, 1, 0.5, 1);
+          will-change: opacity;
+        }
+
+        .hero-slide-item.is-active {
+          opacity: 1;
+          z-index: 1;
+          pointer-events: auto;
+        }
+
+        :global(.hero-slide-image) {
+          width: 100% !important;
+          height: 100% !important;
+        }
+
+        /* Content positioned at lower-left matching reference image */
+        .hero-content-wrapper {
           position: relative;
           z-index: 10;
           display: flex;
           flex-direction: column;
-          justify-content: center !important;
+          align-items: flex-start;
+          text-align: left;
           width: 100%;
-          min-height: calc(100vh - var(--announcement-bar-height, 37px));
-          min-height: calc(100svh - var(--announcement-bar-height, 37px));
+          padding-left: clamp(24px, 4vw, 56px);
+          padding-bottom: clamp(32px, 5.5vh, 60px);
           box-sizing: border-box;
-          text-align: left;
-          padding-left: 24px;
-          padding-right: 24px;
-          padding-top: max(88px, env(safe-area-inset-top, 0px));
-          padding-bottom: max(32px, env(safe-area-inset-bottom, 0px));
+          pointer-events: none;
         }
 
-        @media (min-width: 640px) {
-          .hero-content-container {
-            padding-left: 40px;
-            padding-right: 40px;
-          }
-        }
-
-        @media (min-width: 768px) {
-          .hero-content-container {
-            justify-content: center !important;
-            padding-left: 64px;
-            padding-right: 64px;
-            padding-bottom: 0;
-          }
-        }
-
-        @media (min-width: 1024px) {
-          .hero-content-container {
-            padding-left: 96px;
-            padding-right: 96px;
-          }
-        }
-
-        .hero-mobile-overlay {
-          display: none;
-        }
-
-        @media (max-width: 767px) {
-          .hero-mobile-overlay {
-            display: block;
-            position: absolute;
-            inset: 0;
-            z-index: 2;
-            pointer-events: none;
-            background: linear-gradient(
-              to top,
-              rgba(20, 20, 20, 0.75) 0%,
-              rgba(20, 20, 20, 0.35) 50%,
-              rgba(20, 20, 20, 0.2) 100%
-            );
-          }
-        }
-
-        .hero-heading {
-          font-size: clamp(2.25rem, 7vw, 5rem) !important;
-          overflow-wrap: break-word;
-          word-break: break-word;
-          text-align: left !important;
-        }
-
-        .hero-description {
-          max-width: 38ch !important;
-          text-align: left !important;
-          margin-bottom: 24px !important;
-        }
-
-        .hero-cta-group {
+        .hero-text-block {
+          pointer-events: auto;
           display: flex;
-          flex-wrap: wrap;
-          gap: 16px;
-          justify-content: flex-start;
-          align-items: center;
+          flex-direction: column;
+          align-items: flex-start;
           text-align: left;
+          max-width: 540px;
+        }
+
+        /* Refined, smaller & lighter SANS-SERIF header matching design system */
+        .hero-title {
+          font-family: var(--font-body, 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif) !important;
+          font-size: clamp(1.65rem, 1.2rem + 1.8vw, 2.65rem);
+          font-weight: var(--weight-regular, 400);
+          line-height: 1.14;
+          letter-spacing: -0.015em;
+          color: var(--color-diamond, #ffffff);
+          margin: 0 0 8px 0;
+          text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45), 0 2px 14px rgba(0, 0, 0, 0.25);
+          word-break: break-word;
+        }
+
+        /* Clean, lighter subtitle */
+        .hero-subtitle {
+          font-family: var(--font-body, 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif) !important;
+          font-size: clamp(0.8125rem, 0.76rem + 0.22vw, 0.9375rem);
+          font-weight: var(--weight-regular, 400);
+          line-height: 1.45;
+          letter-spacing: 0.005em;
+          color: var(--color-diamond, #ffffff);
+          opacity: 0.92;
+          margin: 0 0 18px 0;
+          text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .hero-cta-wrapper {
+          display: inline-flex;
+          align-items: center;
         }
 
         .hero-cta-link {
+          text-decoration: none;
           display: inline-block;
-          width: auto;
-          text-align: left;
         }
 
-        .hero-cta-button {
-          display: inline-flex !important;
-          width: auto !important;
-          max-width: 100% !important;
-          align-self: flex-start !important;
-          white-space: nowrap !important;
-          min-height: 48px !important;
-          padding: 14px 28px !important;
-          font-size: 0.75rem !important;
-          letter-spacing: 0.2em !important;
-          text-transform: uppercase !important;
-          transition: none !important;
-          transform: none !important;
+        /* Razor sharp solid white button matching design system & reference */
+        .hero-btn-white {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background-color: var(--color-diamond, #ffffff);
+          color: var(--color-black-tie, #141414);
+          border: none;
+          border-radius: var(--radius-none, 0px);
+          padding: 10px 20px;
+          font-family: var(--font-body, 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif) !important;
+          font-size: 0.6875rem;
+          font-weight: var(--weight-semibold, 600);
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          cursor: pointer;
+          white-space: nowrap;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+          transition: background-color 180ms ease, color 180ms ease, transform 150ms ease;
         }
 
-        .hero-cta-button:hover,
-        .hero-cta-button:focus-visible,
-        .hero-cta-button:active,
-        a:hover .hero-cta-button,
-        a:focus-visible .hero-cta-button {
-          transform: none !important;
-          box-shadow: none !important;
-          background-color: var(--bg-primary) !important;
+        .hero-btn-white:hover {
+          background-color: var(--color-black-tie, #141414);
+          color: var(--color-diamond, #ffffff);
         }
 
-        .hero-cta-button::after,
-        .hero-cta-button:hover::after,
-        .hero-cta-button:focus-visible::after,
-        a:hover .hero-cta-button::after,
-        a:focus-visible .hero-cta-button::after {
-          display: none !important;
-          content: none !important;
-          opacity: 0 !important;
-          transform: none !important;
-          animation: none !important;
+        .hero-btn-white:active {
+          transform: translateY(0);
         }
 
-        @media (min-width: 640px) {
-          .hero-cta-button {
-            padding: 16px 36px !important;
-            font-size: 0.875rem !important;
-          }
-        }
-
-        @media (min-width: 768px) {
-          .hero-cta-button {
-            padding-left: 40px !important;
-            padding-right: 40px !important;
-          }
-        }
-
-        @media (min-width: 1024px) {
-          .hero-cta-button {
-            padding-left: 48px !important;
-            padding-right: 48px !important;
-          }
-        }
-
-        .editorial-layout,
-        .refined-layout {
-          text-align: left !important;
-        }
-
-        .editorial-text-block,
-        .refined-mode-inner {
+        /* Subtle minimal progress dashes on bottom right */
+        .hero-carousel-controls {
+          position: absolute;
+          bottom: clamp(16px, 3vh, 28px);
+          right: clamp(20px, 4vw, 56px);
+          z-index: 20;
           display: flex;
-          flex-direction: column;
-          align-items: flex-start !important;
-          text-align: left !important;
-          margin: 0 !important;
-          max-width: 600px;
-          width: 100%;
+          align-items: center;
         }
 
-        @media (max-width: 479px) {
-          .hero-cta-group {
-            width: auto;
-            flex-direction: column;
-            align-items: flex-start;
+        .hero-progress-bars {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .hero-progress-bar-slot {
+          position: relative;
+          width: 24px;
+          height: 2px;
+          background: rgba(255, 255, 255, 0.3);
+          border: none;
+          padding: 0;
+          cursor: pointer;
+          overflow: hidden;
+          transition: background-color 200ms ease;
+        }
+
+        .hero-progress-bar-slot:hover {
+          background: rgba(255, 255, 255, 0.6);
+        }
+
+        .hero-progress-bar-fill {
+          height: 100%;
+          background: #ffffff;
+          transition: width 80ms linear;
+        }
+
+        @media (max-width: 640px) {
+          .hero-carousel-controls {
+            right: auto;
+            left: clamp(24px, 4.5vw, 64px);
+            bottom: 14px;
           }
 
-          .hero-cta-link {
-            width: auto;
-            display: inline-flex;
-          }
-
-          .hero-cta-button {
-            width: auto !important;
-            min-width: 0 !important;
+          .hero-content-wrapper {
+            padding-bottom: 44px;
           }
         }
       `}</style>
     </section>
   );
 };
+
+
 

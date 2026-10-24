@@ -121,6 +121,19 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
     goToSlide((currentIndex - 1 + slides.length) % slides.length);
   }, [currentIndex, goToSlide, slides.length]);
 
+  // Eager Background Pre-Caching: Download all high-resolution WebP images in background immediately on page load
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    slides.forEach((slide) => {
+      const img = new window.Image();
+      img.src = slide.image;
+      if (slide.mobileImage) {
+        const mobImg = new window.Image();
+        mobImg.src = slide.mobileImage;
+      }
+    });
+  }, [slides]);
+
   // Smooth Auto-Scroll Countdown Loop (keeps playing across hovers)
   useEffect(() => {
     if ((pauseOnHover && isHovered) || autoScrollSeconds <= 0) {
@@ -190,23 +203,16 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
       onTouchEnd={handleTouchEnd}
       aria-label="New Arrivals Full-Width Editorial Banners"
     >
-
-      {/* 100% Full-Width Horizontal Sliding Track */}
-      <div
-        className={styles.track}
-        style={{
-          transform: `translateX(-${currentIndex * 100}%)`,
-        }}
-      >
+      {/* Container stacking crossfading slides on GPU layers */}
+      <div className={styles.track}>
         {slides.map((slide, index) => {
           const isActive = index === currentIndex;
-          const isInitial = index === 0;
           const common = {
             alt: `${slide.title} — ${slide.subtitle}`,
             fill: true,
-            priority: isInitial,
-            loading: isInitial ? ('eager' as const) : ('lazy' as const),
-            quality: 80,
+            priority: true,
+            loading: 'eager' as const,
+            quality: 85,
             sizes: '100vw',
           };
           const {
@@ -244,8 +250,10 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
                   <img
                     {...mobileRest}
                     srcSet={undefined}
-                    loading={isInitial ? 'eager' : 'lazy'}
-                    fetchPriority={isInitial ? 'high' : 'auto'}
+                    alt={`${slide.title} — ${slide.subtitle}`}
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
                     className={styles.bannerImage}
                     style={{
                       ...mobileRest.style,
