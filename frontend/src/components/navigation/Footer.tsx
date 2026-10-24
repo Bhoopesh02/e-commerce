@@ -2,38 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { BRAND_NAME, BRAND_TAGLINE } from '@/lib/constants';
+import { BRAND_NAME } from '@/lib/constants';
 import { useToastStore } from '@/store/useToastStore';
-import { CheckCircle2, Mail } from 'lucide-react';
-
-/* Social Icon SVGs matching reference image */
-const SocialIcons = {
-  Facebook: () => (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
-    </svg>
-  ),
-  YouTube: () => (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-    </svg>
-  ),
-  Instagram: () => (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-    </svg>
-  ),
-  Telegram: () => (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
-    </svg>
-  ),
-  WhatsApp: () => (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M17.472 14.382c-.301-.15-1.776-.876-2.051-.976-.275-.1-.475-.15-.675.15-.2.301-.775.976-.95 1.176-.175.2-.35.225-.65.075-.301-.15-1.272-.469-2.423-1.496-.896-.799-1.501-1.787-1.676-2.088-.175-.301-.019-.463.131-.613.136-.135.301-.35.451-.525.15-.175.2-.301.301-.501.1-.2.05-.375-.025-.525-.075-.15-.675-1.627-.925-2.228-.244-.585-.492-.506-.675-.515-.175-.009-.375-.01-.575-.01-.2 0-.525.075-.8.375-.275.3-1.05 1.026-1.05 2.502 0 1.476 1.075 2.899 1.225 3.1 0 .201 2.115 3.23 5.123 4.529.715.309 1.274.494 1.71.633.719.229 1.374.197 1.892.12.578-.087 1.776-.726 2.026-1.428.25-.702.25-1.303.175-1.428-.075-.125-.275-.2-.575-.35zm-5.467 7.618h-.005a10.01 10.01 0 0 1-5.1-1.399l-.366-.217-3.794.995 1.013-3.699-.239-.379a10.007 10.007 0 0 1-1.536-5.289c0-5.524 4.495-10.02 10.025-10.02 2.677 0 5.194 1.043 7.086 2.937a9.967 9.967 0 0 1 2.935 7.083c0 5.525-4.495 10.02-10.02 10.02zm8.508-18.528A11.942 11.942 0 0 0 12.005 0C5.385 0 .007 5.378.007 11.998c0 2.113.552 4.176 1.602 5.996L0 24l6.177-1.62a11.98 11.98 0 0 0 5.828 1.499h.005c6.619 0 11.996-5.379 11.996-12 0-3.206-1.249-6.22-3.513-8.487z" />
-    </svg>
-  ),
-};
+import { ChevronRight, ChevronDown, Check } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const { showToast } = useToastStore();
@@ -43,10 +14,14 @@ export const Footer: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Mobile Accordion states
+  const [isHouseOpen, setIsHouseOpen] = useState(false);
+  const [isClientCareOpen, setIsClientCareOpen] = useState(false);
+
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !email.includes('@')) {
-      showToast('Please provide a valid client email address.', 'error');
+      showToast('Please provide a valid email address.', 'error');
       return;
     }
 
@@ -55,646 +30,725 @@ export const Footer: React.FC = () => {
       setIsLoading(false);
       setIsSubmitted(true);
       showToast('Welcome to the Aurelia Private Ledger.', 'success');
-    }, 400);
+    }, 350);
   };
 
   return (
     <footer
       role="contentinfo"
-      aria-label="Atelier Footer"
-      style={{
-        backgroundColor: 'var(--color-black-tie)',
-        color: 'var(--color-diamond)',
-        borderTop: '1px solid var(--overlay-white-10, rgba(255, 255, 255, 0.1))',
-        marginTop: 'auto',
-        position: 'relative',
-        zIndex: 10,
-      }}
+      aria-label="Aurelia Atelier Footer"
+      className="almada-editorial-footer"
     >
-      <div className="container footer-inner-container">
+      <div className="container footer-content-wrap">
         {/* ================================================================= */}
-        {/* 1. NEWSLETTER / PRIVATE LEDGER SECTION                            */}
+        {/* 1. TOP ROW: 'Discover the Atelier' + Sub-navigation (Desktop only) */}
         {/* ================================================================= */}
-        <section
-          className="footer-newsletter-section"
-          aria-labelledby="footer-newsletter-heading"
-        >
-          <div className="footer-newsletter-grid">
-            {/* Copy side */}
-            <div className="footer-newsletter-copy">
-              <span className="footer-newsletter-badge">
-                Atelier Correspondence
-              </span>
-              <h2 id="footer-newsletter-heading" className="footer-newsletter-title">
-                The Private Ledger
-              </h2>
-              <p className="footer-newsletter-desc">
-                Receive invitations to private salon previews, new editions, and styling consultations — straight to your inbox.
-              </p>
-            </div>
-
-            {/* Input & Form side */}
-            <div className="footer-newsletter-form-wrapper">
-              {isSubmitted ? (
-                <div className="footer-newsletter-success">
-                  <CheckCircle2 size={20} style={{ color: 'var(--color-golden-500)', flexShrink: 0 }} />
-                  <span style={{ fontSize: '0.86rem', color: 'var(--color-diamond)', lineHeight: 1.5 }}>
-                    Your email ({email}) is inscribed. We honor your privacy with email-only correspondence.
-                  </span>
-                </div>
-              ) : (
-                <form onSubmit={handleSubscribe} className="footer-newsletter-form">
-                  <div className="footer-input-wrapper">
-                    <Mail size={17} className="mail-icon" style={{ color: 'var(--color-diamond)', opacity: 0.65, marginRight: '10px', flexShrink: 0 }} />
-                    <input
-                      type="email"
-                      required
-                      placeholder="Enter your email..."
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      aria-label="Email address for private ledger"
-                      className="footer-newsletter-input"
-                    />
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="footer-inscribe-btn"
-                    >
-                      {isLoading ? 'Inscribing...' : 'Inscribe'}
-                    </button>
-                  </div>
-                  <span className="footer-privacy-note">
-                    Strictly confidential. No SMS or promotional push alerts.
-                  </span>
-                </form>
-              )}
-            </div>
-          </div>
-        </section>
-
-        {/* ================================================================= */}
-        {/* 2. MOBILE-SPECIFIC CENTERED BRAND HEADER (Option 1)              */}
-        {/* ================================================================= */}
-        <div className="mobile-only footer-mobile-brand-header">
-          <Link href="/" className="footer-mobile-brand-link">
-            <span className="footer-mobile-brand-title">{BRAND_NAME}</span>
-          </Link>
-          <span className="footer-mobile-brand-tagline">{BRAND_TAGLINE}</span>
-        </div>
-
-        {/* ================================================================= */}
-        {/* 3. MOBILE-SPECIFIC 2-COLUMN NAVIGATION GRID (Option 1)           */}
-        {/* ================================================================= */}
-        <div className="mobile-only footer-mobile-columns-wrapper">
-          <div className="footer-mobile-two-col-grid">
-            {/* Column 1 — Customer Support */}
-            <div className="footer-mobile-nav-column">
-              <h3 className="footer-column-heading footer-underlined-heading">
-                Customer Support
-              </h3>
-              <ul className="footer-links-list">
-                <li>
-                  <Link href="/faq" className="footer-link">
-                    Help Centre & FAQs
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/faq?category=shipping-delivery" className="footer-link">
-                    Shipping & Delivery
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/faq?category=returns-exchanges" className="footer-link">
-                    Return & Refund Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/account/support?tab=concierge" className="footer-link">
-                    Bespoke Concierge Desk
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/account/orders/tracking" className="footer-link">
-                    Track Your Order
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 2 — The House / Quick Navigation */}
-            <div className="footer-mobile-nav-column">
-              <h3 className="footer-column-heading footer-underlined-heading">
-                The House
-              </h3>
-              <ul className="footer-links-list">
-                <li>
-                  <Link href="/" className="footer-link">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/shop" className="footer-link">
-                    Collections
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/shop?categorySlug=tailoring" className="footer-link">
-                    Bespoke Tailoring
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/shop?categorySlug=eveningwear" className="footer-link">
-                    Silk Eveningwear
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about" className="footer-link">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/#house-philosophy" className="footer-link">
-                    House Philosophy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Centered Connect With Us & Social Icons Bar (Option 1) */}
-          <div className="footer-mobile-connect-section">
-            <h3 className="footer-column-heading footer-underlined-heading footer-center-heading">
-              Connect With Us
-            </h3>
-            <div className="footer-mobile-contact-list">
-              <a href="mailto:concierge@aurelia-atelier.com" className="footer-contact-link">
-                Email: concierge@aurelia-atelier.com
-              </a>
-              <a href="tel:+919800011223" className="footer-contact-link">
-                Phone: +91 98000 11223
-              </a>
-              <span className="footer-contact-text">
-                Location: Penthouse 9, UB City, Bengaluru, India
-              </span>
-            </div>
-
-            {/* Circular Social Icons matching reference image */}
-            <div className="footer-social-icons-row" role="navigation" aria-label="Social media channels">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Aurelia on Facebook" className="footer-social-circle">
-                <SocialIcons.Facebook />
-              </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="Aurelia on YouTube" className="footer-social-circle">
-                <SocialIcons.YouTube />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Aurelia on Instagram" className="footer-social-circle">
-                <SocialIcons.Instagram />
-              </a>
-              <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" aria-label="Aurelia on Telegram" className="footer-social-circle">
-                <SocialIcons.Telegram />
-              </a>
-              <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" aria-label="Aurelia on WhatsApp" className="footer-social-circle">
-                <SocialIcons.WhatsApp />
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* ================================================================= */}
-        {/* 4. DESKTOP-SPECIFIC 4-COLUMN CONTENT GRID                         */}
-        {/* ================================================================= */}
-        <div className="desktop-only footer-columns-grid">
-          {/* COLUMN 1 — AURELIA BRAND & OPERATIONS */}
-          <div className="footer-col-brand">
-            <Link
-              href="/"
-              style={{
-                display: 'inline-block',
-                textDecoration: 'none',
-                color: 'inherit',
-                marginBottom: '4px',
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: '1.9rem',
-                  letterSpacing: '0.22em',
-                  fontWeight: 600,
-                  color: 'var(--color-diamond)',
-                  textTransform: 'uppercase',
-                  display: 'block',
-                }}
-              >
-                {BRAND_NAME}
-              </span>
+        <div className="footer-top-strip desktop-only">
+          <span className="footer-top-eyebrow">Discover the Atelier</span>
+          <nav className="footer-top-nav" aria-label="Atelier Highlights">
+            <Link href="/shop?categorySlug=tailoring" className="footer-top-link">
+              Ready-to-Wear
             </Link>
+            <Link href="/shop?categorySlug=eveningwear" className="footer-top-link">
+              Haute Couture Silks
+            </Link>
+            <Link href="/about" className="footer-top-link">
+              Atelier Chronicle
+            </Link>
+            <Link href="/new-arrivals" className="footer-top-link">
+              New Editions
+            </Link>
+          </nav>
+        </div>
 
-            <span
-              style={{
-                display: 'block',
-                fontSize: '0.78rem',
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                color: 'var(--color-icy-lake)',
-                fontWeight: 500,
-                marginBottom: '16px',
-              }}
-            >
-              {BRAND_TAGLINE}
-            </span>
-
-            <p
-              style={{
-                fontSize: '0.86rem',
-                color: 'rgba(255, 255, 255, 0.7)',
-                lineHeight: 1.7,
-                marginBottom: '14px',
-              }}
-            >
-              {BRAND_TAGLINE}. Crafted between Milan, Tuscany, and Paris with traceable European materials and enduring silhouette integrity.
+        {/* ================================================================= */}
+        {/* 2. DESKTOP 3-COLUMN EDITORIAL GRID (>= 768px)                     */}
+        {/* ================================================================= */}
+        <div className="footer-editorial-grid desktop-only">
+          {/* COLUMN 1: Newsletter & Atelier Address */}
+          <div className="footer-grid-col footer-col-newsletter">
+            <h2 className="footer-col-heading">THE PRIVATE LEDGER</h2>
+            <p className="footer-col-description">
+              Receive private salon invitations, new collection releases, and bespoke atelier updates directly to your inbox.
             </p>
 
-            {/* Desktop Social Icons */}
-            <div className="footer-social-icons-row desktop-socials" style={{ marginBottom: '20px' }}>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Aurelia on Facebook" className="footer-social-circle">
-                <SocialIcons.Facebook />
-              </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="Aurelia on YouTube" className="footer-social-circle">
-                <SocialIcons.YouTube />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Aurelia on Instagram" className="footer-social-circle">
-                <SocialIcons.Instagram />
-              </a>
-              <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" aria-label="Aurelia on Telegram" className="footer-social-circle">
-                <SocialIcons.Telegram />
-              </a>
-              <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" aria-label="Aurelia on WhatsApp" className="footer-social-circle">
-                <SocialIcons.WhatsApp />
-              </a>
-            </div>
-
-            {/* Atelier Headquarters & Concierge Inquiries */}
-            <div
-              style={{
-                paddingTop: '16px',
-                borderTop: '1px solid var(--overlay-white-10, rgba(255, 255, 255, 0.1))',
-                fontSize: '0.78rem',
-                color: 'rgba(255, 255, 255, 0.7)',
-                lineHeight: 1.65,
-              }}
-            >
-              <div style={{ color: 'var(--color-golden, var(--brand-accent))', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '2px' }}>
-                Atelier Operations
+            {isSubmitted ? (
+              <div className="footer-newsletter-success">
+                <Check size={16} className="footer-success-icon" />
+                <span>You have been inscribed into the private ledger.</span>
               </div>
-              <div>Penthouse 9, UB City, Bengaluru, Karnataka, 560001, India</div>
-              <div>Direct: +91 98000 11223</div>
+            ) : (
+              <form onSubmit={handleSubscribe} className="footer-newsletter-form">
+                <div className="footer-underline-input-wrapper">
+                  <input
+                    type="email"
+                    required
+                    placeholder="Enter e-mail"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    aria-label="Email address for private ledger"
+                    className="footer-underline-input"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    aria-label="Subscribe to newsletter"
+                    className="footer-submit-arrow-btn"
+                  >
+                    <ChevronRight size={17} strokeWidth={1.5} />
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* Atelier Address & Flagship Location */}
+            <div className="footer-address-block">
+              <span className="footer-address-title">Flagship Atelier &amp; Salons</span>
+              <p className="footer-address-text">
+                Penthouse 9, UB City, Vittal Mallya Road<br />
+                Bengaluru, Karnataka 560001, India
+              </p>
+              <div className="footer-address-contact">
+                <a href="tel:+919800011223" className="footer-contact-link">
+                  +91 98000 11223
+                </a>
+                <span className="footer-contact-divider" aria-hidden="true">·</span>
+                <a href="mailto:concierge@aurelia-atelier.com" className="footer-contact-link">
+                  concierge@aurelia-atelier.com
+                </a>
+              </div>
             </div>
           </div>
 
-          {/* COLUMN 2 — COLLECTIONS */}
-          <div className="footer-nav-col">
-            <h3 className="footer-column-heading">Collections</h3>
-            <ul className="footer-links-list">
+          {/* COLUMN 2: The House & Heritage */}
+          <div className="footer-grid-col footer-col-links">
+            <span className="footer-nav-heading">The House</span>
+            <ul className="footer-nav-list">
               <li>
-                <Link href="/shop?categorySlug=outerwear" className="footer-link">
-                  Outerwear & Coats
+                <Link href="/about" className="footer-nav-link">
+                  The House Story
                 </Link>
               </li>
               <li>
-                <Link href="/shop?categorySlug=tailoring" className="footer-link">
-                  Bespoke Tailoring
+                <Link href="/about#craftsmanship" className="footer-nav-link">
+                  Artisanal Craftsmanship
                 </Link>
               </li>
               <li>
-                <Link href="/shop?categorySlug=eveningwear" className="footer-link">
-                  Silk Eveningwear
+                <Link href="/faq?category=garment-care" className="footer-nav-link">
+                  Material &amp; Archive Care
                 </Link>
               </li>
               <li>
-                <Link href="/shop?categorySlug=knitwear" className="footer-link">
-                  Cashmere Knitwear
+                <Link href="/about#boutiques" className="footer-nav-link">
+                  Private Salons
                 </Link>
               </li>
               <li>
-                <Link href="/shop?categorySlug=leather-goods" className="footer-link">
-                  Hand-Finished Leather Goods
+                <Link href="/about#press" className="footer-nav-link">
+                  Editorial &amp; Press
                 </Link>
               </li>
-              <li>
-                <Link href="/shop?categorySlug=footwear" className="footer-link">
-                  Florentine Footwear
-                </Link>
-              </li>
-              <li>
-                <Link href="/shop?categorySlug=fine-jewelry" className="footer-link">
-                  Sculptural Fine Jewelry
-                </Link>
-              </li>
-              <li>
-                <Link href="/shop?categorySlug=fragrances" className="footer-link">
-                  Artisanal Fragrances
-                </Link>
-              </li>
+
             </ul>
           </div>
 
-          {/* COLUMN 3 — CLIENT CONCIERGE */}
-          <div className="footer-nav-col">
-            <h3 className="footer-column-heading">Client Concierge</h3>
-            <ul className="footer-links-list">
+          {/* COLUMN 3: Client Concierge & Customer Care */}
+          <div className="footer-grid-col footer-col-links">
+            <span className="footer-nav-heading">Customer Care</span>
+            <ul className="footer-nav-list">
               <li>
-                <Link href="/account" className="footer-link">
-                  Private Client Account
+                <Link href="/account/support" className="footer-nav-link">
+                  Client Concierge Desk
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="footer-link">
-                  Help Centre & FAQs
+                <Link href="/faq" className="footer-nav-link">
+                  Help Centre &amp; FAQs
                 </Link>
               </li>
               <li>
-                <Link href="/account/support" className="footer-link">
-                  Bespoke Inquiries & Support
+                <Link href="/faq?category=shipping-delivery" className="footer-nav-link">
+                  White-Glove Shipping
                 </Link>
               </li>
               <li>
-                <Link href="/offers" className="footer-link">
-                  Seasonal Privileges
+                <Link href="/faq?category=returns-exchanges" className="footer-nav-link">
+                  Return &amp; Refund Policy
                 </Link>
               </li>
               <li>
-                <Link href="/cart" className="footer-link">
-                  Shopping Bag
-                </Link>
-              </li>
-              <li>
-                <Link href="/account/orders" className="footer-link">
-                  Order History
-                </Link>
-              </li>
-              <li>
-                <Link href="/account/orders/tracking" className="footer-link">
+                <Link href="/account/orders/tracking" className="footer-nav-link">
                   Track Consignment
                 </Link>
               </li>
-            </ul>
-          </div>
-
-          {/* COLUMN 4 — THE HOUSE */}
-          <div className="footer-nav-col">
-            <h3 className="footer-column-heading">The House</h3>
-            <ul className="footer-links-list">
               <li>
-                <Link href="/about" className="footer-link">
-                  About Us & Journey
+                <Link href="/faq?category=payments-privilege" className="footer-nav-link">
+                  Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/#house-philosophy" className="footer-link">
-                  The House Philosophy
-                </Link>
-              </li>
-              <li>
-                <Link href="/#new-arrivals" className="footer-link">
-                  New Arrivals
-                </Link>
-              </li>
-              <li>
-                <Link href="/#signature-icons" className="footer-link">
-                  Signature Icons
-                </Link>
-              </li>
-              <li>
-                <Link href="/#house-favorites" className="footer-link">
-                  House Favorites
+                <Link href="/faq?category=payments-privilege" className="footer-nav-link">
+                  Terms of Service
                 </Link>
               </li>
             </ul>
-
-              {/* Non-linked editorial hallmarks */}
-              <div
-                style={{
-                  marginTop: '18px',
-                  paddingTop: '16px',
-                  borderTop: '1px solid var(--overlay-white-10, rgba(255, 255, 255, 0.1))',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                  fontSize: '0.78rem',
-                  color: 'rgba(255, 255, 255, 0.6)',
-                  lineHeight: 1.6,
-                }}
-              >
-                <span>Crafted between Milan, Tuscany, and Paris.</span>
-                <span>Traceable European materials.</span>
-                <span>Timeless heirloom construction.</span>
-              </div>
           </div>
         </div>
 
         {/* ================================================================= */}
-        {/* 5. BOTTOM COPYRIGHT BAR                                           */}
+        {/* 3. MOBILE EDITORIAL VIEW (< 768px)                                */}
         {/* ================================================================= */}
-        <div className="footer-bottom-bar">
-          <div className="footer-bottom-copy">
-            © 2026 {BRAND_NAME} Atelier. All rights reserved.
+        <div className="footer-mobile-view mobile-only">
+          {/* Section A: Newsletter / Mailing list */}
+          <div className="footer-mobile-newsletter">
+            <h2 className="footer-mobile-heading">THE PRIVATE LEDGER</h2>
+            <p className="footer-mobile-description">
+              Receive private salon invitations, new collection releases, and bespoke atelier updates directly to your inbox.
+            </p>
+
+            {isSubmitted ? (
+              <div className="footer-newsletter-success">
+                <Check size={16} className="footer-success-icon" />
+                <span>You have been inscribed into the private ledger.</span>
+              </div>
+            ) : (
+              <form onSubmit={handleSubscribe} className="footer-newsletter-form">
+                <div className="footer-underline-input-wrapper">
+                  <input
+                    type="email"
+                    required
+                    placeholder="Enter e-mail"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    aria-label="Email address for private ledger"
+                    className="footer-underline-input"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    aria-label="Subscribe to newsletter"
+                    className="footer-submit-arrow-btn"
+                  >
+                    <ChevronRight size={17} strokeWidth={1.5} />
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
-          <div className="footer-bottom-meta">
-            <span>Prices in Indian Rupees (INR ₹)</span>
-            <span aria-hidden="true" className="footer-meta-dot">·</span>
-            <span>Complimentary Insured Courier</span>
+
+          {/* Section B: Collapsible Accordions matching mobile screenshot */}
+          <div className="footer-mobile-accordions">
+            {/* Accordion 1: THE HOUSE */}
+            <div className="footer-accordion-item">
+              <button
+                type="button"
+                className="footer-accordion-trigger"
+                onClick={() => setIsHouseOpen((prev) => !prev)}
+                aria-expanded={isHouseOpen}
+                aria-controls="footer-house-links"
+              >
+                <span className="footer-accordion-title">THE HOUSE &amp; ATELIER</span>
+                <ChevronDown
+                  size={16}
+                  strokeWidth={1.5}
+                  className={`footer-accordion-icon ${isHouseOpen ? 'is-open' : ''}`}
+                />
+              </button>
+              {isHouseOpen && (
+                <div id="footer-house-links" className="footer-accordion-content">
+                  <ul className="footer-mobile-nav-list">
+                    <li>
+                      <Link href="/about" className="footer-mobile-nav-link">
+                        The House Story
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/about#craftsmanship" className="footer-mobile-nav-link">
+                        Artisanal Craftsmanship
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/faq?category=garment-care" className="footer-mobile-nav-link">
+                        Material &amp; Archive Care
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/about#boutiques" className="footer-mobile-nav-link">
+                        Private Salons
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/about#press" className="footer-mobile-nav-link">
+                        Editorial &amp; Press
+                      </Link>
+                    </li>
+
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Accordion 2: CLIENT CARE */}
+            <div className="footer-accordion-item">
+              <button
+                type="button"
+                className="footer-accordion-trigger"
+                onClick={() => setIsClientCareOpen((prev) => !prev)}
+                aria-expanded={isClientCareOpen}
+                aria-controls="footer-client-care-links"
+              >
+                <span className="footer-accordion-title">CUSTOMER CARE</span>
+                <ChevronDown
+                  size={16}
+                  strokeWidth={1.5}
+                  className={`footer-accordion-icon ${isClientCareOpen ? 'is-open' : ''}`}
+                />
+              </button>
+              {isClientCareOpen && (
+                <div id="footer-client-care-links" className="footer-accordion-content">
+                  <ul className="footer-mobile-nav-list">
+                    <li>
+                      <Link href="/account/support" className="footer-mobile-nav-link">
+                        Client Concierge Desk
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/faq" className="footer-mobile-nav-link">
+                        Help Centre &amp; FAQs
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/faq?category=shipping-delivery" className="footer-mobile-nav-link">
+                        White-Glove Shipping
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/faq?category=returns-exchanges" className="footer-mobile-nav-link">
+                        Return &amp; Refund Policy
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/account/orders/tracking" className="footer-mobile-nav-link">
+                        Track Consignment
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/faq?category=payments-privilege" className="footer-mobile-nav-link">
+                        Privacy Policy
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/faq?category=payments-privilege" className="footer-mobile-nav-link">
+                        Terms of Service
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="mobile-only footer-mobile-hallmark">
-            Made with meticulous care for discerning patrons.
+
+          {/* Section C: Mobile Flagship Address Block */}
+          <div className="footer-mobile-address-block">
+            <span className="footer-address-title">Flagship Atelier &amp; Salons</span>
+            <p className="footer-address-text">
+              Penthouse 9, UB City, Vittal Mallya Road<br />
+              Bengaluru, Karnataka 560001, India
+            </p>
+            <div className="footer-address-contact">
+              <a href="tel:+919800011223" className="footer-contact-link">
+                +91 98000 11223
+              </a>
+              <span className="footer-contact-divider" aria-hidden="true">·</span>
+              <a href="mailto:concierge@aurelia-atelier.com" className="footer-contact-link">
+                concierge@aurelia-atelier.com
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* ================================================================= */}
+        {/* 4. MASSIVE BOTTOM BRAND WORDMARK (ALMADA STYLE -> AURELIA)         */}
+        {/* ================================================================= */}
+        <div className="footer-brand-stage" aria-label={`${BRAND_NAME} Brandmark`}>
+          <Link href="/" className="footer-brand-anchor">
+            <div className="footer-brand-letters">
+              <span>A</span>
+              <span>U</span>
+              <span>R</span>
+              <span>E</span>
+              <span>L</span>
+              <span>I</span>
+              <span>A</span>
+            </div>
+          </Link>
+          <div className="footer-bottom-copyright">
+            © 2026 {BRAND_NAME} ATELIER
           </div>
         </div>
       </div>
 
-      {/* Styled JSX for Responsive Layout, Links & Hover States */}
+      {/* Styled JSX matching the minimalist editorial design */}
       <style jsx>{`
-        @keyframes mailShake {
-          0% { transform: translateY(0) rotate(0deg); }
-          25% { transform: translateY(-3px) rotate(-6deg); }
-          50% { transform: translateY(-3px) rotate(6deg); }
-          75% { transform: translateY(-3px) rotate(-3deg); }
-          100% { transform: translateY(-3px) rotate(0deg); }
+        .almada-editorial-footer {
+          background-color: #ffffff;
+          color: #141414;
+          border-top: 1px solid #eaeaea;
+          margin-top: auto;
+          position: relative;
+          z-index: 10;
+          padding-top: clamp(40px, 6vw, 76px);
+          padding-bottom: clamp(24px, 4vw, 36px);
+          overflow: hidden;
         }
 
-        :global(.mail-icon) {
-          cursor: pointer;
+        .footer-content-wrap {
+          padding-left: max(20px, env(safe-area-inset-left, 0px));
+          padding-right: max(20px, env(safe-area-inset-right, 0px));
+          max-width: 1360px;
+          margin-left: auto;
+          margin-right: auto;
         }
 
-        :global(.mail-icon:hover) {
-          animation: mailShake 0.4s ease-in-out forwards;
-        }
-
-        .footer-inner-container {
-          padding-left: max(24px, env(safe-area-inset-left, 0px));
-          padding-right: max(24px, env(safe-area-inset-right, 0px));
-        }
-
-        /* Newsletter Section */
-        .footer-newsletter-section {
-          padding-top: 64px;
-          padding-bottom: 56px;
-          border-bottom: 1px solid var(--overlay-white-10, rgba(255, 255, 255, 0.1));
-        }
-
-        .footer-newsletter-grid {
-          display: grid;
-          grid-template-columns: 1.25fr 0.75fr;
-          gap: 48px;
-          align-items: center;
-        }
-
-        .footer-newsletter-copy {
-          max-width: 560px;
-        }
-
-        .footer-newsletter-badge {
-          font-family: var(--font-accent);
-          font-size: 0.72rem;
-          font-weight: 600;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: var(--color-icy-lake);
+        /* Responsive Visibility Switches */
+        .desktop-only {
           display: block;
-          margin-bottom: 8px;
         }
 
-        .footer-newsletter-title {
-          font-family: var(--font-display);
-          font-size: clamp(1.75rem, 3vw, 2.3rem);
-          font-weight: 500;
-          letter-spacing: -0.01em;
-          color: var(--color-diamond);
-          margin-bottom: 10px;
+        .mobile-only {
+          display: none;
+        }
+
+        @media (max-width: 767px) {
+          .desktop-only {
+            display: none !important;
+          }
+          .mobile-only {
+            display: block !important;
+          }
+        }
+
+        /* 1. TOP STRIP (DESKTOP) */
+        .footer-top-strip {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          margin-bottom: clamp(40px, 5.5vw, 68px);
+        }
+
+        .footer-top-eyebrow {
+          font-family: var(--font-display, 'Cormorant Garamond', Garamond, serif);
+          font-style: italic;
+          font-size: 1.18rem;
+          color: #141414;
+          letter-spacing: 0.01em;
           line-height: 1.2;
         }
 
-        .footer-newsletter-desc {
-          font-size: 0.88rem;
-          color: rgba(255, 255, 255, 0.7);
-          line-height: 1.65;
-        }
-
-        .footer-newsletter-form-wrapper {
-          width: 100%;
-          max-width: 480px;
-          justify-self: end;
-        }
-
-        .footer-newsletter-success {
-          padding: 16px 20px;
-          background-color: rgba(255, 255, 255, 0.08);
-          backdrop-filter: blur(8px);
-          border-radius: var(--radius-sm, 8px);
-          border: 1px solid var(--color-golden-300);
+        .footer-top-nav {
           display: flex;
+          flex-wrap: wrap;
           align-items: center;
-          gap: 12px;
-          word-break: break-word;
-          overflow-wrap: anywhere;
+          column-gap: clamp(24px, 4vw, 48px);
+          row-gap: 12px;
         }
 
-        .footer-newsletter-form {
+        .footer-top-link {
+          font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+          font-size: 0.95rem;
+          font-weight: 400;
+          color: #141414;
+          text-decoration: none;
+          letter-spacing: 0.01em;
+          transition: color 180ms ease, opacity 180ms ease;
+        }
+
+        .footer-top-link:hover {
+          color: #666666;
+          text-decoration: underline;
+          text-underline-offset: 4px;
+        }
+
+        /* 2. MAIN 3-COLUMN GRID (DESKTOP) */
+        .footer-editorial-grid {
+          display: grid;
+          grid-template-columns: 1.4fr 1fr 1fr;
+          gap: clamp(32px, 5vw, 72px);
+          align-items: flex-start;
+          margin-bottom: clamp(48px, 7vw, 92px);
+        }
+
+        .footer-grid-col {
           display: flex;
           flex-direction: column;
-          gap: 10px;
         }
 
-        .footer-input-wrapper {
+        .footer-col-newsletter {
+          max-width: 440px;
+        }
+
+        .footer-col-heading {
+          font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+          font-size: 0.8rem;
+          font-weight: 600;
+          letter-spacing: 0.09em;
+          text-transform: uppercase;
+          color: #141414;
+          margin: 0 0 12px 0;
+          line-height: 1.3;
+        }
+
+        .footer-col-description {
+          font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+          font-size: 0.84rem;
+          color: #666666;
+          line-height: 1.6;
+          margin: 0 0 24px 0;
+        }
+
+        .footer-underline-input-wrapper {
           display: flex;
           align-items: center;
-          background-color: rgba(255, 255, 255, 0.07);
-          border-radius: var(--radius-pill, 999px);
-          padding: 5px 6px 5px 18px;
-          min-height: 52px;
-          box-sizing: border-box;
-          border: 1px solid var(--overlay-white-10, rgba(255, 255, 255, 0.12));
-          transition: border-color 200ms ease, box-shadow 200ms ease;
+          border-bottom: 1px solid #141414;
+          padding-bottom: 8px;
+          position: relative;
+          transition: border-color 200ms ease;
         }
 
-        .footer-input-wrapper:focus-within {
-          border-color: var(--color-golden, var(--brand-accent)) !important;
-          box-shadow: 0 0 0 1px var(--color-golden, var(--brand-accent));
+        .footer-underline-input-wrapper:focus-within {
+          border-bottom-width: 1.5px;
         }
 
-        .footer-newsletter-input {
+        .footer-underline-input {
           flex: 1;
           background: transparent;
           border: none;
           outline: none;
-          color: var(--color-diamond);
-          font-size: 1rem;
-          min-height: 44px;
+          font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+          font-size: 0.92rem;
+          color: #141414;
+          padding: 0 8px 0 0;
           min-width: 0;
         }
 
-        .footer-newsletter-input::placeholder {
-          color: rgba(255, 255, 255, 0.45);
+        .footer-underline-input::placeholder {
+          color: #8c8c8c;
+          font-weight: 300;
         }
 
-        .footer-inscribe-btn {
-          flex-shrink: 0;
-          background-color: var(--color-diamond);
-          color: var(--color-black-tie);
-          font-size: 0.82rem;
-          font-weight: 600;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          min-height: 44px;
-          padding: 0 22px;
-          box-sizing: border-box;
+        .footer-submit-arrow-btn {
+          background: transparent;
+          border: none;
+          padding: 0 2px;
+          cursor: pointer;
+          color: #141414;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          border-radius: var(--radius-pill, 999px);
-          border: none;
-          cursor: pointer;
-          white-space: nowrap;
-          transition: background-color 200ms ease, color 200ms ease, transform 150ms ease;
+          transition: transform 180ms ease, opacity 180ms ease;
         }
 
-        .footer-inscribe-btn:hover:not(:disabled) {
-          background-color: var(--color-golden, var(--brand-accent)) !important;
-          color: var(--color-black-tie) !important;
-          transform: translateY(-1px);
+        .footer-submit-arrow-btn:hover:not(:disabled) {
+          transform: translateX(4px);
+          opacity: 0.7;
         }
 
-        .footer-inscribe-btn:focus-visible {
-          outline: 2px solid var(--color-golden);
+        .footer-newsletter-success {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.82rem;
+          color: #141414;
+          padding-top: 4px;
+        }
+
+        .footer-success-icon {
+          color: #1e6f5c;
+          flex-shrink: 0;
+        }
+
+        /* Atelier Address Block (Desktop) */
+        .footer-address-block {
+          margin-top: 36px;
+          padding-top: 24px;
+          border-top: 1px solid #eeeeee;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .footer-address-title {
+          font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+          font-size: 0.76rem;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: #141414;
+        }
+
+        .footer-address-text {
+          font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+          font-size: 0.83rem;
+          color: #666666;
+          line-height: 1.55;
+          margin: 0;
+        }
+
+        .footer-address-contact {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.82rem;
+          margin-top: 2px;
+        }
+
+        .footer-contact-link {
+          color: #141414;
+          text-decoration: none;
+          transition: color 180ms ease;
+        }
+
+        .footer-contact-link:hover {
+          color: #666666;
+          text-decoration: underline;
+          text-underline-offset: 3px;
+        }
+
+        .footer-contact-divider {
+          color: #999999;
+        }
+
+        /* Links Headings (Desktop) */
+        .footer-nav-heading {
+          font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+          font-size: 0.8rem;
+          font-weight: 600;
+          letter-spacing: 0.09em;
+          text-transform: uppercase;
+          color: #141414;
+          margin-bottom: 14px;
+          display: block;
+        }
+
+        /* Links (Desktop) */
+        .footer-nav-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 13px;
+        }
+
+        .footer-nav-link {
+          font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+          font-size: 0.88rem;
+          font-weight: 400;
+          color: #141414;
+          text-decoration: none;
+          display: inline-block;
+          transition: color 180ms ease, opacity 180ms ease;
+        }
+
+        .footer-nav-link:hover {
+          color: #666666;
+        }
+
+        .footer-nav-link:focus-visible {
+          outline: 1px dashed #141414;
           outline-offset: 2px;
         }
 
-        .footer-privacy-note {
-          font-size: 0.74rem;
-          color: rgba(255, 255, 255, 0.55);
-          padding-left: 14px;
+        /* ================================================================= */
+        /* 3. MOBILE VIEW SPECIFIC STYLES                                    */
+        /* ================================================================= */
+        .footer-mobile-view {
+          margin-bottom: 40px;
         }
 
-        /* Headings & Links */
-        .footer-column-heading {
-          font-size: 0.8rem;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: var(--color-diamond);
+        .footer-mobile-newsletter {
+          margin-bottom: 32px;
+        }
+
+        .footer-mobile-heading {
+          font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+          font-size: 0.84rem;
           font-weight: 600;
-          margin-bottom: 20px;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: #141414;
+          margin: 0 0 10px 0;
         }
 
-        .footer-underlined-heading {
-          text-decoration: underline;
-          text-underline-offset: 6px;
-          text-decoration-thickness: 1px;
-          text-decoration-color: rgba(255, 255, 255, 0.3);
+        .footer-mobile-description {
+          font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+          font-size: 0.85rem;
+          color: #555555;
+          line-height: 1.55;
+          margin: 0 0 22px 0;
         }
 
-        .footer-center-heading {
-          text-align: center;
+        /* Mobile Accordions */
+        .footer-mobile-accordions {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
         }
 
-        .footer-links-list {
+        .footer-accordion-item {
+          border-bottom: 1px solid transparent;
+        }
+
+        .footer-accordion-trigger {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: transparent;
+          border: none;
+          padding: 14px 0;
+          cursor: pointer;
+          text-align: left;
+        }
+
+        .footer-accordion-title {
+          font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+          font-size: 0.84rem;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: #141414;
+        }
+
+        .footer-accordion-icon {
+          color: #141414;
+          transition: transform 220ms ease;
+          flex-shrink: 0;
+        }
+
+        .footer-accordion-icon.is-open {
+          transform: rotate(180deg);
+        }
+
+        .footer-accordion-content {
+          padding-bottom: 16px;
+          animation: accordionFade 200ms ease;
+        }
+
+        @keyframes accordionFade {
+          from {
+            opacity: 0;
+            transform: translateY(-4px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .footer-mobile-nav-list {
           list-style: none;
           padding: 0;
           margin: 0;
@@ -703,454 +757,88 @@ export const Footer: React.FC = () => {
           gap: 12px;
         }
 
-        .footer-link {
+        .footer-mobile-nav-link {
+          font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
           font-size: 0.88rem;
-          color: rgba(255, 255, 255, 0.72);
+          color: #555555;
           text-decoration: none;
-          display: inline-flex;
-          align-items: center;
-          min-height: 36px;
-          transition: color 200ms ease, transform 150ms ease;
+          display: inline-block;
+          padding: 2px 0;
+          transition: color 180ms ease;
         }
 
-        .footer-link:hover {
-          color: var(--color-diamond);
-          font-weight: 500;
-          transform: translateX(3px);
+        .footer-mobile-nav-link:hover {
+          color: #141414;
         }
 
-        .footer-link:focus-visible {
-          outline: 2px solid var(--color-golden, var(--brand-accent));
-          outline-offset: 4px;
-          border-radius: 2px;
-        }
-
-        /* Social Icons - Circular White Buttons matching reference */
-        .footer-social-icons-row {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-
-        .footer-social-circle {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          width: 44px;
-          height: 44px;
-          min-width: 44px;
-          min-height: 44px;
-          border-radius: 50%;
-          background-color: var(--color-diamond);
-          color: var(--color-black-tie);
-          text-decoration: none;
-          transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
-          flex-shrink: 0;
-        }
-
-        .footer-social-circle:hover {
-          transform: translateY(-2px) scale(1.06);
-          background-color: var(--color-golden-200);
-          box-shadow: 0 4px 12px rgba(255, 255, 255, 0.25);
-        }
-
-        .footer-social-circle:focus-visible {
-          outline: 2px solid var(--color-golden);
-          outline-offset: 2px;
-        }
-
-        /* Desktop Grid (>= 1024px) */
-        .footer-col-brand {
-          max-width: 360px;
-        }
-
-        .footer-columns-grid {
-          padding-top: 64px;
-          padding-bottom: 56px;
-          display: grid;
-          grid-template-columns: 1.35fr 1fr 1fr 1fr;
-          gap: 48px;
-        }
-
-        /* Bottom Copyright Bar */
-        .footer-bottom-bar {
-          border-top: 1px solid var(--overlay-white-10, rgba(255, 255, 255, 0.1));
+        /* Mobile Address Block */
+        .footer-mobile-address-block {
+          margin-top: 32px;
           padding-top: 24px;
-          padding-bottom: 32px;
+          border-top: 1px solid #eeeeee;
           display: flex;
-          flex-wrap: wrap;
-          align-items: center;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        /* ================================================================= */
+        /* 4. MASSIVE BOTTOM BRAND STAGE                                     */
+        /* ================================================================= */
+        .footer-brand-stage {
+          width: 100%;
+          margin-top: 24px;
+        }
+
+        .footer-brand-anchor {
+          display: block;
+          text-decoration: none;
+          color: #141414;
+          width: 100%;
+          user-select: none;
+        }
+
+        .footer-brand-letters {
+          display: flex;
           justify-content: space-between;
-          gap: 16px;
-          font-size: 0.8rem;
-          color: rgba(255, 255, 255, 0.6);
+          align-items: baseline;
+          width: 100%;
+          font-family: var(--font-display, 'Cormorant Garamond', Garamond, Didot, serif);
+          font-size: clamp(3.2rem, 15.6vw, 15.8rem);
+          font-weight: 350;
+          line-height: 0.82;
+          letter-spacing: -0.01em;
+          color: #141414;
+          transform: scaleY(1.04);
+          transition: opacity 250ms ease;
         }
 
-        .footer-bottom-meta {
-          display: flex;
-          flex-wrap: wrap;
-          align-items: center;
-          gap: 16px;
+        .footer-brand-letters span {
+          display: inline-block;
+          text-align: center;
         }
 
-        .footer-meta-dot {
-          color: rgba(255, 255, 255, 0.3);
+        .footer-brand-anchor:hover .footer-brand-letters {
+          opacity: 0.85;
         }
 
-        /* Responsive visibility defaults */
-        .mobile-only {
-          display: none;
+        .footer-bottom-copyright {
+          font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+          font-size: 0.68rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: #767676;
+          margin-top: 14px;
         }
 
-        .desktop-only {
-          display: grid;
-        }
-
-        /* =============================================================== */
-        /* TABLET OPTIMIZATIONS (768px - 1023px)                           */
-        /* =============================================================== */
-        @media (min-width: 768px) and (max-width: 1023px) {
-          .footer-newsletter-section {
-            padding-top: 48px;
-            padding-bottom: 40px;
-          }
-
-          .footer-newsletter-grid {
-            grid-template-columns: 1fr;
-            gap: 24px;
-          }
-
-          .footer-newsletter-copy {
-            max-width: 100%;
-          }
-
-          .footer-newsletter-desc {
-            max-width: 560px;
-          }
-
-          .footer-newsletter-form-wrapper {
-            max-width: 500px;
-            justify-self: start;
-          }
-
-          .footer-columns-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 44px 36px;
-            padding-top: 48px;
-            padding-bottom: 44px;
-          }
-
-          .footer-col-brand {
-            max-width: 100%;
-          }
-
-          .footer-bottom-bar {
-            justify-content: space-between;
-            gap: 16px;
-            padding-top: 20px;
-            padding-bottom: 28px;
-            font-size: 0.78rem;
-          }
-
-          .footer-bottom-meta {
-            gap: 12px;
-          }
-        }
-
-        /* =============================================================== */
-        /* MOBILE OPTIMIZATIONS (<768px)                                   */
-        /* =============================================================== */
         @media (max-width: 767px) {
-          .mobile-only {
-            display: block;
+          .footer-brand-letters {
+            font-size: clamp(2.4rem, 15.2vw, 4.8rem);
+            line-height: 0.9;
           }
 
-          .desktop-only {
-            display: none !important;
-          }
-
-          .footer-inner-container {
-            padding-left: max(16px, env(safe-area-inset-left, 0px));
-            padding-right: max(16px, env(safe-area-inset-right, 0px));
-          }
-
-          /* 1. Newsletter on Mobile */
-          .footer-newsletter-section {
-            padding-top: 40px;
-            padding-bottom: 32px;
-            text-align: center;
-          }
-
-          .footer-newsletter-grid {
-            grid-template-columns: 1fr;
-            gap: 20px;
-          }
-
-          .footer-newsletter-copy {
-            max-width: 100%;
-            margin: 0 auto;
-          }
-
-          .footer-newsletter-badge {
-            margin-bottom: 6px;
-          }
-
-          .footer-newsletter-title {
-            font-size: clamp(1.45rem, 6vw, 1.75rem);
-            margin-bottom: 8px;
-          }
-
-          .footer-newsletter-desc {
-            font-size: 0.84rem;
-            max-width: 360px;
-            width: 100%;
-            margin: 0 auto;
-            line-height: 1.55;
-          }
-
-          .footer-newsletter-form-wrapper {
-            max-width: 440px;
-            width: 100%;
-            justify-self: center;
-            margin: 0 auto;
-          }
-
-          .footer-input-wrapper {
-            padding: 4px 5px 4px 16px;
-            min-height: 50px;
-            width: 100%;
-            box-sizing: border-box;
-          }
-
-          .footer-newsletter-input {
-            font-size: 1rem;
-            min-height: 44px;
-            min-width: 0;
-          }
-
-          .footer-inscribe-btn {
-            min-height: 44px;
-            padding: 0 18px;
-            box-sizing: border-box;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.78rem;
-            white-space: nowrap;
-          }
-
-          .footer-privacy-note {
-            padding-left: 0;
-            text-align: center;
-            font-size: 0.72rem;
-          }
-
-          /* 2. Centered Mobile Brand Header */
-          .footer-mobile-brand-header {
-            text-align: center;
-            padding-top: 32px;
-            padding-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-          }
-
-          .footer-mobile-brand-link {
-            text-decoration: none;
-            color: inherit;
-          }
-
-          .footer-mobile-brand-title {
-            font-family: var(--font-display);
-            font-size: clamp(1.5rem, 6vw, 1.85rem);
-            letter-spacing: 0.22em;
-            font-weight: 600;
-            color: var(--color-diamond);
-            text-transform: uppercase;
-            display: block;
-          }
-
-          .footer-mobile-brand-tagline {
-            display: block;
-            font-size: 0.75rem;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: var(--color-icy-lake);
-            font-weight: 500;
-          }
-
-          /* 3. Mobile 2-Column Links Grid */
-          .footer-mobile-columns-wrapper {
-            padding-bottom: 32px;
-          }
-
-          .footer-mobile-two-col-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 16px;
-            margin-bottom: 28px;
-          }
-
-          .footer-mobile-nav-column {
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-          }
-
-          .footer-column-heading {
-            font-size: 0.78rem;
-            letter-spacing: 0.14em;
-            margin-bottom: 10px;
-          }
-
-          .footer-mobile-columns-wrapper .footer-links-list {
-            gap: 2px;
-          }
-
-          .footer-link {
-            font-size: 0.82rem;
-            min-height: 40px;
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 0;
-            line-height: 1.35;
-            word-break: break-word;
-            overflow-wrap: anywhere;
-          }
-
-          /* 4. Mobile Connect With Us & Social Icons */
-          .footer-mobile-connect-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding-top: 24px;
-            border-top: 1px solid var(--overlay-white-10, rgba(255, 255, 255, 0.08));
-          }
-
-          .footer-mobile-contact-list {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 20px;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.75);
-            line-height: 1.6;
-            width: 100%;
-          }
-
-          .footer-contact-link {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            min-height: 44px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            box-sizing: border-box;
-            padding: 4px 8px;
-            max-width: 100%;
-            word-break: break-word;
-            overflow-wrap: anywhere;
-            transition: color 150ms ease;
-          }
-
-          .footer-contact-link:hover {
-            color: var(--color-golden, var(--brand-accent));
-          }
-
-          .footer-contact-text {
-            color: rgba(255, 255, 255, 0.6);
-            max-width: 100%;
-            text-align: center;
-            padding: 0 8px;
-            line-height: 1.5;
-          }
-
-          .footer-social-icons-row {
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
-          }
-
-          .footer-social-circle {
-            width: 44px;
-            height: 44px;
-            min-width: 44px;
-            min-height: 44px;
-          }
-
-          /* 5. Mobile Bottom Bar */
-          .footer-bottom-bar {
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 12px;
-            padding-top: 20px;
-            padding-bottom: 32px;
-          }
-
-          .footer-bottom-meta {
-            justify-content: center;
-            gap: 8px;
-            font-size: 0.74rem;
-            text-align: center;
-            line-height: 1.5;
-          }
-
-          .footer-mobile-hallmark {
-            font-size: 0.72rem;
-            color: rgba(255, 255, 255, 0.45);
-            margin-top: 2px;
-            text-align: center;
-          }
-        }
-
-        /* Extra-small screens (< 360px) */
-        @media (max-width: 359px) {
-          .footer-inner-container {
-            padding-left: max(12px, env(safe-area-inset-left, 0px));
-            padding-right: max(12px, env(safe-area-inset-right, 0px));
-          }
-
-          .footer-newsletter-title {
-            font-size: 1.4rem;
-          }
-
-          .footer-input-wrapper {
-            padding: 3px 4px 3px 12px;
-            min-height: 48px;
-          }
-
-          .footer-inscribe-btn {
-            padding: 0 12px;
-            font-size: 0.72rem;
-          }
-
-          .footer-mobile-two-col-grid {
-            gap: 10px;
-          }
-
-          .footer-column-heading {
-            font-size: 0.72rem;
-          }
-
-          .footer-link {
-            font-size: 0.76rem;
-            min-height: 38px;
-          }
-
-          .footer-social-icons-row {
-            gap: 8px;
-          }
-
-          .footer-social-circle {
-            width: 40px;
-            height: 40px;
-            min-width: 40px;
-            min-height: 40px;
+          .footer-bottom-copyright {
+            font-size: 0.65rem;
+            margin-top: 12px;
           }
         }
       `}</style>

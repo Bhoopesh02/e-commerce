@@ -16,7 +16,7 @@ This document tracks the feature status, completed deliverables, and remaining a
 - [x] Featured products carousel or grid
 - [x] Promotional or seasonal campaign sections
 - [x] Newsletter subscription *(Implemented in Footer with private ledger validation)*
-- [x] Footer with customer service, policies and social links *(Implemented in Footer with Customer Support, Return & Refund Policy, Bespoke Support, and circular social channels)*
+- [x] Footer with customer service, policies and social links *(Implemented in Footer with Flagship Atelier address at Penthouse 9, UB City, Bengaluru, Direct phone & concierge email, Customer Care with Return & Refund Policy, Bespoke Support, and social channels)*
 
 ### B. Product Listing & Discovery
 - [x] Category and collection listing pages
