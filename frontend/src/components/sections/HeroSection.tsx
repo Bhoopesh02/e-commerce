@@ -2,78 +2,171 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import Image, { StaticImageData } from 'next/image';
+import { StaticImageData, getImageProps } from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import slide1Img from '../../../public/images/banners/home/hero-estuary.webp';
+import slide1MobileImg from '../../../public/images/banners/home/hero-estuary-mobile.webp';
 import slide2Img from '../../../public/images/banners/home/hero-dunes.webp';
+import slide2MobileImg from '../../../public/images/banners/home/hero-dunes-mobile.webp';
 import slide3Img from '../../../public/images/banners/home/hero-coast.webp';
+import slide3MobileImg from '../../../public/images/banners/home/hero-coast-mobile.webp';
 import slide4Img from '../../../public/images/banners/home/hero-highland.webp';
+import slide4MobileImg from '../../../public/images/banners/home/hero-highland-mobile.webp';
 import slide5Img from '../../../public/images/banners/home/hero-forest.webp';
+import slide5MobileImg from '../../../public/images/banners/home/hero-forest-mobile.webp';
 
 export interface HeroSlide {
   id: string;
   img: StaticImageData;
+  mobileImg: StaticImageData;
   alt: string;
   heading: string;
   subtitle: string;
   ctaText: string;
   ctaLink: string;
   objectPosition: string;
+  mobileObjectPosition: string;
 }
 
 export const HERO_SLIDES: HeroSlide[] = [
   {
     id: 'slide-estuary',
     img: slide1Img,
+    mobileImg: slide1MobileImg,
     alt: "Fall Winter '26 Collection — Coastal Estuary",
     heading: "Fall Winter '26",
     subtitle: 'Drop 2 is now available.',
     ctaText: 'SHOP ALL NEW ARRIVALS',
-    ctaLink: '/shop?categorySlug=outerwear',
+    ctaLink: '/new-arrivals',
     objectPosition: '55% 25%',
+    mobileObjectPosition: 'center 15%',
   },
   {
     id: 'slide-dunes',
     img: slide2Img,
+    mobileImg: slide2MobileImg,
     alt: 'The Dune Collection — Double-Faced Cashmere & Structural Wool',
     heading: 'The Dune Collection',
     subtitle: 'Double-faced cashmere & structural wool.',
     ctaText: 'EXPLORE OUTERWEAR',
     ctaLink: '/shop?categorySlug=outerwear',
     objectPosition: '65% 20%',
+    mobileObjectPosition: 'center 12%',
   },
   {
     id: 'slide-coast',
     img: slide3Img,
+    mobileImg: slide3MobileImg,
     alt: 'Atmospheric Layers — Obsidian Shearling & Cold Weather Elements',
     heading: 'Atmospheric Layers',
     subtitle: 'Engineered for climate resilience and warmth.',
     ctaText: 'DISCOVER SHEARLING',
-    ctaLink: '/shop?categorySlug=outerwear',
+    ctaLink: '/shop/shearling-aviator-jacket',
     objectPosition: '60% 25%',
+    mobileObjectPosition: 'center 15%',
   },
   {
     id: 'slide-highland',
     img: slide4Img,
+    mobileImg: slide4MobileImg,
     alt: 'Highland Knitwear — Pure Un-dyed Scottish Wool & Alpaca',
     heading: 'Highland Knitwear',
     subtitle: 'Pure un-dyed Scottish wool & alpaca blends.',
     ctaText: 'SHOP KNITWEAR EDITIONS',
     ctaLink: '/shop?categorySlug=knitwear',
     objectPosition: '65% 20%',
+    mobileObjectPosition: 'center 10%',
   },
   {
     id: 'slide-forest',
     img: slide5Img,
+    mobileImg: slide5MobileImg,
     alt: "Modern Tailoring '26 — Fluid Silhouettes For Everyday Movement",
     heading: "Modern Tailoring '26",
     subtitle: 'Fluid silhouettes tailored for everyday movement.',
     ctaText: 'VIEW THE LOOKBOOK',
-    ctaLink: '/shop?categorySlug=tailoring',
+    ctaLink: '/collections',
     objectPosition: '65% 25%',
+    mobileObjectPosition: 'center 18%',
   },
 ];
+
+interface HeroSlideItemProps {
+  slide: HeroSlide;
+  idx: number;
+  isActive: boolean;
+  onInitialLoad?: () => void;
+}
+
+const HeroSlideItem: React.FC<HeroSlideItemProps> = ({
+  slide,
+  idx,
+  isActive,
+  onInitialLoad,
+}) => {
+  const {
+    props: { srcSet: desktopSrcSet, ...desktopRest },
+  } = getImageProps({
+    src: slide.img,
+    alt: slide.alt,
+    fill: true,
+    priority: idx === 0,
+    loading: 'eager',
+    quality: 90,
+    sizes: '100vw',
+  });
+
+  const {
+    props: { srcSet: mobileSrcSet },
+  } = getImageProps({
+    src: slide.mobileImg,
+    alt: slide.alt,
+    fill: true,
+    priority: idx === 0,
+    loading: 'eager',
+    quality: 90,
+    sizes: '100vw',
+  });
+
+  return (
+    <div
+      className={`hero-slide-item ${isActive ? 'is-active' : ''}`}
+      style={{
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+        opacity: isActive ? 1 : 0,
+        zIndex: isActive ? 1 : 0,
+        pointerEvents: isActive ? 'auto' : 'none',
+        transition: 'opacity 800ms cubic-bezier(0.25, 1, 0.5, 1)',
+        willChange: 'opacity',
+      }}
+    >
+      <picture style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}>
+        <source media="(max-width: 767px)" srcSet={mobileSrcSet} />
+        <source media="(min-width: 768px)" srcSet={desktopSrcSet} />
+        <img
+          {...desktopRest}
+          srcSet={desktopSrcSet}
+          alt={slide.alt}
+          draggable={false}
+          onLoad={idx === 0 ? onInitialLoad : undefined}
+          className="hero-slide-image select-none pointer-events-none"
+          style={{
+            ...desktopRest.style,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: slide.objectPosition,
+            ['--mobile-pos' as string]: slide.mobileObjectPosition,
+          }}
+        />
+      </picture>
+    </div>
+  );
+};
 
 const AUTO_ROTATE_SECONDS = 5;
 
@@ -82,7 +175,6 @@ export const HeroSection: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isHeroReady, setIsHeroReady] = useState(false);
-  const [loadedSlides, setLoadedSlides] = useState<Record<number, boolean>>({});
 
   const touchStartXRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(Date.now());
@@ -90,38 +182,27 @@ export const HeroSection: React.FC = () => {
 
   const currentSlide = HERO_SLIDES[currentIndex];
 
-  const handleSlideLoad = useCallback((idx: number) => {
-    setLoadedSlides((prev) => ({ ...prev, [idx]: true }));
-    if (idx === 0) {
-      setIsHeroReady(true);
-    }
+  const handleInitialReady = useCallback(() => {
+    setIsHeroReady(true);
   }, []);
 
-  // Check if first slide is cached, then pre-cache the rest after initial paint
+  // Pre-load initial hero asset to eliminate any flash, with resilient fallback
   useEffect(() => {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
     const firstImg = new window.Image();
-    firstImg.src = HERO_SLIDES[0].img.src;
+    firstImg.src = isMobile ? HERO_SLIDES[0].mobileImg.src : HERO_SLIDES[0].img.src;
     if (firstImg.complete) {
       setIsHeroReady(true);
-      setLoadedSlides((prev) => ({ ...prev, 0: true }));
     } else {
-      firstImg.onload = () => {
-        setIsHeroReady(true);
-        setLoadedSlides((prev) => ({ ...prev, 0: true }));
-      };
+      firstImg.onload = () => setIsHeroReady(true);
+      firstImg.onerror = () => setIsHeroReady(true);
     }
 
-    const timer = setTimeout(() => {
-      HERO_SLIDES.slice(1).forEach((slide, offset) => {
-        const img = new window.Image();
-        img.src = slide.img.src;
-        img.onload = () => {
-          setLoadedSlides((prev) => ({ ...prev, [offset + 1]: true }));
-        };
-      });
-    }, 400);
+    const fallbackTimer = setTimeout(() => {
+      setIsHeroReady(true);
+    }, 1000);
 
-    return () => clearTimeout(timer);
+    return () => clearTimeout(fallbackTimer);
   }, []);
 
   const goToSlide = useCallback((index: number) => {
@@ -208,36 +289,15 @@ export const HeroSection: React.FC = () => {
 
       {/* Background Slides Layer */}
       <div className="hero-slides-layer" aria-hidden="true">
-        {HERO_SLIDES.map((slide, idx) => {
-          const isActive = idx === currentIndex;
-          const isLoaded = loadedSlides[idx];
-
-          return (
-            <div
-              key={slide.id}
-              className={`hero-slide-item ${isActive && isLoaded ? 'is-active' : ''}`}
-            >
-              <Image
-                src={slide.img}
-                alt={slide.alt}
-                fill
-                priority={idx === 0}
-                loading={idx === 0 ? 'eager' : 'lazy'}
-                quality={88}
-                sizes="100vw"
-                draggable={false}
-                onLoad={() => handleSlideLoad(idx)}
-                className="hero-slide-image select-none pointer-events-none"
-                style={{
-                  objectFit: 'cover',
-                  objectPosition: slide.objectPosition,
-                  opacity: isLoaded ? 1 : 0,
-                  transition: 'opacity 600ms ease-in-out',
-                }}
-              />
-            </div>
-          );
-        })}
+        {HERO_SLIDES.map((slide, idx) => (
+          <HeroSlideItem
+            key={slide.id}
+            slide={slide}
+            idx={idx}
+            isActive={idx === currentIndex}
+            onInitialLoad={idx === 0 ? handleInitialReady : undefined}
+          />
+        ))}
       </div>
 
       {/* Main Content Area — revealed gracefully once initial hero is ready */}
@@ -255,15 +315,44 @@ export const HeroSection: React.FC = () => {
               <h1 className="hero-title">{currentSlide.heading}</h1>
               <p className="hero-subtitle">{currentSlide.subtitle}</p>
 
-              <div className="hero-cta-wrapper">
-                <Link href={currentSlide.ctaLink} className="hero-cta-link">
-                  <button
-                    type="button"
-                    className="hero-btn-white"
-                    aria-label={`${currentSlide.ctaText} — ${currentSlide.heading}`}
-                  >
-                    {currentSlide.ctaText}
-                  </button>
+              <div
+                className="hero-cta-wrapper"
+                style={{
+                  pointerEvents: 'auto',
+                  position: 'relative',
+                  zIndex: 30,
+                }}
+              >
+                <Link
+                  href={currentSlide.ctaLink}
+                  className="hero-btn-white"
+                  aria-label={`${currentSlide.ctaText} — ${currentSlide.heading}`}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#ffffff',
+                    color: '#141414',
+                    border: 'none',
+                    borderRadius: '0px',
+                    padding: '12px 24px',
+                    minHeight: '44px',
+                    boxSizing: 'border-box',
+                    fontFamily: "var(--font-body, 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif)",
+                    fontSize: '0.6875rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    textDecoration: 'none',
+                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.25)',
+                    pointerEvents: 'auto',
+                    position: 'relative',
+                    zIndex: 30,
+                  }}
+                >
+                  {currentSlide.ctaText}
                 </Link>
               </div>
             </motion.div>
@@ -383,8 +472,8 @@ export const HeroSection: React.FC = () => {
           pointer-events: none;
         }
 
-        .hero-text-block {
-          pointer-events: auto;
+        :global(.hero-text-block) {
+          pointer-events: auto !important;
           display: flex;
           flex-direction: column;
           align-items: flex-start;
@@ -429,33 +518,39 @@ export const HeroSection: React.FC = () => {
         }
 
         /* Razor sharp solid white button matching design system & reference */
-        .hero-btn-white {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          background-color: var(--color-diamond, #ffffff);
-          color: var(--color-black-tie, #141414);
-          border: none;
-          border-radius: var(--radius-none, 0px);
-          padding: 10px 20px;
+        :global(.hero-btn-white) {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          background-color: #ffffff !important;
+          color: #141414 !important;
+          border: none !important;
+          border-radius: 0px !important;
+          padding: 12px 24px !important;
+          min-height: 44px !important;
+          box-sizing: border-box !important;
           font-family: var(--font-body, 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif) !important;
-          font-size: 0.6875rem;
-          font-weight: var(--weight-semibold, 600);
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          cursor: pointer;
-          white-space: nowrap;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-          transition: background-color 180ms ease, color 180ms ease, transform 150ms ease;
+          font-size: 0.6875rem !important;
+          font-weight: 600 !important;
+          letter-spacing: 0.14em !important;
+          text-transform: uppercase !important;
+          cursor: pointer !important;
+          white-space: nowrap !important;
+          text-decoration: none !important;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25) !important;
+          pointer-events: auto !important;
+          transition: background-color 180ms ease, color 180ms ease, transform 150ms ease !important;
         }
 
-        .hero-btn-white:hover {
-          background-color: var(--color-black-tie, #141414);
-          color: var(--color-diamond, #ffffff);
+        :global(.hero-btn-white:hover),
+        :global(.hero-btn-white:focus-visible) {
+          background-color: #141414 !important;
+          color: #ffffff !important;
+          text-decoration: none !important;
         }
 
-        .hero-btn-white:active {
-          transform: translateY(0);
+        :global(.hero-btn-white:active) {
+          transform: translateY(0) !important;
         }
 
         /* Subtle minimal progress dashes on bottom right */
@@ -482,8 +577,16 @@ export const HeroSection: React.FC = () => {
           border: none;
           padding: 0;
           cursor: pointer;
-          overflow: hidden;
           transition: background-color 200ms ease;
+        }
+
+        .hero-progress-bar-slot::before {
+          content: '';
+          position: absolute;
+          top: -14px;
+          bottom: -14px;
+          left: -4px;
+          right: -4px;
         }
 
         .hero-progress-bar-slot:hover {
@@ -494,6 +597,12 @@ export const HeroSection: React.FC = () => {
           height: 100%;
           background: #ffffff;
           transition: width 80ms linear;
+        }
+
+        @media (max-width: 767px) {
+          :global(.hero-slide-image) {
+            object-position: var(--mobile-pos, center 15%) !important;
+          }
         }
 
         @media (max-width: 640px) {
