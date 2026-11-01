@@ -659,14 +659,17 @@ export const CartDrawer: React.FC = () => {
                 </div>
               )}
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem', whiteSpace: 'nowrap', gap: '8px' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Estimated GST (5%)</span>
-                <span style={{ color: 'var(--text-secondary)' }}>Included ({formatPrice(tax)})</span>
+                <span style={{ color: 'var(--text-secondary)', flexShrink: 0 }}>Included ({formatPrice(tax)})</span>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>White-Glove Luxury Delivery</span>
-                <span style={{ color: 'var(--color-success)', fontWeight: 600 }}>Complimentary</span>
+              <div className="cart-delivery-row" style={{ fontSize: '0.88rem' }}>
+                <span className="cart-delivery-label">
+                  <span className="cart-delivery-label-full">White-Glove Luxury Delivery</span>
+                  <span className="cart-delivery-label-short">White-Glove Delivery</span>
+                </span>
+                <span className="cart-delivery-badge">Complimentary</span>
               </div>
 
               <div

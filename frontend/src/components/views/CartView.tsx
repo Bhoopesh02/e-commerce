@@ -591,9 +591,12 @@ export const CartView: React.FC = () => {
                 <span style={{ color: 'var(--text-muted)' }}>Luxury GST (5%)</span>
                 <span style={{ color: 'var(--text-secondary)' }}>Included ({formatPrice(tax)})</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>White-Glove Luxury Delivery</span>
-                <span style={{ color: 'var(--color-success)', fontWeight: 600 }}>Complimentary</span>
+              <div className="cart-delivery-row">
+                <span className="cart-delivery-label">
+                  <span className="cart-delivery-label-full">White-Glove Luxury Delivery</span>
+                  <span className="cart-delivery-label-short">White-Glove Delivery</span>
+                </span>
+                <span className="cart-delivery-badge">Complimentary</span>
               </div>
               <div
                 style={{

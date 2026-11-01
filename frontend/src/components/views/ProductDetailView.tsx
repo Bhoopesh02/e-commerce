@@ -511,12 +511,12 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 {product.name}
               </h1>
 
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '14px' }}>
-                <span style={{ fontSize: '1.6rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+              <div className="pdp-price-row">
+                <span className="pdp-price-amount">
                   {formatPrice(product.price)}
                 </span>
                 {/* Strikethrough compare price removed as requested */}
-                <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                <span className="pdp-price-taxes">
                   Inclusive of all luxury taxes & duties
                 </span>
               </div>
