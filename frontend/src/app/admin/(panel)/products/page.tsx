@@ -9,7 +9,7 @@ import { Product } from '@/types';
 import { formatPrice } from '@/lib/formatPrice';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { Package, Search, Plus, Sparkles, Filter, ChevronDown, Check, Edit2 } from 'lucide-react';
+import { Package, Search, Plus, Filter, ChevronDown, Check, Edit2 } from 'lucide-react';
 import { AnimatedTrashIcon } from '@/components/ui/AnimatedTrashIcon';
 import { useDropdownPosition } from '@/hooks/useDropdownPosition';
 
@@ -435,7 +435,7 @@ function AdminProductsPageContent() {
                         Across {p.variants.length} sizes
                       </span>
                     </td>
-                    <td style={{ padding: '16px' }}>
+                    <td style={{ padding: '16px', whiteSpace: 'nowrap' }}>
                       {p.availability === 'in_stock' && <Badge variant="success">In Stock</Badge>}
                       {p.availability === 'low_stock' && <Badge variant="warning">Low Stock</Badge>}
                       {p.availability === 'out_of_stock' && <Badge variant="danger">Depleted</Badge>}

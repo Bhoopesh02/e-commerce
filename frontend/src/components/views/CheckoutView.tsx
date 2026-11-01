@@ -29,7 +29,6 @@ import {
   LogIn,
   UserPlus,
   Lock,
-  Sparkles,
   Tag,
   RefreshCw,
   AlertCircle,
@@ -164,14 +163,12 @@ export const CheckoutView: React.FC = () => {
 
   // Inline Sign-in state
   const [signInEmail, setSignInEmail] = useState('');
-  const [signInPassword, setSignInPassword] = useState('');
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [signInError, setSignInError] = useState<string | null>(null);
 
   // Inline Register state
   const [regName, setRegName] = useState('');
   const [regEmail, setRegEmail] = useState('');
-  const [regPassword, setRegPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
   const [registerError, setRegisterError] = useState<string | null>(null);
 
@@ -506,7 +503,7 @@ export const CheckoutView: React.FC = () => {
   // Confirmation View
   if (step === 5 && confirmedOrder) {
     return (
-      <div style={{ paddingTop: '120px', paddingBottom: '96px', minHeight: '85vh', backgroundColor: 'var(--bg-primary)' }}>
+      <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '96px', minHeight: '85vh', backgroundColor: 'var(--bg-primary)' }}>
         <div className="container" style={{ maxWidth: '680px', textAlign: 'center' }}>
           <div
             style={{
@@ -524,95 +521,19 @@ export const CheckoutView: React.FC = () => {
             <CheckCircle2 size={36} />
           </div>
 
-          <span style={{ fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
+          <span className="type-eyebrow" style={{ color: 'var(--brand-primary)' }}>
             Atelier Order Confirmed
           </span>
 
-          <h1 style={{ fontSize: 'clamp(2.2rem, 4vw, 3rem)', marginTop: '8px', marginBottom: '16px' }}>
+          <h1 className="type-h1" style={{ marginTop: '8px', marginBottom: '16px' }}>
             Thank You, {confirmedOrder.customerName}
           </h1>
 
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '24px' }}>
+          <p className="type-lead" style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>
             Your commission has been registered successfully.
             Our master tailors are preparing your pieces for white-glove dispatch.
           </p>
 
-          {/* Prominent Order Credentials Badge showing Order ID & Tracking ID */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-              gap: '16px 28px',
-              padding: '14px 28px',
-              backgroundColor: 'var(--bg-surface)',
-              borderRadius: 'var(--radius-pill)',
-              border: '1px solid var(--border-color)',
-              marginBottom: '28px',
-              boxShadow: 'var(--shadow-sm)',
-            }}
-          >
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontWeight: 600 }}>
-                Order ID:
-              </span>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.95rem', fontWeight: 600, color: 'var(--brand-primary)' }}>
-                {confirmedOrder.id}
-              </span>
-              <button
-                type="button"
-                onClick={() => handleCopy(confirmedOrder.id, 'order')}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: '4px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  color: copiedField === 'order' ? 'var(--color-success)' : 'var(--text-muted)',
-                  borderRadius: 'var(--radius-xs)',
-                  transition: 'color 0.2s',
-                }}
-                title="Copy Order ID"
-                aria-label="Copy Order ID"
-              >
-                {copiedField === 'order' ? <Check size={14} /> : <Copy size={14} />}
-              </button>
-            </div>
-
-            <div style={{ width: '1px', height: '18px', backgroundColor: 'var(--border-color)' }} />
-
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontWeight: 600 }}>
-                Tracking ID:
-              </span>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                {confirmedOrder.trackingInfo?.trackingId || 'Pending'}
-              </span>
-              {confirmedOrder.trackingInfo?.trackingId && (
-                <button
-                  type="button"
-                  onClick={() => handleCopy(confirmedOrder.trackingInfo!.trackingId, 'tracking')}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    padding: '4px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    color: copiedField === 'tracking' ? 'var(--color-success)' : 'var(--text-muted)',
-                    borderRadius: 'var(--radius-xs)',
-                    transition: 'color 0.2s',
-                  }}
-                  title="Copy Tracking ID"
-                  aria-label="Copy Tracking ID"
-                >
-                  {copiedField === 'tracking' ? <Check size={14} /> : <Copy size={14} />}
-                </button>
-              )}
-            </div>
-          </div>
 
           {/* Email dispatch notice per rule */}
           <div
@@ -814,7 +735,7 @@ export const CheckoutView: React.FC = () => {
 
   if (!mounted) {
     return (
-      <div style={{ paddingTop: '140px', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+      <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '120px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
         <div className="container" style={{ maxWidth: '640px', textAlign: 'center' }}>
           <div style={{ minHeight: '300px' }} />
         </div>
@@ -825,7 +746,7 @@ export const CheckoutView: React.FC = () => {
   // If cart is empty, show empty bag state
   if (items.length === 0) {
     return (
-      <div style={{ paddingTop: '140px', paddingBottom: '120px', textAlign: 'center', backgroundColor: 'var(--bg-primary)' }}>
+      <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '120px', textAlign: 'center', backgroundColor: 'var(--bg-primary)' }}>
         <div className="container" style={{ maxWidth: '540px' }}>
           <ShoppingBag size={48} style={{ color: 'var(--border-color)', margin: '0 auto 16px' }} />
           <h2 style={{ fontSize: '1.8rem', marginBottom: '12px' }}>Your Bag is Empty</h2>
@@ -841,14 +762,14 @@ export const CheckoutView: React.FC = () => {
   }
 
   return (
-    <div style={{ paddingTop: '110px', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+    <div style={{ paddingTop: 'calc(var(--header-total-height, 113px) + 24px)', paddingBottom: '96px', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       <div className="container">
         {/* Step Progression Header */}
         <div style={{ maxWidth: '780px', margin: '0 auto 48px', textAlign: 'center' }}>
-          <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', marginBottom: '16px' }}>
+          <h1 className="type-h1" style={{ marginBottom: '16px' }}>
             Atelier Checkout
           </h1>
-          <div className="checkout-step-container" style={{ display: 'flex', justifyContent: 'center', fontSize: '0.85rem' }}>
+          <div className="checkout-step-container" style={{ display: 'flex', justifyContent: 'center', fontSize: 'var(--text-sm)' }}>
             <span style={{ color: step >= 1 ? 'var(--brand-primary)' : 'var(--text-muted)', fontWeight: step === 1 ? 700 : 500, textAlign: 'center' }}>
               <span className="step-num">1. </span><span className="step-text">Contact</span>
             </span>
@@ -897,11 +818,11 @@ export const CheckoutView: React.FC = () => {
               </div>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <Button variant="outline" size="sm" onClick={fixStockIssues}>
+              <Button variant="outline" size="md" onClick={fixStockIssues} style={{ minHeight: 44 }}>
                 Auto-Adjust Bag
               </Button>
               <Link href="/cart">
-                <Button variant="secondary" size="sm">
+                <Button variant="secondary" size="md" style={{ minHeight: 44 }}>
                   Return to Bag
                 </Button>
               </Link>
@@ -937,7 +858,7 @@ export const CheckoutView: React.FC = () => {
                 </span>
               </div>
             </div>
-            <Button variant="outline" size="sm" onClick={syncPrices} leftIcon={<RefreshCw size={13} />}>
+            <Button variant="outline" size="md" onClick={syncPrices} leftIcon={<RefreshCw size={13} />} style={{ minHeight: 44 }}>
               Update Prices & Totals
             </Button>
           </div>
@@ -1044,7 +965,10 @@ export const CheckoutView: React.FC = () => {
                           setSignInError(null);
                         }}
                         style={{
-                          padding: '11px 16px',
+                          padding: '0 16px',
+                          minHeight: 44,
+                          height: 44,
+                          boxSizing: 'border-box',
                           fontSize: '0.88rem',
                           fontWeight: authMode === 'signin' ? 600 : 500,
                           borderRadius: 'var(--radius-xs, 4px)',
@@ -1074,7 +998,10 @@ export const CheckoutView: React.FC = () => {
                           setRegisterError(null);
                         }}
                         style={{
-                          padding: '11px 16px',
+                          padding: '0 16px',
+                          minHeight: 44,
+                          height: 44,
+                          boxSizing: 'border-box',
                           fontSize: '0.88rem',
                           fontWeight: authMode === 'register' ? 600 : 500,
                           borderRadius: 'var(--radius-xs, 4px)',
@@ -1127,15 +1054,6 @@ export const CheckoutView: React.FC = () => {
                           required
                         />
 
-                        <Input
-                          label="Password"
-                          type="password"
-                          value={signInPassword}
-                          onChange={(e) => setSignInPassword(e.target.value)}
-                          placeholder="••••••••"
-                          leftIcon={<Lock size={16} />}
-                        />
-
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '6px' }}>
                           <Button
                             type="submit"
@@ -1152,7 +1070,6 @@ export const CheckoutView: React.FC = () => {
                             variant="outline"
                             onClick={handleDemoSignIn}
                             disabled={isSigningIn}
-                            leftIcon={<Sparkles size={16} />}
                             disableSheen
                             style={{ width: '100%' }}
                           >
@@ -1175,7 +1092,10 @@ export const CheckoutView: React.FC = () => {
                                 border: 'none',
                                 cursor: 'pointer',
                                 fontWeight: 600,
-                                padding: 0,
+                                minHeight: 44,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                padding: '0 4px',
                               }}
                             >
                               Create an account →
@@ -1227,15 +1147,6 @@ export const CheckoutView: React.FC = () => {
                           required
                         />
 
-                        <Input
-                          label="Password"
-                          type="password"
-                          value={regPassword}
-                          onChange={(e) => setRegPassword(e.target.value)}
-                          placeholder="Create a secure password"
-                          leftIcon={<Lock size={16} />}
-                        />
-
                         <div style={{ marginTop: '6px' }}>
                           <Button
                             type="submit"
@@ -1263,7 +1174,10 @@ export const CheckoutView: React.FC = () => {
                                 border: 'none',
                                 cursor: 'pointer',
                                 fontWeight: 600,
-                                padding: 0,
+                                minHeight: 44,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                padding: '0 4px',
                               }}
                             >
                               Sign in here →
@@ -1331,7 +1245,10 @@ export const CheckoutView: React.FC = () => {
                             background: 'none',
                             border: 'none',
                             cursor: 'pointer',
-                            padding: '4px 6px',
+                            padding: '0 8px',
+                            minHeight: 44,
+                            display: 'inline-flex',
+                            alignItems: 'center',
                             textDecoration: 'underline',
                           }}
                         >
@@ -1451,7 +1368,10 @@ export const CheckoutView: React.FC = () => {
                       border: 'none',
                       cursor: 'pointer',
                       fontWeight: 500,
-                      padding: 0,
+                      minHeight: 44,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      padding: '0 8px',
                     }}
                   >
                     ← Edit Contact
@@ -1583,8 +1503,8 @@ export const CheckoutView: React.FC = () => {
                       style={{
                         marginTop: '3px',
                         accentColor: 'var(--brand-primary)',
-                        width: '18px',
-                        height: '18px',
+                        width: '20px',
+                        height: '20px',
                         cursor: 'pointer',
                       }}
                     />
@@ -1640,8 +1560,9 @@ export const CheckoutView: React.FC = () => {
                                 if (billingError) setBillingError(null);
                               }}
                               style={{
-                                padding: '6px 12px',
-                                fontSize: '0.76rem',
+                                minHeight: 44,
+                                padding: '0 16px',
+                                fontSize: '0.82rem',
                                 borderRadius: 'var(--radius-pill)',
                                 border: '1px solid var(--border-color)',
                                 backgroundColor: 'var(--bg-surface)',
@@ -1762,7 +1683,21 @@ export const CheckoutView: React.FC = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>Delivery Method</h3>
-                  <button onClick={() => goToStep(2)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
+                  <button
+                    onClick={() => goToStep(2)}
+                    style={{
+                      fontSize: '0.8rem',
+                      color: 'var(--brand-primary)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontWeight: 500,
+                      minHeight: 44,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      padding: '0 8px',
+                    }}
+                  >
                     ← Edit Address
                   </button>
                 </div>
@@ -1816,7 +1751,21 @@ export const CheckoutView: React.FC = () => {
               <div className="checkout-step-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0, overflow: 'visible' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>Select Payment Method</h3>
-                  <button onClick={() => goToStep(3)} style={{ fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
+                  <button
+                    onClick={() => goToStep(3)}
+                    style={{
+                      fontSize: '0.8rem',
+                      color: 'var(--brand-primary)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontWeight: 500,
+                      minHeight: 44,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      padding: '0 8px',
+                    }}
+                  >
                     ← Edit Delivery
                   </button>
                 </div>

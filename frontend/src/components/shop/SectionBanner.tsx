@@ -208,7 +208,9 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
             src={cfg.defaultBanner}
             alt={cfg.title}
             fill
-            quality={90}
+            priority
+            loading="eager"
+            quality={85}
             sizes="(max-width: 768px) 100vw, 50vw"
             style={{ objectFit: "cover", objectPosition: "center" }}
             className="reveal-banner__img"
@@ -330,7 +332,9 @@ export const SectionBanner: React.FC<SectionBannerProps> = ({
           src={bannerSrc}
           alt={`${category.name} Campaign`}
           fill
-          quality={88}
+          priority
+          loading="eager"
+          quality={85}
           sizes="(max-width: 768px) 100vw, 50vw"
           style={{ objectFit: "cover", objectPosition: "center" }}
           className="reveal-banner__img"

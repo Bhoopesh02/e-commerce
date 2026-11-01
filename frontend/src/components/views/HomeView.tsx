@@ -232,18 +232,20 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
         )}
 
         {buttonText && buttonLink && (
-          <StaggerFadeUp as="div" style={{ marginTop: '22px' }}>
+          <StaggerFadeUp as="div" style={{ marginTop: 'clamp(12px, 1.8vw + 6px, 22px)' }}>
             <Link
               href={buttonLink}
               className="home-banner-btn"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '8px',
-                padding: '10px 24px',
-                fontSize: '0.78rem',
+                gap: 'clamp(5px, 0.5vw + 3px, 8px)',
+                minHeight: 'clamp(32px, 2.5vw + 24px, 44px)',
+                boxSizing: 'border-box',
+                padding: 'clamp(6px, 0.8vw + 3px, 10px) clamp(12px, 1.8vw + 6px, 24px)',
+                fontSize: 'clamp(0.60rem, 0.52rem + 0.4vw, 0.78rem)',
                 fontWeight: 600,
-                letterSpacing: '0.14em',
+                letterSpacing: 'clamp(0.06em, 0.04em + 0.1vw, 0.14em)',
                 textTransform: 'uppercase',
                 color: '#ffffff',
                 backgroundColor: 'rgba(0, 0, 0, 0.45)',
@@ -252,10 +254,18 @@ const HomeBannerCard: React.FC<HomeBannerCardProps> = ({
                 backdropFilter: 'blur(6px)',
                 transition: 'all 0.25s ease',
                 textDecoration: 'none',
+                maxWidth: 'fit-content',
+                whiteSpace: 'nowrap',
               }}
             >
               <span>{buttonText}</span>
-              <ArrowRight size={14} />
+              <ArrowRight
+                style={{
+                  width: 'clamp(10px, 0.5vw + 8px, 14px)',
+                  height: 'clamp(10px, 0.5vw + 8px, 14px)',
+                  flexShrink: 0,
+                }}
+              />
             </Link>
           </StaggerFadeUp>
         )}

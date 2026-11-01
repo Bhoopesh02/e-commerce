@@ -10,11 +10,9 @@ import { useToastStore } from '@/store/useToastStore';
 import { loginUser, registerUser } from '@/lib/mockApi';
 import {
   Mail,
-  Lock,
   User as UserIcon,
   LogIn,
   UserPlus,
-  Sparkles,
   AlertTriangle,
   ShieldCheck,
 } from 'lucide-react';
@@ -37,12 +35,10 @@ export const CheckoutAuthModal: React.FC<CheckoutAuthModalProps> = ({
 
   // Sign In fields
   const [signInEmail, setSignInEmail] = useState('');
-  const [signInPassword, setSignInPassword] = useState('');
 
   // Register fields
   const [regName, setRegName] = useState('');
   const [regEmail, setRegEmail] = useState('');
-  const [regPassword, setRegPassword] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -163,8 +159,11 @@ export const CheckoutAuthModal: React.FC<CheckoutAuthModalProps> = ({
               setError(null);
             }}
             style={{
-              padding: '10px 14px',
-              fontSize: '0.85rem',
+              padding: '0 14px',
+              minHeight: 44,
+              height: 44,
+              boxSizing: 'border-box',
+              fontSize: '0.88rem',
               fontWeight: tab === 'signin' ? 600 : 500,
               borderRadius: 'var(--radius-xs, 4px)',
               border: 'none',
@@ -192,8 +191,11 @@ export const CheckoutAuthModal: React.FC<CheckoutAuthModalProps> = ({
               setError(null);
             }}
             style={{
-              padding: '10px 14px',
-              fontSize: '0.85rem',
+              padding: '0 14px',
+              minHeight: 44,
+              height: 44,
+              boxSizing: 'border-box',
+              fontSize: '0.88rem',
               fontWeight: tab === 'register' ? 600 : 500,
               borderRadius: 'var(--radius-xs, 4px)',
               border: 'none',
@@ -246,15 +248,6 @@ export const CheckoutAuthModal: React.FC<CheckoutAuthModalProps> = ({
               required
             />
 
-            <Input
-              label="Password"
-              type="password"
-              value={signInPassword}
-              onChange={(e) => setSignInPassword(e.target.value)}
-              placeholder="••••••••"
-              leftIcon={<Lock size={16} />}
-            />
-
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '6px' }}>
               <Button
                 type="submit"
@@ -271,7 +264,6 @@ export const CheckoutAuthModal: React.FC<CheckoutAuthModalProps> = ({
                 variant="outline"
                 onClick={handleDemoSignIn}
                 disabled={isLoading}
-                leftIcon={<Sparkles size={15} />}
                 disableSheen
                 style={{ width: '100%' }}
               >
@@ -325,15 +317,6 @@ export const CheckoutAuthModal: React.FC<CheckoutAuthModalProps> = ({
               placeholder="client@example.com"
               leftIcon={<Mail size={16} />}
               required
-            />
-
-            <Input
-              label="Password"
-              type="password"
-              value={regPassword}
-              onChange={(e) => setRegPassword(e.target.value)}
-              placeholder="Create a password"
-              leftIcon={<Lock size={16} />}
             />
 
             <div style={{ marginTop: '6px' }}>

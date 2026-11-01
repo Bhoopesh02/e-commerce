@@ -2,11 +2,15 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: [
+    '192.168.124.1',
+    '192.168.*.*',
+  ],
   turbopack: {
     root: path.resolve(__dirname),
   },
   images: {
-    formats: ['image/avif', 'image/webp'],
+    formats: ['image/webp'],
     minimumCacheTTL: 31536000,
     qualities: [60, 75, 80, 85, 88, 90, 92, 95, 100],
     remotePatterns: [

@@ -50,14 +50,14 @@ export default function ProfilePage() {
 
       <div className="settings-group" style={{ marginTop: '48px' }}>
         <div className="settings-header">
-          <h3 className="settings-subtitle">Password</h3>
+          <h3 className="settings-subtitle">Security & Access</h3>
         </div>
         <div className="settings-row">
           <div className="settings-info">
-            <span className="settings-label">Password</span>
-            <span className="settings-value">••••••••</span>
+            <span className="settings-label">Authentication Method</span>
+            <span className="settings-value">Mobile Number + Secure OTP Verification</span>
           </div>
-          <button className="text-action-sm">Change Password</button>
+          <span style={{ fontSize: '0.82rem', color: 'var(--color-success, #1E6F5C)', fontWeight: 600 }}>Active</span>
         </div>
       </div>
 
@@ -125,7 +125,7 @@ export default function ProfilePage() {
         
         .text-action-sm {
           font-size: 0.85rem;
-          display: flex;
+          display: inline-flex;
           align-items: center;
           gap: 4px;
           color: var(--overlay-black-70);
@@ -134,7 +134,9 @@ export default function ProfilePage() {
           cursor: pointer;
           background: none;
           border: none;
-          padding: 0;
+          padding: 0 12px;
+          min-height: 44px;
+          box-sizing: border-box;
         }
         
         .text-action-sm:hover {

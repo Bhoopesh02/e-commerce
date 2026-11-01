@@ -198,8 +198,9 @@ export default function AddressesPage() {
 
         .text-action {
           font-size: 0.9rem;
-          display: flex;
+          display: inline-flex;
           align-items: center;
+          min-height: 44px;
           gap: 6px;
           color: var(--text-primary);
           text-decoration: none;
@@ -208,7 +209,8 @@ export default function AddressesPage() {
           cursor: pointer;
           background: none;
           border: none;
-          padding: 0;
+          padding: 0 8px;
+          box-sizing: border-box;
         }
         
         .text-action:hover {
@@ -217,8 +219,9 @@ export default function AddressesPage() {
         
         .text-action-sm {
           font-size: 0.85rem;
-          display: flex;
+          display: inline-flex;
           align-items: center;
+          min-height: 44px;
           gap: 4px;
           color: var(--overlay-black-70);
           text-decoration: none;
@@ -226,7 +229,8 @@ export default function AddressesPage() {
           cursor: pointer;
           background: none;
           border: none;
-          padding: 0;
+          padding: 0 8px;
+          box-sizing: border-box;
         }
         
         .text-action-sm:hover {
@@ -278,11 +282,13 @@ export default function AddressesPage() {
 
         .form-group input,
         .form-group select {
-          padding: 12px 16px;
+          min-height: 44px;
+          box-sizing: border-box;
+          padding: 10px 16px;
           border: 1px solid var(--overlay-black-20);
           border-radius: 0;
           background: var(--bg-primary);
-          font-size: 0.95rem;
+          font-size: 1rem;
           color: var(--text-primary);
           outline: none;
           transition: border-color 0.2s ease;
@@ -298,11 +304,18 @@ export default function AddressesPage() {
         }
 
         .form-checkbox label {
-          display: flex;
+          display: inline-flex;
           align-items: center;
+          min-height: 44px;
           gap: 8px;
           font-size: 0.9rem;
           color: var(--text-primary);
+          cursor: pointer;
+        }
+
+        .form-checkbox input[type="checkbox"] {
+          width: 20px;
+          height: 20px;
           cursor: pointer;
         }
 
@@ -316,7 +329,12 @@ export default function AddressesPage() {
           background-color: var(--text-primary);
           color: var(--text-inverse);
           border: none;
-          padding: 12px 24px;
+          min-height: 44px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+          padding: 0 24px;
           font-size: 0.9rem;
           cursor: pointer;
           transition: opacity 0.2s ease;
@@ -330,7 +348,12 @@ export default function AddressesPage() {
           background-color: transparent;
           color: var(--text-primary);
           border: 1px solid var(--overlay-black-20);
-          padding: 12px 24px;
+          min-height: 44px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+          padding: 0 24px;
           font-size: 0.9rem;
           cursor: pointer;
           transition: border-color 0.2s ease;

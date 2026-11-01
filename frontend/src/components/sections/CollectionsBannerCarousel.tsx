@@ -31,7 +31,7 @@ const BANNER_DATA: BannerSlideItem[] = [
   {
     src: '/images/banners/new-arrivals/new-arrivals-hero.webp',
     mobileSrc: '/images/banners/new-arrivals/new-arrivals-hero-mobile.webp',
-    mobileObjectPosition: 'right 5% center',
+    mobileObjectPosition: '68% center',
     alt: 'Autumn Winter Collection',
     heading: 'The Outerwear Edit',
     description: 'Sculpted coats and hand-stitched leather, cut for the colder months and made to last for years.',
@@ -165,10 +165,12 @@ export function CollectionsBannerCarousel() {
         }}
       >
         {slides.map((slide, index) => {
+          const isInitial = index === 1;
           const common = {
             alt: slide.alt,
             fill: true,
-            priority: index === 0,
+            priority: isInitial,
+            loading: isInitial ? ('eager' as const) : ('lazy' as const),
             quality: 80,
             sizes: '100vw',
           };
@@ -218,10 +220,12 @@ export function CollectionsBannerCarousel() {
                     {...desktopRest}
                     srcSet={desktopSrcSet}
                     alt={slide.alt}
+                    loading={isInitial ? 'eager' : 'lazy'}
+                    fetchPriority={isInitial ? 'high' : 'auto'}
                     style={{
                       ...desktopRest.style,
                       ['--pos-desktop' as string]: slide.objectPosition || 'center 26%',
-                      ['--pos-mobile' as string]: slide.mobileObjectPosition || 'right 5% center',
+                      ['--pos-mobile' as string]: slide.mobileObjectPosition || '80% center',
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
@@ -245,6 +249,7 @@ export function CollectionsBannerCarousel() {
                 height: '100%',
                 display: 'flex',
                 alignItems: 'center',
+                paddingTop: 'var(--header-total-height, 113px)',
               }}
             >
               <div
@@ -374,7 +379,8 @@ export function CollectionsBannerCarousel() {
           right: '0',
           display: 'flex',
           justifyContent: 'center',
-          gap: '8px',
+          alignItems: 'center',
+          gap: '2px',
           zIndex: 10,
         }}
       >
@@ -392,16 +398,28 @@ export function CollectionsBannerCarousel() {
               }}
               aria-label={`Go to slide ${i + 1}`}
               style={{
-                width: activeIndex === i ? '24px' : '8px',
-                height: '4px',
-                borderRadius: '4px',
-                backgroundColor: activeIndex === i ? 'var(--bg-subtle)' : 'rgba(245, 248, 248, 0.4)',
+                minWidth: '44px',
+                minHeight: '44px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'transparent',
                 border: 'none',
-                padding: 0,
+                padding: '0 4px',
                 cursor: 'pointer',
-                transition: 'all 0.3s ease',
               }}
-            />
+            >
+              <span
+                style={{
+                  display: 'block',
+                  width: activeIndex === i ? '24px' : '8px',
+                  height: '4px',
+                  borderRadius: '4px',
+                  backgroundColor: activeIndex === i ? 'var(--bg-subtle)' : 'rgba(245, 248, 248, 0.4)',
+                  transition: 'all 0.3s ease',
+                }}
+              />
+            </button>
           );
         })}
       </div>
@@ -452,7 +470,7 @@ export function CollectionsBannerCarousel() {
         }
         @media (max-width: 767px) {
           .collections-banner-img {
-            object-position: var(--pos-mobile, right 5% center) !important;
+            object-position: var(--pos-mobile, 80% center) !important;
           }
           .hero-master-banner {
             height: 100vh !important;
@@ -486,7 +504,7 @@ export function CollectionsBannerCarousel() {
           }
           .collections-banner-container {
             align-items: center !important;
-            padding-top: var(--navbar-height, 64px) !important;
+            padding-top: var(--header-total-height, 97px) !important;
           }
           .collections-banner-content {
             max-width: min(310px, 68vw) !important;
@@ -538,6 +556,7 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
             alt: banner.alt,
             fill: true,
             priority: true,
+            loading: 'eager' as const,
             quality: 80,
             sizes: '100vw',
           };
@@ -570,10 +589,12 @@ function StaticBanner({ banner }: { banner: typeof BANNER_DATA[0] }) {
                 {...desktopRest}
                 srcSet={desktopSrcSet}
                 alt={banner.alt}
+                loading="eager"
+                fetchPriority="high"
                 style={{
                   ...desktopRest.style,
                   ['--pos-desktop' as string]: banner.objectPosition || 'center 26%',
-                  ['--pos-mobile' as string]: banner.mobileObjectPosition || 'right 5% center',
+                  ['--pos-mobile' as string]: banner.mobileObjectPosition || '80% center',
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',

@@ -126,6 +126,8 @@
   --announcement-bar-height: 37px;
   --navbar-height: 76px;
   --header-h: var(--navbar-height);
+  --header-total-height: calc(var(--navbar-height) + var(--announcement-bar-height));
+  --page-top-offset: var(--header-total-height);
 
   /* ===== Typography ===== */
   /* Moved to typography.css */
@@ -185,6 +187,8 @@
     --announcement-bar-height: 33px;
     --navbar-height: 64px;
     --header-h: var(--navbar-height);
+    --header-total-height: calc(var(--navbar-height) + var(--announcement-bar-height));
+    --page-top-offset: var(--header-total-height);
   }
 }
 

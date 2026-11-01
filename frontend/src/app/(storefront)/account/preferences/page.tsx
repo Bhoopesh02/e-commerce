@@ -63,6 +63,7 @@ export default function PreferencesPage() {
         .toggle-list {
           display: flex;
           flex-direction: column;
+          width: 100%;
           max-width: 600px;
         }
         
@@ -70,7 +71,9 @@ export default function PreferencesPage() {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 32px 0;
+          gap: 24px;
+          width: 100%;
+          padding: 28px 0;
           border-bottom: 1px solid var(--overlay-black-10);
         }
         
@@ -82,6 +85,8 @@ export default function PreferencesPage() {
           display: flex;
           flex-direction: column;
           gap: 6px;
+          flex: 1;
+          min-width: 0;
         }
         
         .toggle-title {
@@ -93,14 +98,20 @@ export default function PreferencesPage() {
         .toggle-desc {
           font-size: 0.9rem;
           color: var(--overlay-black-70);
+          line-height: 1.45;
         }
 
         /* Toggle Switch Styles */
         .switch {
           position: relative;
-          display: inline-block;
-          width: 44px;
-          height: 24px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 52px;
+          height: 44px;
+          min-height: 44px;
+          flex-shrink: 0;
+          cursor: pointer;
         }
 
         .switch input {
@@ -112,10 +123,10 @@ export default function PreferencesPage() {
         .slider {
           position: absolute;
           cursor: pointer;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
+          top: 10px;
+          left: 4px;
+          right: 4px;
+          bottom: 10px;
           background-color: var(--overlay-black-20);
           transition: .3s;
         }
@@ -155,7 +166,12 @@ export default function PreferencesPage() {
           background-color: var(--text-primary);
           color: var(--text-inverse);
           border: none;
-          padding: 12px 24px;
+          padding: 0 24px;
+          min-height: 44px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
           font-size: 0.9rem;
           cursor: pointer;
           transition: opacity 0.2s ease;
@@ -167,8 +183,16 @@ export default function PreferencesPage() {
 
         @media (max-width: 600px) {
           .toggle-row {
-            padding: clamp(16px, 4vw, 32px) 0;
+            padding: clamp(18px, 4vw, 24px) 0;
             gap: 16px;
+          }
+
+          .toggle-title {
+            font-size: 1rem;
+          }
+
+          .toggle-desc {
+            font-size: 0.85rem;
           }
 
           .btn-primary {

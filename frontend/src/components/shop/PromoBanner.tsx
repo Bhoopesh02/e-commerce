@@ -79,7 +79,7 @@ export const PromoBanner: React.FC<PromoBannerProps> = ({
         src={imageSrc}
         alt={headline}
         fill
-        quality={92}
+        quality={85}
         style={{ objectFit: 'cover' }}
         sizes="(max-width: 768px) 100vw, 50vw"
       />

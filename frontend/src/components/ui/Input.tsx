@@ -43,28 +43,32 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             backgroundColor: 'var(--bg-surface)',
             border: `1px solid ${error ? 'var(--color-error)' : 'var(--border-color)'}`,
             borderRadius: 'var(--radius-sm)',
-            padding: '10px 14px',
+            padding: '0 14px',
+            minHeight: 44,
+            boxSizing: 'border-box',
             transition: 'border-color var(--duration-fast) var(--ease-editorial)',
           }}
         >
-          {leftIcon && <span style={{ marginRight: '8px', color: 'var(--text-muted)' }}>{leftIcon}</span>}
+          {leftIcon && <span style={{ marginRight: '8px', color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center' }}>{leftIcon}</span>}
           <input
             ref={ref}
             id={inputId}
             type={inputType}
             style={{
               width: '100%',
-              fontSize: '0.92rem',
+              minHeight: 44,
+              fontSize: '1rem',
               color: 'var(--text-primary)',
               background: 'transparent',
               border: 'none',
               outline: 'none',
+              boxSizing: 'border-box',
               ...style,
             }}
             className={className}
             {...props}
           />
-          {rightIcon && !isPasswordType && <span style={{ marginLeft: '8px', color: 'var(--text-muted)' }}>{rightIcon}</span>}
+          {rightIcon && !isPasswordType && <span style={{ marginLeft: '8px', color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center' }}>{rightIcon}</span>}
           {isPasswordType && (
             <button
               type="button"
@@ -74,10 +78,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 background: 'none',
                 border: 'none',
                 padding: '0',
-                marginLeft: '8px',
+                margin: '-10px -10px -10px 0',
+                width: 44,
+                height: 44,
+                minWidth: 44,
+                minHeight: 44,
                 color: 'var(--text-muted)',
                 cursor: 'pointer',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 outline: 'none',

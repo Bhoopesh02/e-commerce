@@ -11,6 +11,7 @@ import { CheckoutAuthModal } from '@/components/checkout/CheckoutAuthModal';
 import { formatPrice } from '@/lib/formatPrice';
 import { Plus, Minus, Tag, Check, ArrowRight, ShoppingBag, AlertTriangle, AlertCircle, RefreshCw } from 'lucide-react';
 import { AnimatedTrashIcon } from '@/components/ui/AnimatedTrashIcon';
+import { motion } from 'framer-motion';
 
 export const CartDrawer: React.FC = () => {
   const router = useRouter();
@@ -70,57 +71,55 @@ export const CartDrawer: React.FC = () => {
     router.push('/checkout');
   };
 
-  if (!isDrawerOpen && !isAuthModalOpen) {
-    return null;
-  }
-
   return (
     <>
-      {isDrawerOpen && (
-        <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} title="Your Atelier Bag" width="480px">
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        {items.length === 0 ? (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '70%',
-              textAlign: 'center',
-              padding: '32px',
-            }}
-          >
-            <div
+      <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} title="Your Atelier Bag" width="480px">
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          {items.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.35, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               style={{
-                width: 64,
-                height: 64,
-                borderRadius: 'var(--radius-pill)',
-                backgroundColor: 'var(--color-golden-100)',
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '20px',
-                color: 'var(--cta-primary)',
+                height: '70%',
+                textAlign: 'center',
+                padding: '32px',
               }}
             >
-              <ShoppingBag size={28} />
-            </div>
-            <h3 style={{ fontSize: '1.35rem', marginBottom: '8px' }}>Your Bag is Empty</h3>
-            <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '24px' }}>
-              Explore our latest curated silhouettes from the Milan and Florentine ateliers.
-            </p>
-            <Button
-              onClick={() => {
-                closeDrawer();
-                router.push('/shop');
-              }}
-              variant="primary"
-            >
-              Explore Collections
-            </Button>
-          </div>
-        ) : (
+              <div
+                style={{
+                  width: 64,
+                  height: 64,
+                  borderRadius: 'var(--radius-pill)',
+                  backgroundColor: 'var(--color-golden-100)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '20px',
+                  color: 'var(--cta-primary)',
+                }}
+              >
+                <ShoppingBag size={28} />
+              </div>
+              <h3 style={{ fontSize: '1.35rem', marginBottom: '8px' }}>Your Bag is Empty</h3>
+              <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '24px' }}>
+                Explore our latest curated silhouettes from the Milan and Florentine ateliers.
+              </p>
+              <Button
+                onClick={() => {
+                  closeDrawer();
+                  router.push('/shop');
+                }}
+                variant="primary"
+              >
+                Explore Collections
+              </Button>
+            </motion.div>
+          ) : (
           <>
             {/* Real-time Inventory & Price Feedback Banners */}
             {cartValidation?.hasStockIssues && (
@@ -151,13 +150,18 @@ export const CartDrawer: React.FC = () => {
                   <button
                     onClick={fixStockIssues}
                     style={{
-                      fontSize: '0.78rem',
+                      fontSize: '0.82rem',
                       fontWeight: 600,
                       color: 'var(--color-error)',
                       background: 'var(--bg-surface)',
                       border: '1px solid var(--color-error)',
                       borderRadius: 'var(--radius-pill)',
-                      padding: '4px 12px',
+                      padding: '0 16px',
+                      minHeight: 44,
+                      minWidth: 44,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                       cursor: 'pointer',
                     }}
                   >
@@ -195,20 +199,23 @@ export const CartDrawer: React.FC = () => {
                   <button
                     onClick={syncPrices}
                     style={{
-                      fontSize: '0.78rem',
+                      fontSize: '0.82rem',
                       fontWeight: 600,
                       color: 'var(--brand-primary)',
                       background: 'var(--bg-surface)',
                       border: '1px solid var(--brand-primary)',
                       borderRadius: 'var(--radius-pill)',
-                      padding: '4px 12px',
+                      padding: '0 16px',
+                      minHeight: 44,
+                      minWidth: 44,
                       cursor: 'pointer',
-                      display: 'flex',
+                      display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '4px',
+                      justifyContent: 'center',
+                      gap: '6px',
                     }}
                   >
-                    <RefreshCw size={12} /> Update Prices
+                    <RefreshCw size={13} /> Update Prices
                   </button>
                 </div>
               </div>
@@ -228,7 +235,7 @@ export const CartDrawer: React.FC = () => {
                 marginBottom: '24px',
               }}
             >
-              {items.map((item) => {
+              {items.map((item, index) => {
                 const val = cartValidation?.itemValidations[item.sku];
                 const isOutOfStock = val?.isOutOfStock;
                 const isExceeded = val?.isQuantityExceeded;
@@ -236,8 +243,15 @@ export const CartDrawer: React.FC = () => {
                 const maxStock = val ? val.availableStock : 99;
 
                 return (
-                  <div
+                  <motion.div
                     key={item.sku}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.35,
+                      delay: 0.08 + Math.min(index, 6) * 0.04,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
                     style={{
                       display: 'flex',
                       gap: '16px',
@@ -304,10 +318,23 @@ export const CartDrawer: React.FC = () => {
                         </Link>
                         <button
                           onClick={() => removeItem(item.sku)}
-                          style={{ color: 'var(--text-muted)', padding: '2px' }}
+                          style={{
+                            color: 'var(--text-muted)',
+                            width: 44,
+                            height: 44,
+                            minWidth: 44,
+                            minHeight: 44,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            margin: '-10px -10px -10px 0',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                          }}
                           aria-label={`Remove ${item.product.name}`}
                         >
-                          <AnimatedTrashIcon size={15} />
+                          <AnimatedTrashIcon size={16} />
                         </button>
                       </div>
 
@@ -337,15 +364,17 @@ export const CartDrawer: React.FC = () => {
                           <button
                             onClick={() => removeItem(item.sku)}
                             style={{
-                              display: 'block',
-                              fontSize: '0.75rem',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              minHeight: 44,
+                              fontSize: '0.8rem',
                               color: 'var(--color-error)',
                               textDecoration: 'underline',
-                              marginTop: '4px',
+                              marginTop: '2px',
                               background: 'none',
                               border: 'none',
                               cursor: 'pointer',
-                              padding: 0,
+                              padding: '0 4px',
                             }}
                           >
                             Remove item to proceed
@@ -374,15 +403,17 @@ export const CartDrawer: React.FC = () => {
                           <button
                             onClick={() => updateQuantity(item.sku, val.availableStock)}
                             style={{
-                              display: 'block',
-                              fontSize: '0.75rem',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              minHeight: 44,
+                              fontSize: '0.8rem',
                               color: 'var(--color-warning)',
                               textDecoration: 'underline',
-                              marginTop: '4px',
+                              marginTop: '2px',
                               background: 'none',
                               border: 'none',
                               cursor: 'pointer',
-                              padding: 0,
+                              padding: '0 4px',
                             }}
                           >
                             Adjust to available {val.availableStock}
@@ -428,20 +459,34 @@ export const CartDrawer: React.FC = () => {
                             alignItems: 'center',
                             border: '1px solid var(--border-color)',
                             borderRadius: 'var(--radius-pill)',
-                            padding: '2px 8px',
-                            gap: '10px',
+                            padding: '0 2px',
+                            height: 44,
+                            boxSizing: 'border-box',
                             opacity: isOutOfStock ? 0.5 : 1,
                           }}
                         >
                           <button
                             onClick={() => updateQuantity(item.sku, item.quantity - 1)}
-                            style={{ display: 'flex', alignItems: 'center', color: 'var(--text-muted)' }}
+                            style={{
+                              width: 44,
+                              height: 44,
+                              minWidth: 44,
+                              minHeight: 44,
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: 'var(--text-muted)',
+                              background: 'none',
+                              border: 'none',
+                              cursor: isOutOfStock ? 'not-allowed' : 'pointer',
+                              padding: 0,
+                            }}
                             aria-label="Decrease quantity"
                             disabled={isOutOfStock}
                           >
-                            <Minus size={12} />
+                            <Minus size={13} />
                           </button>
-                          <span style={{ fontSize: '0.85rem', fontWeight: 600, minWidth: '16px', textAlign: 'center' }}>
+                          <span style={{ fontSize: '0.88rem', fontWeight: 600, minWidth: '20px', textAlign: 'center', userSelect: 'none' }}>
                             {item.quantity}
                           </span>
                           <button
@@ -451,17 +496,25 @@ export const CartDrawer: React.FC = () => {
                               }
                             }}
                             style={{
-                              display: 'flex',
+                              width: 44,
+                              height: 44,
+                              minWidth: 44,
+                              minHeight: 44,
+                              display: 'inline-flex',
                               alignItems: 'center',
+                              justifyContent: 'center',
                               color: item.quantity >= maxStock ? 'var(--text-muted)' : 'var(--text-primary)',
                               opacity: item.quantity >= maxStock ? 0.35 : 1,
                               cursor: item.quantity >= maxStock ? 'not-allowed' : 'pointer',
+                              background: 'none',
+                              border: 'none',
+                              padding: 0,
                             }}
                             disabled={isOutOfStock || item.quantity >= maxStock}
                             aria-label="Increase quantity"
                             title={item.quantity >= maxStock ? `Maximum available stock (${maxStock}) reached` : undefined}
                           >
-                            <Plus size={12} />
+                            <Plus size={13} />
                           </button>
                         </div>
 
@@ -484,7 +537,7 @@ export const CartDrawer: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
@@ -511,13 +564,26 @@ export const CartDrawer: React.FC = () => {
                   </div>
                   <button
                     onClick={removeCoupon}
-                    style={{ fontSize: '0.75rem', color: 'var(--color-error)', textDecoration: 'underline' }}
+                    style={{
+                      fontSize: '0.8rem',
+                      color: 'var(--color-error)',
+                      textDecoration: 'underline',
+                      minHeight: 44,
+                      minWidth: 44,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '0 8px',
+                    }}
                   >
                     Remove
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleApplyCoupon} style={{ display: 'flex', gap: '8px' }}>
+                <form onSubmit={handleApplyCoupon} style={{ display: 'flex', gap: '8px', alignItems: 'stretch' }}>
                   <div
                     style={{
                       flex: 1,
@@ -525,25 +591,36 @@ export const CartDrawer: React.FC = () => {
                       alignItems: 'center',
                       border: '1px solid var(--border-color)',
                       borderRadius: 'var(--radius-sm)',
-                      padding: '8px 12px',
+                      padding: '0 12px',
+                      minHeight: 44,
                       backgroundColor: 'var(--bg-surface)',
                     }}
                   >
-                    <Tag size={15} style={{ color: 'var(--text-muted)', marginRight: '8px' }} />
+                    <Tag size={15} style={{ color: 'var(--text-muted)', marginRight: '8px', flexShrink: 0 }} />
                     <input
                       type="text"
                       placeholder="Privilege Code (e.g. WELCOME10)"
                       value={couponInput}
                       onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                      style={{ width: '100%', fontSize: '0.82rem', textTransform: 'uppercase' }}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        minHeight: 44,
+                        fontSize: '1rem',
+                        textTransform: 'uppercase',
+                        border: 'none',
+                        outline: 'none',
+                        background: 'transparent',
+                      }}
                     />
                   </div>
                   <Button
                     type="submit"
                     variant="outline"
-                    size="sm"
+                    size="md"
                     isLoading={isApplyingCoupon}
                     disabled={!couponInput.trim()}
+                    style={{ minHeight: 44, minWidth: 80 }}
                   >
                     Apply
                   </Button>
@@ -582,14 +659,17 @@ export const CartDrawer: React.FC = () => {
                 </div>
               )}
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem', whiteSpace: 'nowrap', gap: '8px' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Estimated GST (5%)</span>
-                <span style={{ color: 'var(--text-secondary)' }}>Included ({formatPrice(tax)})</span>
+                <span style={{ color: 'var(--text-secondary)', flexShrink: 0 }}>Included ({formatPrice(tax)})</span>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>White-Glove Luxury Delivery</span>
-                <span style={{ color: 'var(--color-success)', fontWeight: 600 }}>Complimentary</span>
+              <div className="cart-delivery-row" style={{ fontSize: '0.88rem' }}>
+                <span className="cart-delivery-label">
+                  <span className="cart-delivery-label-full">White-Glove Luxury Delivery</span>
+                  <span className="cart-delivery-label-short">White-Glove Delivery</span>
+                </span>
+                <span className="cart-delivery-badge">Complimentary</span>
               </div>
 
               <div
@@ -645,7 +725,6 @@ export const CartDrawer: React.FC = () => {
         )}
       </div>
     </Drawer>
-      )}
 
       <CheckoutAuthModal
         isOpen={isAuthModalOpen}

@@ -11,7 +11,6 @@ import {
   X,
   Crop,
   ShieldCheck,
-  Sparkles,
   Info,
   CheckCircle2,
 } from 'lucide-react';
@@ -22,7 +21,9 @@ import {
   CroppedSilhouetteImage,
 } from '@/components/admin/SilhouetteImageCropperModal';
 import { AdminDropdown, DropdownOption } from '@/components/admin/AdminDropdown';
+import { SilhouetteVariantManager } from '@/components/admin/SilhouetteVariantManager';
 import { createProduct } from '@/lib/mockApi';
+import { ProductVariant } from '@/types';
 
 const CATEGORY_OPTIONS: DropdownOption[] = [
   { value: 'cat_dresses', label: 'Dresses' },
@@ -42,10 +43,13 @@ export default function NewProductPage() {
 
   const [formData, setFormData] = useState({
     name: '',
-    categoryId: 'cat_outerwear',
+    categoryId: '',
     price: '',
     description: '',
   });
+
+  // Silhouette Variants (Colors, Sizes & Stock) - starts empty for clean draft
+  const [variants, setVariants] = useState<ProductVariant[]>([]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -188,6 +192,11 @@ export default function NewProductPage() {
       return;
     }
 
+    if (variants.length === 0) {
+      alert('Atelier policy requires at least 1 color and size variant with reserve stock.');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -197,6 +206,7 @@ export default function NewProductPage() {
         price: parseFloat(formData.price) || 0,
         description: formData.description,
         images: silhouetteImages.map((img) => img.previewUrl),
+        variants,
         tags: ['Atelier Silhouette', 'New Arrival', '3:4 Curated'],
       });
 
@@ -219,7 +229,7 @@ export default function NewProductPage() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', maxWidth: '840px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', width: '100%', maxWidth: '1440px', margin: '0 auto' }}>
       {/* Top Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <button
@@ -254,8 +264,9 @@ export default function NewProductPage() {
             Inventory & Catalog Management
           </span>
           <h1
+            className="admin-form-header-title"
             style={{
-              fontSize: '2rem',
+              fontSize: 'clamp(1.35rem, 4vw, 2rem)',
               fontFamily: 'var(--font-display)',
               color: 'var(--admin-text-primary)',
               marginTop: '4px',
@@ -268,78 +279,116 @@ export default function NewProductPage() {
 
       {/* Main Form */}
       <form
+        className="admin-silhouette-form-card"
         onSubmit={handleSubmit}
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '24px',
+          gap: '28px',
           backgroundColor: 'var(--admin-surface)',
           padding: '32px',
           borderRadius: 'var(--radius-md)',
           border: '1px solid var(--admin-border)',
           boxShadow: '0 2px 8px var(--overlay-black-5)',
+          width: '100%',
         }}
       >
-        <Input
-          label="Silhouette Name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="e.g. The Midnight Wool Trench"
-          required
-        />
+        {/* Garment Essentials Responsive Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', width: '100%' }}>
+          <Input
+            label="Silhouette Name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="e.g. The Midnight Wool Trench"
+            required
+          />
 
-        <AdminDropdown
-          label="Category Division"
-          name="categoryId"
-          value={formData.categoryId}
-          onChange={(val) => setFormData((prev) => ({ ...prev, categoryId: val }))}
-          options={CATEGORY_OPTIONS}
-          searchPlaceholder="Search category divisions..."
-          required
-        />
+          <AdminDropdown
+            label="Category Division"
+            name="categoryId"
+            value={formData.categoryId}
+            onChange={(val) => setFormData((prev) => ({ ...prev, categoryId: val }))}
+            options={CATEGORY_OPTIONS}
+            searchPlaceholder="Search category divisions..."
+            placeholder="Select a category division"
+            required
+          />
 
-        <Input
-          label="Atelier Price (₹)"
-          name="price"
-          type="number"
-          value={formData.price}
-          onChange={handleChange}
-          placeholder="e.g. 24500"
-          required
-        />
+          <Input
+            label="Atelier Price (₹)"
+            name="price"
+            type="number"
+            value={formData.price}
+            onChange={handleChange}
+            placeholder="e.g. 24500"
+            required
+          />
+        </div>
 
         {/* Silhouette Images Upload with 3:4 Enforcement */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <label
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '8px 12px',
+            }}
+          >
+            <div
               style={{
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
-                color: 'var(--text-secondary)',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
+                flexWrap: 'wrap',
                 gap: '8px',
               }}
             >
-              Silhouette Imagery (1-8 Images)
+              <label
+                style={{
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.05em',
+                  textTransform: 'uppercase',
+                  color: 'var(--text-secondary)',
+                  margin: 0,
+                  display: 'inline',
+                }}
+              >
+                Silhouette Imagery (1–8 Images)
+              </label>
               <span
                 style={{
-                  fontSize: '0.72rem',
+                  fontSize: '0.68rem',
                   fontWeight: 700,
+                  letterSpacing: '0.05em',
+                  textTransform: 'uppercase',
                   color: 'var(--brand-accent)',
                   backgroundColor: 'var(--overlay-golden-10)',
-                  padding: '2px 8px',
+                  padding: '3px 8px',
                   borderRadius: '4px',
                   border: '1px solid var(--overlay-golden-35)',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  lineHeight: 1.2,
                 }}
               >
                 3:4 Ratio Locked
               </span>
-            </label>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+            </div>
+            <span
+              style={{
+                fontSize: '0.78rem',
+                color: 'var(--text-muted)',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+                marginLeft: 'auto',
+              }}
+            >
               {silhouetteImages.length} / 8 stored
             </span>
           </div>
@@ -368,10 +417,11 @@ export default function NewProductPage() {
           {/* Stored 3:4 Cropped Images Grid */}
           {silhouetteImages.length > 0 && (
             <div
+              className="admin-images-grid-mobile"
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-                gap: '16px',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 150px), 1fr))',
+                gap: '14px',
                 marginTop: '6px',
               }}
             >
@@ -610,6 +660,13 @@ export default function NewProductPage() {
           )}
         </div>
 
+        {/* Silhouette Colors, Sizes & Atelier Inventory Matrix */}
+        <SilhouetteVariantManager
+          productName={formData.name}
+          variants={variants}
+          onChange={setVariants}
+        />
+
         {/* Description field */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           <label
@@ -645,6 +702,7 @@ export default function NewProductPage() {
 
         {/* Action Controls */}
         <div
+          className="admin-form-footer-mobile"
           style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -652,6 +710,8 @@ export default function NewProductPage() {
             marginTop: '16px',
             paddingTop: '20px',
             borderTop: '1px solid var(--admin-border)',
+            flexWrap: 'wrap',
+            gap: '12px',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

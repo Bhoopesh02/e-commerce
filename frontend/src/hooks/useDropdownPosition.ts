@@ -26,44 +26,59 @@ export function useDropdownPosition(
   targetWidth: number = 300,
   padding: number = 12
 ): DropdownPositionStyle {
-  const [style, setStyle] = useState<DropdownPositionStyle>({
-    left: 0,
-    right: 'auto',
-    width: `${targetWidth}px`,
-    maxWidth: `calc(100vw - ${padding * 2}px)`,
-  });
+  const calculatePosition = (): DropdownPositionStyle => {
+    if (typeof window === 'undefined' || !triggerRef.current) {
+      return {
+        left: 0,
+        right: 'auto',
+        width: `${targetWidth}px`,
+        maxWidth: `calc(100vw - ${padding * 2}px)`,
+      };
+    }
+
+    const rect = triggerRef.current.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const maxAvailableWidth = Math.max(0, viewportWidth - padding * 2);
+    const effectiveWidth = Math.min(targetWidth, maxAvailableWidth);
+
+    // Default left offset is 0 (align with left of trigger)
+    let leftOffset = 0;
+
+    // If opening at left: 0 would clip past the right edge of viewport:
+    if (rect.left + effectiveWidth > viewportWidth - padding) {
+      leftOffset = viewportWidth - padding - rect.left - effectiveWidth;
+    }
+
+    // If shifting left pushes the left edge past the left edge of viewport:
+    if (rect.left + leftOffset < padding) {
+      leftOffset = padding - rect.left;
+    }
+
+    return {
+      left: `${Math.round(leftOffset)}px`,
+      right: 'auto',
+      width: `${effectiveWidth}px`,
+      maxWidth: `calc(100vw - ${padding * 2}px)`,
+    };
+  };
+
+  const [style, setStyle] = useState<DropdownPositionStyle>(calculatePosition);
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+
+  // Synchronously compute right during render when isOpen toggles to true
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
+    if (isOpen) {
+      const pos = calculatePosition();
+      setStyle(pos);
+    }
+  }
 
   useIsomorphicLayoutEffect(() => {
     if (!isOpen) return;
 
     const updatePosition = () => {
-      const el = triggerRef.current;
-      if (!el) return;
-
-      const rect = el.getBoundingClientRect();
-      const viewportWidth = window.innerWidth;
-      const maxAvailableWidth = Math.max(0, viewportWidth - padding * 2);
-      const effectiveWidth = Math.min(targetWidth, maxAvailableWidth);
-
-      // Default left offset is 0 (align with left of trigger)
-      let leftOffset = 0;
-
-      // If opening at left: 0 would clip past the right edge of viewport:
-      if (rect.left + effectiveWidth > viewportWidth - padding) {
-        leftOffset = viewportWidth - padding - rect.left - effectiveWidth;
-      }
-
-      // If shifting left pushes the left edge past the left edge of viewport:
-      if (rect.left + leftOffset < padding) {
-        leftOffset = padding - rect.left;
-      }
-
-      setStyle({
-        left: `${Math.round(leftOffset)}px`,
-        right: 'auto',
-        width: `${effectiveWidth}px`,
-        maxWidth: `calc(100vw - ${padding * 2}px)`,
-      });
+      setStyle(calculatePosition());
     };
 
     updatePosition();

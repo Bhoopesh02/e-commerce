@@ -23,8 +23,23 @@ export const RatingStars: React.FC<RatingStarsProps> = ({
   totalReviews,
 }) => {
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-      <div style={{ display: 'flex', gap: '2px' }}>
+    <div
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '4px',
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+      }}
+    >
+      <div
+        style={{
+          display: 'inline-flex',
+          gap: '2px',
+          alignItems: 'center',
+          flexShrink: 0,
+        }}
+      >
         {Array.from({ length: maxStars }).map((_, i) => {
           const starValue = i + 1;
           const isFilled = starValue <= Math.round(rating);
@@ -38,6 +53,9 @@ export const RatingStars: React.FC<RatingStarsProps> = ({
                   color: isFilled ? 'var(--brand-accent)' : 'var(--border-color)',
                   display: 'inline-flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  lineHeight: 1,
                 }}
               >
                 <Star
@@ -70,6 +88,7 @@ export const RatingStars: React.FC<RatingStarsProps> = ({
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '-12px -10px',
+                flexShrink: 0,
               }}
             >
               <Star
@@ -90,6 +109,10 @@ export const RatingStars: React.FC<RatingStarsProps> = ({
             fontWeight: 600,
             color: 'var(--text-primary)',
             marginLeft: '4px',
+            whiteSpace: 'nowrap',
+            flexShrink: 0,
+            lineHeight: 1,
+            display: 'inline-block',
           }}
         >
           {rating.toFixed(1)}
@@ -97,7 +120,17 @@ export const RatingStars: React.FC<RatingStarsProps> = ({
       )}
 
       {totalReviews !== undefined && (
-        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginLeft: '2px' }}>
+        <span
+          style={{
+            fontSize: '0.8rem',
+            color: 'var(--text-muted)',
+            marginLeft: '2px',
+            whiteSpace: 'nowrap',
+            flexShrink: 0,
+            lineHeight: 1,
+            display: 'inline-block',
+          }}
+        >
           ({totalReviews})
         </span>
       )}

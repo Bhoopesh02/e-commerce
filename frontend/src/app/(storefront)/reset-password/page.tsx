@@ -1,5 +1,5 @@
-import { AuthView } from '@/components/views/AuthView';
+import { redirect } from 'next/navigation';
 
 export default function ResetPasswordPage() {
-  return <AuthView initialMode="reset-password" />;
+  redirect('/signin');
 }

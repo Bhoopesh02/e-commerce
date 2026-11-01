@@ -1,0 +1,159 @@
+/* CollectionsView.module.css */
+
+.pageContainer {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding-bottom: 96px;
+}
+
+.mainContainer {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(32px, 4vw, 48px) clamp(16px, 3vw, 24px) 0;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Section 1: Department Pillars */
+.departmentSection {
+  margin-bottom: 80px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 14px;
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+  font-weight: 400;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.sectionCount {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* 
+ * Primary 2-Department Grid (Men's & Women's Wardrobes)
+ * - Mobile (<640px): 1 column, fluid 100% width, no overflow
+ * - Tablet (640px - 1023px): 2 columns, balanced side-by-side
+ * - Desktop (>=1024px): 2 columns with elegant luxury spacing
+ */
+.departmentGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .departmentGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .departmentGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 36px;
+  }
+}
+
+/* Department Card & Banner Image */
+.departmentCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  background-color: transparent;
+  min-width: 0;
+  width: 100%;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background-color: var(--bg-subtle);
+  border-radius: 2px;
+}
+
+.departmentImage {
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.departmentCard:hover .departmentImage {
+  transform: scale(1.04);
+}
+
+.cardContent {
+  padding-top: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 1.8vw, 1.45rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.cardSubtitle {
+  font-size: clamp(0.85rem, 1.1vw, 0.92rem);
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0 0 16px 0;
+}
+
+.ctaLink {
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Runway / 3rd Department Highlight */
+.runwayContainer {
+  margin-top: 56px;
+}
+
+.runwayImageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background-color: var(--bg-subtle);
+  border-radius: 2px;
+}
+
+@media (max-width: 639px) {
+  .runwayContainer {
+    margin-top: 40px;
+  }
+
+  .runwayImageContainer {
+    aspect-ratio: 16 / 10;
+  }
+}

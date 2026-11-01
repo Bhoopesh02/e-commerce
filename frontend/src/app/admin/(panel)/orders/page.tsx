@@ -9,14 +9,25 @@ import { useToastStore } from '@/store/useToastStore';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Truck, CheckCircle2, Search, Filter, ChevronDown, Check, Calendar, X } from 'lucide-react';
+import {
+  Truck,
+  CheckCircle2,
+  Search,
+  Filter,
+  ChevronDown,
+  Check,
+  Calendar,
+  X,
+  Eye,
+} from 'lucide-react';
 import { useDropdownPosition } from '@/hooks/useDropdownPosition';
+import { AdminOrderDetailsModal } from '@/components/admin/AdminOrderDetailsModal';
 
 type DatePreset = 'all' | 'today' | '7d' | '30d' | 'this_month' | 'custom';
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [datePreset, setDatePreset] = useState<DatePreset>('all');
   const [customStartDate, setCustomStartDate] = useState<string>('');
@@ -26,12 +37,14 @@ export default function AdminOrdersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 20;
   const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const { showToast } = useToastStore();
   const filterRef = React.useRef<HTMLDivElement>(null);
   const dateFilterRef = React.useRef<HTMLDivElement>(null);
 
-  const filterDropdownStyle = useDropdownPosition(filterRef, isFilterOpen, 240);
-  const dateDropdownStyle = useDropdownPosition(dateFilterRef, isDateFilterOpen, 300);
+  const filterDropdownStyle = useDropdownPosition(filterRef, isFilterOpen, 230);
+  const dateDropdownStyle = useDropdownPosition(dateFilterRef, isDateFilterOpen, 230);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -63,15 +76,32 @@ export default function AdminOrdersPage() {
     try {
       const updated = await adminUpdateOrderStatus(orderId, nextStatus);
       setOrders((prev) => prev.map((o) => (o.id === orderId ? updated : o)));
+      if (selectedOrder && selectedOrder.id === orderId) {
+        setSelectedOrder(updated);
+      }
       showToast(`Commission #${orderId} status set to "${nextStatus}".`, 'success');
     } catch {
       showToast('Status update failed.', 'error');
     }
   };
 
+  const handleToggleStatus = (status: string) => {
+    setSelectedStatuses((prev) =>
+      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
+    );
+  };
+
+  const handleRemoveStatus = (status: string) => {
+    setSelectedStatuses((prev) => prev.filter((s) => s !== status));
+  };
+
+  const handleClearStatuses = () => {
+    setSelectedStatuses([]);
+  };
+
   useEffect(() => {
     setCurrentPage(1);
-  }, [filterStatus, searchQuery, datePreset, customStartDate, customEndDate]);
+  }, [selectedStatuses, searchQuery, datePreset, customStartDate, customEndDate]);
 
   const handleResetDateFilter = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -105,7 +135,8 @@ export default function AdminOrdersPage() {
   }
 
   const filtered = orders.filter((o) => {
-    const matchesStatus = filterStatus === 'all' || o.status === filterStatus;
+    const matchesStatus =
+      selectedStatuses.length === 0 || selectedStatuses.includes(o.status);
     if (!matchesStatus) return false;
 
     // Date filtering
@@ -152,13 +183,37 @@ export default function AdminOrdersPage() {
     const q = searchQuery.toLowerCase();
     const idMatch = o.id.toLowerCase().includes(q);
     const nameMatch = (o.customerName || 'Client').toLowerCase().includes(q);
+    const emailMatch = (o.customerEmail || '').toLowerCase().includes(q);
     const cityMatch = (o.address?.city || '').toLowerCase().includes(q);
     const stateMatch = (o.address?.state || '').toLowerCase().includes(q);
     const statusMatch = o.status.toLowerCase().includes(q);
     const carrierMatch = (o.trackingInfo?.carrier || '').toLowerCase().includes(q);
     const trackingIdMatch = (o.trackingInfo?.trackingId || '').toLowerCase().includes(q);
+    const paymentMatch =
+      (o.payment?.method || '').toLowerCase().includes(q) ||
+      (o.paymentMethod || '').toLowerCase().includes(q) ||
+      (o.payment?.transactionId || '').toLowerCase().includes(q) ||
+      (o.payment?.upiVpa || '').toLowerCase().includes(q);
+    const itemsMatch = o.items?.some(
+      (item) =>
+        item.productName?.toLowerCase().includes(q) ||
+        item.sku?.toLowerCase().includes(q) ||
+        item.size?.toLowerCase().includes(q) ||
+        item.color?.toLowerCase().includes(q)
+    );
 
-    return idMatch || nameMatch || cityMatch || stateMatch || statusMatch || carrierMatch || trackingIdMatch;
+    return (
+      idMatch ||
+      nameMatch ||
+      emailMatch ||
+      cityMatch ||
+      stateMatch ||
+      statusMatch ||
+      carrierMatch ||
+      trackingIdMatch ||
+      paymentMatch ||
+      itemsMatch
+    );
   });
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginatedOrders = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
@@ -187,7 +242,7 @@ export default function AdminOrdersPage() {
           </div>
           
           {/* Status Filter Dropdown */}
-          <div style={{ position: 'relative' }} ref={filterRef}>
+          <div style={{ position: 'relative', flexShrink: 0 }} ref={filterRef}>
             <Button 
               variant="outline" 
               size="sm" 
@@ -195,24 +250,61 @@ export default function AdminOrdersPage() {
                 setIsFilterOpen(!isFilterOpen);
                 setIsDateFilterOpen(false);
               }}
-              style={{ height: '40px' }}
-              leftIcon={<Filter size={16} strokeWidth={1.8} />}
-              rightIcon={<ChevronDown size={16} style={{ opacity: 0.7 }} />}
+              style={{
+                height: '40px',
+                minWidth: '120px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0 14px',
+                whiteSpace: 'nowrap',
+                boxSizing: 'border-box',
+                borderColor: selectedStatuses.length > 0 ? 'var(--brand-primary)' : undefined,
+                color: selectedStatuses.length > 0 ? 'var(--brand-primary)' : undefined,
+              }}
+              leftIcon={<Filter size={16} strokeWidth={1.8} style={{ flexShrink: 0, color: selectedStatuses.length > 0 ? 'var(--brand-primary)' : undefined }} />}
+              rightIcon={<ChevronDown size={16} style={{ opacity: 0.7, flexShrink: 0 }} />}
             >
-              {filterStatus === 'all' ? 'All Commissions' : filterStatus}
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', flex: 1, textAlign: 'left' }}>
+                <span>Filter</span>
+                {selectedStatuses.length > 0 && (
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minWidth: '18px',
+                      height: '18px',
+                      padding: '0 5px',
+                      borderRadius: 'var(--radius-pill)',
+                      backgroundColor: 'var(--brand-primary)',
+                      color: 'var(--brand-surface, #ffffff)',
+                      fontSize: '0.68rem',
+                      fontWeight: 700,
+                      lineHeight: 1
+                    }}
+                  >
+                    {selectedStatuses.length}
+                  </span>
+                )}
+              </span>
             </Button>
             
             <AnimatePresence>
               {isFilterOpen && (
                 <motion.div 
-                  initial={{ opacity: 0, y: -10, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: 'auto' }}
-                  exit={{ opacity: 0, y: -10, height: 0 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.15, ease: 'easeOut' }}
                   style={{ 
                     position: 'absolute', 
                     top: '100%', 
                     ...filterDropdownStyle,
+                    width: '230px',
+                    minWidth: '230px',
+                    maxWidth: '230px',
+                    boxSizing: 'border-box',
                     marginTop: '8px',
                     backgroundColor: 'var(--admin-surface)',
                     border: '1px solid var(--admin-border)',
@@ -222,49 +314,99 @@ export default function AdminOrdersPage() {
                     overflow: 'hidden'
                   }}
                 >
-                  <div style={{ padding: '12px' }}>
-                    <div style={{ maxHeight: '280px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <div style={{ padding: '10px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', padding: '0 4px' }}>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--brand-primary)' }}>
+                        Filter by Status
+                      </span>
+                      {selectedStatuses.length > 0 && (
+                        <button
+                          onClick={handleClearStatuses}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            fontSize: '0.72rem',
+                            color: 'var(--admin-text-secondary)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            textDecoration: 'underline',
+                            padding: 0
+                          }}
+                        >
+                          Reset
+                        </button>
+                      )}
+                    </div>
+
+                    <div 
+                      className="admin-dropdown-scroll-container" 
+                      style={{ maxHeight: '200px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '3px' }}
+                    >
                       <button
-                        onClick={() => { setFilterStatus('all'); setIsFilterOpen(false); }}
+                        onClick={handleClearStatuses}
                         style={{ 
                           display: 'flex', 
                           alignItems: 'center', 
                           justifyContent: 'space-between', 
-                          padding: '10px 12px', 
+                          padding: '7px 10px', 
                           borderRadius: 'var(--radius-sm)', 
                           border: 'none', 
-                          backgroundColor: filterStatus === 'all' ? 'var(--admin-background)' : 'transparent', 
+                          backgroundColor: selectedStatuses.length === 0 ? 'var(--admin-background)' : 'transparent', 
                           color: 'var(--admin-text-primary)', 
                           cursor: 'pointer', 
                           textAlign: 'left', 
-                          fontSize: '0.85rem' 
+                          fontSize: '0.82rem',
+                          fontWeight: selectedStatuses.length === 0 ? 600 : 400
                         }}
                       >
-                        All Commissions
-                        {filterStatus === 'all' && <Check size={16} style={{ color: 'var(--brand-primary)' }} />}
+                        <span>All Statuses</span>
+                        {selectedStatuses.length === 0 && <Check size={14} style={{ color: 'var(--brand-primary)' }} />}
                       </button>
-                      {['Placed', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'].map(status => (
-                        <button
-                          key={status}
-                          onClick={() => { setFilterStatus(status); setIsFilterOpen(false); }}
-                          style={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            justifyContent: 'space-between', 
-                            padding: '10px 12px', 
-                            borderRadius: 'var(--radius-sm)', 
-                            border: 'none', 
-                            backgroundColor: filterStatus === status ? 'var(--admin-background)' : 'transparent', 
-                            color: 'var(--admin-text-primary)', 
-                            cursor: 'pointer', 
-                            textAlign: 'left', 
-                            fontSize: '0.85rem' 
-                          }}
-                        >
-                          {status}
-                          {filterStatus === status && <Check size={16} style={{ color: 'var(--brand-primary)' }} />}
-                        </button>
-                      ))}
+                      {['Placed', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'].map(status => {
+                        const isSelected = selectedStatuses.includes(status);
+                        return (
+                          <button
+                            key={status}
+                            onClick={() => handleToggleStatus(status)}
+                            style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'space-between', 
+                              padding: '7px 10px', 
+                              borderRadius: 'var(--radius-sm)', 
+                              border: 'none', 
+                              backgroundColor: isSelected ? 'var(--admin-background)' : 'transparent', 
+                              color: 'var(--admin-text-primary)', 
+                              cursor: 'pointer', 
+                              textAlign: 'left', 
+                              fontSize: '0.82rem',
+                              fontWeight: isSelected ? 600 : 400
+                            }}
+                          >
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span
+                                style={{
+                                  width: '14px',
+                                  height: '14px',
+                                  borderRadius: '3px',
+                                  border: isSelected ? '1px solid var(--brand-primary)' : '1px solid var(--admin-border)',
+                                  backgroundColor: isSelected ? 'var(--brand-primary)' : 'transparent',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  flexShrink: 0
+                                }}
+                              >
+                                {isSelected && <Check size={10} color="#fff" strokeWidth={3} />}
+                              </span>
+                              <span>{status}</span>
+                            </span>
+                            {isSelected && <Check size={14} style={{ color: 'var(--brand-primary)' }} />}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 </motion.div>
@@ -273,7 +415,7 @@ export default function AdminOrdersPage() {
           </div>
 
           {/* Date Filter Dropdown */}
-          <div style={{ position: 'relative' }} ref={dateFilterRef}>
+          <div style={{ position: 'relative', flexShrink: 0 }} ref={dateFilterRef}>
             <Button 
               variant="outline" 
               size="sm" 
@@ -281,24 +423,42 @@ export default function AdminOrdersPage() {
                 setIsDateFilterOpen(!isDateFilterOpen);
                 setIsFilterOpen(false);
               }}
-              style={{ height: '40px' }}
-              leftIcon={<Calendar size={16} strokeWidth={2.1} />}
-              rightIcon={<ChevronDown size={16} style={{ opacity: 0.7 }} />}
+              style={{
+                height: '40px',
+                width: '160px',
+                minWidth: '160px',
+                maxWidth: '160px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0 12px',
+                whiteSpace: 'nowrap',
+                boxSizing: 'border-box'
+              }}
+              leftIcon={<Calendar size={16} strokeWidth={2.1} style={{ flexShrink: 0 }} />}
+              rightIcon={<ChevronDown size={16} style={{ opacity: 0.7, flexShrink: 0 }} />}
+              title={getDateFilterLabel()}
             >
-              {getDateFilterLabel()}
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, textAlign: 'left' }}>
+                {getDateFilterLabel()}
+              </span>
             </Button>
             
             <AnimatePresence>
               {isDateFilterOpen && (
                 <motion.div 
-                  initial={{ opacity: 0, y: -10, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: 'auto' }}
-                  exit={{ opacity: 0, y: -10, height: 0 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.15, ease: 'easeOut' }}
                   style={{ 
                     position: 'absolute', 
                     top: '100%', 
                     ...dateDropdownStyle,
+                    width: '230px',
+                    minWidth: '230px',
+                    maxWidth: '230px',
+                    boxSizing: 'border-box',
                     marginTop: '8px',
                     backgroundColor: 'var(--admin-surface)',
                     border: '1px solid var(--admin-border)',
@@ -308,9 +468,9 @@ export default function AdminOrdersPage() {
                     overflow: 'hidden'
                   }}
                 >
-                  <div style={{ padding: '14px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--brand-primary)' }}>
+                  <div style={{ padding: '10px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', padding: '0 2px' }}>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--brand-primary)' }}>
                         Filter by Date
                       </span>
                       {isDateFilterActive && (
@@ -319,7 +479,7 @@ export default function AdminOrdersPage() {
                           style={{
                             background: 'none',
                             border: 'none',
-                            fontSize: '0.75rem',
+                            fontSize: '0.72rem',
                             color: 'var(--admin-text-secondary)',
                             cursor: 'pointer',
                             display: 'flex',
@@ -333,97 +493,108 @@ export default function AdminOrdersPage() {
                       )}
                     </div>
 
-                    {/* Presets */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                      {[
-                        { id: 'all', label: 'All Dates' },
-                        { id: 'today', label: 'Today' },
-                        { id: '7d', label: 'Last 7 Days' },
-                        { id: '30d', label: 'Last 30 Days' },
-                        { id: 'this_month', label: 'This Month' },
-                      ].map((preset) => {
-                        const isSelected = datePreset === preset.id && !customStartDate && !customEndDate;
-                        return (
-                          <button
-                            key={preset.id}
-                            onClick={() => {
-                              setDatePreset(preset.id as DatePreset);
-                              setCustomStartDate('');
-                              setCustomEndDate('');
-                              setIsDateFilterOpen(false);
-                            }}
-                            style={{ 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              justifyContent: 'space-between', 
-                              padding: '8px 12px', 
-                              borderRadius: 'var(--radius-sm)', 
-                              border: 'none', 
-                              backgroundColor: isSelected ? 'var(--admin-background)' : 'transparent', 
-                              color: 'var(--admin-text-primary)', 
-                              cursor: 'pointer', 
-                              textAlign: 'left', 
-                              fontSize: '0.85rem' 
-                            }}
-                          >
-                            {preset.label}
-                            {isSelected && <Check size={16} style={{ color: 'var(--brand-primary)' }} />}
-                          </button>
-                        );
-                      })}
-                    </div>
+                    <div 
+                      className="admin-dropdown-scroll-container" 
+                      style={{ 
+                        maxHeight: '190px', 
+                        overflowY: 'auto', 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '3px' 
+                      }}
+                    >
+                      {/* Presets */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        {[
+                          { id: 'all', label: 'All Dates' },
+                          { id: 'today', label: 'Today' },
+                          { id: '7d', label: 'Last 7 Days' },
+                          { id: '30d', label: 'Last 30 Days' },
+                          { id: 'this_month', label: 'This Month' },
+                        ].map((preset) => {
+                          const isSelected = datePreset === preset.id && !customStartDate && !customEndDate;
+                          return (
+                            <button
+                              key={preset.id}
+                              onClick={() => {
+                                setDatePreset(preset.id as DatePreset);
+                                setCustomStartDate('');
+                                setCustomEndDate('');
+                                setIsDateFilterOpen(false);
+                              }}
+                              style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'space-between', 
+                                padding: '7px 10px', 
+                                borderRadius: 'var(--radius-sm)', 
+                                border: 'none', 
+                                backgroundColor: isSelected ? 'var(--admin-background)' : 'transparent', 
+                                color: 'var(--admin-text-primary)', 
+                                cursor: 'pointer', 
+                                textAlign: 'left', 
+                                fontSize: '0.82rem' 
+                              }}
+                            >
+                              {preset.label}
+                              {isSelected && <Check size={14} style={{ color: 'var(--brand-primary)' }} />}
+                            </button>
+                          );
+                        })}
+                      </div>
 
-                    <div style={{ height: '1px', backgroundColor: 'var(--admin-border)', margin: '12px 0 10px 0' }} />
+                      <div style={{ height: '1px', backgroundColor: 'var(--admin-border)', margin: '6px 0 4px 0' }} />
 
-                    {/* Custom Range */}
-                    <div>
-                      <span style={{ fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--admin-text-secondary)', display: 'block', marginBottom: '8px' }}>
-                        Custom Range
-                      </span>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontSize: '0.78rem', color: 'var(--admin-text-secondary)', width: '38px' }}>From</span>
-                          <input
-                            type="date"
-                            value={customStartDate}
-                            onChange={(e) => {
-                              setCustomStartDate(e.target.value);
-                              setDatePreset('custom');
-                            }}
-                            style={{
-                              flex: 1,
-                              padding: '6px 10px',
-                              borderRadius: 'var(--radius-sm)',
-                              border: '1px solid var(--admin-border)',
-                              backgroundColor: 'var(--admin-background)',
-                              color: 'var(--admin-text-primary)',
-                              fontSize: '0.82rem',
-                              outline: 'none',
-                              fontFamily: 'inherit'
-                            }}
-                          />
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontSize: '0.78rem', color: 'var(--admin-text-secondary)', width: '38px' }}>To</span>
-                          <input
-                            type="date"
-                            value={customEndDate}
-                            onChange={(e) => {
-                              setCustomEndDate(e.target.value);
-                              setDatePreset('custom');
-                            }}
-                            style={{
-                              flex: 1,
-                              padding: '6px 10px',
-                              borderRadius: 'var(--radius-sm)',
-                              border: '1px solid var(--admin-border)',
-                              backgroundColor: 'var(--admin-background)',
-                              color: 'var(--admin-text-primary)',
-                              fontSize: '0.82rem',
-                              outline: 'none',
-                              fontFamily: 'inherit'
-                            }}
-                          />
+                      {/* Custom Range */}
+                      <div>
+                        <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--admin-text-secondary)', display: 'block', marginBottom: '5px' }}>
+                          Custom Range
+                        </span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span style={{ fontSize: '0.74rem', color: 'var(--admin-text-secondary)', width: '34px' }}>From</span>
+                            <input
+                              type="date"
+                              value={customStartDate}
+                              onChange={(e) => {
+                                setCustomStartDate(e.target.value);
+                                setDatePreset('custom');
+                              }}
+                              style={{
+                                flex: 1,
+                                padding: '4px 6px',
+                                borderRadius: 'var(--radius-sm)',
+                                border: '1px solid var(--admin-border)',
+                                backgroundColor: 'var(--admin-background)',
+                                color: 'var(--admin-text-primary)',
+                                fontSize: '0.76rem',
+                                outline: 'none',
+                                fontFamily: 'inherit'
+                              }}
+                            />
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span style={{ fontSize: '0.74rem', color: 'var(--admin-text-secondary)', width: '34px' }}>To</span>
+                            <input
+                              type="date"
+                              value={customEndDate}
+                              onChange={(e) => {
+                                setCustomEndDate(e.target.value);
+                                setDatePreset('custom');
+                              }}
+                              style={{
+                                flex: 1,
+                                padding: '4px 6px',
+                                borderRadius: 'var(--radius-sm)',
+                                border: '1px solid var(--admin-border)',
+                                backgroundColor: 'var(--admin-background)',
+                                color: 'var(--admin-text-primary)',
+                                fontSize: '0.76rem',
+                                outline: 'none',
+                                fontFamily: 'inherit'
+                              }}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -435,67 +606,176 @@ export default function AdminOrdersPage() {
         </div>
 
         {/* Active Filters Summary */}
-        {(filterStatus !== 'all' || isDateFilterActive) && (
+        {(selectedStatuses.length > 0 || isDateFilterActive || searchQuery.trim() !== '') && (
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '0.78rem', color: 'var(--admin-text-secondary)' }}>Active filters:</span>
-            {filterStatus !== 'all' && (
+            <span style={{ fontSize: '0.78rem', color: 'var(--admin-text-secondary)', fontWeight: 500 }}>Active filters:</span>
+            {selectedStatuses.map((status) => (
               <span
+                key={status}
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '4px',
-                  padding: '3px 10px',
+                  gap: '6px',
+                  padding: '4px 10px',
                   fontSize: '0.75rem',
+                  fontWeight: 500,
                   borderRadius: 'var(--radius-pill)',
                   backgroundColor: 'var(--admin-surface)',
                   border: '1px solid var(--admin-border)',
-                  color: 'var(--admin-text-primary)'
+                  color: 'var(--admin-text-primary)',
+                  boxShadow: '0 1px 2px var(--overlay-black-5, rgba(0,0,0,0.05))',
+                  transition: 'all 0.15s ease'
                 }}
               >
-                Status: {filterStatus}
-                <X
-                  size={12}
-                  style={{ cursor: 'pointer', opacity: 0.7 }}
-                  onClick={() => setFilterStatus('all')}
-                />
+                <span>Status: {status}</span>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveStatus(status)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: '2px',
+                    margin: 0,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--admin-text-secondary)',
+                    borderRadius: '50%',
+                    transition: 'all 0.15s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = 'var(--admin-text-primary)';
+                    e.currentTarget.style.backgroundColor = 'var(--overlay-black-10, rgba(0,0,0,0.08))';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'var(--admin-text-secondary)';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                  title={`Remove ${status} filter`}
+                  aria-label={`Remove ${status} filter`}
+                >
+                  <X size={12} strokeWidth={2.4} />
+                </button>
               </span>
-            )}
+            ))}
             {isDateFilterActive && (
               <span
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '4px',
-                  padding: '3px 10px',
+                  gap: '6px',
+                  padding: '4px 10px',
                   fontSize: '0.75rem',
+                  fontWeight: 500,
                   borderRadius: 'var(--radius-pill)',
                   backgroundColor: 'var(--admin-surface)',
                   border: '1px solid var(--admin-border)',
-                  color: 'var(--admin-text-primary)'
+                  color: 'var(--admin-text-primary)',
+                  boxShadow: '0 1px 2px var(--overlay-black-5, rgba(0,0,0,0.05))',
+                  transition: 'all 0.15s ease'
                 }}
               >
-                Date: {getDateFilterLabel()}
-                <X
-                  size={12}
-                  style={{ cursor: 'pointer', opacity: 0.7 }}
+                <span>Date: {getDateFilterLabel()}</span>
+                <button
+                  type="button"
                   onClick={handleResetDateFilter}
-                />
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: '2px',
+                    margin: 0,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--admin-text-secondary)',
+                    borderRadius: '50%',
+                    transition: 'all 0.15s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = 'var(--admin-text-primary)';
+                    e.currentTarget.style.backgroundColor = 'var(--overlay-black-10, rgba(0,0,0,0.08))';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'var(--admin-text-secondary)';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                  title="Reset date filter"
+                  aria-label="Reset date filter"
+                >
+                  <X size={12} strokeWidth={2.4} />
+                </button>
+              </span>
+            )}
+            {searchQuery.trim() !== '' && (
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '4px 10px',
+                  fontSize: '0.75rem',
+                  fontWeight: 500,
+                  borderRadius: 'var(--radius-pill)',
+                  backgroundColor: 'var(--admin-surface)',
+                  border: '1px solid var(--admin-border)',
+                  color: 'var(--admin-text-primary)',
+                  boxShadow: '0 1px 2px var(--overlay-black-5, rgba(0,0,0,0.05))',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                <span>Query: &ldquo;{searchQuery}&rdquo;</span>
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: '2px',
+                    margin: 0,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--admin-text-secondary)',
+                    borderRadius: '50%',
+                    transition: 'all 0.15s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = 'var(--admin-text-primary)';
+                    e.currentTarget.style.backgroundColor = 'var(--overlay-black-10, rgba(0,0,0,0.08))';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'var(--admin-text-secondary)';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                  title="Clear search query"
+                  aria-label="Clear search query"
+                >
+                  <X size={12} strokeWidth={2.4} />
+                </button>
               </span>
             )}
             <button
               onClick={() => {
-                setFilterStatus('all');
+                setSelectedStatuses([]);
                 handleResetDateFilter();
+                setSearchQuery('');
               }}
               style={{
                 background: 'none',
                 border: 'none',
                 fontSize: '0.75rem',
                 color: 'var(--brand-primary)',
+                fontWeight: 600,
                 cursor: 'pointer',
                 textDecoration: 'underline',
-                padding: '0 4px'
+                padding: '0 4px',
+                transition: 'opacity 0.15s ease'
               }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.75')}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
             >
               Clear all
             </button>
@@ -505,7 +785,7 @@ export default function AdminOrdersPage() {
 
       {/* Orders Table */}
       <div className="admin-table-wrapper" style={{ padding: '24px', overflowX: 'auto' }}>
-        <div style={{ minWidth: '800px' }}>
+        <div style={{ minWidth: '920px' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
             <thead>
               <tr className="admin-table-header">
@@ -514,7 +794,7 @@ export default function AdminOrdersPage() {
                 <th style={{ padding: '12px 14px' }}>Total Amount</th>
                 <th style={{ padding: '12px 14px' }}>Carrier & Tracking</th>
                 <th style={{ padding: '12px 14px' }}>Status</th>
-                <th style={{ padding: '12px 14px' }}>Operations Action</th>
+                <th style={{ padding: '12px 14px', minWidth: '250px' }}>Operations Action</th>
               </tr>
             </thead>
             <tbody>
@@ -528,12 +808,12 @@ export default function AdminOrdersPage() {
                       <span style={{ fontSize: '0.85rem', color: 'var(--admin-text-secondary)', maxWidth: '360px' }}>
                         No commissions match your current search, status, or date filter criteria.
                       </span>
-                      {(isDateFilterActive || filterStatus !== 'all' || searchQuery.trim() !== '') && (
+                      {(isDateFilterActive || selectedStatuses.length > 0 || searchQuery.trim() !== '') && (
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => {
-                            setFilterStatus('all');
+                            setSelectedStatuses([]);
                             handleResetDateFilter();
                             setSearchQuery('');
                           }}
@@ -547,13 +827,27 @@ export default function AdminOrdersPage() {
                 </tr>
               ) :
                 paginatedOrders.map((o) => (
-                  <tr key={o.id} className="admin-table-row">
+                  <tr
+                    key={o.id}
+                    className="admin-table-row"
+                    onClick={() => {
+                      setSelectedOrder(o);
+                      setIsDetailsModalOpen(true);
+                    }}
+                    style={{ cursor: 'pointer' }}
+                    title="Click row to inspect full order dossier"
+                  >
+                    {/* Commission ID and Date */}
                     <td style={{ padding: '14px', fontWeight: 600, color: 'var(--admin-text-primary)' }}>
-                      <div>#{o.id}</div>
+                      <div>
+                        <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--brand-primary)' }}>#{o.id}</span>
+                      </div>
                       <div style={{ fontSize: '0.74rem', fontWeight: 400, color: 'var(--admin-text-secondary)', marginTop: '2px' }}>
                         {o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
                       </div>
                     </td>
+
+                    {/* Client */}
                     <td style={{ padding: '14px' }}>
                       <span style={{ fontWeight: 600, color: 'var(--admin-text-primary)', display: 'block' }}>
                         {o.customerName || 'Client'}
@@ -562,9 +856,13 @@ export default function AdminOrdersPage() {
                         {o.address.city}, {o.address.state}
                       </span>
                     </td>
+
+                    {/* Total Amount */}
                     <td style={{ padding: '14px', fontWeight: 600, color: 'var(--admin-text-primary)' }}>
                       {formatPrice(o.totals.total)}
                     </td>
+
+                    {/* Carrier & Tracking */}
                     <td style={{ padding: '14px' }}>
                       {o.trackingInfo ? (
                         <div>
@@ -579,79 +877,114 @@ export default function AdminOrdersPage() {
                         <span style={{ color: 'var(--admin-text-secondary)' }}>Pending</span>
                       )}
                     </td>
-                  <td style={{ padding: '14px' }}>
-                    <Badge variant={o.status === 'Delivered' ? 'success' : o.status === 'Shipped' ? 'gold' : 'warning'}>
-                      {o.status}
-                    </Badge>
-                  </td>
-                  <td style={{ padding: '14px' }}>
-                    {o.status === 'Placed' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        style={{ minWidth: '136px' }}
-                        onClick={() => handleAdvanceStatus(o.id, 'Confirmed')}
-                      >
-                        Confirm
-                      </Button>
-                    )}
-                    {o.status === 'Confirmed' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        style={{ minWidth: '136px' }}
-                        onClick={() => handleAdvanceStatus(o.id, 'Packed')}
-                      >
-                        Pack
-                      </Button>
-                    )}
-                    {o.status === 'Packed' && (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        style={{ minWidth: '136px' }}
-                        onClick={() => handleAdvanceStatus(o.id, 'Shipped')}
-                      >
-                        Dispatch / Ship
-                      </Button>
-                    )}
-                    {o.status === 'Shipped' && (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        style={{ minWidth: '136px' }}
-                        onClick={() => handleAdvanceStatus(o.id, 'Delivered')}
-                      >
-                        Mark Delivered
-                      </Button>
-                    )}
-                    {o.status === 'Delivered' && (
-                      <span
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '6px',
-                          height: '36px',
-                          minWidth: '136px',
-                          padding: '0 18px',
-                          fontSize: '0.75rem',
-                          fontWeight: 600,
-                          letterSpacing: '0.04em',
-                          textTransform: 'uppercase',
-                          color: 'var(--color-success)',
-                          borderRadius: 'var(--radius-pill)',
-                          backgroundColor: 'var(--color-success-bg)',
-                          border: '1px solid var(--color-success-bg)',
-                          boxSizing: 'border-box',
-                        }}
-                      >
-                        <CheckCircle2 size={14} /> Completed
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
+
+                    {/* Status Badge */}
+                    <td style={{ padding: '14px', whiteSpace: 'nowrap' }}>
+                      <Badge variant={o.status === 'Delivered' ? 'success' : o.status === 'Shipped' ? 'gold' : 'warning'}>
+                        {o.status}
+                      </Badge>
+                    </td>
+
+                    {/* Operations Action */}
+                    <td style={{ padding: '14px', whiteSpace: 'nowrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        {/* Details Button */}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          style={{ height: '36px', padding: '0 12px' }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedOrder(o);
+                            setIsDetailsModalOpen(true);
+                          }}
+                          leftIcon={<Eye size={14} />}
+                          title="Inspect Order Details & Dossier"
+                        >
+                          Details
+                        </Button>
+
+                        {/* State Transition Button */}
+                        {o.status === 'Placed' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            style={{ minWidth: '136px', height: '36px' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAdvanceStatus(o.id, 'Confirmed');
+                            }}
+                          >
+                            Confirm
+                          </Button>
+                        )}
+                        {o.status === 'Confirmed' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            style={{ minWidth: '136px', height: '36px' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAdvanceStatus(o.id, 'Packed');
+                            }}
+                          >
+                            Pack
+                          </Button>
+                        )}
+                        {o.status === 'Packed' && (
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            style={{ minWidth: '136px', height: '36px' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAdvanceStatus(o.id, 'Shipped');
+                            }}
+                          >
+                            Dispatch / Ship
+                          </Button>
+                        )}
+                        {o.status === 'Shipped' && (
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            style={{ minWidth: '136px', height: '36px' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAdvanceStatus(o.id, 'Delivered');
+                            }}
+                          >
+                            Mark Delivered
+                          </Button>
+                        )}
+                        {o.status === 'Delivered' && (
+                          <span
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '6px',
+                              height: '36px',
+                              minWidth: '136px',
+                              padding: '0 14px',
+                              fontSize: '0.75rem',
+                              fontWeight: 600,
+                              letterSpacing: '0.04em',
+                              textTransform: 'uppercase',
+                              color: 'var(--color-success)',
+                              borderRadius: 'var(--radius-pill)',
+                              backgroundColor: 'var(--color-success-bg)',
+                              border: '1px solid var(--color-success-bg)',
+                              boxSizing: 'border-box',
+                            }}
+                          >
+                            <CheckCircle2 size={14} /> Completed
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -681,6 +1014,17 @@ export default function AdminOrdersPage() {
           </div>
         )}
       </div>
+
+      {/* Comprehensive Order Details Dossier Modal */}
+      <AdminOrderDetailsModal
+        order={selectedOrder}
+        isOpen={isDetailsModalOpen}
+        onClose={() => {
+          setIsDetailsModalOpen(false);
+          setSelectedOrder(null);
+        }}
+        onAdvanceStatus={handleAdvanceStatus}
+      />
     </div>
   );
 }

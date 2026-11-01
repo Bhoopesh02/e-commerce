@@ -184,7 +184,9 @@ export const OrderRow: React.FC<OrderRowProps> = ({ order, onReviewItem }) => {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          padding: 5px 12px;
+          min-height: 44px;
+          padding: 0 14px;
+          box-sizing: border-box;
           font-size: 0.78rem;
           font-weight: 500;
           letter-spacing: 0.04em;
@@ -205,8 +207,11 @@ export const OrderRow: React.FC<OrderRowProps> = ({ order, onReviewItem }) => {
 
         .text-action {
           font-size: 0.9rem;
-          display: flex;
+          display: inline-flex;
           align-items: center;
+          min-height: 44px;
+          padding: 0 8px;
+          box-sizing: border-box;
           gap: 6px;
           color: var(--text-primary);
           text-decoration: none;

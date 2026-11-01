@@ -115,7 +115,13 @@ export default function OrdersPage() {
         .filter-btn {
           background: none;
           border: none;
-          padding: 0 0 12px 0;
+          padding: 0 8px 12px 8px;
+          min-width: 44px;
+          min-height: 44px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
           font-size: 0.8rem;
           text-transform: uppercase;
           letter-spacing: 0.05em;
@@ -155,10 +161,11 @@ export default function OrdersPage() {
             gap: 16px;
           }
           .filter-btn {
-            min-width: 0;
+            min-width: 44px;
             min-height: 2.75rem;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
           }
         }
       `}</style>

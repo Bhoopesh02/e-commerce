@@ -33,6 +33,8 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     ctaText: 'Explore Silhouettes',
     image: '/images/banners/new-arrivals/new-arrivals-hero.webp',
     mobileImage: '/images/banners/new-arrivals/new-arrivals-hero-mobile.webp',
+    objectPosition: '80% center',
+    mobileObjectPosition: '60% center',
   },
   {
     id: 'outerwear',
@@ -46,6 +48,8 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     ctaText: 'Explore Outerwear',
     image: '/images/banners/new-arrivals/new-arrivals-outerwear.webp',
     mobileImage: '/images/banners/new-arrivals/new-arrivals-outerwear-mobile.webp',
+    objectPosition: '80% center',
+    mobileObjectPosition: '60% center',
   },
   {
     id: 'eveningwear',
@@ -59,6 +63,8 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     ctaText: 'Explore Eveningwear',
     image: '/images/banners/new-arrivals/new-arrivals-eveningwear.webp',
     mobileImage: '/images/banners/new-arrivals/new-arrivals-eveningwear-mobile.webp',
+    objectPosition: '82% center',
+    mobileObjectPosition: '100% center',
   },
   {
     id: 'leather-goods',
@@ -72,6 +78,8 @@ export const NEW_ARRIVALS_BANNERS: BannerSlide[] = [
     ctaText: 'Explore Leather Goods',
     image: '/images/banners/new-arrivals/new-arrivals-leather.webp',
     mobileImage: '/images/banners/new-arrivals/new-arrivals-leather-mobile.webp',
+    objectPosition: '80% center',
+    mobileObjectPosition: '0% center',
   },
 ];
 
@@ -112,6 +120,19 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
   const prevSlide = useCallback(() => {
     goToSlide((currentIndex - 1 + slides.length) % slides.length);
   }, [currentIndex, goToSlide, slides.length]);
+
+  // Eager Background Pre-Caching: Download all high-resolution WebP images in background immediately on page load
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    slides.forEach((slide) => {
+      const img = new window.Image();
+      img.src = slide.image;
+      if (slide.mobileImage) {
+        const mobImg = new window.Image();
+        mobImg.src = slide.mobileImage;
+      }
+    });
+  }, [slides]);
 
   // Smooth Auto-Scroll Countdown Loop (keeps playing across hovers)
   useEffect(() => {
@@ -172,14 +193,6 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
   return (
     <section
       className={styles.carouselSection}
-      style={{
-        position: 'relative',
-        width: '100%',
-        marginTop: 'var(--announcement-bar-height, 37px)',
-        minHeight: 'calc(100svh - var(--announcement-bar-height, 37px))',
-        height: 'calc(100svh - var(--announcement-bar-height, 37px))',
-        overflow: 'hidden',
-      }}
       onMouseEnter={() => {
         if (pauseOnHover) setIsHovered(true);
       }}
@@ -190,31 +203,26 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
       onTouchEnd={handleTouchEnd}
       aria-label="New Arrivals Full-Width Editorial Banners"
     >
-
-      {/* 100% Full-Width Horizontal Sliding Track */}
-      <div
-        className={styles.track}
-        style={{
-          transform: `translateX(-${currentIndex * 100}%)`,
-        }}
-      >
+      {/* Container stacking crossfading slides on GPU layers */}
+      <div className={styles.track}>
         {slides.map((slide, index) => {
           const isActive = index === currentIndex;
           const common = {
             alt: `${slide.title} — ${slide.subtitle}`,
             fill: true,
-            priority: index === 0,
-            quality: 80,
+            priority: true,
+            loading: 'eager' as const,
+            quality: 85,
             sizes: '100vw',
           };
           const {
-            props: { srcSet: desktopSrcSet, ...desktopRest },
+            props: { srcSet: desktopSrcSet },
           } = getImageProps({
             ...common,
             src: slide.image,
           });
           const {
-            props: { srcSet: mobileSrcSet },
+            props: { srcSet: mobileSrcSet, ...mobileRest },
           } = getImageProps({
             ...common,
             src: slide.mobileImage || slide.image,
@@ -240,13 +248,17 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
                     srcSet={desktopSrcSet}
                   />
                   <img
-                    {...desktopRest}
-                    srcSet={desktopSrcSet}
+                    {...mobileRest}
+                    srcSet={undefined}
+                    alt={`${slide.title} — ${slide.subtitle}`}
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
                     className={styles.bannerImage}
                     style={{
-                      ...desktopRest.style,
-                      ['--pos-desktop' as string]: slide.objectPosition || 'right 20% center',
-                      ['--pos-mobile' as string]: slide.mobileObjectPosition || 'right 5% center',
+                      ...mobileRest.style,
+                      ['--pos-desktop' as string]: slide.objectPosition || '80% center',
+                      ['--pos-mobile' as string]: slide.mobileObjectPosition || '84% center',
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
@@ -294,9 +306,8 @@ export const HeroEditorialCarousel: React.FC<HeroEditorialCarouselProps> = ({
         {slides.map((slide, idx) => (
           <div
             key={slide.id}
-            className={`${styles.indicatorBar} ${
-              idx === currentIndex ? styles.activeIndicator : ''
-            }`}
+            className={`${styles.indicatorBar} ${idx === currentIndex ? styles.activeIndicator : ''
+              }`}
             onClick={() => goToSlide(idx)}
             title={slide.title}
           >

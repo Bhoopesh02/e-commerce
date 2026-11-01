@@ -30,7 +30,6 @@ import {
   ShieldCheck,
   Truck,
   RotateCcw,
-  Sparkles,
   ChevronDown,
   ChevronLeft,
 } from 'lucide-react';
@@ -298,7 +297,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
 
   if (loading) {
     return (
-      <div style={{ paddingTop: '110px', paddingBottom: '96px' }} className="container">
+      <div style={{ paddingTop: 'var(--header-total-height, 113px)', paddingBottom: '96px' }} className="container">
         <div className="pdp-split-layout">
           <Skeleton height="620px" borderRadius="var(--radius-sm)" />
           <div>
@@ -347,7 +346,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
 
 
   return (
-    <div style={{ paddingTop: '110px', paddingBottom: '96px', backgroundColor: 'var(--bg-primary)' }}>
+    <div style={{ paddingTop: 'var(--header-total-height, 113px)', paddingBottom: '96px', backgroundColor: 'var(--bg-primary)' }}>
       <div className="container">
         {/* Back Navigation */}
         <button
@@ -419,7 +418,8 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 alt={product.name}
                 fill
                 priority
-                quality={95}
+                loading="eager"
+                quality={85}
                 sizes="(max-width: 1024px) 100vw, 55vw"
                 style={{
                   objectFit: 'cover',
@@ -463,7 +463,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                       transition: 'border-color var(--duration-fast)',
                     }}
                   >
-                    <Image src={img} alt={`${product.name} view ${idx + 1}`} fill sizes="160px" quality={90} style={{ objectFit: 'cover' }} />
+                    <Image src={img} alt={`${product.name} view ${idx + 1}`} fill sizes="160px" quality={75} style={{ objectFit: 'cover' }} />
                   </button>
                 ))}
               </div>
@@ -473,7 +473,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
           {/* Right: Garment Information & Purchasing Panel */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <div className="pdp-header-meta">
                 <span
                   style={{
                     fontSize: '0.78rem',
@@ -481,12 +481,23 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     letterSpacing: '0.14em',
                     textTransform: 'uppercase',
                     color: 'var(--brand-primary)',
+                    minWidth: 0,
                   }}
                 >
                   {product.subtitle || 'Atelier Master Edition'}
                 </span>
 
-                <RatingStars rating={product.rating.average} size={14} showScore totalReviews={product.rating.count} />
+                <a
+                  href="#reviews"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="pdp-rating-badge"
+                  aria-label={`Rated ${product.rating.average.toFixed(1)} out of 5 stars based on ${product.rating.count} reviews. Scroll to reflections.`}
+                >
+                  <RatingStars rating={product.rating.average} size={14} showScore totalReviews={product.rating.count} />
+                </a>
               </div>
 
               <h1
@@ -500,12 +511,12 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 {product.name}
               </h1>
 
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '14px' }}>
-                <span style={{ fontSize: '1.6rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+              <div className="pdp-price-row">
+                <span className="pdp-price-amount">
                   {formatPrice(product.price)}
                 </span>
                 {/* Strikethrough compare price removed as requested */}
-                <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                <span className="pdp-price-taxes">
                   Inclusive of all luxury taxes & duties
                 </span>
               </div>
@@ -1077,8 +1088,11 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
         />
 
         {/* Client Reflections / Reviews Section */}
-        <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '64px', marginBottom: '80px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '32px' }}>
+        <section
+          id="reviews"
+          style={{ borderTop: '1px solid var(--border-color)', paddingTop: '64px', marginBottom: '80px' }}
+        >
+          <div className="pdp-reviews-header">
             <div>
               <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand-primary)' }}>
                 Client Impressions
@@ -1086,7 +1100,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
               <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)' }}>Reflections & Fit Notes</h2>
             </div>
 
-            <div style={{ textAlign: 'right' }}>
+            <div className="pdp-reviews-summary">
               <span style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', fontWeight: 600 }}>
                 {product.rating.average.toFixed(1)}
               </span>

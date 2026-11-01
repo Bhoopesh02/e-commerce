@@ -50,6 +50,14 @@ export default function RootLayout({
       data-theme="light"
       data-scroll-behavior="smooth"
     >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>
         <Script
           id="anti-flash-script"

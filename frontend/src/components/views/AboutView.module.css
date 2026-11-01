@@ -5,7 +5,7 @@
   min-height: 100vh;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  padding-top: 110px;
+  padding-top: var(--header-total-height, 113px);
   padding-bottom: 96px;
   overflow-x: clip;
 }
@@ -265,8 +265,11 @@
 .exploreButton {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 8px 18px;
+  min-height: 44px;
+  padding: 0 22px;
+  box-sizing: border-box;
   border: 1px solid rgba(23, 21, 19, 0.3);
   background-color: transparent;
   color: var(--text-primary);
@@ -333,7 +336,7 @@
 
 .monumentalSignature {
   display: block;
-  font-size: clamp(5rem, 17.5vw, 20rem);
+  font-size: clamp(3.5rem, 10vw, 8.5rem);
   font-weight: 700;
   letter-spacing: -0.04em;
   color: var(--text-primary);
@@ -370,7 +373,7 @@
 
 @media (max-width: 767px) {
   .pageRoot {
-    padding-top: 90px;
+    padding-top: var(--header-total-height, 97px);
   }
 
   .monumentalHeadline {

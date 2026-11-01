@@ -42,7 +42,8 @@ export const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '16px 6px',
+          padding: '14px 6px',
+          minHeight: '48px',
           backgroundColor: 'transparent',
           border: 'none',
           cursor: 'pointer',
@@ -57,19 +58,23 @@ export const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '10px',
+            gap: '8px',
             minWidth: 0,
             flex: 1,
+            overflow: 'hidden',
           }}
         >
           <span
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '1rem',
+              fontSize: 'clamp(0.88rem, 0.78rem + 0.3vw, 1rem)',
               letterSpacing: '0.06em',
               color: 'var(--text-primary)',
               textTransform: 'uppercase',
               fontWeight: 600,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             }}
           >
             {title}
@@ -88,9 +93,10 @@ export const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                maxWidth: '140px',
+                maxWidth: 'clamp(85px, 24vw, 140px)',
                 display: 'inline-flex',
                 alignItems: 'center',
+                flexShrink: 0,
               }}
             >
               {badge}
