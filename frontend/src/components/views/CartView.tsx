@@ -384,7 +384,7 @@ export const CartView: React.FC = () => {
                           border: '1px solid var(--border-color)',
                           borderRadius: 'var(--radius-pill)',
                           padding: '0 2px',
-                          height: 44,
+                          height: 30,
                           boxSizing: 'border-box',
                           opacity: isOutOfStock ? 0.5 : 1,
                         }}
@@ -392,10 +392,10 @@ export const CartView: React.FC = () => {
                         <button
                           onClick={() => updateQuantity(item.sku, item.quantity - 1)}
                           style={{
-                            width: 44,
-                            height: 44,
-                            minWidth: 44,
-                            minHeight: 44,
+                            width: 28,
+                            height: 28,
+                            minWidth: 28,
+                            minHeight: 28,
                             display: 'inline-flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -408,9 +408,9 @@ export const CartView: React.FC = () => {
                           aria-label="Decrease"
                           disabled={isOutOfStock}
                         >
-                          <Minus size={13} />
+                          <Minus size={12} />
                         </button>
-                        <span style={{ fontSize: '0.9rem', fontWeight: 600, minWidth: '20px', textAlign: 'center', userSelect: 'none' }}>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 600, minWidth: '18px', textAlign: 'center', userSelect: 'none' }}>
                           {item.quantity}
                         </span>
                         <button
@@ -422,10 +422,10 @@ export const CartView: React.FC = () => {
                           aria-label="Increase"
                           disabled={isOutOfStock || item.quantity >= maxStock}
                           style={{
-                            width: 44,
-                            height: 44,
-                            minWidth: 44,
-                            minHeight: 44,
+                            width: 28,
+                            height: 28,
+                            minWidth: 28,
+                            minHeight: 28,
                             display: 'inline-flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -438,7 +438,7 @@ export const CartView: React.FC = () => {
                           }}
                           title={item.quantity >= maxStock ? `Maximum available stock (${maxStock}) reached` : undefined}
                         >
-                          <Plus size={13} />
+                          <Plus size={12} />
                         </button>
                       </div>
 

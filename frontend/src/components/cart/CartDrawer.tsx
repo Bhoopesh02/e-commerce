@@ -227,6 +227,7 @@ export const CartDrawer: React.FC = () => {
               style={{
                 flex: 1,
                 overflowY: 'auto',
+                overflowX: 'hidden',
                 overscrollBehavior: 'contain',
                 display: 'flex',
                 flexDirection: 'column',
@@ -255,11 +256,13 @@ export const CartDrawer: React.FC = () => {
                     style={{
                       display: 'flex',
                       gap: '16px',
-                      paddingBottom: '20px',
+                      paddingTop: isOutOfStock ? '12px' : 0,
+                      paddingLeft: isOutOfStock ? '12px' : 0,
+                      paddingRight: isOutOfStock ? '12px' : 0,
+                      paddingBottom: isOutOfStock ? '16px' : '20px',
                       borderBottom: '1px solid var(--border-light)',
                       opacity: isOutOfStock ? 0.75 : 1,
                       backgroundColor: isOutOfStock ? 'rgba(239, 68, 68, 0.04)' : undefined,
-                      padding: isOutOfStock ? '12px' : undefined,
                       borderRadius: isOutOfStock ? 'var(--radius-sm)' : undefined,
                     }}
                   >
@@ -449,7 +452,8 @@ export const CartDrawer: React.FC = () => {
                           alignItems: 'center',
                           justifyContent: 'space-between',
                           marginTop: 'auto',
-                          paddingTop: '10px',
+                          paddingTop: '12px',
+                          paddingBottom: '4px',
                         }}
                       >
                         {/* Quantity Controls */}
@@ -460,7 +464,7 @@ export const CartDrawer: React.FC = () => {
                             border: '1px solid var(--border-color)',
                             borderRadius: 'var(--radius-pill)',
                             padding: '0 2px',
-                            height: 44,
+                            height: 30,
                             boxSizing: 'border-box',
                             opacity: isOutOfStock ? 0.5 : 1,
                           }}
@@ -468,10 +472,10 @@ export const CartDrawer: React.FC = () => {
                           <button
                             onClick={() => updateQuantity(item.sku, item.quantity - 1)}
                             style={{
-                              width: 44,
-                              height: 44,
-                              minWidth: 44,
-                              minHeight: 44,
+                              width: 28,
+                              height: 28,
+                              minWidth: 28,
+                              minHeight: 28,
                               display: 'inline-flex',
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -484,9 +488,9 @@ export const CartDrawer: React.FC = () => {
                             aria-label="Decrease quantity"
                             disabled={isOutOfStock}
                           >
-                            <Minus size={13} />
+                            <Minus size={12} />
                           </button>
-                          <span style={{ fontSize: '0.88rem', fontWeight: 600, minWidth: '20px', textAlign: 'center', userSelect: 'none' }}>
+                          <span style={{ fontSize: '0.82rem', fontWeight: 600, minWidth: '18px', textAlign: 'center', userSelect: 'none' }}>
                             {item.quantity}
                           </span>
                           <button
@@ -496,10 +500,10 @@ export const CartDrawer: React.FC = () => {
                               }
                             }}
                             style={{
-                              width: 44,
-                              height: 44,
-                              minWidth: 44,
-                              minHeight: 44,
+                              width: 28,
+                              height: 28,
+                              minWidth: 28,
+                              minHeight: 28,
                               display: 'inline-flex',
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -514,7 +518,7 @@ export const CartDrawer: React.FC = () => {
                             aria-label="Increase quantity"
                             title={item.quantity >= maxStock ? `Maximum available stock (${maxStock}) reached` : undefined}
                           >
-                            <Plus size={13} />
+                            <Plus size={12} />
                           </button>
                         </div>
 
